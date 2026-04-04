@@ -42,7 +42,7 @@ const quickLinks = [
 
 const resourceLinks = [
   { label: "Blog", href: "/blog" },
-  { label: "AI Mock Interviews", href: "https://interviews.primitiveinformatics.com", external: true },
+  { label: "AI Mock Interviews", href: "https://primitiveinformatics.in/interviewbot", external: true },
   { label: "YouTube Channel", href: YOUTUBE_CHANNEL_URL, external: true },
   { label: "Help Center (Coming Soon)", href: "#", disabled: true },
 ];

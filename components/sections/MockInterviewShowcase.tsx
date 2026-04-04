@@ -41,7 +41,7 @@ function MockInterviewUI() {
             className="flex-1 mx-4 px-3 py-1 rounded text-xs text-center"
             style={{ backgroundColor: "rgba(30, 41, 59, 0.8)", color: "#64748B" }}
           >
-            interviews.primitiveinformatics.com
+            primitiveinformatics.in/interviewbot
           </div>
         </div>
 

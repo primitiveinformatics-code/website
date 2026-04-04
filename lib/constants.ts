@@ -6,8 +6,8 @@ export const NAV_LINKS = [
 ];
 
 export const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@primitiveinformatics"; // TODO: Update with actual channel URL
-export const SAAS_APP_URL = "https://interviews.primitiveinformatics.com"; // TODO: Update with actual SaaS URL
-export const CONTACT_EMAIL = "hello@primitiveinformatics.com";
+export const SAAS_APP_URL = "https://primitiveinformatics.in/interviewbot";
+export const CONTACT_EMAIL = "admin@primitiveinformatics.in";
 
 export const TESTIMONIALS = [
   {
@@ -86,7 +86,7 @@ export const FAQ_ITEMS = [
   {
     question: "How do I report an issue or give feedback?",
     answer:
-      "We love feedback! You can reach us at hello@primitiveinformatics.com, use the contact form on this page, or tweet at us @primitiveinformatics. We typically respond within 24 hours. Bug reports can be filed directly from inside the platform.",
+      "We love feedback! You can reach us at admin@primitiveinformatics.in, use the contact form on this page, or tweet at us @primitiveinformatics. We typically respond within 24 hours. Bug reports can be filed directly from inside the platform.",
   },
 ];
 
