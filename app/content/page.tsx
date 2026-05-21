@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PlayCircle, Mic, ChevronDown, ChevronUp, Plus, ExternalLink } from "lucide-react";
+import { PlayCircle, Mic, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 
 interface Playlist {
   id: number;
@@ -30,14 +30,6 @@ export default function ContentPage() {
   const [activeVideo, setActiveVideo] = useState<PlaylistItem | null>(null);
   const [loadingItems, setLoadingItems] = useState<number | null>(null);
 
-  // Admin form
-  const [adminPlaylistId, setAdminPlaylistId] = useState("");
-  const [adminUrl, setAdminUrl] = useState("");
-  const [adminTitle, setAdminTitle] = useState("");
-  const [adminDesc, setAdminDesc] = useState("");
-  const [adminStatus, setAdminStatus] = useState<string | null>(null);
-  const [adminLoading, setAdminLoading] = useState(false);
-
   useEffect(() => {
     fetch("/api/playlists")
       .then((r) => r.json())
@@ -56,45 +48,6 @@ export default function ContentPage() {
       const d = await res.json();
       setItems((prev) => ({ ...prev, [id]: d.items || [] }));
       setLoadingItems(null);
-    }
-  }
-
-  async function handleAdminSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setAdminLoading(true);
-    setAdminStatus(null);
-    try {
-      const res = await fetch("/api/playlists/items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          playlistId: parseInt(adminPlaylistId),
-          youtubeUrl: adminUrl,
-          title: adminTitle,
-          description: adminDesc,
-        }),
-      });
-      const d = await res.json();
-      if (res.ok) {
-        setAdminStatus("Video added successfully!");
-        setAdminUrl("");
-        setAdminTitle("");
-        setAdminDesc("");
-        // Refresh items if playlist is expanded
-        if (d.item) {
-          const pid = d.item.playlist_id;
-          setItems((prev) => ({
-            ...prev,
-            [pid]: [...(prev[pid] || []), d.item],
-          }));
-        }
-      } else {
-        setAdminStatus(d.error || "Failed to add video.");
-      }
-    } catch {
-      setAdminStatus("Network error.");
-    } finally {
-      setAdminLoading(false);
     }
   }
 
@@ -300,121 +253,6 @@ export default function ContentPage() {
         </div>
       </section>
 
-      {/* Admin Section */}
-      <section className="pb-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div
-              className="rounded-2xl p-8"
-              style={{
-                background: "linear-gradient(135deg, rgba(30,41,59,0.6), rgba(15,23,42,0.6))",
-                border: "1px solid rgba(30,41,59,0.8)",
-              }}
-            >
-              <div className="flex items-center gap-2 mb-6">
-                <Plus size={18} style={{ color: "#3B82F6" }} />
-                <h2 className="text-xl font-bold" style={{ color: "#F1F5F9" }}>Add Video to Playlist</h2>
-              </div>
-              <form onSubmit={handleAdminSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>Playlist</label>
-                  <select
-                    value={adminPlaylistId}
-                    onChange={(e) => setAdminPlaylistId(e.target.value)}
-                    required
-                    className="w-full px-4 py-2.5 rounded-xl text-sm"
-                    style={{
-                      backgroundColor: "rgba(15,23,42,0.8)",
-                      border: "1px solid rgba(30,41,59,0.8)",
-                      color: "#F1F5F9",
-                      outline: "none",
-                    }}
-                  >
-                    <option value="">Select a playlist…</option>
-                    {playlists.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>YouTube URL</label>
-                  <input
-                    type="text"
-                    value={adminUrl}
-                    onChange={(e) => setAdminUrl(e.target.value)}
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    required
-                    className="w-full px-4 py-2.5 rounded-xl text-sm"
-                    style={{
-                      backgroundColor: "rgba(15,23,42,0.8)",
-                      border: "1px solid rgba(30,41,59,0.8)",
-                      color: "#F1F5F9",
-                      outline: "none",
-                    }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>Title</label>
-                  <input
-                    type="text"
-                    value={adminTitle}
-                    onChange={(e) => setAdminTitle(e.target.value)}
-                    placeholder="Video title"
-                    className="w-full px-4 py-2.5 rounded-xl text-sm"
-                    style={{
-                      backgroundColor: "rgba(15,23,42,0.8)",
-                      border: "1px solid rgba(30,41,59,0.8)",
-                      color: "#F1F5F9",
-                      outline: "none",
-                    }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>Description (optional)</label>
-                  <textarea
-                    value={adminDesc}
-                    onChange={(e) => setAdminDesc(e.target.value)}
-                    placeholder="Short description"
-                    rows={2}
-                    className="w-full px-4 py-2.5 rounded-xl text-sm resize-none"
-                    style={{
-                      backgroundColor: "rgba(15,23,42,0.8)",
-                      border: "1px solid rgba(30,41,59,0.8)",
-                      color: "#F1F5F9",
-                      outline: "none",
-                    }}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={adminLoading}
-                  className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-[1.02] disabled:opacity-60"
-                  style={{
-                    background: "linear-gradient(135deg, #3B82F6, #2563EB)",
-                    color: "#fff",
-                    boxShadow: "0 0 20px rgba(59,130,246,0.3)",
-                  }}
-                >
-                  {adminLoading ? "Adding…" : "Add Video"}
-                </button>
-                {adminStatus && (
-                  <p
-                    className="text-sm text-center"
-                    style={{ color: adminStatus.includes("success") ? "#10B981" : "#EF4444" }}
-                  >
-                    {adminStatus}
-                  </p>
-                )}
-              </form>
-            </div>
-          </motion.div>
-        </div>
-      </section>
     </main>
   );
 }

@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { ExternalLink, Check, Play, BookOpen } from "lucide-react";
+import { ExternalLink, Check, FolderOpen, Lock } from "lucide-react";
 
 function YoutubeIcon({ size = 20 }: { size?: number }) {
   return (
@@ -8,7 +7,22 @@ function YoutubeIcon({ size = 20 }: { size?: number }) {
     </svg>
   );
 }
+
+function GoogleDriveIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 87.3 78" fill="currentColor">
+      <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3L27.5 53H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066DA" />
+      <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.5c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00AC47" />
+      <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 10.8z" fill="#EA4335" />
+      <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832D" />
+      <path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684FC" />
+      <path d="M73.4 26.5l-12.7-22C59.85 3.1 58.7 2 57.35 1.2L43.6 25 59.75 53h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#FFBA00" />
+    </svg>
+  );
+}
+
 import { getLatestVideos, getChannelStats } from "@/lib/youtube";
+import { getResources } from "@/lib/resources";
 import { SAAS_APP_URL, YOUTUBE_CHANNEL_URL } from "@/lib/constants";
 import VideoCard from "@/components/ui/VideoCard";
 
@@ -26,22 +40,25 @@ const contentCategories = [
   { label: "Career Growth", color: "#F59E0B" },
 ];
 
-const contentPreviews = [
-  { title: "How to Build a Personal Brand as a Developer", duration: "45 min", type: "Video" },
-  { title: "The Art of Negotiation for Tech Professionals", duration: "32 min", type: "Audio" },
-  { title: "Breaking into FAANG: A Realistic Roadmap", duration: "58 min", type: "Video" },
-  { title: "Soft Skills That Get You Promoted", duration: "28 min", type: "Audio" },
-];
+const CATEGORY_COLORS: Record<string, string> = {
+  Technical: "#3B82F6",
+  Behavioral: "#8B5CF6",
+  "Soft Skills": "#10B981",
+  "Career Growth": "#F59E0B",
+  "Industry Insights": "#EF4444",
+};
 
 export default async function ProductCards() {
-  const [videos, channelStats] = await Promise.all([
+  const [videos, channelStats, resources] = await Promise.all([
     getLatestVideos(3),
     getChannelStats(),
+    getResources(),
   ]);
 
   return (
     <section className="py-16" style={{ backgroundColor: "#0A0F1C" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+
         {/* Card 1: AI Mock Interview Platform */}
         <div
           className="rounded-2xl overflow-hidden"
@@ -53,22 +70,14 @@ export default async function ProductCards() {
           }}
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            {/* Left content */}
             <div className="p-10 lg:p-14">
               <div className="flex items-center gap-3 mb-6">
-                <div
-                  className="px-3 py-1 text-xs font-bold rounded-full"
-                  style={{ backgroundColor: "rgba(16, 185, 129, 0.1)", color: "#10B981", border: "1px solid rgba(16, 185, 129, 0.2)" }}
-                >
+                <div className="px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: "rgba(16,185,129,0.1)", color: "#10B981", border: "1px solid rgba(16,185,129,0.2)" }}>
                   Free tier available
                 </div>
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#3B82F6" }}>
-                  SaaS Platform
-                </span>
+                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#3B82F6" }}>SaaS Platform</span>
               </div>
-              <h2 className="text-3xl font-bold mb-4" style={{ color: "#F1F5F9" }}>
-                AI Mock Interview Platform
-              </h2>
+              <h2 className="text-3xl font-bold mb-4" style={{ color: "#F1F5F9" }}>AI Mock Interview Platform</h2>
               <p className="mb-8 leading-relaxed" style={{ color: "#94A3B8" }}>
                 Practice interviews with an AI that adapts to your skill level. Get instant, detailed feedback and track your progress with a powerful analytics dashboard.
               </p>
@@ -85,29 +94,17 @@ export default async function ProductCards() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105"
-                style={{
-                  background: "linear-gradient(135deg, #3B82F6, #2563EB)",
-                  color: "#fff",
-                  boxShadow: "0 0 30px rgba(59, 130, 246, 0.3)",
-                }}
+                style={{ background: "linear-gradient(135deg, #3B82F6, #2563EB)", color: "#fff", boxShadow: "0 0 30px rgba(59,130,246,0.3)" }}
               >
                 Launch Mock Interview
                 <ExternalLink size={16} />
               </a>
             </div>
-
-            {/* Right: Visual mockup */}
             <div
               className="relative flex items-center justify-center p-10 lg:p-14"
-              style={{
-                background: "linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(99,102,241,0.03) 100%)",
-                borderLeft: "1px solid rgba(59, 130, 246, 0.1)",
-              }}
+              style={{ background: "linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(99,102,241,0.03) 100%)", borderLeft: "1px solid rgba(59,130,246,0.1)" }}
             >
-              <div
-                className="w-full max-w-sm rounded-xl p-6"
-                style={{ backgroundColor: "#0F172A", border: "1px solid rgba(30, 41, 59, 0.8)" }}
-              >
+              <div className="w-full max-w-sm rounded-xl p-6" style={{ backgroundColor: "#0F172A", border: "1px solid rgba(30,41,59,0.8)" }}>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#EF4444" }} />
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#F59E0B" }} />
@@ -132,14 +129,10 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 2: YouTube Channel */}
+        {/* Card 2: YouTube Channel — Free Expert Content */}
         <div
           className="rounded-2xl overflow-hidden"
-          style={{
-            backgroundColor: "rgba(17, 24, 39, 0.8)",
-            border: "1px solid rgba(239, 68, 68, 0.15)",
-            backdropFilter: "blur(12px)",
-          }}
+          style={{ backgroundColor: "rgba(17,24,39,0.8)", border: "1px solid rgba(239,68,68,0.15)", backdropFilter: "blur(12px)" }}
         >
           <div className="p-10 lg:p-14">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
@@ -155,33 +148,24 @@ export default async function ProductCards() {
               </div>
               <div className="flex gap-3 flex-wrap">
                 {contentCategories.map((cat) => (
-                  <span
-                    key={cat.label}
-                    className="px-3 py-1.5 text-xs font-semibold rounded-full"
-                    style={{ backgroundColor: `${cat.color}15`, color: cat.color, border: `1px solid ${cat.color}25` }}
-                  >
+                  <span key={cat.label} className="px-3 py-1.5 text-xs font-semibold rounded-full"
+                    style={{ backgroundColor: `${cat.color}15`, color: cat.color, border: `1px solid ${cat.color}25` }}>
                     {cat.label}
                   </span>
                 ))}
               </div>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
               {videos.map((video, i) => (
                 <VideoCard key={video.id} video={video} index={i} />
               ))}
             </div>
-
             <a
               href={YOUTUBE_CHANNEL_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-105"
-              style={{
-                backgroundColor: "rgba(239, 68, 68, 0.1)",
-                color: "#EF4444",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-              }}
+              style={{ backgroundColor: "rgba(239,68,68,0.1)", color: "#EF4444", border: "1px solid rgba(239,68,68,0.3)" }}
             >
               <YoutubeIcon size={16} />
               Watch on YouTube
@@ -190,60 +174,91 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 3: Content Library */}
+        {/* Card 3: Audio & Video Resources — Google Drive */}
         <div
           className="rounded-2xl overflow-hidden"
-          style={{
-            backgroundColor: "rgba(17, 24, 39, 0.8)",
-            border: "1px solid rgba(139, 92, 246, 0.15)",
-            backdropFilter: "blur(12px)",
-          }}
+          style={{ backgroundColor: "rgba(17,24,39,0.8)", border: "1px solid rgba(139,92,246,0.15)", backdropFilter: "blur(12px)" }}
         >
           <div className="p-10 lg:p-14">
             <div className="flex items-center gap-3 mb-3">
-              <BookOpen size={20} style={{ color: "#8B5CF6" }} />
-              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#8B5CF6" }}>Content Library</span>
+              <GoogleDriveIcon size={22} />
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#8B5CF6" }}>Google Drive</span>
             </div>
-            <h2 className="text-3xl font-bold mb-3" style={{ color: "#F1F5F9" }}>Audio & Video Resources</h2>
-            <p className="mb-8 max-w-2xl" style={{ color: "#94A3B8" }}>
-              Exclusive professional development content uploaded by our team. Deep-dive case studies, career strategy sessions, and domain-specific masterclasses available on demand.
+            <h2 className="text-3xl font-bold mb-3" style={{ color: "#F1F5F9" }}>Audio &amp; Video Resources</h2>
+            <p className="mb-2 max-w-2xl" style={{ color: "#94A3B8" }}>
+              Exclusive professional development content hosted on Google Drive — deep-dive case studies, career strategy sessions, and domain-specific masterclasses.
             </p>
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg mb-8 text-xs"
+              style={{ backgroundColor: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", color: "#F59E0B" }}
+            >
+              <Lock size={11} />
+              Access is granted per resource — click a link and request access if needed
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              {contentPreviews.map((content, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 p-4 rounded-xl group cursor-pointer transition-all hover:border-purple-500/30"
-                  style={{ backgroundColor: "rgba(30, 41, 59, 0.4)", border: "1px solid rgba(30, 41, 59, 0.8)" }}
-                >
+              {resources.map((resource) => {
+                const color = CATEGORY_COLORS[resource.category ?? ""] ?? "#8B5CF6";
+                const isPlaceholder = resource.gdrive_url === "#";
+                return (
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgba(139, 92, 246, 0.15)" }}
+                    key={resource.id}
+                    className="flex items-start gap-4 p-4 rounded-xl"
+                    style={{ backgroundColor: "rgba(30,41,59,0.4)", border: "1px solid rgba(30,41,59,0.8)" }}
                   >
-                    <Play size={16} style={{ color: "#8B5CF6" }} />
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ backgroundColor: `${color}15`, border: `1px solid ${color}25` }}>
+                      <FolderOpen size={16} style={{ color }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-sm font-semibold leading-snug" style={{ color: "#F1F5F9" }}>{resource.title}</p>
+                        {resource.category && (
+                          <span className="px-2 py-0.5 text-xs rounded shrink-0"
+                            style={{ backgroundColor: `${color}15`, color }}>
+                            {resource.category}
+                          </span>
+                        )}
+                      </div>
+                      {resource.description && (
+                        <p className="text-xs mt-1 line-clamp-2" style={{ color: "#64748B" }}>{resource.description}</p>
+                      )}
+                      {isPlaceholder ? (
+                        <span className="inline-flex items-center gap-1 mt-2 text-xs" style={{ color: "#475569" }}>
+                          <Lock size={10} />
+                          Coming soon
+                        </span>
+                      ) : (
+                        <a
+                          href={resource.gdrive_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 mt-2 text-xs font-medium transition-opacity hover:opacity-80"
+                          style={{ color: "#8B5CF6" }}
+                        >
+                          <GoogleDriveIcon size={12} />
+                          Open in Google Drive
+                          <ExternalLink size={10} />
+                        </a>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate" style={{ color: "#F1F5F9" }}>{content.title}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "#64748B" }}>
-                      {content.type} · {content.duration}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            <button
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-105"
-              style={{
-                backgroundColor: "rgba(139, 92, 246, 0.1)",
-                color: "#8B5CF6",
-                border: "1px solid rgba(139, 92, 246, 0.3)",
-              }}
+            <div
+              className="flex items-center gap-3 p-4 rounded-xl"
+              style={{ backgroundColor: "rgba(139,92,246,0.05)", border: "1px solid rgba(139,92,246,0.15)" }}
             >
-              Browse Content Library
-            </button>
+              <GoogleDriveIcon size={18} />
+              <p className="text-sm" style={{ color: "#64748B" }}>
+                Resources are hosted on Google Drive. Clicking a link opens Drive — if you see an access-denied page, use the <strong style={{ color: "#94A3B8" }}>"Request access"</strong> button and we&apos;ll grant it promptly.
+              </p>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
   );
