@@ -19,18 +19,10 @@ function LinkedinIcon({ size = 15 }: { size?: number }) {
   );
 }
 
-function TwitterXIcon({ size = 15 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
 
 const socialLinks = [
   { icon: YoutubeIcon, label: "YouTube", href: YOUTUBE_CHANNEL_URL },
-  { icon: LinkedinIcon, label: "LinkedIn", href: "#" },
-  { icon: TwitterXIcon, label: "Twitter/X", href: "#" },
+  { icon: LinkedinIcon, label: "LinkedIn", href: "https://linkedin.com/in/francis-joshy-0801a140b/" },
 ];
 
 const quickLinks = [
@@ -160,16 +152,16 @@ export default function Footer() {
             <ul className="space-y-3 text-sm" style={{ color: "#94A3B8" }}>
               <li>
                 <a
-                  href="mailto:hello@primitiveinformatics.com"
+                  href="mailto:primitiveinformatics@gmail.com"
                   className="transition-colors duration-200 hover:text-blue-400"
                   style={{ color: "#94A3B8" }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#3B82F6"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#94A3B8"; }}
                 >
-                  hello@primitiveinformatics.com
+                  primitiveinformatics@gmail.com
                 </a>
               </li>
-              <li style={{ color: "#64748B" }}>+91-XXXX-XXXXXX</li>
+              <li style={{ color: "#64748B" }}>+91 7907341911</li>
               <li style={{ color: "#64748B" }}>India</li>
             </ul>
           </div>

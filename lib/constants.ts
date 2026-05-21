@@ -5,9 +5,9 @@ export const NAV_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
-export const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@primitiveinformatics"; // TODO: Update with actual channel URL
+export const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@primitive_architect";
 export const SAAS_APP_URL = "https://primitiveinformatics.in/interviewbot";
-export const CONTACT_EMAIL = "admin@primitiveinformatics.in";
+export const CONTACT_EMAIL = "primitiveinformatics@gmail.com";
 
 export const TESTIMONIALS = [
   {

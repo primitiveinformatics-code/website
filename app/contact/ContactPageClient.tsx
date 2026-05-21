@@ -19,21 +19,14 @@ function LinkedinIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-function TwitterXIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
+
 import ContactForm from "@/components/forms/ContactForm";
 import FAQAccordion from "@/components/ui/FAQAccordion";
 import { FAQ_ITEMS, YOUTUBE_CHANNEL_URL } from "@/lib/constants";
 
 const socialLinks = [
   { icon: YoutubeIcon, label: "YouTube", href: YOUTUBE_CHANNEL_URL, color: "#EF4444" },
-  { icon: LinkedinIcon, label: "LinkedIn", href: "#", color: "#0A66C2" }, // TODO: Add actual LinkedIn URL
-  { icon: TwitterXIcon, label: "Twitter/X", href: "#", color: "#1DA1F2" }, // TODO: Add actual Twitter URL
+  { icon: LinkedinIcon, label: "LinkedIn", href: "https://linkedin.com/in/francis-joshy-0801a140b/", color: "#0A66C2" },
 ];
 
 export default function ContactPageClient() {
@@ -117,8 +110,8 @@ export default function ContactPageClient() {
                 <h2 className="text-xl font-bold mb-6" style={{ color: "#F1F5F9" }}>Contact Information</h2>
                 <div className="space-y-5">
                   {[
-                    { icon: Mail, label: "Email", value: "hello@primitiveinformatics.com", href: "mailto:hello@primitiveinformatics.com" },
-                    { icon: Phone, label: "Phone", value: "+91-XXXX-XXXXXX", href: "tel:+91XXXXXXXXXX" },
+                    { icon: Mail, label: "Email", value: "primitiveinformatics@gmail.com", href: "mailto:primitiveinformatics@gmail.com" },
+                    { icon: Phone, label: "Phone", value: "+91 7907341911", href: "tel:+917907341911" },
                     { icon: MapPin, label: "Location", value: "India", href: null },
                   ].map((item) => (
                     <div key={item.label} className="flex items-start gap-4">

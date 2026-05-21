@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ProductsHero from "./ProductsHero";
 import ProductCards from "./ProductCards";
-import UploadSection from "./UploadSection";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -16,7 +15,6 @@ export default function ProductsPage() {
       <Suspense fallback={<div className="h-96" />}>
         <ProductCards />
       </Suspense>
-      <UploadSection />
     </>
   );
 }
