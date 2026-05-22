@@ -1,4 +1,4 @@
-import { ExternalLink, Check, FolderOpen, Lock } from "lucide-react";
+import { ExternalLink, Check, FolderOpen, Lock, CalendarDays, Sparkles, ArrowRight } from "lucide-react";
 
 function YoutubeIcon({ size = 20 }: { size?: number }) {
   return (
@@ -59,7 +59,119 @@ export default async function ProductCards() {
     <section className="py-16" style={{ backgroundColor: "#0A0F1C" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        {/* Card 1: AI Mock Interview Platform */}
+        {/* Card 1: Agentic AI Training */}
+        <div
+          id="agentic-ai-training"
+          className="rounded-2xl overflow-hidden"
+          style={{
+            backgroundColor: "rgba(17,24,39,0.8)",
+            border: "1px solid rgba(6,182,212,0.2)",
+            backdropFilter: "blur(12px)",
+            boxShadow: "0 0 60px rgba(6,182,212,0.06)",
+          }}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div className="p-10 lg:p-14">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: "rgba(6,182,212,0.1)", color: "#06B6D4", border: "1px solid rgba(6,182,212,0.2)" }}>
+                  Free credits included*
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#8B5CF6" }}>15 Modules · 2-Day Intensive</span>
+              </div>
+              <h2 className="text-3xl font-bold mb-4" style={{ color: "#F1F5F9" }}>Agentic AI Training</h2>
+              <p className="mb-8 leading-relaxed" style={{ color: "#94A3B8" }}>
+                From the ReAct loop to multi-agent swarms — a hands-on architectural deep-dive on building production-grade AI agents. 15 modules covering MCP, A2A protocols, RAG pipelines, LangGraph, and production ops. Every module ships with Python coding practicals.
+              </p>
+              <ul className="space-y-3 mb-4">
+                {[
+                  { text: "Video lectures + podcast episodes per module", color: "#06B6D4" },
+                  { text: "Python coding practicals — LangChain, LangGraph, Anthropic SDK, LangSmith", color: "#A855F7" },
+                  { text: "Slide decks (PPT) for every module", color: "#F59E0B" },
+                  { text: "Platform access with free API credits", color: "#10B981" },
+                ].map((item) => (
+                  <li key={item.text} className="flex items-start gap-3 text-sm" style={{ color: "#94A3B8" }}>
+                    <Check size={16} className="mt-0.5 shrink-0" style={{ color: item.color }} />
+                    {item.text}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs mb-6" style={{ color: "#475569" }}>* Platform free credits subject to T&amp;C</p>
+
+              {/* Free Intro Session callout */}
+              <div
+                className="rounded-xl p-4 mb-6"
+                style={{ backgroundColor: "rgba(6,182,212,0.06)", border: "1px solid rgba(6,182,212,0.2)" }}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(6,182,212,0.12)" }}
+                  >
+                    <CalendarDays size={15} style={{ color: "#06B6D4" }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold mb-1" style={{ color: "#F1F5F9" }}>
+                      Free Intro Session — No Commitment
+                    </p>
+                    <p className="text-xs leading-relaxed" style={{ color: "#94A3B8" }}>
+                      Attend our free 1-hour preview before registering for the full 2-day workshop. Walk through the curriculum, see live agent demos, and evaluate if this training is the right fit for you.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, #06B6D4, #8B5CF6)", color: "#fff", boxShadow: "0 0 30px rgba(6,182,212,0.25)" }}
+                >
+                  <Sparkles size={15} />
+                  Join Free Intro Session
+                </a>
+                <a
+                  href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Agentic%20AI%202-Day%20Workshop"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all hover:scale-105"
+                  style={{ backgroundColor: "transparent", color: "#06B6D4", border: "1px solid rgba(6,182,212,0.4)" }}
+                >
+                  Register for 2-Day Workshop
+                  <ArrowRight size={15} />
+                </a>
+              </div>
+            </div>
+            <div
+              className="relative flex items-center justify-center p-10 lg:p-14"
+              style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.05) 0%, rgba(139,92,246,0.03) 100%)", borderLeft: "1px solid rgba(6,182,212,0.1)" }}
+            >
+              <div className="w-full grid grid-cols-1 gap-1.5">
+                {[
+                  { label: "01 · FOUNDATIONS", sub: "Agent Anatomy", color: "#06B6D4" },
+                  { label: "02 · FOUNDATIONS", sub: "BDI Architecture", color: "#A855F7" },
+                  { label: "03 · FOUNDATIONS", sub: "Prompt Engineering", color: "#F59E0B" },
+                  { label: "04 · COMMUNICATION", sub: "Tool Design", color: "#A855F7" },
+                  { label: "05 · COMMUNICATION", sub: "Structured Outputs", color: "#F59E0B" },
+                  { label: "06 · COMMUNICATION", sub: "A2A & MCP Protocols", color: "#06B6D4" },
+                  { label: "07 · DATA", sub: "RAG Pipeline", color: "#F59E0B" },
+                  { label: "08 · ORCHESTRATION", sub: "Orchestration", color: "#06B6D4" },
+                  { label: "09 · ORCHESTRATION", sub: "LLM Selection", color: "#A855F7" },
+                  { label: "10 · OPERATIONS", sub: "Agent Evaluation", color: "#10B981" },
+                  { label: "11 · OPERATIONS", sub: "Cost Management", color: "#F59E0B" },
+                  { label: "12 · OPERATIONS", sub: "Deployment Patterns", color: "#06B6D4" },
+                  { label: "13 · SECURITY", sub: "Observability & Security", color: "#A855F7" },
+                  { label: "14 · ADVANCED", sub: "Multimodal Agents", color: "#10B981" },
+                  { label: "15 · ADVANCED", sub: "Ethics & CI/CD", color: "#F59E0B" },
+                ].map((m) => (
+                  <div key={m.label} className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.8)" }}>
+                    <span className="font-mono font-semibold shrink-0" style={{ color: m.color, fontSize: "9px", letterSpacing: "0.05em" }}>{m.label}</span>
+                    <span style={{ color: "#64748B", fontSize: "10px" }}>{m.sub}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: AI Mock Interview Platform */}
         <div
           className="rounded-2xl overflow-hidden"
           style={{
@@ -129,7 +241,7 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 2: YouTube Channel — Free Expert Content */}
+        {/* Card 3: YouTube Channel — Free Expert Content */}
         <div
           className="rounded-2xl overflow-hidden"
           style={{ backgroundColor: "rgba(17,24,39,0.8)", border: "1px solid rgba(239,68,68,0.15)", backdropFilter: "blur(12px)" }}
@@ -174,7 +286,7 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 3: Audio & Video Resources — Google Drive */}
+        {/* Card 4: Audio & Video Resources — Google Drive */}
         <div
           className="rounded-2xl overflow-hidden"
           style={{ backgroundColor: "rgba(17,24,39,0.8)", border: "1px solid rgba(139,92,246,0.15)", backdropFilter: "blur(12px)" }}
@@ -259,73 +371,6 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 4: Agentic AI Training */}
-        <div
-          className="rounded-2xl overflow-hidden"
-          style={{
-            backgroundColor: "rgba(17,24,39,0.8)",
-            border: "1px solid rgba(6,182,212,0.2)",
-            backdropFilter: "blur(12px)",
-            boxShadow: "0 0 60px rgba(6,182,212,0.06)",
-          }}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            <div className="p-10 lg:p-14">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: "rgba(6,182,212,0.1)", color: "#06B6D4", border: "1px solid rgba(6,182,212,0.2)" }}>
-                  Free credits included*
-                </div>
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#8B5CF6" }}>2-Day Intensive</span>
-              </div>
-              <h2 className="text-3xl font-bold mb-4" style={{ color: "#F1F5F9" }}>Agentic AI Training</h2>
-              <p className="mb-8 leading-relaxed" style={{ color: "#94A3B8" }}>
-                From the ReAct loop to multi-agent swarms — a hands-on architectural deep-dive on building production-grade AI agents. Covers MCP, A2A protocols, LangGraph, memory patterns, and production ops.
-              </p>
-              <ul className="space-y-3 mb-4">
-                {[
-                  { text: "Video lectures — full session recordings", color: "#06B6D4" },
-                  { text: "Podcast episodes for on-the-go learning", color: "#A855F7" },
-                  { text: "Slide decks (PPT) for every module", color: "#F59E0B" },
-                  { text: "Platform access with free credits", color: "#10B981" },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3 text-sm" style={{ color: "#94A3B8" }}>
-                    <Check size={16} className="mt-0.5 shrink-0" style={{ color: item.color }} />
-                    {item.text}
-                  </li>
-                ))}
-              </ul>
-              <p className="text-xs mb-8" style={{ color: "#475569" }}>* Platform free credits subject to T&amp;C</p>
-              <a
-                href="mailto:admin@primitiveinformatics.in"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105"
-                style={{ background: "linear-gradient(135deg, #06B6D4, #8B5CF6)", color: "#fff", boxShadow: "0 0 30px rgba(6,182,212,0.25)" }}
-              >
-                Register for Training
-                <ExternalLink size={16} />
-              </a>
-            </div>
-            <div
-              className="relative flex items-center justify-center p-10 lg:p-14"
-              style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.05) 0%, rgba(139,92,246,0.03) 100%)", borderLeft: "1px solid rgba(6,182,212,0.1)" }}
-            >
-              <div className="w-full max-w-sm space-y-2">
-                {[
-                  { label: "01 · ANATOMY", sub: "Brain · Tools · Agent Loop", color: "#06B6D4" },
-                  { label: "02 · PROTOCOLS", sub: "MCP · A2A · Transport", color: "#A855F7" },
-                  { label: "03 · ORCHESTRATION", sub: "Hierarchical · Swarm · Map-Reduce", color: "#06B6D4" },
-                  { label: "04 · MEMORY", sub: "Context Engineering · RAG", color: "#A855F7" },
-                  { label: "05 · PATTERNS", sub: "ReAct · Planning · Reflection", color: "#F59E0B" },
-                  { label: "06 · SECURITY", sub: "MAESTRO · VIGIL · Guardrails", color: "#A855F7" },
-                ].map((m) => (
-                  <div key={m.label} className="flex items-center gap-3 px-4 py-2.5 rounded-xl" style={{ backgroundColor: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.8)" }}>
-                    <span className="text-xs font-mono font-semibold shrink-0" style={{ color: m.color }}>{m.label}</span>
-                    <span className="text-xs" style={{ color: "#64748B" }}>{m.sub}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
     </section>

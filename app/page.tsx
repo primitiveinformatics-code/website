@@ -1,6 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import AboutSection from "@/components/sections/AboutSection";
 import ValueProps from "@/components/sections/ValueProps";
+import AgenticAIShowcase from "@/components/sections/AgenticAIShowcase";
 import MockInterviewShowcase from "@/components/sections/MockInterviewShowcase";
 import YouTubeShowcase from "@/components/sections/YouTubeShowcase";
 import StatsCounter from "@/components/sections/StatsCounter";
@@ -13,6 +14,7 @@ export default function Home() {
       <Hero />
       <AboutSection />
       <ValueProps />
+      <AgenticAIShowcase />
       <MockInterviewShowcase />
       <YouTubeShowcase />
       <StatsCounter />

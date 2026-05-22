@@ -168,20 +168,20 @@ export default function Hero() {
           className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6"
           style={{ color: "#F1F5F9" }}
         >
-          Accelerate Your Career{" "}
+          Build AI Skills.{" "}
           <br className="hidden sm:block" />
           <span
             style={{
-              background: "linear-gradient(135deg, #3B82F6 0%, #818CF8 50%, #A78BFA 100%)",
+              background: "linear-gradient(135deg, #06B6D4 0%, #818CF8 50%, #A78BFA 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
             }}
           >
-            with AI-Powered
+            Ace Interviews.
           </span>
           <br />
-          Interview Prep
+          Grow Your Career.
         </motion.h1>
 
         {/* Subheadline */}
@@ -192,7 +192,7 @@ export default function Hero() {
           className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
           style={{ color: "#94A3B8" }}
         >
-          Practice realistic interviews with AI, get instant expert feedback, and access 500+ free video lessons. Built for working professionals in tech and education.
+          From hands-on Agentic AI training to AI-powered mock interviews and expert-curated content — everything you need to level up as a professional in the age of AI.
         </motion.p>
 
         {/* CTAs */}
@@ -200,45 +200,68 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+          className="flex flex-col items-center justify-center gap-4 mb-16"
         >
-          <motion.a
-            href={SAAS_APP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base"
-            style={{
-              background: "linear-gradient(135deg, #3B82F6, #2563EB)",
-              color: "#fff",
-              boxShadow: "0 0 40px rgba(59, 130, 246, 0.35), 0 4px 20px rgba(0,0,0,0.3)",
-            }}
-          >
-            Try Mock Interviews Free
-            <ArrowRight size={18} />
-          </motion.a>
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Link
-              href="/products"
-              className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base transition-all"
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <motion.a
+              href={SAAS_APP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base"
               style={{
-                backgroundColor: "transparent",
-                color: "#F1F5F9",
-                border: "1px solid rgba(30, 41, 59, 1)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(59, 130, 246, 0.4)";
-                (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "rgba(59, 130, 246, 0.05)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(30, 41, 59, 1)";
-                (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "transparent";
+                background: "linear-gradient(135deg, #3B82F6, #2563EB)",
+                color: "#fff",
+                boxShadow: "0 0 40px rgba(59, 130, 246, 0.35), 0 4px 20px rgba(0,0,0,0.3)",
               }}
             >
-              <Play size={16} />
-              Explore Our Content
-            </Link>
+              Try Mock Interviews Free
+              <ArrowRight size={18} />
+            </motion.a>
+            <motion.a
+              href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base"
+              style={{
+                background: "linear-gradient(135deg, #06B6D4, #8B5CF6)",
+                color: "#fff",
+                boxShadow: "0 0 40px rgba(6,182,212,0.25), 0 4px 20px rgba(0,0,0,0.3)",
+              }}
+            >
+              Join Free AI Intro Session
+              <ArrowRight size={18} />
+            </motion.a>
+          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+            className="flex items-center gap-2"
+          >
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/products"
+                className="flex items-center gap-2 px-8 py-3 rounded-xl font-semibold text-sm transition-all"
+                style={{
+                  backgroundColor: "transparent",
+                  color: "#94A3B8",
+                  border: "1px solid rgba(30, 41, 59, 1)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(59, 130, 246, 0.4)";
+                  (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "rgba(59, 130, 246, 0.05)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(30, 41, 59, 1)";
+                  (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "transparent";
+                }}
+              >
+                <Play size={15} />
+                Explore Our Content
+              </Link>
+            </motion.div>
           </motion.div>
         </motion.div>
 

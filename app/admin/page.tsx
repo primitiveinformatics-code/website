@@ -12,7 +12,7 @@ import {
 interface Category { id: number; name: string; }
 interface Resource { id: number; title: string; description: string; category: string | null; category_id: number | null; gdrive_url: string; published: boolean; }
 interface Playlist { id: number; name: string; description: string; type: "video" | "podcast"; }
-interface BlogPost { id: number; slug: string; title: string; excerpt: string; author: string; tags: string[]; published: boolean; published_at: string | null; created_at: string; }
+interface BlogPost { id: number; slug: string; title: string; excerpt: string; content: string; author: string; tags: string[]; published: boolean; published_at: string | null; created_at: string; }
 
 // ─── Shared ───────────────────────────────────────────────────────────────────
 const IS: React.CSSProperties = {
@@ -468,6 +468,8 @@ function ContentTab({ token }: { token: string }) {
 function BlogTab({ token }: { token: string }) {
   const af = useCallback(mkFetch(token), [token]);
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [postsError, setPostsError] = useState<string | null>(null);
   const [editing, setEditing] = useState<BlogPost | null>(null);
   const [slugEdited, setSlugEdited] = useState(false);
   const [form, setForm] = useState({ title: "", slug: "", excerpt: "", content: "", author: "Primitive Informatics", tags: "", published: false });
@@ -476,8 +478,22 @@ function BlogTab({ token }: { token: string }) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const loadPosts = useCallback(async () => {
-    const r = await af("/api/admin/blog").then((x) => x.json());
-    setPosts(r.posts || []);
+    setPostsLoading(true);
+    setPostsError(null);
+    try {
+      const res = await af("/api/admin/blog");
+      if (!res.ok) {
+        const d = await res.json();
+        setPostsError(d.error || `Server error (${res.status})`);
+        return;
+      }
+      const d = await res.json();
+      setPosts(d.posts || []);
+    } catch {
+      setPostsError("Network error — check your connection and try again");
+    } finally {
+      setPostsLoading(false);
+    }
   }, [af]);
 
   useEffect(() => { loadPosts(); }, [loadPosts]);
@@ -493,13 +509,8 @@ function BlogTab({ token }: { token: string }) {
     setSlugEdited(true);
     setForm({
       title: post.title, slug: post.slug, excerpt: post.excerpt || "",
-      content: "", author: post.author || "Primitive Informatics",
+      content: post.content || "", author: post.author || "Primitive Informatics",
       tags: (post.tags || []).join(", "), published: post.published,
-    });
-    // Fetch full content
-    af(`/api/admin/blog`).then((r) => r.json()).then((d) => {
-      const full = d.posts?.find((p: BlogPost) => p.id === post.id);
-      if (full) setForm((f) => ({ ...f, content: (full as { content?: string }).content || "" }));
     });
   }
 
@@ -555,7 +566,19 @@ function BlogTab({ token }: { token: string }) {
             </button>
           )}
         </div>
-        {posts.length === 0 && <p className="text-xs text-center py-8" style={{ color: "#475569" }}>No posts yet</p>}
+        {postsLoading && (
+          <div className="flex items-center justify-center py-8 gap-2" style={{ color: "#64748B" }}>
+            <Loader2 size={14} className="animate-spin" /> Loading posts…
+          </div>
+        )}
+        {postsError && (
+          <div className="px-4 py-3 rounded-xl text-xs" style={{ backgroundColor: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#EF4444" }}>
+            {postsError}
+          </div>
+        )}
+        {!postsLoading && !postsError && posts.length === 0 && (
+          <p className="text-xs text-center py-8" style={{ color: "#475569" }}>No posts yet</p>
+        )}
         {posts.map((post) => (
           <div key={post.id} className="rounded-xl overflow-hidden"
             style={{ border: editing?.id === post.id ? "1px solid rgba(59,130,246,0.4)" : "1px solid rgba(30,41,59,0.6)" }}>

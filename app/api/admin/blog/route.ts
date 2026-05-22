@@ -6,7 +6,7 @@ export async function GET(req: Request) {
   if (!validateAdminRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const result = await pool.query(
-      "SELECT id, slug, title, excerpt, author, tags, published, published_at, created_at FROM blog_posts ORDER BY created_at DESC"
+      "SELECT id, slug, title, excerpt, content, author, tags, published, published_at, created_at FROM blog_posts ORDER BY created_at DESC"
     );
     return NextResponse.json({ posts: result.rows });
   } catch {

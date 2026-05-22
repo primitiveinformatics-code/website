@@ -1,11 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, PlayCircle, BookOpen } from "lucide-react";
+import { Brain, PlayCircle, BookOpen, Cpu } from "lucide-react";
 import Link from "next/link";
 import { SAAS_APP_URL } from "@/lib/constants";
 
 const cards = [
+  {
+    icon: Cpu,
+    title: "Agentic AI Training",
+    description: "Hands-on 2-day intensive on building production-grade AI agents. MCP, A2A, LangGraph, orchestration, and security. Preview free with our 1-hour intro session — no commitment needed.",
+    color: "#06B6D4",
+    gradient: "linear-gradient(135deg, rgba(6,182,212,0.15), rgba(6,182,212,0.05))",
+    href: "/products#agentic-ai-training",
+    external: false,
+    badge: "Free Intro Session",
+  },
   {
     icon: Brain,
     title: "AI Mock Interviews",
@@ -18,7 +28,7 @@ const cards = [
   {
     icon: BookOpen,
     title: "Expert Blogs and Papers",
-    description: "In-depth articles, research papers, and expert guides on interview preparation, system design, DSA, and career growth — written by industry veterans.",
+    description: "In-depth articles, research papers, and expert guides on AI, system design, DSA, and career growth — written by industry veterans.",
     color: "#EF4444",
     gradient: "linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))",
     href: "/blog",
@@ -54,11 +64,11 @@ export default function ValueProps() {
             Everything you need to grow
           </h2>
           <p className="mt-4 text-lg max-w-2xl mx-auto" style={{ color: "#94A3B8" }}>
-            Three powerful tools, one platform — designed to take you from preparation to placement.
+            Four powerful tools, one platform — designed to take you from AI novice to career leader.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {cards.map((card, i) => (
             <motion.div
               key={card.title}
@@ -72,7 +82,7 @@ export default function ValueProps() {
                 href={card.href}
                 target={card.external ? "_blank" : undefined}
                 rel={card.external ? "noopener noreferrer" : undefined}
-                className="relative rounded-2xl p-8 group block cursor-pointer"
+                className="relative rounded-2xl p-7 group block cursor-pointer h-full"
                 style={{
                   background: card.gradient,
                   border: "1px solid rgba(30, 41, 59, 0.8)",
@@ -89,11 +99,17 @@ export default function ValueProps() {
                   el.style.boxShadow = "none";
                 }}
               >
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                {"badge" in card && card.badge && (
+                  <span className="absolute top-4 right-4 px-2 py-0.5 text-xs font-bold rounded-full"
+                    style={{ backgroundColor: `${card.color}20`, color: card.color, border: `1px solid ${card.color}30` }}>
+                    {card.badge}
+                  </span>
+                )}
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
                   style={{ backgroundColor: `${card.color}15`, border: `1px solid ${card.color}25` }}>
-                  <card.icon size={26} style={{ color: card.color }} />
+                  <card.icon size={22} style={{ color: card.color }} />
                 </div>
-                <h3 className="text-xl font-bold mb-3" style={{ color: "#F1F5F9" }}>{card.title}</h3>
+                <h3 className="text-lg font-bold mb-2.5" style={{ color: "#F1F5F9" }}>{card.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>{card.description}</p>
                 <div className="mt-4 text-xs font-semibold" style={{ color: card.color }}>
                   {card.external ? "Launch App →" : "Explore →"}

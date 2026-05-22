@@ -6,6 +6,78 @@ import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 
+function processInline(text: string): React.ReactNode[] {
+  const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i} style={{ color: "#E2E8F0", fontWeight: 700 }}>{part.slice(2, -2)}</strong>;
+    }
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      return <a key={i} href={linkMatch[2]} target="_blank" rel="noopener noreferrer" style={{ color: "#3B82F6", textDecoration: "underline", textDecorationColor: "rgba(59,130,246,0.4)" }}>{linkMatch[1]}</a>;
+    }
+    return part;
+  });
+}
+
+function MarkdownContent({ content }: { content: string }) {
+  const lines = content.split("\n");
+  const elements: React.ReactNode[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    if (line.startsWith("## ")) {
+      elements.push(
+        <h2 key={i} className="text-2xl font-bold mt-10 mb-4" style={{ color: "#F1F5F9" }}>
+          {processInline(line.slice(3))}
+        </h2>
+      );
+    } else if (line.startsWith("### ")) {
+      elements.push(
+        <h3 key={i} className="text-xl font-semibold mt-7 mb-3" style={{ color: "#E2E8F0" }}>
+          {processInline(line.slice(4))}
+        </h3>
+      );
+    } else if (line.startsWith("# ")) {
+      elements.push(
+        <h1 key={i} className="text-3xl font-bold mt-10 mb-4" style={{ color: "#F1F5F9" }}>
+          {processInline(line.slice(2))}
+        </h1>
+      );
+    } else if (line === "---") {
+      elements.push(
+        <hr key={i} className="my-8" style={{ borderColor: "rgba(30,41,59,0.8)" }} />
+      );
+    } else if (line.startsWith("- ")) {
+      const items: React.ReactNode[] = [];
+      while (i < lines.length && lines[i].startsWith("- ")) {
+        items.push(
+          <li key={i} className="flex items-start gap-2 mb-1.5 text-base leading-relaxed" style={{ color: "#94A3B8" }}>
+            <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#3B82F6" }} />
+            <span>{processInline(lines[i].slice(2))}</span>
+          </li>
+        );
+        i++;
+      }
+      elements.push(<ul key={`ul-${i}`} className="my-4 space-y-0.5">{items}</ul>);
+      continue;
+    } else if (line.trim() === "") {
+      // skip blank lines
+    } else {
+      elements.push(
+        <p key={i} className="text-base leading-relaxed mb-4" style={{ color: "#94A3B8" }}>
+          {processInline(line)}
+        </p>
+      );
+    }
+    i++;
+  }
+
+  return <div className="space-y-0">{elements}</div>;
+}
+
 interface BlogPost {
   id: number;
   slug: string;
@@ -147,10 +219,8 @@ export default function BlogPostPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="prose-custom text-base leading-relaxed whitespace-pre-wrap"
-              style={{ color: "#94A3B8" }}
             >
-              {post.content}
+              <MarkdownContent content={post.content} />
             </motion.div>
           )}
 
