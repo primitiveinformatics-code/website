@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET || "admin-secret";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
 
 function auth(req: NextRequest) {
+  if (!ADMIN_TOKEN) return false;
   const token = req.headers.get("Authorization")?.replace("Bearer ", "");
-  return token === ADMIN_SECRET;
+  return token === ADMIN_TOKEN;
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
