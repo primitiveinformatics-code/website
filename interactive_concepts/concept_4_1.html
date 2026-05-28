@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.1 Why Orchestration? | Agentic AI</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ffd166; --green: #06d6a0; --blue: #00d2ff;
+    --purple: #c678dd; --red: #ff6584; --orange: #e5c07b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px;
+        display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.85rem; padding: 6px 12px;
+          border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+  nav a:hover { background: var(--surface2); border-color: var(--accent); }
+  nav span { color: var(--muted); font-size: 0.8rem; }
+
+  .hero { background: linear-gradient(135deg, #1a1500 0%, #0f1520 100%);
+          border-bottom: 1px solid var(--border); padding: 48px 24px 40px; text-align: center; }
+  .hero .tag { display: inline-block; background: rgba(255,209,102,0.12); color: var(--accent);
+               border: 1px solid rgba(255,209,102,0.3); border-radius: 20px; padding: 4px 14px;
+               font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .hero .session-tag { display: inline-block; background: rgba(255,209,102,0.06); color: var(--muted);
+                       border: 1px solid rgba(255,209,102,0.15); border-radius: 20px; padding: 3px 12px;
+                       font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; margin-left: 8px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1rem; }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 40px 24px; }
+  .section { margin-bottom: 52px; }
+  .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* SINGLE AGENT LIMITS */
+  .limits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .limit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; border-top: 3px solid var(--red); transition: transform 0.2s; }
+  .limit-card:hover { transform: translateY(-3px); }
+  .limit-card .icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .limit-card h4 { color: var(--red); font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+  .limit-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.5; }
+  .limit-card .solution { margin-top: 10px; font-size: 0.8rem; color: var(--green); display: flex; align-items: flex-start; gap: 4px; }
+
+  /* ORCHESTRATION DEFINITION */
+  .orch-def { background: rgba(255,209,102,0.06); border: 1px solid rgba(255,209,102,0.25); border-radius: 12px; padding: 28px; margin-bottom: 24px; text-align: center; }
+  .orch-def blockquote { font-size: 1.1rem; font-style: italic; color: var(--text); line-height: 1.7; margin-bottom: 16px; }
+  .orch-def blockquote strong { color: var(--accent); font-style: normal; }
+  .orch-components { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+  .orch-comp { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; font-size: 0.85rem; text-align: center; }
+  .orch-comp .comp-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .orch-comp .comp-val { font-weight: 600; color: var(--accent); }
+
+  /* PATTERNS OVERVIEW */
+  .patterns-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 600px) { .patterns-grid { grid-template-columns: 1fr; } }
+  .pattern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.2s; }
+  .pattern-card:hover { transform: translateY(-2px); }
+  .pattern-card .p-num { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .pattern-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .pattern-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+  .pattern-card .use-tag { font-size: 0.75rem; padding: 2px 10px; border-radius: 10px; border: 1px solid; display: inline-block; }
+  .pc1 { border-top: 3px solid var(--accent); } .pc1 .p-num { color: var(--accent); } .pc1 .use-tag { color: var(--accent); border-color: rgba(255,209,102,0.3); }
+  .pc2 { border-top: 3px solid var(--blue); } .pc2 .p-num { color: var(--blue); } .pc2 h4 { color: var(--blue); } .pc2 .use-tag { color: var(--blue); border-color: rgba(0,210,255,0.3); }
+  .pc3 { border-top: 3px solid var(--green); } .pc3 .p-num { color: var(--green); } .pc3 h4 { color: var(--green); } .pc3 .use-tag { color: var(--green); border-color: rgba(6,214,160,0.3); }
+  .pc4 { border-top: 3px solid var(--purple); } .pc4 .p-num { color: var(--purple); } .pc4 h4 { color: var(--purple); } .pc4 .use-tag { color: var(--purple); border-color: rgba(198,120,221,0.3); }
+
+  /* WHEN TO ORCHESTRATE */
+  .decide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 600px) { .decide-grid { grid-template-columns: 1fr; } }
+  .decide-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .decide-box.yes { border-left: 3px solid var(--green); }
+  .decide-box.no { border-left: 3px solid var(--red); }
+  .decide-box h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; }
+  .decide-box.yes h4 { color: var(--green); } .decide-box.no h4 { color: var(--red); }
+  .decide-box ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .decide-box ul li { font-size: 0.85rem; color: var(--muted); padding-left: 18px; position: relative; line-height: 1.5; }
+  .decide-box.yes ul li::before { content: '✓'; color: var(--green); position: absolute; left: 0; }
+  .decide-box.no ul li::before { content: '✗'; color: var(--red); position: absolute; left: 0; }
+
+  /* COMPLEXITY SPECTRUM */
+  .spectrum { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
+  .spectrum-bar { height: 16px; border-radius: 8px; background: linear-gradient(to right, var(--green), var(--accent), var(--red)); margin: 16px 0; }
+  .spectrum-labels { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); }
+  .spectrum-items { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .spec-item { flex: 1; min-width: 140px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .spec-item h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 6px; }
+  .spec-item p { font-size: 0.78rem; color: var(--muted); }
+  .spec-item.s1 h4 { color: var(--green); } .spec-item.s2 h4 { color: var(--accent); } .spec-item.s3 h4 { color: var(--red); }
+
+  /* CODE */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+        font-family: 'Consolas','Monaco',monospace; font-size: 0.8rem; overflow-x: auto; line-height: 1.6; }
+  .kw { color: #ff7b72; } .str { color: #a5d6ff; } .cm { color: var(--muted); }
+  .fn { color: #d2a8ff; } .cls { color: #ffa657; } .num { color: #79c0ff; }
+  .info-box { background: rgba(255,209,102,0.06); border: 1px solid rgba(255,209,102,0.2); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+  .info-box strong { color: var(--accent); }
+
+  /* QUIZ */
+  .quiz-header { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+                 display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .score-display { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.3);
+                   color: var(--accent); padding: 4px 16px; border-radius: 20px; font-weight: 700; }
+  .question { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .question p { font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+         color: var(--text); cursor: pointer; text-align: left; font-size: 0.88rem; transition: all 0.2s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(255,209,102,0.08); }
+  .opt.correct { background: rgba(6,214,160,0.15); border-color: var(--green); color: var(--green); }
+  .opt.wrong { background: rgba(248,81,73,0.15); border-color: #f85149; color: #f85149; }
+  .opt:disabled { cursor: default; }
+  .feedback { margin-top: 10px; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.3); }
+  .feedback.wrong { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+  .reset-btn { margin-top: 8px; background: none; border: 1px solid var(--border); color: var(--muted);
+               padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_3_16.html">← Vector Databases</a>
+  <span>Session 4 · Concept 4.1</span>
+  <a href="concept_4_2.html">Hierarchical Pattern →</a>
+</nav>
+<nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
+</nav>
+
+<div class="hero">
+  <div class="tag">Session 4</div>
+  <span class="session-tag">Day 2 Forenoon · Orchestration, Memory &amp; Advanced RAG</span>
+  <h1>Why <span>Orchestration?</span></h1>
+  <p>When a single agent isn't enough — the limits that force you to build multi-agent systems, and the four patterns that solve them.</p>
+</div>
+
+<div class="container">
+
+  <!-- SINGLE AGENT LIMITS -->
+  <div class="section">
+    <div class="section-title">The 5 Limits of a Single Agent</div>
+    <div class="limits-grid">
+      <div class="limit-card">
+        <div class="icon">🧠</div>
+        <h4>Context Window Overflow</h4>
+        <p>A complex multi-step task accumulates thousands of tokens — tool outputs, intermediate results, prior reasoning. Eventually it exceeds the context limit and the agent loses earlier context.</p>
+        <div class="solution">→ Orchestration keeps each sub-agent's context small and focused.</div>
+      </div>
+      <div class="limit-card">
+        <div class="icon">⚡</div>
+        <h4>Serial Bottleneck</h4>
+        <p>A single agent does everything sequentially: research → write → review → format. Each step waits for the previous one — no parallelism, even when tasks are independent.</p>
+        <div class="solution">→ Orchestration fans out independent tasks to run simultaneously.</div>
+      </div>
+      <div class="limit-card">
+        <div class="icon">🔧</div>
+        <h4>Specialization Gap</h4>
+        <p>One generalist agent prompted to do everything — research, code, summarize, validate — performs worse than specialized agents with purpose-built system prompts and tool sets.</p>
+        <div class="solution">→ Orchestration routes tasks to expert sub-agents with specialized prompts.</div>
+      </div>
+      <div class="limit-card">
+        <div class="icon">🔁</div>
+        <h4>Error Propagation</h4>
+        <p>If one step fails in a monolithic agent, the entire pipeline fails. There's no isolation, no retry-at-step, no partial recovery. One bad tool call can corrupt all subsequent reasoning.</p>
+        <div class="solution">→ Orchestration isolates failures: one worker fails, others continue.</div>
+      </div>
+      <div class="limit-card">
+        <div class="icon">📊</div>
+        <h4>Observability Black Box</h4>
+        <p>A single long-running agent is opaque — you can see the final output but not what happened at step 7 of 20. Debugging requires replaying the entire run.</p>
+        <div class="solution">→ Orchestration gives you discrete, traceable units with their own logs.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEFINITION -->
+  <div class="section">
+    <div class="section-title">What Is Agent Orchestration?</div>
+    <div class="orch-def">
+      <blockquote>"Agent orchestration is the design of <strong>how multiple AI agents coordinate</strong> — who decides what task goes to which agent, how results flow between agents, how failures are handled, and how the overall goal is achieved from a set of specialized parts."</blockquote>
+      <div class="orch-components">
+        <div class="orch-comp"><div class="comp-label">Who decides</div><div class="comp-val">Coordinator / Supervisor</div></div>
+        <div class="orch-comp"><div class="comp-label">Who executes</div><div class="comp-val">Worker / Sub-agents</div></div>
+        <div class="orch-comp"><div class="comp-label">How tasks flow</div><div class="comp-val">Pattern / Topology</div></div>
+        <div class="orch-comp"><div class="comp-label">How state moves</div><div class="comp-val">Shared Memory / Messages</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 PATTERNS OVERVIEW -->
+  <div class="section">
+    <div class="section-title">The 4 Orchestration Patterns</div>
+    <div class="info-box"><strong>Preview:</strong> Each pattern is covered in depth in concepts 4.2–4.5. This is your map of the territory.</div>
+    <div class="patterns-grid">
+      <div class="pattern-card pc1">
+        <div class="p-num">Pattern 1 · Concept 4.2</div>
+        <h4>Hierarchical (Supervisor-Worker)</h4>
+        <p>A supervisor agent breaks a complex goal into subtasks and dispatches each to a specialist worker agent. Workers report back; supervisor synthesizes the final output. Clear chain of command.</p>
+        <span class="use-tag">Research pipelines, report generation, multi-step planning</span>
+      </div>
+      <div class="pattern-card pc2">
+        <div class="p-num">Pattern 2 · Concept 4.3</div>
+        <h4>Network / Swarm (Peer-to-Peer)</h4>
+        <p>Agents communicate directly with each other — no central coordinator. Each agent decides who to hand work to next based on local rules. Emergent coordination from simple agent-to-agent interactions.</p>
+        <span class="use-tag">Distributed problem-solving, market simulations, debate loops</span>
+      </div>
+      <div class="pattern-card pc3">
+        <div class="p-num">Pattern 3 · Concept 4.4</div>
+        <h4>Map-Reduce (Fan-Out / Fan-In)</h4>
+        <p>A coordinator fans out identical or similar tasks to N workers in parallel (Map). When all complete, a reducer agent aggregates their outputs into a final result (Reduce).</p>
+        <span class="use-tag">Batch document processing, parallel web research, code review at scale</span>
+      </div>
+      <div class="pattern-card pc4">
+        <div class="p-num">Pattern 4 · Concept 4.5</div>
+        <h4>Choreography (Rule-Based Flow)</h4>
+        <p>No central coordinator. Each agent knows its trigger conditions and output targets. Agents react to events or messages — the workflow emerges from the rules embedded in each agent.</p>
+        <span class="use-tag">Event-driven pipelines, data enrichment chains, ETL workflows</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHEN TO ORCHESTRATE -->
+  <div class="section">
+    <div class="section-title">When to Orchestrate vs When to Use a Single Agent</div>
+    <div class="decide-grid">
+      <div class="decide-box yes">
+        <h4>✓ Use Multi-Agent Orchestration when...</h4>
+        <ul>
+          <li>The task has genuinely independent subtasks that can run in parallel</li>
+          <li>Different steps require radically different skills or tools</li>
+          <li>The total work exceeds one context window comfortably</li>
+          <li>You need specialization: one agent per domain</li>
+          <li>Partial failures should not abort the whole pipeline</li>
+          <li>You need auditable, step-by-step traceability</li>
+          <li>Scale: 100 documents need the same treatment</li>
+        </ul>
+      </div>
+      <div class="decide-box no">
+        <h4>✗ Avoid orchestration (use single agent) when...</h4>
+        <ul>
+          <li>The task is simple and fits in one context window</li>
+          <li>Each step depends heavily on all prior steps — parallelism is impossible</li>
+          <li>Orchestration overhead (coordination, latency, cost) exceeds the benefit</li>
+          <li>You're prototyping — start simple, add orchestration when needed</li>
+          <li>A single, clear, linear reasoning chain is all that's required</li>
+          <li>Debugging complexity would outweigh the performance gain</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLEXITY SPECTRUM -->
+  <div class="section">
+    <div class="section-title">The Complexity Spectrum</div>
+    <div class="spectrum">
+      <div style="font-size:0.88rem; color:var(--muted); margin-bottom:8px;">Agent system complexity →</div>
+      <div class="spectrum-bar"></div>
+      <div class="spectrum-labels"><span>Simple / Lean</span><span>Balanced</span><span>Complex / Heavy</span></div>
+      <div class="spectrum-items">
+        <div class="spec-item s1">
+          <h4>Single LLM Call</h4>
+          <p>One prompt → one response. No tools, no memory. Appropriate for summarization, classification, simple Q&A.</p>
+        </div>
+        <div class="spec-item s1">
+          <h4>ReAct Single Agent</h4>
+          <p>One agent with tools: Reason → Act → Observe loop. Handles multi-step tasks within one context window.</p>
+        </div>
+        <div class="spec-item s2">
+          <h4>Supervisor + 2–3 Workers</h4>
+          <p>First orchestration level. Supervisor delegates, workers execute, supervisor synthesizes. Good starting point.</p>
+        </div>
+        <div class="spec-item s2">
+          <h4>Map-Reduce Pipeline</h4>
+          <p>Coordinator + N parallel workers + reducer. Powerful for batch tasks. Complexity scales with N.</p>
+        </div>
+        <div class="spec-item s3">
+          <h4>Full Agent Network</h4>
+          <p>Many specialized agents, dynamic routing, shared memory, event-driven coordination. High power, high ops burden.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="quiz-header">
+      <h3>🧠 Knowledge Check</h3>
+      <div class="score-display" id="scoreDisplay">0 / 5</div>
+    </div>
+
+    <div class="question" id="q1">
+      <p>1. A single research agent is asked to simultaneously analyze 50 company earnings reports and produce a comparative summary. Which single-agent limitation does this primarily hit?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q1','a','b')">a) Specialization gap — the agent can't do financial analysis</button>
+        <button class="opt" onclick="answer('q1','b','b')">b) Serial bottleneck + context window overflow — 50 reports sequentially saturates the context</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) Error propagation — too many tool calls will cause failures</button>
+        <button class="opt" onclick="answer('q1','d','b')">d) Observability black box — can't trace which report caused which output</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q2">
+      <p>2. In orchestration, what is the difference between a "supervisor" agent and a "worker" agent?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q2','a','c')">a) Supervisors use larger models; workers use smaller, faster models</button>
+        <button class="opt" onclick="answer('q2','b','c')">b) Supervisors handle tool calls; workers only generate text</button>
+        <button class="opt" onclick="answer('q2','c','c')">c) Supervisors plan and delegate tasks; workers execute specific subtasks and return results</button>
+        <button class="opt" onclick="answer('q2','d','c')">d) Supervisors run in parallel; workers run sequentially</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q3">
+      <p>3. Which orchestration pattern has NO central coordinator and instead relies on agents reacting to each other's outputs based on embedded rules?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q3','a','d')">a) Hierarchical (Supervisor-Worker)</button>
+        <button class="opt" onclick="answer('q3','b','d')">b) Map-Reduce (Fan-Out / Fan-In)</button>
+        <button class="opt" onclick="answer('q3','c','d')">c) Network / Swarm</button>
+        <button class="opt" onclick="answer('q3','d','d')">d) Choreography (Rule-Based Flow)</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q4">
+      <p>4. You need to build a code review system that checks 200 pull requests for security vulnerabilities. Each PR is independent. Which pattern is the best fit?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q4','a','c')">a) Hierarchical — use a supervisor to review them one by one</button>
+        <button class="opt" onclick="answer('q4','b','c')">b) Choreography — chain the reviews in a sequential event-driven pipeline</button>
+        <button class="opt" onclick="answer('q4','c','c')">c) Map-Reduce — fan out 200 worker agents in parallel, reduce results into a report</button>
+        <button class="opt" onclick="answer('q4','d','c')">d) Network / Swarm — let agents debate which PRs are risky</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q5">
+      <p>5. When should you prefer a single ReAct agent over a multi-agent orchestration system?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q5','a','b')">a) When the task requires more than 3 tool calls</button>
+        <button class="opt" onclick="answer('q5','b','b')">b) When the task fits in one context window, steps are sequential, and orchestration overhead exceeds the benefit</button>
+        <button class="opt" onclick="answer('q5','c','b')">c) When you need the highest possible output quality</button>
+        <button class="opt" onclick="answer('q5','d','b')">d) When the task involves external API calls</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: '50 sequential reports would overflow any context window, and each waiting for the prior one creates a serial bottleneck — both problems at once.',
+  q2: 'Supervisors are coordinators: they plan, assign work, and synthesize results. Workers are executors: they focus on one specific subtask and report back.',
+  q3: 'Choreography has no central coordinator — each agent reacts to inputs/events based on its own rules, with no agent in overall control.',
+  q4: 'Map-Reduce is purpose-built for N independent tasks: fan out 200 parallel workers (Map), then a reducer synthesizes the summary (Reduce).',
+  q5: 'Orchestration adds latency, cost, and debugging complexity. When one agent can handle the task within a single context, keep it simple.'
+};
+
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

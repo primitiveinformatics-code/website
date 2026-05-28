@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.9 â€” 7-Layer System Prompt Architecture</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  nav .nav-links{display:flex;gap:16px;}
+  nav a{color:var(--accent);text-decoration:none;font-size:.9rem;padding:6px 14px;border:1px solid var(--accent);border-radius:20px;transition:all .2s;}
+  nav a:hover{background:var(--accent);color:#000;}
+  nav .title{font-weight:700;font-size:1rem;}
+  .hero{background:linear-gradient(135deg,#1a0a12 0%,#0d1117 60%);border-bottom:1px solid var(--border);padding:48px 32px 36px;text-align:center;}
+  .session-tag{display:inline-block;background:var(--accent);color:#000;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;margin-bottom:12px;}
+  .hero p{color:var(--muted);font-size:1.05rem;max-width:680px;margin:0 auto;}
+  .content{max-width:960px;margin:0 auto;padding:40px 24px 60px;}
+  .section{margin-bottom:48px;}
+  .section h2{font-size:1.3rem;font-weight:700;margin-bottom:20px;color:var(--accent);display:flex;align-items:center;gap:10px;}
+  .section h2::before{content:'';display:block;width:4px;height:1.3rem;background:var(--accent);border-radius:2px;}
+
+  /* LAYER EXPLORER */
+  .explorer{display:grid;grid-template-columns:260px 1fr;gap:20px;}
+  @media(max-width:640px){.explorer{grid-template-columns:1fr;}}
+  .layer-list{display:flex;flex-direction:column;gap:6px;}
+  .layer-btn{display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .2s;text-align:left;width:100%;}
+  .layer-btn:hover{border-color:var(--accent);}
+  .layer-btn.active{border-color:var(--accent);background:rgba(255,101,132,.07);}
+  .layer-btn .l-num{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;flex-shrink:0;}
+  .layer-btn .l-label{font-size:.85rem;font-weight:600;}
+  .layer-btn.active .l-label{color:var(--accent);}
+  .layer-detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;min-height:320px;}
+  .ldp-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .ldp-num{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:800;flex-shrink:0;}
+  .ldp-header h3{font-size:1.1rem;font-weight:800;}
+  .ldp-purpose{font-size:.83rem;color:var(--muted);margin-bottom:14px;line-height:1.55;}
+  .ldp-example{background:#090d12;border:1px solid var(--border);border-radius:8px;padding:14px;}
+  .ldp-example-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+  .ldp-example pre{font-family:'Courier New',monospace;font-size:.76rem;line-height:1.6;white-space:pre-wrap;}
+  .ldp-tips{margin-top:14px;background:var(--surface2);border-radius:8px;padding:12px 14px;}
+  .ldp-tips h5{font-size:.78rem;font-weight:700;color:var(--accent2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+  .ldp-tips ul{list-style:none;font-size:.8rem;color:var(--muted);line-height:1.7;}
+  .ldp-tips ul li::before{content:'â†’ ';}
+
+  /* FULL TEMPLATE */
+  .template-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+  .template-box h3{font-size:1rem;font-weight:700;margin-bottom:14px;}
+  .tpl-output{background:#090d12;border:1px solid var(--border);border-radius:8px;padding:18px;font-family:'Courier New',monospace;font-size:.76rem;line-height:1.7;white-space:pre-wrap;max-height:480px;overflow-y:auto;}
+  .tpl-l1{color:#c678dd;}
+  .tpl-l2{color:var(--accent5);}
+  .tpl-l3{color:var(--wrong);}
+  .tpl-l4{color:var(--accent2);}
+  .tpl-l5{color:var(--accent3);}
+  .tpl-l6{color:#e5c07b;}
+  .tpl-l7{color:var(--muted);}
+  .tpl-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+  .tpl-dot{display:flex;align-items:center;gap:6px;font-size:.78rem;}
+  .tpl-dot span{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+  /* COMMON MISTAKES */
+  .mistakes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+  .mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+  .mistake-card .m-icon{font-size:1.4rem;margin-bottom:8px;}
+  .mistake-card h4{font-size:.88rem;font-weight:700;margin-bottom:6px;color:var(--wrong);}
+  .mistake-card p{font-size:.8rem;color:var(--muted);line-height:1.5;margin-bottom:8px;}
+  .mistake-card .fix{font-size:.78rem;color:var(--accent3);font-weight:600;}
+
+  /* QUIZ */
+  .quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+  .quiz-card h3{font-size:1rem;font-weight:700;margin-bottom:16px;line-height:1.5;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:left;color:var(--text);width:100%;}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:rgba(255,101,132,.08);}
+  .opt.correct{background:rgba(6,214,160,.15);border-color:var(--correct);color:var(--correct);}
+  .opt.wrong{background:rgba(255,101,132,.15);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:12px;font-size:.85rem;padding:10px 14px;border-radius:8px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(6,214,160,.1);color:var(--correct);border:1px solid var(--correct);}
+  .feedback.wrong{background:rgba(255,101,132,.1);color:var(--wrong);border:1px solid var(--wrong);}
+  .reset-btn{margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .score-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px;}
+  .score-display{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .score-label{color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_8.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_3_10.html">Next â†’</a>
+  </div>
+  <span class="title">3.9 â€” 7-Layer System Prompt Architecture</span>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <h1>7-Layer System Prompt Architecture</h1>
+  <p>A structured framework for writing production-grade agent system prompts â€” every layer has a job, and missing one causes predictable failures.</p>
+</div>
+<div class="content">
+
+  <!-- LAYER EXPLORER -->
+  <div class="section">
+    <h2>Layer Explorer â€” Click a Layer</h2>
+    <div class="explorer">
+      <div class="layer-list" id="layerList"></div>
+      <div class="layer-detail-panel" id="layerDetail">
+        <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.9rem;">â† Select a layer to explore it</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL ANNOTATED TEMPLATE -->
+  <div class="section">
+    <h2>Full Annotated System Prompt Template</h2>
+    <div class="template-box">
+      <h3>ðŸŽ¨ Color-coded by layer</h3>
+      <div class="tpl-output" id="tplOutput"></div>
+      <div class="tpl-legend">
+        <div class="tpl-dot"><span style="background:#c678dd;"></span>Layer 1: Identity</div>
+        <div class="tpl-dot"><span style="background:var(--accent5);"></span>Layer 2: Capabilities</div>
+        <div class="tpl-dot"><span style="background:var(--wrong);"></span>Layer 3: Constraints</div>
+        <div class="tpl-dot"><span style="background:var(--accent2);"></span>Layer 4: Tools</div>
+        <div class="tpl-dot"><span style="background:var(--accent3);"></span>Layer 5: Output Format</div>
+        <div class="tpl-dot"><span style="background:#e5c07b;"></span>Layer 6: Context</div>
+        <div class="tpl-dot"><span style="background:var(--muted);"></span>Layer 7: Fallbacks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMON MISTAKES -->
+  <div class="section">
+    <h2>Common Layer Mistakes</h2>
+    <div class="mistakes-grid">
+      <div class="mistake-card">
+        <div class="m-icon">ðŸŽ­</div>
+        <h4>Missing Identity (Layer 1)</h4>
+        <p>Agent has no defined role â€” behaves like a general chatbot, gives overly broad answers outside its domain.</p>
+        <div class="fix">Fix: Always start with a clear professional role + context sentence.</div>
+      </div>
+      <div class="mistake-card">
+        <div class="m-icon">ðŸš§</div>
+        <h4>No Constraints (Layer 3)</h4>
+        <p>Agent will attempt anything asked â€” sends emails without confirmation, deletes data, accesses unauthorized resources.</p>
+        <div class="fix">Fix: Explicit NEVER/ALWAYS rules. Most critical layer to get right.</div>
+      </div>
+      <div class="mistake-card">
+        <div class="m-icon">ðŸ“</div>
+        <h4>Missing Output Format (Layer 5)</h4>
+        <p>Agent returns free-form text. Downstream parsing breaks. Pipeline fails silently or crashes with JSON decode errors.</p>
+        <div class="fix">Fix: Specify exact JSON schema. Add "never wrap in markdown" if needed.</div>
+      </div>
+      <div class="mistake-card">
+        <div class="m-icon">ðŸ</div>
+        <h4>No Fallback Rules (Layer 7)</h4>
+        <p>Agent hallucinates when it can't find information, or loops indefinitely trying different tools before giving up.</p>
+        <div class="fix">Fix: Define explicit "I don't know" and max-retry behaviors.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz â€” Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. Which layer of the system prompt prevents an agent from sending emails without user confirmation?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','b')">A) Layer 2 â€” Capabilities</button>
+        <button class="opt" onclick="answer('q1','b','b')">B) Layer 3 â€” Constraints</button>
+        <button class="opt" onclick="answer('q1','c','b')">C) Layer 4 â€” Tool Usage</button>
+        <button class="opt" onclick="answer('q1','d','b')">D) Layer 7 â€” Fallbacks</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. A downstream pipeline is failing because the agent sometimes wraps JSON in markdown code fences. Which layer fix addresses this?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','c')">A) Layer 1 â€” redefine the agent identity</button>
+        <button class="opt" onclick="answer('q2','b','c')">B) Layer 3 â€” add a constraint to avoid markdown</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) Layer 5 â€” specify the exact output schema and explicitly state "never wrap in markdown code blocks"</button>
+        <button class="opt" onclick="answer('q2','d','c')">D) Layer 6 â€” provide better context about the downstream system</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. What is the purpose of Layer 6 (Context Injection) in the system prompt?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','b')">A) To define what tools the agent can call</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) To provide dynamic, run-time information â€” current date, user profile, session state â€” that personalizes the agent's behavior for each invocation</button>
+        <button class="opt" onclick="answer('q3','c','b')">C) To specify the JSON output format</button>
+        <button class="opt" onclick="answer('q3','d','b')">D) To list what the agent is not allowed to do</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. Why should Layer 1 (Identity) come first in the system prompt rather than at the end?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','b')">A) JSON schema requires identity fields first</button>
+        <button class="opt" onclick="answer('q4','b','b')">B) LLMs use early context to frame everything that follows â€” identity first primes the model's entire response style, vocabulary, and decision-making before it reads the rules</button>
+        <button class="opt" onclick="answer('q4','c','b')">C) Identity must be parsed before tool definitions can be loaded</button>
+        <button class="opt" onclick="answer('q4','d','b')">D) It's just a convention with no technical effect</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. An agent keeps hallucinating answers when it can't find information via tools, rather than admitting uncertainty. Which layer is missing or weak?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','d')">A) Layer 2 â€” Capabilities not defined broadly enough</button>
+        <button class="opt" onclick="answer('q5','b','d')">B) Layer 4 â€” Tool usage instructions incomplete</button>
+        <button class="opt" onclick="answer('q5','c','d')">C) Layer 5 â€” Output format too flexible</button>
+        <button class="opt" onclick="answer('q5','d','d')">D) Layer 7 â€” Fallback rules missing: the agent has no instruction for what to do when it genuinely doesn't know</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div>
+<script>
+const layers = [
+  {
+    num:1, label:'Identity & Role', color:'#c678dd',
+    purpose:'Define WHO the agent is â€” professional role, employer, domain expertise, and operating context. This primes the LLM\'s entire response mode before any rules are read.',
+    example:`You are a Senior Research Analyst Agent at Acme Corp.
+You specialize in competitive intelligence and market analysis.
+You work exclusively with publicly available information.
+Your output is consumed by the VP of Product.`,
+    tips:['Be specific â€” "Senior Data Analyst at Acme" > "helpful assistant"','Include domain specialty to constrain topic scope','Mention who consumes output â€” it affects tone and depth']
+  },
+  {
+    num:2, label:'Capabilities', color:'#00d2ff',
+    purpose:'State explicitly what the agent CAN do. This prevents the agent from refusing valid requests due to uncertainty, and sets clear expectations for callers.',
+    example:`CAPABILITIES:
+- Search the web for current information
+- Query the internal analytics database (read-only)
+- Generate charts and data visualizations
+- Write and execute Python code in a sandbox
+- Summarize documents up to 50,000 tokens`,
+    tips:['List capabilities positively â€” what it CAN do','Be specific about scope (read-only, sandbox, etc.)','Helps orchestrators route tasks to the right agent']
+  },
+  {
+    num:3, label:'Constraints & Limits', color:'#ff6584',
+    purpose:'Hard rules about what the agent MUST NOT do. The most critical layer for safety. Without it, agents will attempt anything in the spirit of being helpful.',
+    example:`CONSTRAINTS â€” NEVER violate these:
+- NEVER send emails without explicit user confirmation
+- NEVER execute DELETE, DROP, or TRUNCATE SQL
+- NEVER access files outside /workspace/data/
+- NEVER make more than 10 tool calls per turn
+- NEVER state uncertain information as fact`,
+    tips:['Use NEVER/ALWAYS â€” not "try to avoid"','Put most dangerous constraints first','These are non-negotiable hard stops, not guidelines']
+  },
+  {
+    num:4, label:'Tool Usage Rules', color:'#ffd166',
+    purpose:'When and how to use each available tool. Without guidance, agents either under-use tools (guessing from training data) or over-call them for things they already know.',
+    example:`TOOL RULES:
+- Use web_search ONLY for information after Jan 2024
+- Use db_query for ALL questions about internal data
+- Run code_executor to verify any numeric calculation
+- Prefer db_query over web_search for internal metrics
+- After any web_search, cite source URL in response`,
+    tips:['Specify which tool to prefer when multiple could work','Define when NOT to use each tool','Include source citation requirements for factual tools']
+  },
+  {
+    num:5, label:'Output Format', color:'#06d6a0',
+    purpose:'Exact schema for the agent\'s response. Critical for machine-to-machine pipelines â€” format drift breaks downstream parsers silently.',
+    example:`OUTPUT FORMAT â€” always return valid JSON:
+{
+  "status": "success" | "error" | "needs_input",
+  "summary": "1-2 sentence plain English summary",
+  "data": { ... },
+  "sources": ["url1", "url2"],
+  "tools_used": ["tool_name"],
+  "confidence": 0.0-1.0
+}
+Never wrap JSON in markdown code fences.`,
+    tips:['Provide the exact JSON schema with field types','Add "never wrap in markdown" if used in pipelines','Include example values for ambiguous fields']
+  },
+  {
+    num:6, label:'Context Injection', color:'#e5c07b',
+    purpose:'Dynamic run-time information injected per session â€” current date, user profile, session state, active permissions. Personalizes behavior without changing the core prompt.',
+    example:`CURRENT CONTEXT:
+- Date: {{current_date}}
+- User: {{user_name}} (Role: {{user_role}})
+- Tenant: {{org_name}}
+- User permissions: {{permissions_list}}
+- Session ID: {{session_id}}
+- Previous task summary: {{last_task_summary}}`,
+    tips:['Use template variables filled at runtime','Keeps the static prompt reusable across users','Include date â€” prevents agents acting on stale training knowledge']
+  },
+  {
+    num:7, label:'Fallback Behaviors', color:'#8b949e',
+    purpose:'What to do when the agent hits an edge case â€” can\'t find information, reaches tool call limits, encounters an error. Without fallbacks, agents hallucinate or loop.',
+    example:`FALLBACK RULES:
+- If you cannot find information after 3 tool attempts:
+  respond with status:"needs_input", explain what's missing
+- If a tool call fails twice in a row: stop, report error
+- If asked about topics outside your domain: decline politely
+- NEVER guess or fabricate data â€” say "I don't know"
+- If uncertain about an action's scope: ask before doing`,
+    tips:['Define explicit "I don\'t know" behavior â€” critical','Set max retry limits per tool','Include scope-uncertainty escalation to human']
+  }
+];
+
+// Render layer list
+const list = document.getElementById('layerList');
+layers.forEach((l,i) => {
+  const btn = document.createElement('button');
+  btn.className = 'layer-btn';
+  btn.id = 'lbtn-' + i;
+  btn.onclick = () => showLayer(i);
+  btn.innerHTML = `<span class="l-num" style="background:${l.color}20;color:${l.color}">${l.num}</span><span class="l-label">${l.label}</span>`;
+  list.appendChild(btn);
+});
+
+function showLayer(idx) {
+  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lbtn-' + idx).classList.add('active');
+  const l = layers[idx];
+  document.getElementById('layerDetail').innerHTML = `
+    <div class="ldp-header">
+      <span class="ldp-num" style="background:${l.color}20;color:${l.color}">${l.num}</span>
+      <h3 style="color:${l.color}">${l.label}</h3>
+    </div>
+    <p class="ldp-purpose">${l.purpose}</p>
+    <div class="ldp-example">
+      <div class="ldp-example-label" style="color:${l.color}">Example</div>
+      <pre style="color:${l.color}aa">${l.example}</pre>
+    </div>
+    <div class="ldp-tips">
+      <h5>Production Tips</h5>
+      <ul>${l.tips.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>`;
+}
+showLayer(0);
+
+// Render full template
+const tpl = document.getElementById('tplOutput');
+const colors = ['#c678dd','#00d2ff','#ff6584','#ffd166','#06d6a0','#e5c07b','#8b949e'];
+const blocks = [
+  `# â”€â”€ LAYER 1: IDENTITY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nYou are a Senior Research Analyst Agent at Acme Corp.\nYou specialize in competitive intelligence.\nYour output is read by the VP of Product.`,
+  `\n\n# â”€â”€ LAYER 2: CAPABILITIES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nCAPABILITIES:\n- Search web for current information\n- Query internal analytics DB (read-only)\n- Execute Python in sandbox environment`,
+  `\n\n# â”€â”€ LAYER 3: CONSTRAINTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nCONSTRAINTS â€” NEVER violate:\n- NEVER send emails without user confirmation\n- NEVER run destructive SQL queries\n- NEVER make more than 10 tool calls per turn`,
+  `\n\n# â”€â”€ LAYER 4: TOOL RULES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nTOOL RULES:\n- Use web_search ONLY for post-2024 information\n- Use db_query for ALL internal data questions\n- Verify numbers with code_executor`,
+  `\n\n# â”€â”€ LAYER 5: OUTPUT FORMAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nOUTPUT: Always return valid JSON:\n{ "status": "success"|"error", "summary": "...",\n  "data": {...}, "sources": [], "confidence": 0.0-1.0 }\nNever wrap in markdown code fences.`,
+  `\n\n# â”€â”€ LAYER 6: CONTEXT (injected at runtime) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nDate: {{current_date}}\nUser: {{user_name}} | Role: {{user_role}}\nOrg: {{org_name}} | Permissions: {{permissions}}`,
+  `\n\n# â”€â”€ LAYER 7: FALLBACK BEHAVIORS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nFALLBACK RULES:\n- After 3 failed tool attempts: report status:"needs_input"\n- If tool fails twice: stop and report the error\n- If uncertain about scope: ask before acting\n- NEVER fabricate data â€” say "I don't know"`
+];
+tpl.innerHTML = blocks.map((b,i) => `<span style="color:${colors[i]}">${b}</span>`).join('');
+
+// QUIZ
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1:'Layer 3 (Constraints) contains the hard NEVER rules. "NEVER send emails without explicit user confirmation" is a constraint â€” not a capability, tool rule, or fallback.',
+      q2:'Layer 5 (Output Format) is where you specify the exact JSON schema and explicitly state "never wrap in markdown code blocks." This is the source of the parsing failure.',
+      q3:'Layer 6 injects dynamic per-session context â€” current date, user profile, permissions, session state. This personalizes the agent without changing the reusable static prompt layers.',
+      q4:'LLMs use early context to frame everything that follows. Identity first means the entire prompt is interpreted through that professional lens â€” constraints, tool rules, and output format all feel natural within that role.',
+      q5:'Layer 7 (Fallback Behaviors) defines what to do when the agent hits dead ends. Without "NEVER guess â€” say I don\'t know," the model fills information gaps with plausible-sounding hallucinations.'
+    };
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => { o.disabled = false; o.classList.remove('correct','wrong'); });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

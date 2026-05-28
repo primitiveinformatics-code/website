@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.4 Map-Reduce Pattern | Agentic AI</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+  --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+  --accent: #ffd166; --accent2: #06d6a0; --blue: #58a6ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: .6rem 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+nav a { color: var(--muted); font-size: .85rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+.hero { padding: 2.5rem 1.5rem 1.5rem; max-width: 900px; margin: 0 auto; }
+.tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+.tag { background: var(--surface2); border: 1px solid var(--border); padding: .2rem .7rem;
+  border-radius: 999px; font-size: .75rem; color: var(--muted); }
+.tag.accent { background: rgba(255,209,102,.12); border-color: var(--accent); color: var(--accent); }
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: .5rem; }
+.subtitle { color: var(--muted); font-size: 1rem; }
+main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { margin-top: 2.5rem; }
+h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: .4rem;
+  border-bottom: 1px solid var(--border); }
+h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accent); }
+.code-block { background: #010409; border: 1px solid var(--border); border-radius: 6px; padding: 1rem;
+  font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .8rem; overflow-x: auto;
+  white-space: pre; color: #c9d1d9; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 1rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.detail-panel { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1.2rem; margin-top: 1rem; display: none; }
+.detail-panel.show { display: block; }
+.detail-panel p { color: var(--muted); font-size: .9rem; margin-bottom: .5rem; }
+
+/* MAP-REDUCE FLOW DIAGRAM */
+.mr-flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.mr-row { display: flex; align-items: center; justify-content: center; gap: .5rem; flex-wrap: wrap; width: 100%; }
+.mr-node { border-radius: 8px; padding: .6rem 1rem; font-size: .82rem; font-weight: 600;
+  text-align: center; min-width: 100px; cursor: pointer; transition: transform .15s, box-shadow .15s; }
+.mr-node:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+.mr-node.dispatch { background: rgba(255,209,102,.15); border: 1.5px solid var(--accent); color: var(--accent); }
+.mr-node.mapper { background: rgba(88,166,255,.12); border: 1.5px solid var(--blue); color: var(--blue); }
+.mr-node.reducer { background: rgba(6,214,160,.12); border: 1.5px solid var(--accent2); color: var(--accent2); }
+.mr-node.output { background: rgba(198,120,221,.15); border: 1.5px solid #c678dd; color: #c678dd; }
+.mr-arrow { color: var(--muted); font-size: 1.2rem; padding: .2rem 0; }
+.mr-label { font-size: .75rem; color: var(--muted); text-align: center; margin-bottom: .4rem; }
+
+/* TABS */
+.tab-bar { display: flex; gap: .3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.tab { background: var(--surface2); border: 1px solid var(--border); padding: .4rem .9rem;
+  border-radius: 6px 6px 0 0; cursor: pointer; font-size: .83rem; transition: border-color .2s; }
+.tab:hover, .tab.active { border-color: var(--accent); color: var(--accent); background: rgba(255,209,102,.08); }
+.tab-content { display: none; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 0 8px 8px 8px; padding: 1.2rem; }
+.tab-content.active { display: block; }
+
+/* SIMULATOR */
+.sim-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.sim-top { display: flex; gap: .8rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.sim-select { background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  padding: .4rem .8rem; border-radius: 6px; font-size: .85rem; cursor: pointer; }
+.btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  padding: .4rem .9rem; border-radius: 6px; cursor: pointer; font-size: .82rem; transition: border-color .2s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.worker-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: .6rem; margin: .8rem 0; }
+.worker-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: .7rem; font-size: .78rem; transition: border-color .3s; }
+.worker-card.running { border-color: var(--blue); }
+.worker-card.done { border-color: var(--accent2); }
+.worker-card.failed { border-color: #ff7eb6; }
+.worker-name { font-weight: 600; margin-bottom: .3rem; color: var(--muted); }
+.worker-card.running .worker-name { color: var(--blue); }
+.worker-card.done .worker-name { color: var(--accent2); }
+.worker-card.failed .worker-name { color: #ff7eb6; }
+.worker-status { font-size: .72rem; }
+.worker-bar { height: 4px; border-radius: 2px; background: var(--border); margin-top: .4rem; overflow: hidden; }
+.worker-progress { height: 100%; border-radius: 2px; width: 0%; transition: width .1s; }
+.worker-card.running .worker-progress { background: var(--blue); }
+.worker-card.done .worker-progress { background: var(--accent2); width: 100% !important; }
+.worker-card.failed .worker-progress { background: #ff7eb6; }
+
+.phase-label { font-size: .8rem; font-weight: 600; color: var(--muted); margin: .5rem 0 .3rem; }
+.phase-label.map { color: var(--blue); }
+.phase-label.reduce { color: var(--accent2); }
+.result-box { background: #010409; border: 1px solid var(--border); border-radius: 6px; padding: .8rem;
+  font-family: 'Cascadia Code', monospace; font-size: .78rem; color: #c9d1d9; min-height: 60px;
+  display: none; margin-top: .6rem; white-space: pre-wrap; }
+.result-box.show { display: block; }
+
+/* PROS/CONS */
+.pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.pros-cons .side { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+.pros-cons .side h3 { color: var(--accent2); }
+.pros-cons .side.cons h3 { color: #ff7eb6; }
+.pros-cons ul { list-style: none; padding: 0; }
+.pros-cons li { padding: .3rem 0; font-size: .88rem; color: var(--muted); }
+.pros-cons li::before { content: '• '; color: var(--accent); }
+.side.cons li::before { color: #ff7eb6; }
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th, td { padding: .65rem .9rem; border: 1px solid var(--border); text-align: left; }
+th { background: var(--surface2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+/* QUIZ */
+.quiz-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 2.5rem; }
+.score-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+.score-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: .35rem .9rem; font-size: .85rem; }
+.score-num { color: var(--accent); font-weight: 700; }
+.q-block { margin-bottom: 1.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
+.q-block:last-of-type { border-bottom: none; }
+.q-text { font-size: .95rem; margin-bottom: .7rem; }
+.opts { display: flex; flex-direction: column; gap: .4rem; }
+.opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: .5rem .9rem; cursor: pointer; font-size: .87rem; text-align: left;
+  transition: border-color .2s; color: var(--text); }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.correct { border-color: var(--accent2); background: rgba(6,214,160,.12); color: var(--accent2); }
+.opt.wrong { border-color: #ff7eb6; background: rgba(255,126,182,.1); color: #ff7eb6; }
+.opt:disabled { cursor: default; }
+.feedback { font-size: .82rem; margin-top: .4rem; display: none; }
+.feedback.show { display: block; }
+.feedback.correct { color: var(--accent2); }
+.feedback.wrong { color: #ff7eb6; }
+.reset-btn { background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: .25rem .6rem; border-radius: 5px; cursor: pointer; font-size: .75rem; margin-top: .4rem; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+@media(max-width:600px){ .pros-cons{grid-template-columns:1fr;} h1{font-size:1.5rem;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_4_3.html">← Network/Swarm Pattern</a>
+  <a href="index.html">☰ All Concepts</a>
+  <a href="concept_4_5.html">Choreography Pattern →</a>
+</nav>
+
+<div class="hero">
+  <div class="tags">
+    <span class="tag accent">Session 4</span>
+    <span class="tag">Day 2 Forenoon · Orchestration</span>
+    <span class="tag">Concept 4.4</span>
+  </div>
+  <h1>Map-Reduce Pattern</h1>
+  <p class="subtitle">Fan-out parallel execution → fan-in aggregation — the fastest way to process large workloads with agents</p>
+</div>
+
+<main>
+
+  <!-- DEFINITION -->
+  <section>
+    <h2>The Core Idea</h2>
+    <blockquote style="border-left:3px solid var(--accent);padding:.8rem 1.2rem;background:var(--surface);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin-bottom:1rem;">
+      "Split a big task into independent sub-tasks (MAP), process them all in parallel with specialized agents,
+      then combine the results into a single answer (REDUCE)."
+    </blockquote>
+    <div class="card-grid">
+      <div class="card">
+        <h3>✂️ Decompose</h3>
+        <p style="color:var(--muted);font-size:.88rem;">A dispatcher breaks the input into N independent chunks — by document, by question, by data shard.</p>
+      </div>
+      <div class="card">
+        <h3>⚡ Parallelize (MAP)</h3>
+        <p style="color:var(--muted);font-size:.88rem;">N mapper agents process their chunks simultaneously. Total time ≈ slowest mapper, not sum of all.</p>
+      </div>
+      <div class="card">
+        <h3>🔀 Aggregate (REDUCE)</h3>
+        <p style="color:var(--muted);font-size:.88rem;">A reducer collects all mapper outputs and synthesizes a final, coherent answer.</p>
+      </div>
+      <div class="card">
+        <h3>📈 Linear Speedup</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Processing 10 documents with 10 agents takes roughly the same time as processing 1 document with 1 agent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLOW DIAGRAM -->
+  <section>
+    <h2>Visual Flow — Click a Node</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;">
+      <div class="mr-flow">
+        <div class="mr-row">
+          <div class="mr-node dispatch" onclick="showNode('dispatcher')">📋 Dispatcher</div>
+        </div>
+        <div class="mr-arrow">↓ fan-out</div>
+        <div class="mr-label">MAP PHASE — parallel workers</div>
+        <div class="mr-row">
+          <div class="mr-node mapper" onclick="showNode('mapper1')">🤖 Mapper 1</div>
+          <div class="mr-node mapper" onclick="showNode('mapper2')">🤖 Mapper 2</div>
+          <div class="mr-node mapper" onclick="showNode('mapper3')">🤖 Mapper 3</div>
+          <div class="mr-node mapper" onclick="showNode('mapperN')">🤖 Mapper N</div>
+        </div>
+        <div class="mr-arrow">↓ fan-in</div>
+        <div class="mr-label">REDUCE PHASE — aggregation</div>
+        <div class="mr-row">
+          <div class="mr-node reducer" onclick="showNode('reducer')">🔀 Reducer</div>
+        </div>
+        <div class="mr-arrow">↓</div>
+        <div class="mr-row">
+          <div class="mr-node output" onclick="showNode('output')">✅ Final Output</div>
+        </div>
+      </div>
+    </div>
+    <div id="nodeDetail" class="detail-panel">
+      <p style="color:var(--muted);">Click a node above to see details.</p>
+    </div>
+  </section>
+
+  <!-- USE CASE TABS -->
+  <section>
+    <h2>Use Case Deep Dives</h2>
+    <div class="tab-bar">
+      <div class="tab active" onclick="showTab('t1',this)">📄 Document Analysis</div>
+      <div class="tab" onclick="showTab('t2',this)">❓ Multi-Question QA</div>
+      <div class="tab" onclick="showTab('t3',this)">🔍 Parallel Search</div>
+      <div class="tab" onclick="showTab('t4',this)">📊 Data Validation</div>
+    </div>
+
+    <div class="tab-content active" id="t1">
+      <h3>Analysing 50 Research Papers Simultaneously</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">
+        Map: Each mapper receives one paper and extracts key findings, methodology, and limitations.
+        Reduce: The reducer synthesizes cross-paper themes, identifies contradictions, and writes a literature review.
+        Speed gain: 50x faster than sequential processing.
+      </p>
+      <div class="code-block">import asyncio
+
+async def analyse_paper(paper: str) -> dict:
+    """Mapper: extract findings from one paper."""
+    result = await llm.complete(
+        f"Extract findings, methodology, limitations from:\n{paper}"
+    )
+    return parse_structured(result)
+
+async def map_reduce_papers(papers: list[str]) -> str:
+    # MAP — all papers in parallel
+    mapper_tasks = [analyse_paper(p) for p in papers]
+    map_results = await asyncio.gather(*mapper_tasks)
+
+    # REDUCE — synthesise
+    combined = json.dumps(map_results, indent=2)
+    synthesis = await llm.complete(
+        f"Synthesise these paper analyses into a literature review:\n{combined}"
+    )
+    return synthesis</div>
+    </div>
+
+    <div class="tab-content" id="t2">
+      <h3>Answering 20 Questions from a Knowledge Base</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">
+        Map: Each mapper gets one question, retrieves relevant context from the vector DB, and generates an answer.
+        Reduce: Answers are merged into a FAQ document. Total time ≈ single question latency.
+      </p>
+      <div class="code-block">async def answer_question(q: str, kb: VectorDB) -> dict:
+    """Mapper: answer one question using RAG."""
+    context = kb.retrieve(q, top_k=5)
+    answer = await llm.complete(
+        f"Using this context:\n{context}\n\nAnswer: {q}"
+    )
+    return {"question": q, "answer": answer, "sources": context}
+
+async def build_faq(questions: list[str], kb: VectorDB) -> str:
+    # MAP — answer all questions concurrently
+    answers = await asyncio.gather(*[answer_question(q, kb) for q in questions])
+
+    # REDUCE — format as FAQ
+    faq_prompt = "Format these Q&A pairs into a structured FAQ:\n" + json.dumps(answers)
+    return await llm.complete(faq_prompt)</div>
+    </div>
+
+    <div class="tab-content" id="t3">
+      <h3>Searching Multiple Data Sources in Parallel</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">
+        Map: Specialized agents search different sources — web, internal docs, code repos, databases — simultaneously.
+        Reduce: Deduplication and ranking agent merges findings by relevance.
+      </p>
+      <div class="code-block">async def search_web(query: str) -> list: ...
+async def search_docs(query: str) -> list: ...
+async def search_codebase(query: str) -> list: ...
+async def search_slack(query: str) -> list: ...
+
+async def parallel_search(query: str) -> str:
+    # MAP — search all sources simultaneously
+    results = await asyncio.gather(
+        search_web(query),
+        search_docs(query),
+        search_codebase(query),
+        search_slack(query),
+        return_exceptions=True  # don't fail if one source is down
+    )
+    # Filter failed searches
+    valid = [r for r in results if not isinstance(r, Exception)]
+
+    # REDUCE — deduplicate and rank
+    deduped = deduplicate(valid)
+    return await llm.complete(f"Rank by relevance for '{query}':\n{deduped}")</div>
+    </div>
+
+    <div class="tab-content" id="t4">
+      <h3>Validating 1,000 Data Records</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">
+        Map: Batch the 1,000 records into 10 chunks of 100. Each mapper validates its batch.
+        Reduce: Collect all validation errors, deduplicate, and generate a quality report.
+      </p>
+      <div class="code-block">async def validate_batch(records: list[dict]) -> list[dict]:
+    """Mapper: validate a batch of records."""
+    errors = []
+    for rec in records:
+        issues = await llm.complete(
+            f"Validate this record against schema. Return JSON errors:\n{rec}"
+        )
+        if issues: errors.append({"record": rec["id"], "issues": issues})
+    return errors
+
+async def validate_all(records: list[dict], batch_size=100) -> str:
+    # Split into batches
+    batches = [records[i:i+batch_size] for i in range(0, len(records), batch_size)]
+
+    # MAP — validate batches in parallel
+    batch_errors = await asyncio.gather(*[validate_batch(b) for b in batches])
+
+    # REDUCE — aggregate errors
+    all_errors = [e for batch in batch_errors for e in batch]
+    return f"Found {len(all_errors)} validation errors across {len(records)} records.\n{all_errors}"</div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE SIMULATOR -->
+  <section>
+    <h2>Live Map-Reduce Simulator</h2>
+    <div class="sim-wrap">
+      <div class="sim-top">
+        <select class="sim-select" id="simTask">
+          <option value="0">📄 Analyse 6 research papers</option>
+          <option value="1">❓ Answer 5 customer questions</option>
+          <option value="2">🔍 Search 4 data sources</option>
+        </select>
+        <button class="btn" onclick="runSimulator()">▶ Run Simulation</button>
+      </div>
+      <div id="simContent"></div>
+    </div>
+  </section>
+
+  <!-- AGGREGATION STRATEGIES -->
+  <section>
+    <h2>Reducer / Aggregation Strategies</h2>
+    <table>
+      <thead>
+        <tr><th>Strategy</th><th>How It Works</th><th>Best For</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>LLM Synthesis</td><td>LLM reads all mapper outputs and writes a coherent narrative</td><td>Research reports, summaries</td></tr>
+        <tr><td>Rank &amp; Select Top-K</td><td>Score each result, keep top K by relevance or confidence</td><td>Search, recommendation</td></tr>
+        <tr><td>Merge &amp; Deduplicate</td><td>Concatenate, then remove duplicates by embedding similarity</td><td>FAQ generation, entity extraction</td></tr>
+        <tr><td>Vote / Majority</td><td>Take the most common answer across mappers</td><td>Classification, fact verification</td></tr>
+        <tr><td>Hierarchical Reduce</td><td>Reduce in stages — pairwise merge until one result remains</td><td>Very large workloads (100+ mappers)</td></tr>
+        <tr><td>Structured Merge</td><td>Merge JSON fields by key — take max confidence per field</td><td>Structured extraction tasks</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PROS/CONS -->
+  <section>
+    <h2>Strengths &amp; Limitations</h2>
+    <div class="pros-cons">
+      <div class="side">
+        <h3>✅ Strengths</h3>
+        <ul>
+          <li>Massive parallelism — linear speedup</li>
+          <li>Predictable structure — easy to reason about</li>
+          <li>Individual mapper failures don't kill the job</li>
+          <li>Easy to add more mappers as load grows</li>
+          <li>Natural fit for batch workloads</li>
+          <li>Deterministic — same input → same structure</li>
+        </ul>
+      </div>
+      <div class="side cons">
+        <h3>⚠️ Limitations</h3>
+        <ul>
+          <li>Tasks must be decomposable into independent chunks</li>
+          <li>Reducer can become a bottleneck with many mappers</li>
+          <li>Context windows limit reducer input size</li>
+          <li>Not suitable for sequential, dependent tasks</li>
+          <li>Overhead if N is small (dispatcher + reducer cost)</li>
+          <li>Reducer LLM may lose detail from large inputs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <div class="quiz-section">
+    <div class="score-bar">
+      <h2 style="border:none;margin:0;padding:0;">🧠 Knowledge Check</h2>
+      <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <p class="q-text">1. In Map-Reduce, what is the primary purpose of the MAP phase?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q1','a','c')">a) Aggregate all results into a final answer</button>
+        <button class="opt" onclick="answer('q1','b','c')">b) Validate the final output quality</button>
+        <button class="opt" onclick="answer('q1','c','c')">c) Process sub-tasks independently and in parallel</button>
+        <button class="opt" onclick="answer('q1','d','c')">d) Route tasks to the correct specialist agent</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <p class="q-text">2. If processing 10 documents sequentially takes 100s, approximately how long does Map-Reduce take with 10 parallel mappers?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q2','a','b')">a) 100s (no speedup)</button>
+        <button class="opt" onclick="answer('q2','b','b')">b) ~10s (10x speedup)</button>
+        <button class="opt" onclick="answer('q2','c','b')">c) 50s (2x speedup)</button>
+        <button class="opt" onclick="answer('q2','d','b')">d) 1s (100x speedup)</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <p class="q-text">3. Which task is LEAST suitable for the Map-Reduce pattern?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q3','a','d')">a) Analysing 100 customer reviews simultaneously</button>
+        <button class="opt" onclick="answer('q3','b','d')">b) Searching 5 databases in parallel for a query</button>
+        <button class="opt" onclick="answer('q3','c','d')">c) Validating 500 records in batches</button>
+        <button class="opt" onclick="answer('q3','d','d')">d) A multi-step workflow where each step depends on the previous</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <p class="q-text">4. What does `asyncio.gather(*tasks, return_exceptions=True)` do in Python?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q4','a','b')">a) Runs tasks one by one and stops on first error</button>
+        <button class="opt" onclick="answer('q4','b','b')">b) Runs all tasks concurrently; failed tasks return exception objects instead of crashing</button>
+        <button class="opt" onclick="answer('q4','c','b')">c) Creates a queue and processes tasks in FIFO order</button>
+        <button class="opt" onclick="answer('q4','d','b')">d) Retries failed tasks automatically up to 3 times</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <p class="q-text">5. The key constraint that makes Map-Reduce viable is that mapper tasks must be:</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q5','a','c')">a) Run by the same LLM model</button>
+        <button class="opt" onclick="answer('q5','b','c')">b) Completed within a fixed time budget</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) Independent of each other — no inter-mapper dependencies</button>
+        <button class="opt" onclick="answer('q5','d','c')">d) Stored in the same vector database</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ── QUIZ ── */
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'The MAP phase runs sub-tasks in parallel independently — the REDUCE phase aggregates.',
+  q2: 'With 10 parallel mappers the total time ≈ slowest single mapper, roughly 10s.',
+  q3: 'Sequential dependent steps cannot be parallelised — Map-Reduce requires independent sub-tasks.',
+  q4: 'return_exceptions=True means failed coroutines return Exception objects so the gather continues.',
+  q5: 'Mapper independence is the fundamental requirement — dependent tasks cannot run in parallel.'
+};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+
+/* ── FLOW NODE DETAILS ── */
+const nodeData = {
+  dispatcher: {
+    title: '📋 Dispatcher',
+    desc: 'Receives the top-level task and splits it into N independent sub-tasks. Determines how many mappers to spawn and what input each receives. May use LLM to decide decomposition strategy.',
+    code: `dispatcher_prompt = """
+You have these 10 documents. Create a task list where each task
+analyses one document. Return as JSON array of task objects.
+"""`
+  },
+  mapper1: {
+    title: '🤖 Mapper Agent',
+    desc: 'Each mapper processes its assigned chunk independently using the same prompt template. Mappers never communicate with each other — they only read their input and write their output.',
+    code: `# All mappers run concurrently
+async def run_mapper(task_input: str) -> dict:
+    return await llm.complete(mapper_prompt + task_input)`
+  },
+  mapper2: { title: '🤖 Mapper Agent', desc: 'Same as Mapper 1 — independent execution on a different input chunk.', code: '# Identical mapper logic, different input shard' },
+  mapper3: { title: '🤖 Mapper Agent', desc: 'Same as Mapper 1 — independent execution on a different input chunk.', code: '# asyncio.gather ensures all mappers run concurrently' },
+  mapperN: { title: '🤖 Mapper N', desc: 'The Nth mapper processes the Nth chunk. Total mappers = number of input chunks.', code: `# Scale to any N
+tasks = [run_mapper(chunk) for chunk in chunks]
+results = await asyncio.gather(*tasks)` },
+  reducer: {
+    title: '🔀 Reducer Agent',
+    desc: 'Receives ALL mapper outputs and synthesizes them into one coherent final result. May use LLM synthesis, ranking, voting, or deterministic merge logic depending on the task.',
+    code: `async def reduce(mapper_outputs: list) -> str:
+    combined = json.dumps(mapper_outputs)
+    return await llm.complete(
+        f"Synthesise these {len(mapper_outputs)} analyses:\\n{combined}"
+    )`
+  },
+  output: {
+    title: '✅ Final Output',
+    desc: 'The reduced result returned to the user or downstream system. High quality because it was built from parallel deep analysis of all input chunks.',
+    code: `# Return to user
+print(f"Processed {len(chunks)} chunks in parallel")
+print(f"Final output: {final_output}")`
+  }
+};
+
+function showNode(key) {
+  const d = nodeData[key];
+  const panel = document.getElementById('nodeDetail');
+  panel.innerHTML = `<h3 style="margin-bottom:.5rem;">${d.title}</h3>
+    <p>${d.desc}</p>
+    <div class="code-block" style="margin-top:.8rem;">${d.code}</div>`;
+  panel.classList.add('show');
+}
+
+/* ── TABS ── */
+function showTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+/* ── SIMULATOR ── */
+const simScenarios = [
+  {
+    title: 'Analysing 6 Research Papers',
+    mappers: ['Paper 1: LLM Safety', 'Paper 2: RLHF Survey', 'Paper 3: RAG Eval', 'Paper 4: Agent Loops', 'Paper 5: Tool Use', 'Paper 6: Memory'],
+    mapDurations: [2800, 3200, 2500, 3500, 2900, 3100],
+    reduceDelay: 400,
+    reduceDuration: 1800,
+    result: '✅ Literature Review Generated\n6 papers analysed in parallel (~3.5s vs ~18s sequential)\nTheme 1: Safety constraints limit agent autonomy\nTheme 2: RAG outperforms fine-tuning for dynamic knowledge\nTheme 3: Tool use reduces hallucination by 40%'
+  },
+  {
+    title: 'Answering 5 Customer Questions',
+    mappers: ['Q1: Refund policy?', 'Q2: How to cancel?', 'Q3: Upgrade plan?', 'Q4: API limits?', 'Q5: Data export?'],
+    mapDurations: [1800, 2100, 1600, 2400, 1900],
+    reduceDelay: 300,
+    reduceDuration: 1200,
+    result: '✅ FAQ Document Generated\n5 questions answered in parallel (~2.4s vs ~10s sequential)\nAll answers include source citations from knowledge base\nConfidence: Q1:0.96, Q2:0.94, Q3:0.91, Q4:0.88, Q5:0.93'
+  },
+  {
+    title: 'Searching 4 Data Sources',
+    mappers: ['Web Search', 'Internal Docs', 'Code Repository', 'Slack Archive'],
+    mapDurations: [2200, 1500, 3000, 1800],
+    reduceDelay: 300,
+    reduceDuration: 1400,
+    result: '✅ Unified Search Results\n4 sources searched in parallel (~3.0s vs ~8.5s sequential)\n12 unique results after deduplication\nTop result: Internal Docs (relevance: 0.94)\nSlack: 2 relevant threads from #engineering channel'
+  }
+];
+
+let simInterval = null;
+function runSimulator() {
+  if (simInterval) clearInterval(simInterval);
+  const idx = parseInt(document.getElementById('simTask').value);
+  const sc = simScenarios[idx];
+  const container = document.getElementById('simContent');
+
+  container.innerHTML = `
+    <div class="phase-label map">⚡ MAP PHASE — running ${sc.mappers.length} mappers in parallel</div>
+    <div class="worker-row" id="workerRow"></div>
+    <div class="phase-label reduce" id="reduceLabel" style="display:none;">🔀 REDUCE PHASE — aggregating results</div>
+    <div id="reduceBar" style="display:none;">
+      <div class="worker-card running" style="max-width:300px;">
+        <div class="worker-name">Reducer Agent</div>
+        <div class="worker-status" id="reduceStatus">Waiting for all mappers...</div>
+        <div class="worker-bar"><div class="worker-progress" id="reduceProgress" style="background:var(--accent2);"></div></div>
+      </div>
+    </div>
+    <div class="result-box" id="resultBox"></div>
+  `;
+
+  const row = document.getElementById('workerRow');
+  sc.mappers.forEach((name, i) => {
+    const card = document.createElement('div');
+    card.className = 'worker-card';
+    card.id = `wc_${i}`;
+    card.innerHTML = `<div class="worker-name">${name}</div>
+      <div class="worker-status" id="ws_${i}">Pending...</div>
+      <div class="worker-bar"><div class="worker-progress" id="wp_${i}"></div></div>`;
+    row.appendChild(card);
+  });
+
+  // Start mappers
+  const startTime = Date.now();
+  const doneFlags = new Array(sc.mappers.length).fill(false);
+
+  sc.mappers.forEach((_, i) => {
+    const dur = sc.mapDurations[i];
+    const card = document.getElementById(`wc_${i}`);
+    const status = document.getElementById(`ws_${i}`);
+    const prog = document.getElementById(`wp_${i}`);
+
+    setTimeout(() => {
+      card.className = 'worker-card running';
+      status.textContent = 'Processing...';
+    }, 50);
+
+    // Animate progress
+    let elapsed = 0;
+    const tick = setInterval(() => {
+      elapsed += 80;
+      prog.style.width = Math.min(100, (elapsed / dur) * 100) + '%';
+      if (elapsed >= dur) clearInterval(tick);
+    }, 80);
+
+    setTimeout(() => {
+      card.className = 'worker-card done';
+      status.textContent = '✓ Done';
+      doneFlags[i] = true;
+      checkAllDone();
+    }, dur);
+  });
+
+  function checkAllDone() {
+    if (!doneFlags.every(Boolean)) return;
+    const reduceLabel = document.getElementById('reduceLabel');
+    const reduceBar = document.getElementById('reduceBar');
+    const reduceStatus = document.getElementById('reduceStatus');
+    const reduceProgress = document.getElementById('reduceProgress');
+
+    setTimeout(() => {
+      reduceLabel.style.display = 'block';
+      reduceBar.style.display = 'block';
+      reduceStatus.textContent = 'Synthesising all results...';
+
+      let elapsed = 0;
+      const tick = setInterval(() => {
+        elapsed += 80;
+        reduceProgress.style.width = Math.min(100, (elapsed / sc.reduceDuration) * 100) + '%';
+        if (elapsed >= sc.reduceDuration) clearInterval(tick);
+      }, 80);
+
+      setTimeout(() => {
+        reduceStatus.textContent = '✓ Reduction complete';
+        document.querySelector('#reduceBar .worker-card').className = 'worker-card done';
+        const rb = document.getElementById('resultBox');
+        rb.textContent = sc.result;
+        rb.classList.add('show');
+      }, sc.reduceDuration);
+    }, sc.reduceDelay);
+  }
+}
+</script>
+</body>
+</html>

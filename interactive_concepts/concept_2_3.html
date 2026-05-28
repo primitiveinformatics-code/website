@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.3 The BDI Model — Agentic AI</title>
+<style>
+  :root{--bg:#0f1117;--card:#21263a;--accent:#00d2ff;--accent2:#6c63ff;--green:#06d6a0;--yellow:#ffd166;--red:#ff6584;--text:#e8eaf6;--muted:#8892b0;--border:rgba(0,210,255,0.18);--bel:#6c63ff;--des:#ffd166;--int:#06d6a0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding-bottom:80px;}
+  nav{display:flex;align-items:center;gap:10px;padding:16px 32px;border-bottom:1px solid var(--border);background:rgba(15,17,23,.9);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);}
+  .nav-home{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;}
+  .nav-home:hover{color:var(--text);}
+  .nav-sep{color:var(--border);}
+  .nav-current{color:var(--accent);font-size:13px;font-weight:700;}
+  .nav-arrows{margin-left:auto;display:flex;gap:8px;}
+  .nav-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;}
+  .nav-btn:hover{background:var(--accent);color:#0f1117;border-color:var(--accent);}
+  .hero{padding:56px 40px 44px;max-width:960px;margin:0 auto;}
+  .concept-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.3);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:20px;}
+  h1{font-size:clamp(26px,3.5vw,44px);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:16px;}
+  .hero-lead{font-size:17px;color:var(--muted);line-height:1.7;max-width:680px;}
+  .content{max-width:960px;margin:0 auto;padding:0 40px;}
+  .section{margin-bottom:52px;}
+  .section-title{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* ── BDI INTERACTIVE ── */
+  .bdi-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .bdi-tab{padding:11px 24px;border-radius:12px;border:2px solid transparent;font-size:14px;font-weight:800;cursor:pointer;transition:all .25s;background:var(--card);}
+  .bdi-tab[data-b="bel"]{color:var(--bel);}
+  .bdi-tab[data-b="des"]{color:var(--des);}
+  .bdi-tab[data-b="int"]{color:var(--int);}
+  .bdi-tab.active[data-b="bel"]{border-color:var(--bel);background:rgba(108,99,255,.1);}
+  .bdi-tab.active[data-b="des"]{border-color:var(--des);background:rgba(255,209,102,.08);}
+  .bdi-tab.active[data-b="int"]{border-color:var(--int);background:rgba(6,214,160,.08);}
+  .bdi-panel{display:none;}
+  .bdi-panel.active{display:block;}
+  .bdi-big{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px;display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  .bdi-big.bel{border-top:3px solid var(--bel);}
+  .bdi-big.des{border-top:3px solid var(--des);}
+  .bdi-big.int{border-top:3px solid var(--int);}
+  .bdi-lhs h3{font-size:26px;font-weight:900;margin-bottom:4px;}
+  .bdi-lhs .sub{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+  .bdi-lhs p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:14px;}
+  .bdi-lhs .analogy{background:rgba(255,255,255,.04);border-radius:10px;padding:12px 15px;font-size:13px;line-height:1.6;}
+  .bdi-lhs .analogy strong{color:var(--text);}
+  .bdi-rhs{display:flex;flex-direction:column;gap:14px;}
+  .bdi-prop{background:rgba(255,255,255,.03);border-radius:10px;padding:14px 16px;border-left:3px solid;}
+  .bdi-prop-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .bdi-prop-val{font-size:13.5px;color:var(--text);line-height:1.5;}
+  .bdi-prop.bel{border-left-color:var(--bel);}
+  .bdi-prop.des{border-left-color:var(--des);}
+  .bdi-prop.int{border-left-color:var(--int);}
+
+  /* ── MAPPING TABLE ── */
+  .map-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .map-table th{padding:12px 16px;background:rgba(255,255,255,.04);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);text-align:left;}
+  .map-table td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.55;}
+  .map-table tr:last-child td{border-bottom:none;}
+  .map-table td:first-child{font-weight:800;}
+  .chip{display:inline-block;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:700;}
+  .chip-bel{background:rgba(108,99,255,.15);color:var(--bel);}
+  .chip-des{background:rgba(255,209,102,.12);color:var(--des);}
+  .chip-int{background:rgba(6,214,160,.1);color:var(--int);}
+
+  /* ── RATIONALITY LOOP ── */
+  .loop-steps{display:flex;flex-direction:column;gap:0;}
+  .loop-step{display:flex;gap:0;cursor:pointer;transition:all .2s;}
+  .loop-num{width:48px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:18px;}
+  .step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--muted);transition:all .25s;}
+  .loop-step.active .step-circle,.loop-step:hover .step-circle{border-color:var(--accent);color:var(--accent);background:rgba(0,210,255,.1);}
+  .step-line{flex:1;width:2px;background:rgba(255,255,255,.06);margin:4px auto 0;}
+  .loop-step:last-child .step-line{display:none;}
+  .loop-body{flex:1;padding:14px 0 14px 16px;border-bottom:1px solid rgba(255,255,255,.04);}
+  .loop-step:last-child .loop-body{border-bottom:none;}
+  .loop-phase{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;transition:color .2s;}
+  .loop-step.active .loop-phase,.loop-step:hover .loop-phase{color:var(--accent);}
+  .loop-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .loop-detail{font-size:13px;color:var(--muted);line-height:1.6;display:none;}
+  .loop-step.active .loop-detail{display:block;}
+  .loop-react{margin-top:8px;background:rgba(0,210,255,.06);border-left:3px solid var(--accent);padding:8px 12px;border-radius:0 8px 8px 0;font-size:12.5px;color:var(--muted);}
+  .loop-react strong{color:var(--accent);}
+
+  /* ── SCENARIO MAPPER ── */
+  .scenario-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;}
+  .scenario-intro{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:20px;}
+  .scenario-text{background:rgba(255,255,255,.04);border-radius:10px;padding:16px 18px;font-size:14px;line-height:1.7;margin-bottom:20px;font-style:italic;}
+  .bdi-labels{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .bdi-select{flex:1;min-width:140px;background:#11141f;border:1px solid rgba(0,210,255,.2);color:var(--text);padding:8px 14px;border-radius:8px;font-size:13px;cursor:pointer;}
+  .check-map-btn{background:var(--accent);color:#0f1117;border:none;padding:10px 24px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
+  .check-map-btn:hover{background:#00bfe8;}
+  .map-result{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:13.5px;line-height:1.6;display:none;}
+  .map-result.show{display:block;}
+  .map-result.good{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);color:var(--green);}
+  .map-result.bad{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.2);color:#ff8fa3;}
+
+  /* ── QUIZ ── */
+  .quiz-set{display:flex;flex-direction:column;gap:24px;}
+  .quiz-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;}
+  .quiz-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .quiz-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:18px;line-height:1.55;}
+  .quiz-options{display:flex;flex-direction:column;gap:9px;}
+  .quiz-option{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:13.5px;color:var(--muted);transition:all .2s;text-align:left;}
+  .quiz-option:hover:not(:disabled){background:rgba(0,210,255,.08);border-color:rgba(0,210,255,.3);color:var(--text);}
+  .quiz-option.correct{background:rgba(6,214,160,.12);border-color:#06d6a0;color:#06d6a0;}
+  .quiz-option.wrong{background:rgba(255,101,132,.1);border-color:#ff6584;color:#ff6584;}
+  .quiz-feedback{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:13.5px;line-height:1.6;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);color:#06d6a0;}
+  .quiz-feedback.wrong{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.25);color:#ff8fa3;}
+  .quiz-reset{margin-top:12px;background:var(--accent2);color:white;border:none;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:none;}
+  .quiz-reset.show{display:inline-block;}
+  .score-box{background:linear-gradient(135deg,rgba(0,210,255,.12),rgba(108,99,255,.08));border:1px solid rgba(0,210,255,.3);border-radius:14px;padding:20px 26px;text-align:center;margin-top:24px;display:none;}
+  .score-box.show{display:block;}
+  .score-num{font-size:42px;font-weight:900;color:var(--accent);}
+  .score-label{font-size:13px;color:var(--muted);margin-top:4px;}
+  .takeaway{background:linear-gradient(135deg,rgba(0,210,255,.1),rgba(108,99,255,.06));border:1px solid rgba(0,210,255,.3);border-left:4px solid var(--accent);border-radius:12px;padding:22px 26px;font-size:15px;color:var(--text);line-height:1.7;}
+  .takeaway strong{color:var(--accent);}
+  @media(max-width:700px){.hero,.content{padding-left:20px;padding-right:20px;}.bdi-big{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-home">← All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">2.3 The BDI Model</span>
+  <div class="nav-arrows">
+    <a href="concept_2_1.html" class="nav-btn">← Paradigm Shift</a>
+    <a href="concept_2_6.html" class="nav-btn">Planning Strategies →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="concept-badge">Session 2 · Day 1 Forenoon · Concept 2.3</div>
+  <h1>The BDI Model</h1>
+  <p class="hero-lead">BDI — Beliefs, Desires, Intentions — is the dominant theoretical framework for understanding how rational agents think. Formalised in 1991, it directly underlies LangGraph, AutoGen, and CrewAI today. Knowing BDI lets you reason about <em>why</em> an agent does what it does.</p>
+</div>
+
+<div class="content">
+
+  <!-- BDI EXPLORER -->
+  <div class="section">
+    <div class="section-title">Explore Each Component — B, D, I</div>
+    <div class="bdi-tabs">
+      <button class="bdi-tab active" data-b="bel" onclick="showBDI('bel',this)">🧠 Beliefs</button>
+      <button class="bdi-tab" data-b="des" onclick="showBDI('des',this)">🎯 Desires</button>
+      <button class="bdi-tab" data-b="int" onclick="showBDI('int',this)">⚡ Intentions</button>
+    </div>
+
+    <div class="bdi-panel active" id="bp-bel">
+      <div class="bdi-big bel">
+        <div class="bdi-lhs">
+          <h3 style="color:var(--bel)">Beliefs</h3>
+          <div class="sub" style="color:var(--bel)">What the agent KNOWS</div>
+          <p>Beliefs represent the agent's internal model of the world — everything it currently understands about its environment, the task at hand, and the results of its past actions. Crucially, beliefs may be <strong>incomplete or wrong</strong>. The agent acts on what it believes to be true, not on ground truth.</p>
+          <div class="analogy"><strong>Human analogy:</strong> Your current understanding of a situation. You might believe the meeting is at 3pm — that belief guides your actions even if the time was changed and you haven't seen the calendar update yet.</div>
+        </div>
+        <div class="bdi-rhs">
+          <div class="bdi-prop bel"><div class="bdi-prop-label">Maps to agent component</div><div class="bdi-prop-val">Memory — working memory (context window) + long-term vector store</div></div>
+          <div class="bdi-prop bel"><div class="bdi-prop-label">Updated by</div><div class="bdi-prop-val">Tool call observations — each Observe step updates the agent's beliefs about the world</div></div>
+          <div class="bdi-prop bel"><div class="bdi-prop-label">Key property</div><div class="bdi-prop-val">May be incomplete, outdated, or incorrect — agents must act under uncertainty</div></div>
+          <div class="bdi-prop bel"><div class="bdi-prop-label">Example in practice</div><div class="bdi-prop-val">"Stock price is $189.43, EPS data not yet retrieved" — belief state after loop iteration 1</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bdi-panel" id="bp-des">
+      <div class="bdi-big des">
+        <div class="bdi-lhs">
+          <h3 style="color:var(--des)">Desires</h3>
+          <div class="sub" style="color:var(--des)">What the agent WANTS</div>
+          <p>Desires are the agent's high-level goals — the end states it wants to achieve. Desires are <strong>stable</strong>: they don't change from loop iteration to loop iteration. They may even conflict (the agent wants to be thorough AND fast). They represent motivation, not commitment.</p>
+          <div class="analogy"><strong>Human analogy:</strong> Your life goals — you want to finish the project, you want to do it well, you want to be home for dinner. These don't change minute to minute, but you can't pursue all of them simultaneously.</div>
+        </div>
+        <div class="bdi-rhs">
+          <div class="bdi-prop des"><div class="bdi-prop-label">Maps to agent component</div><div class="bdi-prop-val">System prompt goals + user task definition — set once, stable throughout</div></div>
+          <div class="bdi-prop des"><div class="bdi-prop-label">Key property</div><div class="bdi-prop-val">Stable across iterations — the goal doesn't change because one tool call failed</div></div>
+          <div class="bdi-prop des"><div class="bdi-prop-label">May conflict</div><div class="bdi-prop-val">e.g. "Be fast" vs "Be thorough" — the agent must balance competing desires</div></div>
+          <div class="bdi-prop des"><div class="bdi-prop-label">Example in practice</div><div class="bdi-prop-val">"Produce a comprehensive, accurate competitive analysis of the top 3 EV companies"</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bdi-panel" id="bp-int">
+      <div class="bdi-big int">
+        <div class="bdi-lhs">
+          <h3 style="color:var(--int)">Intentions</h3>
+          <div class="sub" style="color:var(--int)">What the agent is COMMITTED to RIGHT NOW</div>
+          <p>Intentions are the active sub-goals the agent has committed to achieving in the current moment. Unlike desires (stable, high-level), intentions are <strong>current and actionable</strong>. At any given moment, the agent is executing one intention — a specific plan to move toward a desire.</p>
+          <div class="analogy"><strong>Human analogy:</strong> Right now you intend to finish reading this paragraph before checking your phone. That's a committed, in-progress action — a specific intention that serves your broader desire to learn the material.</div>
+        </div>
+        <div class="bdi-rhs">
+          <div class="bdi-prop int"><div class="bdi-prop-label">Maps to agent component</div><div class="bdi-prop-val">Current plan execution — the specific tool call being made RIGHT NOW</div></div>
+          <div class="bdi-prop int"><div class="bdi-prop-label">Key property</div><div class="bdi-prop-val">Dynamic — changes each loop iteration based on observations and updated beliefs</div></div>
+          <div class="bdi-prop int"><div class="bdi-prop-label">Drives</div><div class="bdi-prop-val">Tool calls — every tool call is the execution of a current intention</div></div>
+          <div class="bdi-prop int"><div class="bdi-prop-label">Example in practice</div><div class="bdi-prop-val">"Search for Tesla Q3 2024 revenue figures right now" — a specific, committed next step</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BDI ↔ AGENT MAPPING -->
+  <div class="section">
+    <div class="section-title">BDI Maps Directly to Modern Agent Components</div>
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:14px;">
+      <table class="map-table">
+        <thead><tr><th>BDI Component</th><th>Definition</th><th>Agent Equivalent</th><th>ReAct Step</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="chip chip-bel">Beliefs</span></td>
+            <td style="color:var(--muted)">What the agent knows / its model of the world</td>
+            <td>Memory — context window + vector store</td>
+            <td>Observe (updates Beliefs)</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-des">Desires</span></td>
+            <td style="color:var(--muted)">High-level goals, stable motivations</td>
+            <td>System prompt goals + user task</td>
+            <td>— (set upfront, stable)</td>
+          </tr>
+          <tr>
+            <td><span class="chip chip-int">Intentions</span></td>
+            <td style="color:var(--muted)">Active sub-goal the agent is currently pursuing</td>
+            <td>Current plan / next tool call</td>
+            <td>Think + Act (forms and executes intention)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RATIONALITY LOOP -->
+  <div class="section">
+    <div class="section-title">The BDI Rationality Loop — Click Each Step</div>
+    <div class="loop-steps">
+      <div class="loop-step active" onclick="activateLoop(this)">
+        <div class="loop-num"><div class="step-circle">1</div><div class="step-line"></div></div>
+        <div class="loop-body">
+          <div class="loop-phase">Perceive</div>
+          <div class="loop-title">Update Beliefs from new tool output</div>
+          <div class="loop-detail">The agent reads the result of its last action — a tool response, an API result, or an observation from the environment. This updates its internal belief state: what does it now know that it didn't before? This is identical to the "Observe" step in ReAct.
+            <div class="loop-react"><strong>ReAct mapping:</strong> OBSERVE → updates Beliefs</div>
+          </div>
+        </div>
+      </div>
+      <div class="loop-step" onclick="activateLoop(this)">
+        <div class="loop-num"><div class="step-circle">2</div><div class="step-line"></div></div>
+        <div class="loop-body">
+          <div class="loop-phase">Deliberate</div>
+          <div class="loop-title">Select active Desire — is my goal still valid?</div>
+          <div class="loop-detail">With updated Beliefs, the agent asks: which of my Desires is most relevant right now? If an earlier tool call retrieved data that changes priorities, it adjusts. This deliberation step prevents agents from blindly pursuing a goal that the environment has already invalidated.
+            <div class="loop-react"><strong>ReAct mapping:</strong> Part of THINK → checking goal validity</div>
+          </div>
+        </div>
+      </div>
+      <div class="loop-step" onclick="activateLoop(this)">
+        <div class="loop-num"><div class="step-circle">3</div><div class="step-line"></div></div>
+        <div class="loop-body">
+          <div class="loop-phase">Plan</div>
+          <div class="loop-title">Form Intentions from selected Desire</div>
+          <div class="loop-detail">The agent converts the active Desire into a specific, actionable Intention: "Given what I believe and what I want, what is the single best next step?" This produces a concrete plan — which tool to call, with what parameters.
+            <div class="loop-react"><strong>ReAct mapping:</strong> Part of THINK → forms specific next action</div>
+          </div>
+        </div>
+      </div>
+      <div class="loop-step" onclick="activateLoop(this)">
+        <div class="loop-num"><div class="step-circle">4</div><div class="step-line"></div></div>
+        <div class="loop-body">
+          <div class="loop-phase">Execute</div>
+          <div class="loop-title">Act on current Intention — make the tool call</div>
+          <div class="loop-detail">The Intention is executed: the tool call is made, the code is run, the API is called. The agent is now committed to this action. The result will feed back into the next Perceive step, updating Beliefs again.
+            <div class="loop-react"><strong>ReAct mapping:</strong> ACT → executes current Intention</div>
+          </div>
+        </div>
+      </div>
+      <div class="loop-step" onclick="activateLoop(this)">
+        <div class="loop-num"><div class="step-circle">↺</div></div>
+        <div class="loop-body">
+          <div class="loop-phase">Cycle back</div>
+          <div class="loop-title">Return to Perceive with new observation</div>
+          <div class="loop-detail">The cycle continues. The new tool result becomes the next Observation, updating Beliefs again. The agent re-deliberates, re-plans, and re-executes until the Desire is satisfied or a termination condition fires. This is the BDI rationality loop — and it IS the ReAct loop, just described through a different theoretical lens.
+            <div class="loop-react"><strong>Key insight:</strong> BDI and ReAct describe the same cognitive cycle — BDI is the theory, ReAct is the implementation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO MAPPER -->
+  <div class="section">
+    <div class="section-title">Interactive — Map the Scenario to BDI Components</div>
+    <div class="scenario-box">
+      <div class="scenario-intro">Read each agent statement and classify whether it's expressing a Belief, Desire, or Intention. Select your answer and check.</div>
+      <div id="scenario-items"></div>
+      <button class="check-map-btn" onclick="checkMap()">Check All Answers</button>
+      <div class="map-result" id="map-result"></div>
+    </div>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <div class="section">
+    <div class="section-title">Key Takeaway</div>
+    <div class="takeaway">BDI gives you a <strong>vocabulary for debugging agents</strong>. When an agent fails, ask: is the problem with its Beliefs (bad data / outdated memory), its Desires (wrong goal / conflicting objectives in system prompt), or its Intentions (poor planning / wrong tool call)? <strong>Diagnosing which layer broke down is the first step to fixing it.</strong> BDI is not just theory — it's your agent's cognitive architecture.</div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="section-title">Knowledge Check — 5 Questions</div>
+    <div class="quiz-set">
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 1 of 5</div>
+        <div class="quiz-q">In the BDI model, what is the critical difference between Desires and Intentions?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Desires are about the future; Intentions are about the past</button>
+          <button class="quiz-option" onclick="qa(this,true,'q1')">Desires are stable high-level goals (set upfront, don't change each loop) — Intentions are the specific, committed next action the agent is executing right now</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Desires come from the user; Intentions come from the LLM</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">There is no meaningful difference — they both mean what the agent wants</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q1"></div>
+        <button class="quiz-reset" id="rst-q1" onclick="resetQ('q1')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 2 of 5</div>
+        <div class="quiz-q">An agent's Beliefs can be "incomplete or wrong." Why does this matter for production systems?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q2')">It doesn't — the LLM corrects incorrect beliefs automatically</button>
+          <button class="quiz-option" onclick="qa(this,true,'q2')">Agents act on Beliefs, not ground truth — stale data, retrieval failures, or hallucinated tool results lead to chains of wrong decisions. Belief quality directly determines output quality</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">It matters only for memory-intensive tasks</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Incorrect beliefs are caught by the Guardrails component automatically</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q2"></div>
+        <button class="quiz-reset" id="rst-q2" onclick="resetQ('q2')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 3 of 5</div>
+        <div class="quiz-q">A competitor agent framework claims "our agents have no system prompt — they are purely reactive to the user." Using BDI, what component are they missing and what will break?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q3')">They're missing Beliefs — the agent won't know anything about the world</button>
+          <button class="quiz-option" onclick="qa(this,true,'q3')">They're missing stable Desires — without a persistent goal, the agent has no basis for evaluating actions. It will drift, lose context, and optimise for the most recent user message rather than the actual objective</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">They're missing Intentions — without a system prompt, no tool calls can be made</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">Nothing breaks — the system prompt is optional in most frameworks</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q3"></div>
+        <button class="quiz-reset" id="rst-q3" onclick="resetQ('q3')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 4 of 5</div>
+        <div class="quiz-q">How does the BDI rationality loop map to the ReAct loop? Which BDI step corresponds to which ReAct step?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q4')">BDI and ReAct are completely different models with no overlap</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Beliefs = Act, Desires = Observe, Intentions = Think</button>
+          <button class="quiz-option" onclick="qa(this,true,'q4')">Observe = updates Beliefs · Think = Deliberate + Plan (selecting Desire, forming Intention) · Act = Execute (current Intention) — BDI is the theory; ReAct is the implementation of the same cognitive cycle</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">ReAct has 4 steps; BDI has 3 components — they cannot be mapped</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q4"></div>
+        <button class="quiz-reset" id="rst-q4" onclick="resetQ('q4')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 5 of 5</div>
+        <div class="quiz-q">An agent is tasked with "produce a market research report." Midway, a web search returns 0 results due to a network error. Using BDI, which component should NOT change as a result?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Beliefs — the agent should ignore the failed search</button>
+          <button class="quiz-option" onclick="qa(this,true,'q5')">Desires — the goal of producing the report stays constant. Beliefs update (search failed). Intention changes (try a different search query or fallback tool). But the Desire remains: complete the report.</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Intentions — the agent must continue with the same tool call</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">All three should change when a tool fails</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q5"></div>
+        <button class="quiz-reset" id="rst-q5" onclick="resetQ('q5')">Try Again</button>
+      </div>
+
+    </div>
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">—</div>
+      <div class="score-label">questions answered correctly</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showBDI(type,btn){
+  document.querySelectorAll('.bdi-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.bdi-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('bp-'+type).classList.add('active');
+}
+
+function activateLoop(el){
+  document.querySelectorAll('.loop-step').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Scenario mapper
+const scenarios=[
+  {text:'"I currently know that the user wants a report on Tesla, and that my last web search returned 3 relevant articles."', answer:'bel', hint:'This describes the agent\'s current knowledge state — its internal model of the world. That\'s Beliefs.'},
+  {text:'"My goal is to produce a comprehensive, accurate competitive analysis by the end of this task."', answer:'des', hint:'This is a stable high-level objective that persists across all loop iterations — that\'s a Desire.'},
+  {text:'"Right now I am going to call the web_search tool with the query \'Tesla Q3 2024 revenue\'."', answer:'int', hint:'This is a specific, committed, in-progress action — that\'s an Intention.'},
+  {text:'"I believe the pricing data I retrieved 3 steps ago may now be outdated — it was from a cached source."', answer:'bel', hint:'Acknowledging the state of current knowledge (including its limitations) is Beliefs.'},
+  {text:'"I want to finish this report quickly AND be thorough — these goals may conflict."', answer:'des', hint:'Multiple, potentially conflicting high-level objectives = Desires. Note that Desires can conflict; Intentions are the resolution.'},
+];
+function buildScenarios(){
+  const c=document.getElementById('scenario-items');
+  c.innerHTML='';
+  scenarios.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText='margin-bottom:16px;background:rgba(255,255,255,.03);border-radius:10px;padding:16px 18px;';
+    d.innerHTML=`<div style="font-size:13.5px;line-height:1.65;color:var(--text);font-style:italic;margin-bottom:10px">${i+1}. ${s.text}</div>
+    <select id="msel-${i}" style="background:#11141f;border:1px solid rgba(0,210,255,.2);color:var(--text);padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;">
+      <option value="">— Select BDI component —</option>
+      <option value="bel">Belief</option>
+      <option value="des">Desire</option>
+      <option value="int">Intention</option>
+    </select>`;
+    c.appendChild(d);
+  });
+}
+buildScenarios();
+
+function checkMap(){
+  let correct=0;
+  const msgs=[];
+  scenarios.forEach((s,i)=>{
+    const sel=document.getElementById('msel-'+i);
+    if(sel.value===s.answer){correct++;sel.style.borderColor='var(--green)';sel.style.color='var(--green)';}
+    else{sel.style.borderColor='var(--red)';sel.style.color='var(--red)';msgs.push(`#${i+1}: ${s.hint}`);}
+  });
+  const r=document.getElementById('map-result');
+  r.className='map-result show '+(correct===scenarios.length?'good':'bad');
+  r.innerHTML=correct===scenarios.length
+    ?'✓ Perfect! All 5 statements correctly classified. You can distinguish Beliefs (knowledge state), Desires (stable goals), and Intentions (current committed actions).'
+    :`✗ ${correct}/5 correct. Explanations for incorrect ones:<br><br>`+msgs.map(m=>`• ${m}`).join('<br>');
+}
+
+// Quiz
+const answers={};
+const cfb={
+  q1:'✓ Correct. This distinction is fundamental: Desires are your objectives (stable, high-level, set by the system prompt or user task) — they define what success looks like. Intentions are what you\'re doing right now to move toward those goals — they change every loop iteration based on current beliefs and observations.',
+  q2:'✓ Exactly right. The agent reasons from Beliefs, not from reality. If a RAG retrieval returns a stale chunk, or a tool call returns unexpected data that gets misinterpreted, the agent\'s Beliefs are wrong — and every Intention formed from those Beliefs will be based on faulty premises. Belief quality is the foundation of agent quality.',
+  q3:'✓ Correct. Stable Desires (embodied in the system prompt) are what give the agent a persistent objective. Without them, the agent\'s only goal is to respond to the current message — it has no basis for multi-step planning, no way to evaluate whether an action serves the objective, and no resistance to drift.',
+  q4:'✓ Exactly. BDI and ReAct are the same cognitive loop described at different levels of abstraction. BDI (1991) is the theoretical framework; ReAct (2022) is the practical prompt-engineering implementation. Knowing both means you can reason about agent behaviour theoretically (BDI) and implement it practically (ReAct).',
+  q5:'✓ Right. Desires are stable — the goal doesn\'t change because one tool failed. Beliefs update: "search failed, data not yet retrieved." Intention changes: "try a different search query or use a fallback tool." The Desire — produce the report — stays constant throughout. This is why well-designed agents recover from tool failures without abandoning their objective.'
+};
+const wfb={
+  q1:'✗ The timeline framing isn\'t the key distinction. Both Desires and Intentions are about future states. The key difference is stability: Desires persist across all loop iterations (the goal doesn\'t change because one step failed). Intentions are specific, committed, in-progress actions that change every loop iteration.',
+  q2:'✗ The LLM doesn\'t automatically correct for bad data — it reasons from whatever is in the context. If a tool call returns stale pricing, the agent believes the stale price is current and makes decisions based on it. Bad beliefs cascade into bad intentions and wrong actions. Belief quality is everything.',
+  q3:'✗ Beliefs are about data; Intentions are specific actions. The missing component here is Desires — the persistent high-level goal that gives the agent its north star. Without stable Desires, the agent has no way to evaluate whether any action is serving the objective. Every turn becomes isolated rather than part of a coherent plan.',
+  q4:'✗ BDI and ReAct describe the same underlying cognitive cycle. The correct mapping is: Observe updates Beliefs; Think = Deliberate (choose Desire) + Plan (form Intention); Act = Execute (current Intention). They\'re not competing models — BDI is the 1991 theory, ReAct is the 2022 practical implementation.',
+  q5:'✗ All three components don\'t change — Desires are specifically what DOESN\'T change. Beliefs do update (search failed), Intentions do change (try a different approach), but Desires stay constant. That stability is the point: the agent\'s goal of completing the report persists regardless of individual tool failures.'
+};
+function qa(btn,isCorrect,qid){
+  if(answers[qid]!==undefined)return;
+  answers[qid]=isCorrect;
+  const opts=btn.closest('.quiz-box').querySelectorAll('.quiz-option');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect)opts.forEach(o=>{if(o.getAttribute('onclick').includes('true'))o.classList.add('correct');});
+  const fb=document.getElementById('fb-'+qid);
+  fb.className='quiz-feedback show '+(isCorrect?'correct':'wrong');
+  fb.textContent=isCorrect?cfb[qid]:wfb[qid];
+  document.getElementById('rst-'+qid).className='quiz-reset show';
+  updateScore();
+}
+function resetQ(qid){
+  delete answers[qid];
+  const box=document.getElementById('fb-'+qid).closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(o=>{o.disabled=false;o.className='quiz-option';});
+  document.getElementById('fb-'+qid).className='quiz-feedback';
+  document.getElementById('rst-'+qid).className='quiz-reset';
+  updateScore();
+}
+function updateScore(){
+  const c=Object.values(answers).filter(Boolean).length;
+  const t=Object.keys(answers).length;
+  if(t>0){document.getElementById('score-box').classList.add('show');document.getElementById('score-num').textContent=c+'/5 correct';}
+}
+</script>
+</body>
+</html>

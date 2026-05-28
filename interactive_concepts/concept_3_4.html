@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.4 — A2A Protocol</title>
+<style>
+  :root {
+    --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+    --text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;
+    --accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;
+    --correct:#06d6a0;--wrong:#ff6584;--radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  nav .nav-links{display:flex;gap:16px;align-items:center;}
+  nav a{color:var(--accent);text-decoration:none;font-size:.9rem;padding:6px 14px;border:1px solid var(--accent);border-radius:20px;transition:all .2s;}
+  nav a:hover{background:var(--accent);color:#000;}
+  nav .title{font-weight:700;font-size:1rem;}
+  .hero{background:linear-gradient(135deg,#1a0a12 0%,#0d1117 60%);border-bottom:1px solid var(--border);padding:48px 32px 36px;text-align:center;}
+  .session-tag{display:inline-block;background:var(--accent);color:#000;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;margin-bottom:12px;}
+  .hero p{color:var(--muted);font-size:1.05rem;max-width:680px;margin:0 auto;}
+  .content{max-width:960px;margin:0 auto;padding:40px 24px 60px;}
+  .section{margin-bottom:48px;}
+  .section h2{font-size:1.3rem;font-weight:700;margin-bottom:20px;color:var(--accent);display:flex;align-items:center;gap:10px;}
+  .section h2::before{content:'';display:block;width:4px;height:1.3rem;background:var(--accent);border-radius:2px;}
+
+  /* OVERVIEW CARDS */
+  .overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;}
+  .ov-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;}
+  .ov-card .icon{font-size:2rem;margin-bottom:10px;}
+  .ov-card h3{font-size:.9rem;font-weight:700;margin-bottom:8px;color:var(--accent);}
+  .ov-card p{font-size:.82rem;color:var(--muted);line-height:1.5;}
+
+  /* VS TABLE */
+  .vs-table{width:100%;border-collapse:collapse;font-size:.87rem;}
+  .vs-table th{background:var(--surface2);padding:12px 16px;text-align:left;border-bottom:2px solid var(--border);font-weight:700;}
+  .vs-table th.mcp{color:var(--accent5);}
+  .vs-table th.a2a{color:var(--accent);}
+  .vs-table td{padding:10px 16px;border-bottom:1px solid var(--border);color:var(--muted);}
+  .vs-table td:first-child{font-weight:600;color:var(--text);}
+  .vs-table .hi{color:var(--accent3);font-weight:600;}
+
+  /* TASK LIFECYCLE */
+  .lifecycle{display:flex;align-items:center;flex-wrap:wrap;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;overflow-x:auto;}
+  .lc-state{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;min-width:110px;cursor:pointer;transition:all .2s;}
+  .lc-state:hover,.lc-state.active{border-color:var(--accent);background:rgba(255,101,132,.07);}
+  .lc-state h4{font-size:.82rem;font-weight:700;margin-bottom:4px;}
+  .lc-state.submitted h4{color:var(--accent2);}
+  .lc-state.working h4{color:var(--accent5);}
+  .lc-state.input-req h4{color:var(--accent4);}
+  .lc-state.completed h4{color:var(--accent3);}
+  .lc-state.failed h4{color:var(--wrong);}
+  .lc-state p{font-size:.72rem;color:var(--muted);}
+  .lc-arrow{color:var(--muted);font-size:1.4rem;padding:0 6px;flex-shrink:0;}
+  .lc-detail{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;margin-top:16px;display:none;}
+  .lc-detail.show{display:block;}
+  .lc-detail h4{font-size:.9rem;font-weight:700;margin-bottom:10px;color:var(--accent2);}
+  .lc-detail p{font-size:.84rem;color:var(--muted);line-height:1.55;}
+  .lc-detail pre{font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent2);line-height:1.5;white-space:pre-wrap;margin-top:10px;background:#090d12;padding:12px;border-radius:6px;}
+
+  /* JSON PAIR */
+  .json-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:600px){.json-pair{grid-template-columns:1fr;}}
+  .json-block{background:#090d12;border:1px solid var(--border);border-radius:8px;padding:16px;}
+  .json-block h4{font-size:.8rem;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;}
+  .json-block.req h4{color:var(--accent4);}
+  .json-block.res h4{color:var(--accent3);}
+  .json-block pre{font-family:'Courier New',monospace;font-size:.76rem;color:var(--text);line-height:1.6;white-space:pre-wrap;}
+  .jk{color:var(--accent5);}
+  .js{color:var(--accent3);}
+  .jn{color:var(--accent2);}
+
+  /* PROTOCOL FLOW */
+  .flow-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+  .flow-step{display:flex;align-items:flex-start;gap:14px;margin-bottom:10px;padding:12px 14px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--border);}
+  .flow-step.hl{border-left-color:var(--accent);}
+  .flow-step .sn{background:var(--accent);color:#000;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:2px;}
+  .flow-step .sc h4{font-size:.88rem;font-weight:700;margin-bottom:3px;}
+  .flow-step .sc p{font-size:.8rem;color:var(--muted);}
+  .flow-step .sc code{font-family:'Courier New',monospace;font-size:.76rem;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px;color:var(--accent2);}
+
+  /* QUIZ */
+  .quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+  .quiz-card h3{font-size:1rem;font-weight:700;margin-bottom:16px;line-height:1.5;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:left;color:var(--text);width:100%;}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:rgba(255,101,132,.08);}
+  .opt.correct{background:rgba(6,214,160,.15);border-color:var(--correct);color:var(--correct);}
+  .opt.wrong{background:rgba(255,101,132,.15);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:12px;font-size:.85rem;padding:10px 14px;border-radius:8px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(6,214,160,.1);color:var(--correct);border:1px solid var(--correct);}
+  .feedback.wrong{background:rgba(255,101,132,.1);color:var(--wrong);border:1px solid var(--wrong);}
+  .reset-btn{margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .score-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px;}
+  .score-display{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .score-label{color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_3.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_5.html">Next →</a>
+  </div>
+  <span class="title">3.4 — A2A Protocol</span>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
+  <h1>A2A Protocol</h1>
+  <p>Agent-to-Agent communication standard — how autonomous agents delegate tasks to each other across organizational boundaries.</p>
+</div>
+<div class="content">
+
+  <!-- WHAT IS A2A -->
+  <div class="section">
+    <h2>What Is A2A?</h2>
+    <div class="overview-grid">
+      <div class="ov-card">
+        <div class="icon">🤝</div>
+        <h3>Agent Collaboration</h3>
+        <p>A2A lets one AI agent delegate tasks to another agent — even across different vendors, clouds, or organizations.</p>
+      </div>
+      <div class="ov-card">
+        <div class="icon">📋</div>
+        <h3>Task-Oriented</h3>
+        <p>Unlike MCP's tool calls, A2A exchanges are full <em>tasks</em> with rich state: submitted → working → completed.</p>
+      </div>
+      <div class="ov-card">
+        <div class="icon">🌊</div>
+        <h3>Streaming-Native</h3>
+        <p>Long-running tasks stream status updates and partial artifacts back to the caller in real time via SSE.</p>
+      </div>
+      <div class="ov-card">
+        <div class="icon">🔒</div>
+        <h3>Opaque Execution</h3>
+        <p>The remote agent is a black box — caller doesn't know (or care) how it works internally. Just tasks in, results out.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MCP vs A2A -->
+  <div class="section">
+    <h2>MCP vs A2A — When to Use Which</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <table class="vs-table">
+        <thead>
+          <tr><th>Dimension</th><th class="mcp">MCP (Tool Protocol)</th><th class="a2a">A2A (Agent Protocol)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Unit of exchange</td><td>Tool call (function)</td><td class="hi">Task (multi-step work)</td></tr>
+          <tr><td>Counterparty</td><td>Deterministic service</td><td class="hi">Autonomous agent</td></tr>
+          <tr><td>Execution model</td><td>Synchronous, fast (&lt;2s)</td><td class="hi">Async, long-running (secs–mins)</td></tr>
+          <tr><td>State management</td><td>Stateless per call</td><td class="hi">Task has lifecycle (5 states)</td></tr>
+          <tr><td>Streaming</td><td>Optional</td><td class="hi">First-class via SSE</td></tr>
+          <tr><td>Discovery</td><td>tools/list</td><td class="hi">Agent Card (/.well-known/agent.json)</td></tr>
+          <tr><td>Auth</td><td>API keys / OAuth</td><td class="hi">OAuth 2.0 (required)</td></tr>
+          <tr><td>Typical use</td><td>Search, DB query, file read</td><td class="hi">Research, coding, writing tasks</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.83rem;color:var(--muted);margin-top:12px;">💡 <strong style="color:var(--text)">Rule of thumb:</strong> Use MCP to call tools. Use A2A to delegate to agents. They're complementary — an A2A agent often uses MCP internally to call its own tools.</p>
+  </div>
+
+  <!-- TASK LIFECYCLE -->
+  <div class="section">
+    <h2>A2A Task Lifecycle — Click a State</h2>
+    <div class="lifecycle" id="lifecycle">
+      <div class="lc-state submitted" onclick="showState('submitted',this)">
+        <h4>submitted</h4><p>Task received</p>
+      </div>
+      <div class="lc-arrow">→</div>
+      <div class="lc-state working" onclick="showState('working',this)">
+        <h4>working</h4><p>Agent executing</p>
+      </div>
+      <div class="lc-arrow">⇄</div>
+      <div class="lc-state input-req" onclick="showState('input_required',this)">
+        <h4>input-required</h4><p>Needs more info</p>
+      </div>
+      <div class="lc-arrow">→</div>
+      <div class="lc-state completed" onclick="showState('completed',this)">
+        <h4>completed</h4><p>Artifact ready</p>
+      </div>
+      <div class="lc-arrow">|</div>
+      <div class="lc-state failed" onclick="showState('failed',this)">
+        <h4>failed</h4><p>Terminal error</p>
+      </div>
+    </div>
+    <div class="lc-detail" id="lc-detail"></div>
+  </div>
+
+  <!-- PROTOCOL MESSAGES -->
+  <div class="section">
+    <h2>Core Protocol Messages</h2>
+    <div class="flow-box">
+      <div class="flow-step hl">
+        <div class="sn">1</div>
+        <div class="sc">
+          <h4>tasks/send</h4>
+          <p>Client agent sends a task to the remote agent. Includes: <code>task_id</code>, <code>session_id</code>, <code>message</code> with parts (text, file, data).</p>
+        </div>
+      </div>
+      <div class="flow-step hl">
+        <div class="sn">2</div>
+        <div class="sc">
+          <h4>tasks/sendSubscribe</h4>
+          <p>Like tasks/send but opens an SSE stream — server pushes <code>TaskStatusUpdateEvent</code> and <code>TaskArtifactUpdateEvent</code> as work progresses.</p>
+        </div>
+      </div>
+      <div class="flow-step hl">
+        <div class="sn">3</div>
+        <div class="sc">
+          <h4>tasks/get</h4>
+          <p>Poll the current task state and any artifacts produced so far. Used when not using SSE streaming.</p>
+        </div>
+      </div>
+      <div class="flow-step hl">
+        <div class="sn">4</div>
+        <div class="sc">
+          <h4>tasks/cancel</h4>
+          <p>Request cancellation of an in-progress task. Remote agent should stop and set state to <code>canceled</code>.</p>
+        </div>
+      </div>
+      <div class="flow-step hl">
+        <div class="sn">5</div>
+        <div class="sc">
+          <h4>tasks/pushNotification/set</h4>
+          <p>Register a webhook URL so the remote agent can push completion events instead of requiring polling.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON EXAMPLE -->
+  <div class="section">
+    <h2>Message Structure Example</h2>
+    <div class="json-pair">
+      <div class="json-block req">
+        <h4>tasks/send (Client → Agent)</h4>
+        <pre>{
+  <span class="jk">"jsonrpc"</span>: <span class="js">"2.0"</span>,
+  <span class="jk">"id"</span>: <span class="jn">1</span>,
+  <span class="jk">"method"</span>: <span class="js">"tasks/send"</span>,
+  <span class="jk">"params"</span>: {
+    <span class="jk">"id"</span>: <span class="js">"task-abc123"</span>,
+    <span class="jk">"sessionId"</span>: <span class="js">"sess-xyz"</span>,
+    <span class="jk">"message"</span>: {
+      <span class="jk">"role"</span>: <span class="js">"user"</span>,
+      <span class="jk">"parts"</span>: [{
+        <span class="jk">"type"</span>: <span class="js">"text"</span>,
+        <span class="jk">"text"</span>: <span class="js">"Research quantum computing trends and summarize in 3 bullets"</span>
+      }]
+    }
+  }
+}</pre>
+      </div>
+      <div class="json-block res">
+        <h4>Task Response (Agent → Client)</h4>
+        <pre>{
+  <span class="jk">"result"</span>: {
+    <span class="jk">"id"</span>: <span class="js">"task-abc123"</span>,
+    <span class="jk">"status"</span>: {
+      <span class="jk">"state"</span>: <span class="js">"completed"</span>,
+      <span class="jk">"timestamp"</span>: <span class="js">"2025-01-15T10:23:41Z"</span>
+    },
+    <span class="jk">"artifacts"</span>: [{
+      <span class="jk">"name"</span>: <span class="js">"summary"</span>,
+      <span class="jk">"parts"</span>: [{
+        <span class="jk">"type"</span>: <span class="js">"text"</span>,
+        <span class="jk">"text"</span>: <span class="js">"1. Quantum advantage demonstrated..."</span>
+      }]
+    }]
+  }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz — Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. What is the fundamental difference between an MCP tool call and an A2A task?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','c')">A) MCP uses JSON; A2A uses binary encoding</button>
+        <button class="opt" onclick="answer('q1','b','c')">B) MCP requires auth; A2A is public</button>
+        <button class="opt" onclick="answer('q1','c','c')">C) MCP calls a deterministic function; A2A delegates full tasks to an autonomous agent with its own reasoning</button>
+        <button class="opt" onclick="answer('q1','d','c')">D) A2A can only be used within a single organization</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. An A2A task transitions to <code>input_required</code> state. What does this mean?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','b')">A) The task failed and must be resubmitted</button>
+        <button class="opt" onclick="answer('q2','b','b')">B) The remote agent needs additional information from the caller to continue</button>
+        <button class="opt" onclick="answer('q2','c','b')">C) The task is waiting for a human to review the output</button>
+        <button class="opt" onclick="answer('q2','d','b')">D) The agent's rate limit was reached</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. Which A2A method would you use to receive real-time progress updates as a long task executes?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','b')">A) tasks/get with polling every second</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) tasks/sendSubscribe — opens an SSE stream for live status and artifact events</button>
+        <button class="opt" onclick="answer('q3','c','b')">C) tasks/send with a callback URL in the request body</button>
+        <button class="opt" onclick="answer('q3','d','b')">D) tasks/cancel and resubmit with streaming flag</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. Why is A2A described as "opaque execution"?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','c')">A) The messages are encrypted so the hub cannot inspect them</button>
+        <button class="opt" onclick="answer('q4','b','c')">B) A2A tasks run in a black-box Docker container</button>
+        <button class="opt" onclick="answer('q4','c','c')">C) The caller doesn't know or care how the remote agent works internally — it just receives the completed task result</button>
+        <button class="opt" onclick="answer('q4','d','c')">D) A2A doesn't return intermediate results</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. How does an A2A client agent discover what a remote agent can do?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','b')">A) By calling tools/list just like MCP</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) By fetching the Agent Card at <code>/.well-known/agent.json</code> — a JSON document describing the agent's capabilities</button>
+        <button class="opt" onclick="answer('q5','c','b')">C) By sending a discovery/ping message and parsing the response headers</button>
+        <button class="opt" onclick="answer('q5','d','b')">D) A2A agents must be manually registered in a central registry</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div>
+<script>
+const stateData = {
+  submitted: {
+    title: 'submitted — Task Received',
+    desc: 'The remote agent has received the task and acknowledged it. No work has started yet. The task ID is now valid and can be used to poll status or cancel.',
+    code: `{ "state": "submitted", "timestamp": "2025-01-15T10:23:00Z" }`
+  },
+  working: {
+    title: 'working — Agent Executing',
+    desc: 'The agent is actively processing the task. If using SSE (sendSubscribe), the client will receive TaskStatusUpdateEvent messages with optional status messages describing progress.',
+    code: `{ "state": "working", "message": { "role": "agent", "parts": [{ "type": "text", "text": "Searching web for quantum computing papers..." }] } }`
+  },
+  input_required: {
+    title: 'input_required — Needs More Info',
+    desc: 'The agent cannot proceed without additional input from the caller. The client must send a follow-up tasks/send to the same task ID with a new message providing the requested information.',
+    code: `{ "state": "input_required", "message": { "role": "agent", "parts": [{ "type": "text", "text": "Which time range should I focus on? Last 1 year or last 5 years?" }] } }`
+  },
+  completed: {
+    title: 'completed — Artifact Ready',
+    desc: 'Task finished successfully. The response includes one or more artifacts — structured outputs like text documents, data objects, or files that the calling agent can consume.',
+    code: `{ "state": "completed", "artifacts": [{ "name": "research_summary", "parts": [{ "type": "text", "text": "Summary: ..." }] }] }`
+  },
+  failed: {
+    title: 'failed — Terminal Error',
+    desc: 'The agent encountered an unrecoverable error. The task cannot be resumed — a new task must be submitted. The response includes an error message explaining what went wrong.',
+    code: `{ "state": "failed", "message": { "role": "agent", "parts": [{ "type": "text", "text": "External API rate limit exceeded. Please retry in 60 seconds." }] } }`
+  }
+};
+
+let activeState = null;
+function showState(id, el) {
+  const detail = document.getElementById('lc-detail');
+  document.querySelectorAll('.lc-state').forEach(s => s.classList.remove('active'));
+  if (activeState === id) { detail.classList.remove('show'); activeState = null; return; }
+  activeState = id;
+  el.classList.add('active');
+  const d = stateData[id];
+  detail.innerHTML = `<h4>${d.title}</h4><p>${d.desc}</p><pre>${d.code}</pre>`;
+  detail.classList.add('show');
+}
+
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1: 'MCP calls deterministic services (search, DB query). A2A delegates full tasks to an autonomous reasoning agent — the remote agent decides how to accomplish the work.',
+      q2: 'input_required means the agent paused and is asking the caller for more information before it can continue. The caller must send a follow-up message to the same task ID.',
+      q3: 'tasks/sendSubscribe opens an SSE stream so the server can push TaskStatusUpdateEvent and TaskArtifactUpdateEvent messages to the client in real time.',
+      q4: 'Opaque execution means the calling agent doesn\'t need to know how the remote agent is implemented — it just sends a task and receives the result, like a black box.',
+      q5: 'The Agent Card at /.well-known/agent.json is the A2A discovery mechanism — it describes the agent\'s name, skills, supported input/output types, and authentication methods.'
+    };
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => { o.disabled = false; o.classList.remove('correct','wrong'); });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

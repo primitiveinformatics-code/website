@@ -220,7 +220,7 @@ export default function Hero() {
               <ArrowRight size={18} />
             </motion.a>
             <motion.a
-              href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
+              href="mailto:primitiveinformatics@gmail.com?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-base"

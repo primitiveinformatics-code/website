@@ -1,0 +1,566 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.2 â€” The MCP Hub Pattern</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --accent2: #ffd166; --accent3: #06d6a0;
+    --accent4: #6c63ff; --accent5: #00d2ff;
+    --correct: #06d6a0; --wrong: #ff6584; --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  nav .nav-links { display: flex; gap: 16px; align-items: center; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.9rem; padding: 6px 14px; border: 1px solid var(--accent); border-radius: 20px; transition: all .2s; }
+  nav a:hover { background: var(--accent); color: #000; }
+  nav .title { font-weight: 700; font-size: 1rem; color: var(--text); }
+
+  .hero { background: linear-gradient(135deg, #1a0a12 0%, #0d1117 60%); border-bottom: 1px solid var(--border); padding: 48px 32px 36px; text-align: center; }
+  .session-tag { display: inline-block; background: var(--accent); color: #000; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 1.05rem; max-width: 680px; margin: 0 auto; }
+
+  .content { max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
+  .section { margin-bottom: 48px; }
+  .section h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+  .section h2::before { content: ''; display: block; width: 4px; height: 1.3rem; background: var(--accent); border-radius: 2px; }
+
+  /* HUB DIAGRAM */
+  .hub-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; position: relative; }
+  .hub-center { background: linear-gradient(135deg, #ff6584, #c0392b); border-radius: 12px; padding: 20px 28px; text-align: center; max-width: 200px; margin: 0 auto 24px; }
+  .hub-center h3 { font-size: 1rem; font-weight: 800; color: #fff; }
+  .hub-center p { font-size: 0.75rem; color: rgba(255,255,255,.75); margin-top: 4px; }
+  .hub-spokes { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+  .spoke-server { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; transition: border-color .2s, transform .2s; cursor: pointer; }
+  .spoke-server:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .spoke-server.active { border-color: var(--accent2); background: rgba(255,209,102,.05); }
+  .spoke-server .s-icon { font-size: 1.6rem; margin-bottom: 8px; }
+  .spoke-server h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+  .spoke-server .s-ns { font-size: 0.72rem; color: var(--accent2); font-family: 'Courier New', monospace; margin-bottom: 6px; }
+  .spoke-server .s-tools { font-size: 0.75rem; color: var(--muted); }
+  .spoke-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 16px; display: none; }
+  .spoke-detail.show { display: block; }
+  .spoke-detail h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: var(--accent2); }
+  .tool-chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tool-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; font-family: 'Courier New', monospace; color: var(--accent5); }
+
+  /* ROUTING SIMULATOR */
+  .router-sim { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .router-sim h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+  .query-input-area { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .query-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; color: var(--text); font-size: 0.82rem; cursor: pointer; transition: all .2s; text-align: left; }
+  .query-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .query-btn.selected { border-color: var(--accent); background: rgba(255,101,132,.08); color: var(--accent); }
+  .routing-trace { background: #090d12; border: 1px solid var(--border); border-radius: 8px; padding: 16px; min-height: 160px; font-family: 'Courier New', monospace; font-size: 0.8rem; line-height: 1.8; }
+  .rt-agent { color: var(--accent4); }
+  .rt-hub { color: var(--accent); }
+  .rt-server { color: var(--accent2); }
+  .rt-result { color: var(--accent3); }
+  .rt-info { color: var(--muted); }
+
+  /* NAMESPACING */
+  .ns-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .ns-table th { background: var(--surface2); padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--border); font-weight: 700; color: var(--muted); }
+  .ns-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  .ns-table td:first-child { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--accent5); }
+  .ns-table td:nth-child(2) { color: var(--accent2); font-size: 0.82rem; }
+  .ns-table td:nth-child(3) { color: var(--muted); font-size: 0.82rem; }
+
+  /* WHY HUB CARDS */
+  .benefit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .benefit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+  .benefit-card .b-icon { font-size: 1.5rem; margin-bottom: 10px; }
+  .benefit-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+  .benefit-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  /* MULTI-AGENT DIAGRAM */
+  .mas-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
+  .mas-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .mas-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; text-align: center; font-size: 0.82rem; }
+  .mas-box.orchestrator { border-color: var(--accent4); min-width: 140px; }
+  .mas-box.agent { border-color: var(--accent); min-width: 110px; }
+  .mas-box.hub { border-color: var(--accent); background: rgba(255,101,132,.07); min-width: 130px; }
+  .mas-box.srv { border-color: var(--accent3); min-width: 100px; font-size: 0.75rem; }
+  .mas-box h5 { font-size: 0.78rem; font-weight: 700; margin-bottom: 3px; }
+  .mas-box.orchestrator h5 { color: var(--accent4); }
+  .mas-box.agent h5 { color: var(--accent); }
+  .mas-box.hub h5 { color: var(--accent); }
+  .mas-box.srv h5 { color: var(--accent3); }
+  .mas-box p { font-size: 0.72rem; color: var(--muted); }
+  .mas-arrow { color: var(--muted); font-size: 1.2rem; }
+  .mas-sep { width: 100%; height: 1px; background: var(--border); margin: 8px 0; }
+
+  /* QUIZ */
+  .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+  .quiz-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: pointer; font-size: 0.9rem; transition: all .2s; text-align: left; color: var(--text); width: 100%; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(255,101,132,.08); }
+  .opt.correct { background: rgba(6,214,160,.15); border-color: var(--correct); color: var(--correct); }
+  .opt.wrong { background: rgba(255,101,132,.15); border-color: var(--wrong); color: var(--wrong); }
+  .feedback { margin-top: 12px; font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,.1); color: var(--correct); border: 1px solid var(--correct); }
+  .feedback.wrong { background: rgba(255,101,132,.1); color: var(--wrong); border: 1px solid var(--wrong); }
+  .reset-btn { margin-top: 10px; background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .score-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 24px; margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+  .score-display { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+  .score-label { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_1.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_3_3.html">Next â†’</a>
+  </div>
+  <span class="title">3.2 â€” The MCP Hub Pattern</span>
+</nav>
+
+<div class="hero">
+  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <h1>The MCP Hub Pattern</h1>
+  <p>One hub, many servers â€” how agents route tool calls across namespaced capability clusters without coupling to individual servers.</p>
+</div>
+
+<div class="content">
+
+  <!-- WHAT IS A HUB -->
+  <div class="section">
+    <h2>What Is the Hub Pattern?</h2>
+    <div class="benefit-grid">
+      <div class="benefit-card">
+        <div class="b-icon">ðŸŒ</div>
+        <h4>Single Entry Point</h4>
+        <p>The agent connects to ONE hub instead of managing N separate MCP server connections â€” dramatically reduces agent complexity.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="b-icon">ðŸ—‚ï¸</div>
+        <h4>Tool Namespacing</h4>
+        <p>Each server's tools are prefixed (e.g., <code>fs.read_file</code>, <code>db.query</code>) â€” no naming collisions across servers.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="b-icon">ðŸ”€</div>
+        <h4>Smart Routing</h4>
+        <p>Hub parses the tool namespace and routes <code>tools/call</code> requests to the correct downstream MCP server automatically.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="b-icon">ðŸ”§</div>
+        <h4>Hot-Swap Servers</h4>
+        <p>Add, remove, or update downstream servers without changing agent code â€” the hub re-advertises new tool lists on reconnect.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUB DIAGRAM -->
+  <div class="section">
+    <h2>Hub Architecture â€” Click a Server to Explore</h2>
+    <div class="hub-diagram">
+      <div class="hub-center">
+        <h3>ðŸ”— MCP Hub</h3>
+        <p>Aggregates & routes</p>
+      </div>
+      <div class="hub-spokes">
+        <div class="spoke-server" id="srv-fs" onclick="toggleSpoke('fs')">
+          <div class="s-icon">ðŸ“</div>
+          <h4>Filesystem Server</h4>
+          <div class="s-ns">namespace: fs.*</div>
+          <div class="s-tools">4 tools</div>
+        </div>
+        <div class="spoke-server" id="srv-db" onclick="toggleSpoke('db')">
+          <div class="s-icon">ðŸ—„ï¸</div>
+          <h4>Database Server</h4>
+          <div class="s-ns">namespace: db.*</div>
+          <div class="s-tools">3 tools</div>
+        </div>
+        <div class="spoke-server" id="srv-web" onclick="toggleSpoke('web')">
+          <div class="s-icon">ðŸŒ</div>
+          <h4>Web Search Server</h4>
+          <div class="s-ns">namespace: web.*</div>
+          <div class="s-tools">3 tools</div>
+        </div>
+        <div class="spoke-server" id="srv-code" onclick="toggleSpoke('code')">
+          <div class="s-icon">ðŸ’»</div>
+          <h4>Code Exec Server</h4>
+          <div class="s-ns">namespace: code.*</div>
+          <div class="s-tools">3 tools</div>
+        </div>
+        <div class="spoke-server" id="srv-email" onclick="toggleSpoke('email')">
+          <div class="s-icon">ðŸ“§</div>
+          <h4>Email Server</h4>
+          <div class="s-ns">namespace: email.*</div>
+          <div class="s-tools">3 tools</div>
+        </div>
+      </div>
+      <div class="spoke-detail" id="spoke-detail"></div>
+    </div>
+  </div>
+
+  <!-- NAMESPACING TABLE -->
+  <div class="section">
+    <h2>Tool Namespacing Convention</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <table class="ns-table">
+        <thead>
+          <tr>
+            <th>Namespaced Tool Name</th>
+            <th>Resolves To Server</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>fs.read_file</td><td>filesystem-mcp</td><td>Read file contents at given path</td></tr>
+          <tr><td>fs.write_file</td><td>filesystem-mcp</td><td>Write content to a file path</td></tr>
+          <tr><td>fs.list_directory</td><td>filesystem-mcp</td><td>List files and folders in directory</td></tr>
+          <tr><td>db.query</td><td>postgres-mcp</td><td>Execute read-only SQL query</td></tr>
+          <tr><td>db.get_schema</td><td>postgres-mcp</td><td>Return table schemas for a database</td></tr>
+          <tr><td>web.search</td><td>brave-search-mcp</td><td>Fetch web search results for a query</td></tr>
+          <tr><td>web.fetch_page</td><td>brave-search-mcp</td><td>Retrieve text content of a URL</td></tr>
+          <tr><td>code.run_python</td><td>sandbox-exec-mcp</td><td>Execute Python code in sandbox</td></tr>
+          <tr><td>email.send</td><td>gmail-mcp</td><td>Send email via Gmail API</td></tr>
+          <tr><td>email.search</td><td>gmail-mcp</td><td>Search Gmail inbox by query</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ROUTING SIMULATOR -->
+  <div class="section">
+    <h2>Tool Routing Simulator</h2>
+    <div class="router-sim">
+      <h3>ðŸ¤– Choose an agent request to trace how the hub routes it:</h3>
+      <div class="query-input-area" id="queryBtns">
+        <button class="query-btn" onclick="simulateRoute(0, this)">"Summarize the README.md file"</button>
+        <button class="query-btn" onclick="simulateRoute(1, this)">"Search the web for MCP v2 spec"</button>
+        <button class="query-btn" onclick="simulateRoute(2, this)">"Run this Python snippet and show output"</button>
+        <button class="query-btn" onclick="simulateRoute(3, this)">"Query users table for signups today"</button>
+      </div>
+      <div class="routing-trace" id="routingTrace">
+        <span class="rt-info">Select a request above to trace the routing path...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MULTI-AGENT SETUP -->
+  <div class="section">
+    <h2>Hub in a Multi-Agent System</h2>
+    <div class="mas-diagram">
+      <div class="mas-row">
+        <div class="mas-box orchestrator">
+          <h5>Orchestrator Agent</h5>
+          <p>Plans & delegates</p>
+        </div>
+      </div>
+      <div class="mas-row">
+        <span class="mas-arrow">â†™</span>
+        <span style="color:var(--muted);font-size:0.8rem">delegates sub-tasks</span>
+        <span class="mas-arrow">â†˜</span>
+      </div>
+      <div class="mas-row">
+        <div class="mas-box agent">
+          <h5>Research Agent</h5>
+          <p>Connected to Hub A</p>
+        </div>
+        <div class="mas-box agent">
+          <h5>Coding Agent</h5>
+          <p>Connected to Hub B</p>
+        </div>
+        <div class="mas-box agent">
+          <h5>Comm Agent</h5>
+          <p>Connected to Hub C</p>
+        </div>
+      </div>
+      <div class="mas-row">
+        <span class="mas-arrow">â†“</span>
+        <span style="width:80px;"></span>
+        <span class="mas-arrow">â†“</span>
+        <span style="width:80px;"></span>
+        <span class="mas-arrow">â†“</span>
+      </div>
+      <div class="mas-row">
+        <div class="mas-box hub">
+          <h5>ðŸ”— Hub A</h5>
+          <p>web.*, fs.*</p>
+        </div>
+        <div class="mas-box hub">
+          <h5>ðŸ”— Hub B</h5>
+          <p>code.*, fs.*</p>
+        </div>
+        <div class="mas-box hub">
+          <h5>ðŸ”— Hub C</h5>
+          <p>email.*, cal.*</p>
+        </div>
+      </div>
+      <div class="mas-row">
+        <div class="mas-box srv"><h5>Web Search</h5><p>Brave API</p></div>
+        <div class="mas-box srv"><h5>Filesystem</h5><p>Local FS</p></div>
+        <div class="mas-box srv"><h5>Sandbox</h5><p>Docker exec</p></div>
+        <div class="mas-box srv"><h5>Gmail</h5><p>Gmail API</p></div>
+        <div class="mas-box srv"><h5>Calendar</h5><p>GCal API</p></div>
+      </div>
+      <p style="text-align:center;margin-top:16px;font-size:0.82rem;color:var(--muted);">Each agent has a specialized hub â€” tool sets are scoped to the agent's responsibilities</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz â€” Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. What is the primary purpose of the MCP Hub pattern?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','b')">A) To cache tool responses so they don't need to be re-fetched</button>
+        <button class="opt" onclick="answer('q1','b','b')">B) To give agents a single connection point that aggregates multiple MCP servers</button>
+        <button class="opt" onclick="answer('q1','c','b')">C) To replace MCP servers with a single monolithic service</button>
+        <button class="opt" onclick="answer('q1','d','b')">D) To encrypt all messages between agent and tools</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. An agent calls the tool <code>db.query</code>. What does the hub do with this request?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','c')">A) Executes the query directly inside the hub process</button>
+        <button class="opt" onclick="answer('q2','b','c')">B) Broadcasts the request to all connected servers</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) Parses the <code>db.</code> namespace and routes the call to the database MCP server</button>
+        <button class="opt" onclick="answer('q2','d','c')">D) Rejects it because tool names must not contain dots</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. Why is tool namespacing critical when aggregating multiple MCP servers in a hub?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','a')">A) Multiple servers may expose tools with the same name (e.g., both have <code>search</code>); namespacing prevents collisions</button>
+        <button class="opt" onclick="answer('q3','b','a')">B) The JSON-RPC spec requires dots in all tool names</button>
+        <button class="opt" onclick="answer('q3','c','a')">C) Namespacing is only needed for security, not disambiguation</button>
+        <button class="opt" onclick="answer('q3','d','a')">D) It allows the hub to cache tools by their prefix</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. Which of these describes the "hot-swap" benefit of the hub pattern?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','c')">A) Tool calls execute in under 1ms due to in-memory caching</button>
+        <button class="opt" onclick="answer('q4','b','c')">B) The hub automatically upgrades servers to the latest MCP version</button>
+        <button class="opt" onclick="answer('q4','c','c')">C) Downstream servers can be added or replaced without changing agent code â€” the hub re-exposes updated tool lists</button>
+        <button class="opt" onclick="answer('q4','d','c')">D) Each agent gets a hot standby replica for failover</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. In a multi-agent system using the hub pattern, why might each specialized agent have its OWN hub rather than sharing one?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','b')">A) MCP hubs can only serve one client connection at a time</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) Specialized hubs scope tool access to each agent's responsibilities â€” a coding agent doesn't need email tools</button>
+        <button class="opt" onclick="answer('q5','c','b')">C) Shared hubs are not allowed by the MCP specification</button>
+        <button class="opt" onclick="answer('q5','d','b')">D) Each hub must run on a separate physical machine</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// â”€â”€ SPOKE DETAIL DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const spokeData = {
+  fs: {
+    name: 'Filesystem Server (fs.*)',
+    tools: ['fs.read_file', 'fs.write_file', 'fs.list_directory', 'fs.delete_file'],
+    desc: 'Provides safe, sandboxed access to the local or mounted filesystem. Paths are validated against an allowlist before execution.',
+    impl: 'Uses Node.js fs module with chroot-style path restriction. Runs as a local stdio server.'
+  },
+  db: {
+    name: 'Database Server (db.*)',
+    tools: ['db.query', 'db.get_schema', 'db.list_tables'],
+    desc: 'Exposes read-only PostgreSQL access. Write operations are blocked by the server. All queries are logged for audit.',
+    impl: 'Connects to Postgres via pg driver. Runs in a Docker container isolated from production network.'
+  },
+  web: {
+    name: 'Web Search Server (web.*)',
+    tools: ['web.search', 'web.fetch_page', 'web.summarize_url'],
+    desc: 'Integrates Brave Search API for web queries and raw page fetching. Rate limited to 60 req/min per agent.',
+    impl: 'Wraps the Brave Search REST API. Runs as an HTTP/SSE remote MCP server accessible via authenticated endpoint.'
+  },
+  code: {
+    name: 'Code Execution Server (code.*)',
+    tools: ['code.run_python', 'code.run_js', 'code.lint'],
+    desc: 'Executes untrusted code in an ephemeral Docker sandbox with network access disabled. Enforces 30s timeout and 256MB memory limit.',
+    impl: 'Spins up a fresh Docker container per execution. Container is destroyed after result is returned.'
+  },
+  email: {
+    name: 'Email Server (email.*)',
+    tools: ['email.send', 'email.search', 'email.get_thread'],
+    desc: 'Provides controlled access to Gmail via OAuth 2.0. Send operations require an explicit human-approval guardrail in production.',
+    impl: 'Uses Gmail REST API with OAuth tokens. Send capability is disabled by default; must be enabled via server config flag.'
+  }
+};
+
+let activeSpoke = null;
+function toggleSpoke(id) {
+  const detail = document.getElementById('spoke-detail');
+  const srv = document.getElementById('srv-' + id);
+  if (activeSpoke === id) {
+    detail.classList.remove('show');
+    srv.classList.remove('active');
+    activeSpoke = null;
+    return;
+  }
+  if (activeSpoke) document.getElementById('srv-' + activeSpoke).classList.remove('active');
+  activeSpoke = id;
+  srv.classList.add('active');
+  const d = spokeData[id];
+  detail.innerHTML = `
+    <h4>${d.name}</h4>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:12px;">${d.desc}</p>
+    <div class="tool-chip-list" style="margin-bottom:12px;">${d.tools.map(t => `<span class="tool-chip">${t}</span>`).join('')}</div>
+    <p style="font-size:0.8rem;color:var(--muted);"><strong style="color:var(--text)">Implementation:</strong> ${d.impl}</p>
+  `;
+  detail.classList.add('show');
+}
+
+// â”€â”€ ROUTING SIMULATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const routes = [
+  {
+    label: '"Summarize the README.md file"',
+    lines: [
+      ['rt-agent', 'AGENT: I need to read a file. Will call <strong>fs.read_file</strong>'],
+      ['rt-hub',   'HUB: Received tools/call â†’ name: "fs.read_file"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "fs" â†’ resolves to filesystem-mcp server'],
+      ['rt-hub',   'HUB: Forwarding request to filesystem-mcp via stdio transport'],
+      ['rt-server','FILESYSTEM-MCP: Reading /workspace/README.md...'],
+      ['rt-server','FILESYSTEM-MCP: Returning 1,240 characters of text content'],
+      ['rt-hub',   'HUB: Received response from filesystem-mcp, relaying to agent'],
+      ['rt-result','AGENT: âœ“ Got file content. Now summarizing with LLM...'],
+    ]
+  },
+  {
+    label: '"Search the web for MCP v2 spec"',
+    lines: [
+      ['rt-agent', 'AGENT: Need current web info. Will call <strong>web.search</strong>'],
+      ['rt-hub',   'HUB: Received tools/call â†’ name: "web.search"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "web" â†’ resolves to brave-search-mcp server'],
+      ['rt-hub',   'HUB: Checking rate limit... 12/60 requests used. OK.'],
+      ['rt-hub',   'HUB: Forwarding request to brave-search-mcp via SSE transport'],
+      ['rt-server','BRAVE-SEARCH-MCP: Calling Brave Search API with query: "MCP v2 spec"'],
+      ['rt-server','BRAVE-SEARCH-MCP: Got 8 results. Returning top 5 with titles and snippets.'],
+      ['rt-hub',   'HUB: Relaying results to agent'],
+      ['rt-result','AGENT: âœ“ Got search results. Extracting relevant specification links...'],
+    ]
+  },
+  {
+    label: '"Run this Python snippet and show output"',
+    lines: [
+      ['rt-agent', 'AGENT: Need code execution. Will call <strong>code.run_python</strong>'],
+      ['rt-hub',   'HUB: Received tools/call â†’ name: "code.run_python"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "code" â†’ resolves to sandbox-exec-mcp server'],
+      ['rt-hub',   'HUB: Security check: code execution server active? Yes. Forwarding.'],
+      ['rt-server','SANDBOX-MCP: Spawning ephemeral Docker container (python:3.11-slim)'],
+      ['rt-server','SANDBOX-MCP: Network disabled. Memory limit: 256MB. Timeout: 30s'],
+      ['rt-server','SANDBOX-MCP: Code executed in 0.43s. stdout captured.'],
+      ['rt-server','SANDBOX-MCP: Container destroyed. Returning stdout output.'],
+      ['rt-hub',   'HUB: Relaying code output to agent'],
+      ['rt-result','AGENT: âœ“ Execution complete. Output: [42, 17, 99]'],
+    ]
+  },
+  {
+    label: '"Query users table for signups today"',
+    lines: [
+      ['rt-agent', 'AGENT: Need DB data. Will call <strong>db.query</strong>'],
+      ['rt-hub',   'HUB: Received tools/call â†’ name: "db.query"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "db" â†’ resolves to postgres-mcp server'],
+      ['rt-hub',   'HUB: Agent has db.* read permission. Forwarding.'],
+      ['rt-server','POSTGRES-MCP: Validating SQL... SELECT query only. OK.'],
+      ['rt-server','POSTGRES-MCP: Executing: SELECT COUNT(*) FROM users WHERE created_at >= NOW()-\'1 day\''],
+      ['rt-server','POSTGRES-MCP: Query completed in 18ms. Rows: 1'],
+      ['rt-hub',   'HUB: Relaying query result to agent'],
+      ['rt-result','AGENT: âœ“ Query result: 247 new signups today'],
+    ]
+  }
+];
+
+let routeTimer = null;
+function simulateRoute(idx, btn) {
+  document.querySelectorAll('.query-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  if (routeTimer) clearTimeout(routeTimer);
+  const trace = document.getElementById('routingTrace');
+  trace.innerHTML = '';
+  const lines = routes[idx].lines;
+  let i = 0;
+  function addLine() {
+    if (i >= lines.length) return;
+    const [cls, text] = lines[i++];
+    const div = document.createElement('div');
+    div.className = cls;
+    div.innerHTML = text;
+    trace.appendChild(div);
+    trace.scrollTop = trace.scrollHeight;
+    routeTimer = setTimeout(addLine, 320);
+  }
+  addLine();
+}
+
+// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1: 'The hub gives the agent a single connection point while aggregating N downstream servers behind it.',
+      q2: 'The hub parses the namespace prefix "db." and routes the call to the registered database MCP server.',
+      q3: 'Multiple servers can have tools with identical names â€” namespacing (fs.search vs web.search) prevents collisions.',
+      q4: 'Hot-swap means you can update/replace a downstream server without changing the agent â€” the hub re-exposes the updated tool list.',
+      q5: 'Specialized hubs scope tools to each agent\'s role â€” the coding agent has no need for email tools, keeping its tool context lean.'
+    };
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

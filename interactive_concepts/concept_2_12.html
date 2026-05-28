@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Symbolic vs. Neural AI & Neuro-Symbolic Hybrids | Agentic AI Course</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #21263a;
+    --card2: #1a1f30;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --accent: #00d2ff;
+    --symbolic: #ffd166;
+    --neural: #b57bee;
+    --hybrid: #06d6a0;
+    --border: rgba(0,210,255,0.18);
+    --radius: 12px;
+    --correct: #06d6a0;
+    --wrong: #ef476f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+
+  nav { background: rgba(15,17,23,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav .brand { font-size: 0.8rem; color: var(--muted); }
+  nav .brand span { color: var(--accent); font-weight: 700; }
+  nav .nav-links { display: flex; gap: 12px; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); transition: all 0.2s; }
+  nav a:hover { color: var(--accent); border-color: var(--accent); }
+
+  .hero { text-align: center; padding: 64px 24px 48px; background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,210,255,0.12) 0%, transparent 70%); }
+  .session-tag { display: inline-block; background: rgba(0,210,255,0.15); color: var(--accent); border: 1px solid rgba(0,210,255,0.4); border-radius: 20px; padding: 4px 16px; font-size: 0.78rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 12px; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); max-width: 640px; margin: 0 auto; font-size: 1.05rem; }
+
+  section { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+  .section-title { font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* SPECTRUM SLIDER */
+  .spectrum-container { background: var(--card); border-radius: var(--radius); padding: 32px; border: 1px solid var(--border); }
+  .spectrum-labels { display: flex; justify-content: space-between; margin-bottom: 12px; }
+  .spectrum-labels span { font-weight: 700; font-size: 0.9rem; }
+  .spectrum-labels .sym { color: var(--symbolic); }
+  .spectrum-labels .neu { color: var(--neural); }
+  .spectrum-bar { position: relative; height: 12px; background: linear-gradient(to right, var(--symbolic), var(--hybrid), var(--neural)); border-radius: 6px; margin-bottom: 20px; }
+  .spectrum-slider { width: 100%; appearance: none; -webkit-appearance: none; height: 12px; background: transparent; position: absolute; top: 0; left: 0; cursor: pointer; margin: 0; }
+  .spectrum-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: white; border: 3px solid var(--accent); box-shadow: 0 2px 12px rgba(0,0,0,0.5); cursor: pointer; margin-top: -8px; }
+  .spectrum-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: white; border: 3px solid var(--accent); cursor: pointer; }
+  .spectrum-input-wrap { position: relative; height: 28px; margin-bottom: 8px; }
+  .spectrum-info { background: var(--card2); border-radius: 10px; padding: 20px 24px; min-height: 120px; transition: all 0.2s; border-left: 3px solid var(--accent); }
+  .spectrum-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .spectrum-info p { color: var(--muted); font-size: 0.9rem; }
+  .spec-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .spec-chip { background: rgba(255,255,255,0.06); border-radius: 20px; padding: 3px 12px; font-size: 0.78rem; color: var(--muted); border: 1px solid var(--border); }
+  .spec-chip.s { background: rgba(255,209,102,0.1); color: var(--symbolic); border-color: rgba(255,209,102,0.3); }
+  .spec-chip.n { background: rgba(181,123,238,0.1); color: var(--neural); border-color: rgba(181,123,238,0.3); }
+  .spec-chip.h { background: rgba(6,214,160,0.1); color: var(--hybrid); border-color: rgba(6,214,160,0.3); }
+
+  /* COMPARISON CARDS */
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+  .type-card { background: var(--card); border-radius: var(--radius); padding: 24px; border: 2px solid transparent; }
+  .type-card.sym { border-color: rgba(255,209,102,0.35); }
+  .type-card.neu { border-color: rgba(181,123,238,0.35); }
+  .type-card.hyb { border-color: rgba(6,214,160,0.35); }
+  .type-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .type-card.sym h3 { color: var(--symbolic); }
+  .type-card.neu h3 { color: var(--neural); }
+  .type-card.hyb h3 { color: var(--hybrid); }
+  .type-card .tag { font-size: 0.75rem; color: var(--muted); margin-bottom: 16px; }
+  .prop-row { display: flex; flex-direction: column; gap: 10px; }
+  .prop { display: flex; flex-direction: column; gap: 2px; }
+  .prop .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 600; }
+  .prop .value { font-size: 0.85rem; color: var(--text); }
+  .pro-icon { color: var(--correct); }
+  .con-icon { color: var(--wrong); }
+
+  /* HYBRID PATTERNS TABS */
+  .tab-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tab-btn { background: var(--card2); border: 2px solid var(--border); color: var(--muted); border-radius: 8px; padding: 8px 18px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+  .tab-btn.active { background: rgba(6,214,160,0.12); border-color: var(--hybrid); color: var(--hybrid); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .pattern-detail { background: var(--card); border-radius: var(--radius); padding: 28px; border: 1px solid var(--border); }
+  .pattern-detail h3 { font-size: 1.1rem; font-weight: 700; color: var(--hybrid); margin-bottom: 8px; }
+  .pattern-detail .desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 16px; }
+  .pattern-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .pcol { background: var(--card2); border-radius: 10px; padding: 16px; }
+  .pcol h4 { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; color: var(--muted); }
+  .pcol ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .pcol ul li { font-size: 0.85rem; color: var(--text); padding-left: 16px; position: relative; }
+  .pcol ul li::before { content: '•'; position: absolute; left: 0; color: var(--hybrid); }
+  .example-box { background: rgba(6,214,160,0.06); border: 1px solid rgba(6,214,160,0.2); border-radius: 8px; padding: 14px 18px; margin-top: 14px; }
+  .example-box .ex-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--hybrid); letter-spacing: 0.8px; margin-bottom: 6px; }
+  .example-box p { font-size: 0.88rem; color: var(--muted); }
+
+  /* WHEN TO USE */
+  .decision-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .decision-item { background: var(--card); border-radius: var(--radius); padding: 20px; border-top: 3px solid; cursor: default; }
+  .decision-item.sym { border-color: var(--symbolic); }
+  .decision-item.neu { border-color: var(--neural); }
+  .decision-item.hyb { border-color: var(--hybrid); }
+  .decision-item .di-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  .decision-item.sym .di-label { color: var(--symbolic); }
+  .decision-item.neu .di-label { color: var(--neural); }
+  .decision-item.hyb .di-label { color: var(--hybrid); }
+  .decision-item ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .decision-item ul li { font-size: 0.83rem; color: var(--muted); padding-left: 16px; position: relative; }
+  .decision-item ul li::before { content: '→'; position: absolute; left: 0; }
+  .decision-item.sym ul li::before { color: var(--symbolic); }
+  .decision-item.neu ul li::before { color: var(--neural); }
+  .decision-item.hyb ul li::before { color: var(--hybrid); }
+
+  /* QUIZ */
+  .quiz-container { background: var(--card); border-radius: var(--radius); padding: 32px; border: 1px solid var(--border); }
+  .quiz-score { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .score-display { font-size: 1rem; color: var(--muted); }
+  .score-display span { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+  .q-block { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .q-block:last-of-type { border-bottom: none; }
+  .q-num { font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .q-text { font-size: 1rem; font-weight: 600; margin-bottom: 14px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--card2); border: 2px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+  .opt:hover:not(.locked) { border-color: var(--accent); background: rgba(0,210,255,0.06); }
+  .opt.correct { border-color: var(--correct); background: rgba(6,214,160,0.1); color: var(--correct); }
+  .opt.wrong { border-color: var(--wrong); background: rgba(239,71,111,0.1); color: var(--wrong); }
+  .opt .opt-icon { font-size: 1rem; flex-shrink: 0; opacity: 0; }
+  .opt.correct .opt-icon, .opt.wrong .opt-icon { opacity: 1; }
+  .feedback { display: none; margin-top: 12px; padding: 14px 16px; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: rgba(6,214,160,0.08); border-left: 3px solid var(--correct); color: #a8f0d8; }
+  .feedback.wrong-fb { background: rgba(239,71,111,0.08); border-left: 3px solid var(--wrong); color: #f8c3ce; }
+  .q-reset { display: none; margin-top: 10px; background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+  .q-reset:hover { border-color: var(--accent); color: var(--accent); }
+  .q-reset.show { display: inline-block; }
+
+  @media (max-width: 750px) {
+    .three-col, .decision-grid, .pattern-cols { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Agentic AI Course · <span>Session 2</span></div>
+  <div class="nav-links">
+    <a href="concept_2_9.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="index.html">Home →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="session-tag">Session 2 · Concept 2.12</div>
+  <h1>Symbolic vs. Neural AI &amp; <span>Neuro-Symbolic</span> Hybrids</h1>
+  <p>Two fundamentally different paradigms for machine intelligence — and why the future lies in combining them.</p>
+</div>
+
+<!-- SPECTRUM SLIDER -->
+<section>
+  <div class="section-title">The AI Paradigm Spectrum</div>
+  <div class="spectrum-container">
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">Drag the slider to explore the spectrum from pure Symbolic AI to pure Neural AI — and everything in between.</p>
+    <div class="spectrum-labels">
+      <span class="sym">Symbolic AI</span>
+      <span style="color:var(--hybrid)">Neuro-Symbolic Hybrid</span>
+      <span class="neu">Neural AI</span>
+    </div>
+    <div class="spectrum-bar">
+      <div class="spectrum-input-wrap">
+        <input type="range" class="spectrum-slider" id="spectrumSlider" min="0" max="100" value="50" oninput="updateSpectrum(this.value)">
+      </div>
+    </div>
+    <div class="spectrum-info" id="spectrumInfo">
+      <h3 style="color:var(--hybrid)">⚡ Neuro-Symbolic Hybrid (50)</h3>
+      <p>Combines neural pattern recognition with symbolic reasoning and rules. LLMs are given structured tools (knowledge graphs, rule engines, databases) that impose logical constraints on their outputs.</p>
+      <div class="spec-chips">
+        <span class="spec-chip h">Explainable decisions</span>
+        <span class="spec-chip h">Handles ambiguity + logic</span>
+        <span class="spec-chip h">Production-grade reliability</span>
+        <span class="spec-chip h">Knowledge graph + LLM</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE-COLUMN COMPARISON -->
+<section>
+  <div class="section-title">Side-by-Side Comparison</div>
+  <div class="three-col">
+
+    <div class="type-card sym">
+      <h3>🔷 Symbolic AI</h3>
+      <div class="tag">Rule-based · Logic-driven · Explicit</div>
+      <div class="prop-row">
+        <div class="prop">
+          <div class="label">Core Idea</div>
+          <div class="value">Knowledge represented as explicit rules, logic, and symbol manipulation</div>
+        </div>
+        <div class="prop">
+          <div class="label">Reasoning</div>
+          <div class="value">Deductive: if-then rules, theorem proving, decision trees</div>
+        </div>
+        <div class="prop">
+          <div class="label">Strengths</div>
+          <div class="value"><span class="pro-icon">✓</span> Fully explainable<br><span class="pro-icon">✓</span> Handles logic perfectly<br><span class="pro-icon">✓</span> Works with tiny datasets</div>
+        </div>
+        <div class="prop">
+          <div class="label">Weaknesses</div>
+          <div class="value"><span class="con-icon">✗</span> Brittle with ambiguity<br><span class="con-icon">✗</span> Hard to scale rules<br><span class="con-icon">✗</span> Poor with unstructured data</div>
+        </div>
+        <div class="prop">
+          <div class="label">Examples</div>
+          <div class="value">Expert systems, CLIPS, Prolog, rule engines, chess programs (Deep Blue)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-card neu">
+      <h3>🔮 Neural AI</h3>
+      <div class="tag">Pattern-based · Data-driven · Implicit</div>
+      <div class="prop-row">
+        <div class="prop">
+          <div class="label">Core Idea</div>
+          <div class="value">Knowledge implicit in billions of learned weights from training data patterns</div>
+        </div>
+        <div class="prop">
+          <div class="label">Reasoning</div>
+          <div class="value">Associative: statistical pattern matching, next-token prediction, embeddings</div>
+        </div>
+        <div class="prop">
+          <div class="label">Strengths</div>
+          <div class="value"><span class="pro-icon">✓</span> Excellent with ambiguity<br><span class="pro-icon">✓</span> Scales to any data type<br><span class="pro-icon">✓</span> Generalizes from examples</div>
+        </div>
+        <div class="prop">
+          <div class="label">Weaknesses</div>
+          <div class="value"><span class="con-icon">✗</span> Black box (opaque)<br><span class="con-icon">✗</span> Hallucinations<br><span class="con-icon">✗</span> Needs massive training data</div>
+        </div>
+        <div class="prop">
+          <div class="label">Examples</div>
+          <div class="value">GPT-4, Claude, Gemini, DALL-E, AlphaFold, recommendation systems</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-card hyb">
+      <h3>⚡ Neuro-Symbolic</h3>
+      <div class="tag">Hybrid · Best of both worlds</div>
+      <div class="prop-row">
+        <div class="prop">
+          <div class="label">Core Idea</div>
+          <div class="value">Neural models handle perception/language; symbolic systems handle reasoning/logic</div>
+        </div>
+        <div class="prop">
+          <div class="label">Reasoning</div>
+          <div class="value">Neural frontend for understanding + symbolic backend for structured reasoning</div>
+        </div>
+        <div class="prop">
+          <div class="label">Strengths</div>
+          <div class="value"><span class="pro-icon">✓</span> Explainable + flexible<br><span class="pro-icon">✓</span> Fewer hallucinations<br><span class="pro-icon">✓</span> Reliable for complex logic</div>
+        </div>
+        <div class="prop">
+          <div class="label">Weaknesses</div>
+          <div class="value"><span class="con-icon">✗</span> More complex to build<br><span class="con-icon">✗</span> Integration overhead<br><span class="con-icon">✗</span> Two systems to maintain</div>
+        </div>
+        <div class="prop">
+          <div class="label">Examples</div>
+          <div class="value">LLM + knowledge graph, GPT + rule validator, AlphaCode, IBM Neuro-Symbolic AI</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HYBRID PATTERNS -->
+<section>
+  <div class="section-title">Neuro-Symbolic Hybrid Patterns</div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('kg')">Knowledge Graph + LLM</button>
+    <button class="tab-btn" onclick="switchTab('rule')">Rule Engine + LLM</button>
+    <button class="tab-btn" onclick="switchTab('verify')">Neural + Symbolic Verifier</button>
+    <button class="tab-btn" onclick="switchTab('search')">LLM + Structured Search</button>
+  </div>
+
+  <div class="tab-content active" id="tab-kg">
+    <div class="pattern-detail">
+      <h3>Knowledge Graph + LLM</h3>
+      <div class="desc">The LLM handles natural language understanding and generation. The knowledge graph provides structured, verifiable facts and relationships that the LLM can query. This prevents hallucination on factual claims.</div>
+      <div class="pattern-cols">
+        <div class="pcol">
+          <h4>How It Works</h4>
+          <ul>
+            <li>User query → LLM parses intent</li>
+            <li>LLM generates knowledge graph queries (SPARQL/Cypher)</li>
+            <li>KG returns verified factual triples</li>
+            <li>LLM synthesizes answer grounded in KG facts</li>
+            <li>Answer cites traceable KG nodes</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <h4>Why It Wins</h4>
+          <ul>
+            <li>Factual accuracy from symbolic layer</li>
+            <li>Natural language fluency from neural layer</li>
+            <li>Auditable: every claim traces to a KG node</li>
+            <li>KG can be updated without retraining LLM</li>
+            <li>Works for compliance-sensitive domains</li>
+          </ul>
+        </div>
+      </div>
+      <div class="example-box">
+        <div class="ex-label">Real-World Example</div>
+        <p>Healthcare diagnosis assistant: LLM understands patient symptoms in natural language → queries medical ontology KG (ICD-10, SNOMED) → returns grounded differential diagnoses with citations. The symbolic layer ensures no hallucinated drug interactions.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-rule">
+    <div class="pattern-detail">
+      <h3>Rule Engine + LLM</h3>
+      <div class="desc">The LLM generates candidate outputs; a deterministic rule engine validates them against hard constraints (legal rules, business policies, safety requirements) before they're accepted. Rules are explicit, auditable, and cannot be violated.</div>
+      <div class="pattern-cols">
+        <div class="pcol">
+          <h4>How It Works</h4>
+          <ul>
+            <li>LLM generates candidate response/action</li>
+            <li>Rule engine checks against constraint set</li>
+            <li>Violations → rejected + re-prompted with constraint</li>
+            <li>Passing outputs → delivered to user</li>
+            <li>All rule checks logged for audit</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <h4>Why It Wins</h4>
+          <ul>
+            <li>Hard constraints can never be bypassed</li>
+            <li>LLM handles language; rules handle compliance</li>
+            <li>Rule updates don't require model retraining</li>
+            <li>Full auditability of constraint enforcement</li>
+            <li>Dramatically reduces hallucination-driven errors</li>
+          </ul>
+        </div>
+      </div>
+      <div class="example-box">
+        <div class="ex-label">Real-World Example</div>
+        <p>Financial advisory agent: LLM drafts investment recommendations in natural language → rule engine validates against FINRA regulations, suitability rules, concentration limits → violating recommendations are blocked before reaching the customer.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-verify">
+    <div class="pattern-detail">
+      <h3>Neural + Symbolic Verifier</h3>
+      <div class="desc">A neural model generates solutions (e.g., code, proofs, plans); a symbolic verifier mathematically or logically validates correctness. Used when you need guaranteed correctness, not just probabilistic quality.</div>
+      <div class="pattern-cols">
+        <div class="pcol">
+          <h4>How It Works</h4>
+          <ul>
+            <li>LLM generates solution (code, proof, plan)</li>
+            <li>Symbolic verifier runs formal validation</li>
+            <li>Failed verification → feedback to LLM for retry</li>
+            <li>Loop continues until verified or max attempts</li>
+            <li>Only verified outputs are shipped</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <h4>Why It Wins</h4>
+          <ul>
+            <li>LLM's creative generation power</li>
+            <li>Symbolic verifier's mathematical guarantees</li>
+            <li>Used in safety-critical systems</li>
+            <li>Automated feedback loop replaces human review</li>
+            <li>Scales verification without human bandwidth</li>
+          </ul>
+        </div>
+      </div>
+      <div class="example-box">
+        <div class="ex-label">Real-World Example</div>
+        <p>AlphaCode / Codex with test runner: LLM generates code → unit test suite runs automatically → failures return as structured feedback → LLM regenerates. The symbolic test suite is the verifier. This is how top coding agents achieve &gt;90% correctness.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-search">
+    <div class="pattern-detail">
+      <h3>LLM + Structured Search</h3>
+      <div class="desc">The LLM translates natural language queries into structured search formats (SQL, SPARQL, vector queries, API parameters). The structured system executes the search precisely. Results are returned to the LLM for natural language synthesis.</div>
+      <div class="pattern-cols">
+        <div class="pcol">
+          <h4>How It Works</h4>
+          <ul>
+            <li>User query in natural language</li>
+            <li>LLM converts to SQL / API call / structured query</li>
+            <li>Database/search engine executes precisely</li>
+            <li>Raw results returned to LLM</li>
+            <li>LLM synthesizes human-readable answer</li>
+          </ul>
+        </div>
+        <div class="pcol">
+          <h4>Why It Wins</h4>
+          <ul>
+            <li>Database handles precision; LLM handles language</li>
+            <li>No hallucinated search results</li>
+            <li>Users don't need to know SQL/APIs</li>
+            <li>Filters, sorting, aggregation remain precise</li>
+            <li>NL2SQL is now a major production pattern</li>
+          </ul>
+        </div>
+      </div>
+      <div class="example-box">
+        <div class="ex-label">Real-World Example</div>
+        <p>Business intelligence chatbot: "What was our best-selling product in Q3 by margin?" → LLM generates SQL query → runs against data warehouse → LLM formats the result as a conversational response with context. No hallucinated numbers; the database is ground truth.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHEN TO USE -->
+<section>
+  <div class="section-title">When to Use Each Approach</div>
+  <div class="decision-grid">
+    <div class="decision-item sym">
+      <div class="di-label">Use Symbolic AI when…</div>
+      <ul>
+        <li>Rules are fully known and stable</li>
+        <li>Data is scarce but domain expertise is rich</li>
+        <li>Full explainability is legally required</li>
+        <li>Logic and constraint satisfaction dominate</li>
+        <li>Ambiguity is minimal or absent</li>
+        <li>Example: Tax calculation engine, chess AI</li>
+      </ul>
+    </div>
+    <div class="decision-item neu">
+      <div class="di-label">Use Neural AI when…</div>
+      <ul>
+        <li>You have large datasets to train on</li>
+        <li>Task involves language, images, or unstructured data</li>
+        <li>Ambiguity and nuance matter</li>
+        <li>Rules are too complex to enumerate</li>
+        <li>Generalization across contexts is needed</li>
+        <li>Example: Customer support chatbot, content generation</li>
+      </ul>
+    </div>
+    <div class="decision-item hyb">
+      <div class="di-label">Use Neuro-Symbolic when…</div>
+      <ul>
+        <li>Both language understanding AND logical precision needed</li>
+        <li>Hallucination is unacceptable (healthcare, finance, legal)</li>
+        <li>Auditability + explainability is required</li>
+        <li>Domain has formal rules + unstructured inputs</li>
+        <li>You need to update knowledge without retraining</li>
+        <li>Example: Medical diagnosis, regulatory compliance</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section>
+  <div class="section-title">Check Your Understanding</div>
+  <div class="quiz-container">
+    <div class="quiz-score">
+      <div class="score-display">Score: <span id="scoreDisplay">0</span> / 5</div>
+      <div style="font-size:0.8rem;color:var(--muted);">Click an answer to check it</div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 5</div>
+      <div class="q-text">What is the KEY difference between how Symbolic AI and Neural AI represent knowledge?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q1','a','c')"><span class="opt-icon">✗</span>a) Symbolic AI uses more data; Neural AI uses less</div>
+        <div class="opt" onclick="answer('q1','b','c')"><span class="opt-icon">✗</span>b) Symbolic AI runs faster; Neural AI is slower</div>
+        <div class="opt" onclick="answer('q1','c','c')"><span class="opt-icon">✓</span>c) Symbolic AI uses explicit rules/logic; Neural AI uses implicit weights learned from data</div>
+        <div class="opt" onclick="answer('q1','d','c')"><span class="opt-icon">✗</span>d) Symbolic AI is newer; Neural AI is older</div>
+      </div>
+      <div class="feedback correct-fb" id="q1-correct">✓ Exactly. This is the foundational distinction. Symbolic AI makes knowledge explicit — you can read a rule engine's logic. Neural AI encodes knowledge implicitly in billions of floating-point weights that nobody can directly inspect. This difference drives all the downstream trade-offs: explainability, hallucination risk, data requirements, and handling of ambiguity.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">✗ The fundamental difference is about knowledge representation. Symbolic AI uses explicit, human-readable rules and logic (if-then, logical propositions). Neural AI encodes knowledge implicitly in learned weight matrices you can't directly read. Neural AI actually requires MORE data (not less), and symbolic AI is actually older (1950s expert systems). The representations paradigm is the core distinction.</div>
+      <button class="q-reset" onclick="resetQ('q1')">↺ Try again</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 5</div>
+      <div class="q-text">A medical diagnosis system must explain exactly why it flagged a patient as high-risk for a specific condition. Which AI approach is BEST suited for this requirement?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">✗</span>a) Pure Neural AI (LLM)</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">✗</span>b) Pure Symbolic AI (rule engine)</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">✓</span>c) Neuro-Symbolic Hybrid (LLM + medical ontology knowledge graph)</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">✗</span>d) Reinforcement Learning agent</div>
+      </div>
+      <div class="feedback correct-fb" id="q2-correct">✓ Correct. This is the classic hybrid use case. The LLM understands the clinical notes (natural language, ambiguity) while the medical knowledge graph (ICD-10, SNOMED CT) provides traceable, auditable clinical reasoning. Every diagnosis can cite specific KG nodes — satisfying explainability requirements that pure neural models fail at. Pure symbolic fails at understanding free-text clinical notes.</div>
+      <div class="feedback wrong-fb" id="q2-wrong">✗ Think about what each component contributes. Pure Neural (LLM) can't reliably explain its reasoning or avoid hallucinated diagnoses — and "hallucinated" in medical AI means harm. Pure Symbolic requires all patient data to be pre-structured as rules — it can't handle free-text clinical notes. The hybrid gives you LLM comprehension of natural language PLUS symbolic KG traceability for explainability. That's what medical AI needs.</div>
+      <button class="q-reset" onclick="resetQ('q2')">↺ Try again</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 5</div>
+      <div class="q-text">Why is the Neuro-Symbolic approach particularly valuable in production AI agents that operate in regulated industries?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q3','a','b')"><span class="opt-icon">✗</span>a) It's cheaper to run than pure neural models</div>
+        <div class="opt" onclick="answer('q3','b','b')"><span class="opt-icon">✓</span>b) Symbolic rules provide auditable, updatable constraints that prevent the neural component from hallucinating in safety-critical decisions</div>
+        <div class="opt" onclick="answer('q3','c','b')"><span class="opt-icon">✗</span>c) It eliminates the need for human oversight</div>
+        <div class="opt" onclick="answer('q3','d','b')"><span class="opt-icon">✗</span>d) Neural components are never used in regulated industries</div>
+      </div>
+      <div class="feedback correct-fb" id="q3-correct">✓ Right. Regulated industries (finance, healthcare, legal) require two things neural models alone can't reliably provide: (1) auditability — every decision must trace to a specific rule or evidence, and (2) constraint enforcement — legal/safety rules must be strictly followed, not approximated probabilistically. The symbolic layer handles both. The neural layer handles language and context understanding. Neither alone is sufficient.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">✗ The value isn't primarily about cost, eliminating oversight, or avoiding neural models entirely. The critical advantage is that symbolic rules can be updated (when regulations change) without retraining the neural model, AND they provide hard constraints that prevent the neural layer from violating them — even when the LLM would probabilistically suggest a non-compliant action. This audit trail + hard constraint is what regulators require.</div>
+      <button class="q-reset" onclick="resetQ('q3')">↺ Try again</button>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 5</div>
+      <div class="q-text">In the NL2SQL pattern (LLM + Structured Search), what prevents hallucination of query results?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">✗</span>a) The LLM is fine-tuned on SQL syntax</div>
+        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">✗</span>b) A second LLM fact-checks the first LLM's output</div>
+        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">✓</span>c) The database executes the query deterministically — the LLM only translates to SQL and synthesizes results, never invents data</div>
+        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">✗</span>d) The system rejects queries it's uncertain about</div>
+      </div>
+      <div class="feedback correct-fb" id="q4-correct">✓ Exactly. This is the genius of the neuro-symbolic split: divide labor at the hallucination boundary. The LLM's job is translation (NL → SQL) and synthesis (SQL results → NL response). The database's job is retrieval — it returns exactly what's in the data, deterministically. The LLM never has to "know" facts; it just interprets and communicates them. The symbolic system is the ground truth.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">✗ Fine-tuning on SQL helps with query quality but doesn't prevent hallucination. A second LLM is just another probabilistic model. Rejecting uncertain queries hurts usefulness. The real prevention mechanism is architectural: the database executes queries deterministically and returns actual data. The LLM's role is only translation (NL→SQL) and synthesis (data→NL). It never has to generate facts from memory, so it can't hallucinate them.</div>
+      <button class="q-reset" onclick="resetQ('q4')">↺ Try again</button>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 5</div>
+      <div class="q-text">What is a key ADVANTAGE of Neuro-Symbolic systems over purely neural systems when domain knowledge changes?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q5','a','b')"><span class="opt-icon">✗</span>a) You only need to retrain the neural component, not update any rules</div>
+        <div class="opt" onclick="answer('q5','b','b')"><span class="opt-icon">✓</span>b) You can update knowledge graphs or rule sets without retraining the neural model</div>
+        <div class="opt" onclick="answer('q5','c','b')"><span class="opt-icon">✗</span>c) Neither component ever needs updating</div>
+        <div class="opt" onclick="answer('q5','d','b')"><span class="opt-icon">✗</span>d) Neural models can self-update their knowledge in real time</div>
+      </div>
+      <div class="feedback correct-fb" id="q5-correct">✓ This is one of the most important practical advantages. When regulations change, when new medical guidelines are published, or when business rules update — in a pure neural system you'd need a full retraining cycle (weeks, significant cost, risk of regressions). In a neuro-symbolic system, you update the knowledge graph or rule engine (fast, cheap, targeted), and the neural component immediately benefits from the new knowledge without any retraining.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">✗ Option (a) is the OPPOSITE of the advantage. Neural models can't self-update in real time (option d) — that's a myth. The real advantage is that symbolic components (KGs, rule engines) can be updated independently of the neural model. When a regulation changes, you edit the rule set in minutes. With a pure neural model, that same change requires full retraining — potentially weeks of work and significant compute cost.</div>
+      <button class="q-reset" onclick="resetQ('q5')">↺ Try again</button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  let score = 0;
+  const answered = {};
+
+  const spectrumData = [
+    { range: [0, 20], color: 'var(--symbolic)', label: '🔷 Pure Symbolic AI', desc: 'Entirely rule-based. Knowledge is encoded as explicit if-then logic, decision trees, and formal constraints. No learning from data — all intelligence comes from human-encoded rules.', chips: [['s','Fully explainable'], ['s','Logic-guaranteed'], ['s','No training data needed'], ['s','Brittle to ambiguity'], ['s','Hard to scale rules']] },
+    { range: [21, 40], color: '#e0b84a', label: '🔷⚡ Symbolic-Dominant Hybrid', desc: 'Symbolic reasoning forms the backbone, with neural models handling specific perception tasks (reading documents, parsing language). The rule engine remains the decision-maker.', chips: [['s','Explainable decisions'], ['h','Neural perception layer'], ['s','Auditable outputs'], ['n','Limited language fluency']] },
+    { range: [41, 60], color: 'var(--hybrid)', label: '⚡ Neuro-Symbolic Hybrid', desc: 'Balanced architecture where neural models and symbolic systems share decision-making. Neural models handle language understanding and pattern recognition; symbolic systems handle reasoning, logic, and constraint enforcement.', chips: [['h','Explainable decisions'], ['h','Handles ambiguity + logic'], ['h','Production-grade reliability'], ['h','Knowledge graph + LLM'], ['h','Updatable without retraining']] },
+    { range: [61, 80], color: '#9b68d0', label: '🔮⚡ Neural-Dominant Hybrid', desc: 'Neural models lead most decisions, with symbolic components acting as guardrails or validators. The LLM generates candidates; rule engines or knowledge graphs constrain or verify outputs.', chips: [['n','Rich language understanding'], ['h','Symbolic validation layer'], ['n','Flexible generalization'], ['h','Some auditability']] },
+    { range: [81, 100], color: 'var(--neural)', label: '🔮 Pure Neural AI', desc: 'Entirely learned from data. All knowledge is implicit in model weights. Highly flexible, excellent with ambiguity and natural language, but opaque, prone to hallucination, and requires massive training data.', chips: [['n','Handles ambiguity brilliantly'], ['n','Rich language generation'], ['n','Generalizes broadly'], ['n','Opaque / black box'], ['n','Hallucination risk']] },
+  ];
+
+  function updateSpectrum(value) {
+    const v = parseInt(value);
+    const data = spectrumData.find(d => v >= d.range[0] && v <= d.range[1]);
+    const info = document.getElementById('spectrumInfo');
+    info.style.borderLeftColor = data.color;
+    info.innerHTML = `<h3 style="color:${data.color}">${data.label} (${v})</h3>
+      <p>${data.desc}</p>
+      <div class="spec-chips">${data.chips.map(([cls, label]) => `<span class="spec-chip ${cls}">${label}</span>`).join('')}</div>`;
+  }
+
+  function switchTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function answer(qid, chosen, correct) {
+    if (answered[qid]) return;
+    answered[qid] = true;
+    const block = document.getElementById(qid);
+    const opts = block.querySelectorAll('.opt');
+    opts.forEach(o => o.classList.add('locked'));
+    const letters = ['a','b','c','d'];
+    opts[letters.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+    if (chosen !== correct) opts[letters.indexOf(correct)].classList.add('correct');
+    const isCorrect = chosen === correct;
+    if (isCorrect) { score++; document.getElementById('scoreDisplay').textContent = score; }
+    document.getElementById(qid + '-' + (isCorrect ? 'correct' : 'wrong')).classList.add('show');
+    block.querySelector('.q-reset').classList.add('show');
+  }
+
+  function resetQ(qid) {
+    if (!answered[qid]) return;
+    delete answered[qid];
+    const block = document.getElementById(qid);
+    block.querySelectorAll('.opt').forEach(o => { o.classList.remove('correct','wrong','locked'); });
+    block.querySelectorAll('.feedback').forEach(f => f.classList.remove('show'));
+    block.querySelector('.q-reset').classList.remove('show');
+    if (score > 0) { score--; document.getElementById('scoreDisplay').textContent = score; }
+  }
+</script>
+</body>
+</html>

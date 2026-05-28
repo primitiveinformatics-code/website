@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.3 — Semantic Telemetry</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #06d6a0; --accent2: #00d2ff; --accent3: #ffd166; --accent4: #ff6584; --accent5: #6c63ff;
+    --text: #e8eaf6; --muted: #8892b0; --border: rgba(6,214,160,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  nav a:hover { color: var(--accent); }
+  .nav-cur { color: var(--accent); font-weight: 700; }
+
+  .hero { background: linear-gradient(135deg,#0f1117 0%,#1a1d27 60%,#0d2e26 100%); padding:56px 40px 48px; text-align:center; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(6,214,160,0.12) 0%,transparent 70%); pointer-events:none; }
+  .badge { display:inline-block; background:rgba(6,214,160,0.12); border:1px solid rgba(6,214,160,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:20px; }
+  .hero h1 { font-size:clamp(26px,3.5vw,44px); font-weight:800; background:linear-gradient(90deg,#fff 0%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:14px; }
+  .hero p { color:var(--muted); font-size:16px; max-width:620px; margin:0 auto; line-height:1.7; }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* METRICS CARDS */
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 48px; }
+  .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+  .metric-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; border-radius:14px 14px 0 0; }
+  .metric-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+  .metric-card.active { border-color: var(--accent); }
+  .mc-icon { font-size: 26px; margin-bottom: 10px; }
+  .mc-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .mc-range { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .mc-gauge { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+  .mc-gauge-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+  .mc-score { font-size: 20px; font-weight: 800; }
+  .mc-status { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 6px; }
+  .ok { background: rgba(6,214,160,0.15); color: var(--accent); }
+  .warn { background: rgba(255,209,102,0.15); color: var(--accent3); }
+  .crit { background: rgba(255,101,132,0.15); color: var(--accent4); }
+
+  /* DETAIL PANEL */
+  .detail-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; transition: all 0.3s; }
+  .dp-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .dp-icon { font-size: 32px; }
+  .dp-title { font-size: 18px; font-weight: 700; }
+  .dp-sub { font-size: 13px; color: var(--muted); }
+  .dp-body { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 16px; }
+  .formula-box { background: #0a0c14; border-radius: 8px; padding: 12px 16px; font-family: monospace; font-size: 13px; color: var(--accent3); margin-bottom: 16px; }
+  .example-box { background: rgba(6,214,160,0.06); border: 1px solid rgba(6,214,160,0.15); border-radius: 8px; padding: 14px 16px; font-size: 13px; color: var(--text); line-height: 1.6; }
+
+  /* SPAN BUILDER */
+  .span-builder { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .span-builder h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .span-builder p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .builder-row { display: flex; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+  .builder-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); width: 130px; flex-shrink: 0; }
+  .builder-input { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; flex: 1; min-width: 200px; transition: border-color 0.2s; }
+  .builder-input:focus { outline: none; border-color: var(--accent); }
+  .builder-select { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; cursor: pointer; }
+  .gen-btn { padding: 10px 24px; background: rgba(6,214,160,0.15); border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+  .gen-btn:hover { background: rgba(6,214,160,0.25); }
+  .json-output { background: #0a0c14; border-radius: 10px; padding: 16px; font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; margin-top: 16px; display: none; }
+  .json-output.show { display: block; }
+  .json-key { color: var(--accent2); }
+  .json-str { color: var(--accent3); }
+  .json-num { color: var(--accent); }
+  .json-bool { color: var(--accent4); }
+
+  /* PIPELINE EVALUATOR */
+  .eval-pipeline { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .eval-pipeline h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .eval-pipeline p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .pipeline-stages { display: flex; gap: 0; align-items: stretch; flex-wrap: wrap; margin-bottom: 20px; }
+  .stage { flex: 1; min-width: 120px; padding: 14px 12px; background: var(--surface); border: 1px solid var(--border); text-align: center; position: relative; cursor: pointer; transition: all 0.2s; }
+  .stage:first-child { border-radius: 10px 0 0 10px; }
+  .stage:last-child { border-radius: 0 10px 10px 0; }
+  .stage:not(:last-child)::after { content: '→'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; z-index: 1; }
+  .stage:hover { border-color: var(--accent); background: rgba(6,214,160,0.07); }
+  .stage.active-stage { border-color: var(--accent); background: rgba(6,214,160,0.12); }
+  .stage-icon { font-size: 20px; margin-bottom: 4px; }
+  .stage-name { font-size: 11px; font-weight: 700; color: var(--text); }
+  .stage-layer { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .stage-detail { background: rgba(6,214,160,0.06); border: 1px solid rgba(6,214,160,0.15); border-radius: 10px; padding: 16px; font-size: 13px; color: var(--text); line-height: 1.6; }
+
+  .insight-bar { background:rgba(0,210,255,0.07); border-left:4px solid var(--accent2); border-radius:0 10px 10px 0; padding:14px 18px; margin-bottom:14px; font-size:13px; color:var(--text); line-height:1.6; }
+  .insight-bar strong { color:var(--accent2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">← All Concepts</a>
+  <span style="color:var(--border)">/</span>
+  <span class="nav-cur">5.3 — Semantic Telemetry</span>
+</nav>
+
+<div class="hero">
+  <div class="badge">Session 5 · Day 2 Afternoon</div>
+  <h1>Semantic Telemetry</h1>
+  <p>Beyond spans and metrics — capturing the meaning of what an agent does. Semantic telemetry enriches traces with goal alignment, hallucination scores, faithfulness, and reasoning quality.</p>
+</div>
+
+<div class="main">
+
+  <!-- METRIC CARDS -->
+  <div class="section-title">The 5 Core Semantic Metrics — Click to Explore</div>
+  <div class="metrics-grid" id="metricCards"></div>
+  <div class="detail-panel" id="detailPanel"></div>
+
+  <!-- SPAN BUILDER -->
+  <div class="section-title">Semantic Span Builder</div>
+  <div class="span-builder">
+    <h3>🔧 Build a Semantic Telemetry Span</h3>
+    <p>Fill in the fields below to see what a fully instrumented semantic span looks like in OpenTelemetry format.</p>
+    <div class="builder-row">
+      <span class="builder-label">Agent Task</span>
+      <input class="builder-input" id="bTask" placeholder="e.g. draft_renewal_email" value="draft_renewal_email">
+    </div>
+    <div class="builder-row">
+      <span class="builder-label">LLM Output</span>
+      <input class="builder-input" id="bOutput" placeholder="e.g. Email drafted for customer Priya..." value="Email drafted for customer Priya Nair, renewal date Sep 2026.">
+    </div>
+    <div class="builder-row">
+      <span class="builder-label">Faithfulness</span>
+      <input type="range" min="0" max="100" value="87" id="bFaith" oninput="document.getElementById('bFaithVal').textContent=this.value/100">
+      <span id="bFaithVal" style="color:var(--accent);font-weight:700;font-size:14px;width:40px">0.87</span>
+    </div>
+    <div class="builder-row">
+      <span class="builder-label">Relevance</span>
+      <input type="range" min="0" max="100" value="92" id="bRel" oninput="document.getElementById('bRelVal').textContent=this.value/100">
+      <span id="bRelVal" style="color:var(--accent);font-weight:700;font-size:14px;width:40px">0.92</span>
+    </div>
+    <div class="builder-row">
+      <span class="builder-label">Hallucination</span>
+      <select class="builder-select" id="bHall">
+        <option value="false">false (clean)</option>
+        <option value="true">true (detected)</option>
+      </select>
+    </div>
+    <div class="builder-row">
+      <span class="builder-label">Judge Score</span>
+      <input type="range" min="0" max="100" value="89" id="bJudge" oninput="document.getElementById('bJudgeVal').textContent=this.value/100">
+      <span id="bJudgeVal" style="color:var(--accent);font-weight:700;font-size:14px;width:40px">0.89</span>
+    </div>
+    <button class="gen-btn" onclick="generateSpan()">Generate Span JSON</button>
+    <div class="json-output" id="jsonOutput"></div>
+  </div>
+
+  <!-- EVAL PIPELINE -->
+  <div class="section-title">Where Semantic Telemetry Sits in the Agent Pipeline</div>
+  <div class="eval-pipeline">
+    <h3>📊 Semantic Evaluation Pipeline</h3>
+    <p>Click each stage to see what semantic telemetry is captured there.</p>
+    <div class="pipeline-stages" id="pipelineStages"></div>
+    <div class="stage-detail" id="stageDetail">Select a stage above to see semantic telemetry details.</div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="section-title">Key Insights</div>
+  <div class="insight-bar"><strong>Semantic telemetry extends OpenTelemetry spans</strong> with custom attributes: <code>llm.faithfulness</code>, <code>llm.hallucination_detected</code>, <code>llm.task_completion</code>. No new infrastructure needed — enrich existing spans.</div>
+  <div class="insight-bar"><strong>Sample, don't score everything.</strong> LLM-as-judge calls cost tokens. Score 5–10% of production traffic continuously, 100% during incident investigation.</div>
+  <div class="insight-bar"><strong>Set thresholds per task type.</strong> A creative writing task tolerates lower faithfulness than a medical summary. Semantic SLOs (Service Level Objectives) should be task-specific.</div>
+  <div class="insight-bar"><strong>Pair with span context.</strong> A hallucination event is far more actionable when you can see the exact prompt, retrieved context, and tool call sequence that preceded it.</div>
+</div>
+
+<script>
+const metrics = [
+  {
+    icon: '🔍', name: 'Faithfulness', range: '0.0 – 1.0', score: 0.74, status: 'warn',
+    color: '#ffd166',
+    desc: 'Faithfulness measures how much the agent\'s output is grounded in the retrieved context. A score of 1.0 means every claim in the response can be traced to a source chunk. Low faithfulness = hallucination risk.',
+    formula: 'Faithfulness = (Claims supported by context) / (Total claims in response)',
+    example: 'Response: "The renewal date is March 2025 and the plan costs $49/mo." Context contains renewal date but NOT the price. Faithfulness = 1/2 = 0.50'
+  },
+  {
+    icon: '🎯', name: 'Answer Relevance', range: '0.0 – 1.0', score: 0.91, status: 'ok',
+    color: '#06d6a0',
+    desc: 'Measures how well the response actually answers the question that was asked. A perfectly faithful answer to the wrong question scores 0. Computed by generating synthetic questions from the answer and measuring cosine similarity to the original query.',
+    formula: 'Relevance = avg(cosine_similarity(original_query, generated_questions_from_answer))',
+    example: 'Query: "When is my renewal?" Response: "The renewal is Sep 2026." → High relevance. Response: "Here are your recent invoices." → Low relevance, even if accurate.'
+  },
+  {
+    icon: '🧠', name: 'LLM-as-Judge', range: '1 – 5 or 0 – 1', score: 0.83, status: 'ok',
+    color: '#6c63ff',
+    desc: 'A secondary LLM evaluates the output against a scoring rubric. Can assess helpfulness, tone, safety, task completion, and reasoning quality — things that rule-based metrics can\'t capture. Typically run asynchronously on a sample of traffic.',
+    formula: 'Score = LLM_judge( system_prompt=rubric, user_prompt={query, response, context} )',
+    example: 'Rubric: "Score 1–5: Is the email professional, accurate, and personalised? Does it address the customer\'s plan and renewal date?" GPT-4o-judge returns 4/5 with explanation.'
+  },
+  {
+    icon: '📋', name: 'Task Completion', range: 'Binary or 0–1', score: 0.68, status: 'crit',
+    color: '#ff6584',
+    desc: 'The most direct semantic metric: did the agent actually do what was asked? Can be binary (yes/no) for clear tasks, or graded for multi-part tasks. Often the hardest to automate — may require structured output parsing or a judge.',
+    formula: 'Completion = (Completed subtasks) / (Required subtasks) for multi-part goals',
+    example: 'Task: "Find the top 3 open support tickets, summarise each, and draft a reply for the most urgent." Completion = 3/3 if all steps done = 1.0, or 2/3 = 0.67 if reply was skipped.'
+  },
+  {
+    icon: '🌐', name: 'Goal Similarity', range: '0.0 – 1.0', score: 0.55, status: 'crit',
+    color: '#ff6584',
+    desc: 'Cosine similarity between the embedding of the original user goal and the embedding of the agent\'s final plan or output. Detects goal drift — when the agent subtly reinterprets the task. Computed at each step in long-running agents.',
+    formula: 'Goal_sim = cosine_similarity( embed(original_goal), embed(current_plan_or_output) )',
+    example: 'Original goal: "summarise the Q3 report". Agent\'s current plan after 8 steps: "research competitor pricing and CEO background." Goal_sim ≈ 0.41 → DRIFT ALERT'
+  }
+];
+
+let activeMetric = 0;
+
+function renderMetrics() {
+  document.getElementById('metricCards').innerHTML = metrics.map((m,i) => `
+    <div class="metric-card${i===activeMetric?' active':''}" onclick="selectMetric(${i})"
+      style="border-color:${i===activeMetric?m.color:'rgba(6,214,160,0.2)'}">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;background:${m.color}"></div>
+      <div class="mc-icon">${m.icon}</div>
+      <div class="mc-name" style="color:${m.color}">${m.name}</div>
+      <div class="mc-range">${m.range}</div>
+      <div class="mc-gauge"><div class="mc-gauge-fill" style="width:${m.score*100}%;background:${m.color}"></div></div>
+      <div class="mc-score" style="color:${m.color}">${m.score}</div>
+      <span class="mc-status ${m.status}">${m.status==='ok'?'✅ Healthy':m.status==='warn'?'⚠️ Warning':'🚨 Critical'}</span>
+    </div>
+  `).join('');
+}
+
+function selectMetric(i) {
+  activeMetric = i;
+  renderMetrics();
+  const m = metrics[i];
+  document.getElementById('detailPanel').innerHTML = `
+    <div style="border-color:${m.color}" class="detail-panel">
+      <div class="dp-header"><span class="dp-icon">${m.icon}</span><div><div class="dp-title" style="color:${m.color}">${m.name}</div><div class="dp-sub">Range: ${m.range} — Current: ${m.score}</div></div></div>
+      <div class="dp-body">${m.desc}</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Formula</div>
+      <div class="formula-box">${m.formula}</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Worked Example</div>
+      <div class="example-box">${m.example}</div>
+    </div>
+  `;
+}
+
+function generateSpan() {
+  const task = document.getElementById('bTask').value || 'agent_task';
+  const output = document.getElementById('bOutput').value || 'output text';
+  const faith = (document.getElementById('bFaith').value/100).toFixed(2);
+  const rel = (document.getElementById('bRel').value/100).toFixed(2);
+  const hall = document.getElementById('bHall').value;
+  const judge = (document.getElementById('bJudge').value/100).toFixed(2);
+  const traceId = Math.random().toString(16).substr(2,16);
+  const spanId = Math.random().toString(16).substr(2,8);
+  const now = new Date().toISOString();
+  const json = `{
+  <span class="json-key">"trace_id"</span>: <span class="json-str">"${traceId}"</span>,
+  <span class="json-key">"span_id"</span>: <span class="json-str">"${spanId}"</span>,
+  <span class="json-key">"name"</span>: <span class="json-str">"llm.semantic_eval"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"${now}"</span>,
+  <span class="json-key">"attributes"</span>: {
+    <span class="json-key">"agent.task"</span>: <span class="json-str">"${task}"</span>,
+    <span class="json-key">"llm.output_preview"</span>: <span class="json-str">"${output.slice(0,80)}..."</span>,
+    <span class="json-key">"semantic.faithfulness"</span>: <span class="json-num">${faith}</span>,
+    <span class="json-key">"semantic.answer_relevance"</span>: <span class="json-num">${rel}</span>,
+    <span class="json-key">"semantic.hallucination_detected"</span>: <span class="json-bool">${hall}</span>,
+    <span class="json-key">"semantic.llm_judge_score"</span>: <span class="json-num">${judge}</span>,
+    <span class="json-key">"semantic.overall_score"</span>: <span class="json-num">${((parseFloat(faith)+parseFloat(rel)+parseFloat(judge))/3).toFixed(3)}</span>,
+    <span class="json-key">"semantic.alert"</span>: <span class="json-bool">${hall==='true'||parseFloat(faith)<0.7||parseFloat(judge)<0.7}</span>
+  }
+}`;
+  const out = document.getElementById('jsonOutput');
+  out.innerHTML = json;
+  out.className = 'json-output show';
+}
+
+const pipelineData = [
+  {
+    icon: '📥', name: 'Input Received', layer: 'L1 + L2',
+    detail: '<strong>Semantic telemetry at input stage:</strong> Log original user intent as an embedding. Compute goal vector for later drift detection. Capture input tokens and classify task type (e.g. "email_drafting", "data_lookup"). No semantic scoring needed yet — this is the baseline.'
+  },
+  {
+    icon: '🔍', name: 'Retrieval', layer: 'L2',
+    detail: '<strong>Semantic telemetry at retrieval stage:</strong> Log context_precision (% of retrieved chunks that are actually relevant) and context_recall (% of relevant documents retrieved). A low context_precision score means garbage is going into the prompt — direct cause of downstream hallucinations.'
+  },
+  {
+    icon: '🧠', name: 'LLM Reasoning', layer: 'L2 + L3',
+    detail: '<strong>Semantic telemetry at reasoning stage:</strong> Capture the full prompt and response pair as a span attribute. Record prompt token count vs context limit. Optionally run a lightweight hallucination detector synchronously. Log the plan/steps the LLM generates for later goal-drift comparison.'
+  },
+  {
+    icon: '🔧', name: 'Tool Calls', layer: 'L2',
+    detail: '<strong>Semantic telemetry at tool call stage:</strong> Log which tool was selected and WHY (the agent\'s stated reason). Detect unexpected tool sequences (e.g. using search_web for an internal task). Flag tool retry patterns — a tool called >3 times on the same input signals a reasoning loop.'
+  },
+  {
+    icon: '📤', name: 'Output Generated', layer: 'L3',
+    detail: '<strong>Semantic telemetry at output stage:</strong> This is the primary semantic eval point. Run faithfulness, answer relevance, and LLM-as-judge scoring. Compare goal_similarity(original_intent, final_output). Write all semantic scores as span attributes. Trigger alerts if any score breaches SLO thresholds.'
+  },
+  {
+    icon: '🔄', name: 'Feedback Loop', layer: 'L3',
+    detail: '<strong>Semantic telemetry feedback loop:</strong> Collect user signals (thumbs up/down, correction rate, escalation rate) and correlate them with semantic scores from the same runs. Use this to calibrate your LLM-as-judge thresholds. A judge that scores 0.9 on runs users rate 3/5 needs recalibration.'
+  }
+];
+
+let activeStage = 0;
+function renderPipeline() {
+  document.getElementById('pipelineStages').innerHTML = pipelineData.map((s,i) => `
+    <div class="stage${i===activeStage?' active-stage':''}" onclick="selectStage(${i})">
+      <div class="stage-icon">${s.icon}</div>
+      <div class="stage-name">${s.name}</div>
+      <div class="stage-layer">${s.layer}</div>
+    </div>
+  `).join('');
+}
+function selectStage(i) {
+  activeStage = i;
+  renderPipeline();
+  document.getElementById('stageDetail').innerHTML = pipelineData[i].detail;
+}
+
+selectMetric(0);
+renderPipeline();
+selectStage(0);
+</script>
+</body>
+</html>

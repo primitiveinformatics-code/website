@@ -1,0 +1,347 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.2 â€” The 3-Layer Monitoring Model</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #06d6a0; --accent2: #00d2ff; --accent3: #ffd166; --accent4: #ff6584; --accent5: #6c63ff;
+    --text: #e8eaf6; --muted: #8892b0; --border: rgba(6,214,160,0.2);
+    --l1: #6c63ff; --l2: #06d6a0; --l3: #ffd166;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  nav a:hover { color: var(--accent); }
+  .nav-cur { color: var(--accent); font-weight: 700; }
+
+  .hero { background: linear-gradient(135deg, #0f1117 0%, #1a1d27 60%, #0d2e26 100%); padding: 56px 40px 48px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(6,214,160,0.12) 0%,transparent 70%); pointer-events:none; }
+  .badge { display:inline-block; background:rgba(6,214,160,0.12); border:1px solid rgba(6,214,160,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:20px; }
+  .hero h1 { font-size:clamp(26px,3.5vw,44px); font-weight:800; background:linear-gradient(90deg,#fff 0%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:14px; }
+  .hero p { color:var(--muted); font-size:16px; max-width:620px; margin:0 auto; line-height:1.7; }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* PYRAMID */
+  .pyramid-wrap { display: flex; gap: 32px; align-items: flex-start; margin-bottom: 48px; }
+  @media (max-width: 800px) { .pyramid-wrap { flex-direction: column; } }
+  .pyramid-svg-col { flex-shrink: 0; }
+  .pyramid-detail { flex: 1; }
+  .pyr-layer { cursor: pointer; transition: all 0.2s; }
+  .pyr-layer:hover polygon { filter: brightness(1.2); }
+  .pyr-label { font-family: 'Segoe UI', system-ui, sans-serif; font-weight: 700; pointer-events: none; }
+
+  .layer-card { background: var(--card); border-radius: 16px; padding: 24px; border: 2px solid transparent; transition: all 0.3s; }
+  .layer-card.l1 { border-color: var(--l1); }
+  .layer-card.l2 { border-color: var(--l2); }
+  .layer-card.l3 { border-color: var(--l3); }
+  .layer-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .layer-card.l1 h3 { color: var(--l1); }
+  .layer-card.l2 h3 { color: var(--l2); }
+  .layer-card.l3 h3 { color: var(--l3); }
+  .layer-card p { color: var(--muted); font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+  .metric-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
+  .chip.l1 { background: rgba(108,99,255,0.15); color: var(--l1); border: 1px solid rgba(108,99,255,0.3); }
+  .chip.l2 { background: rgba(6,214,160,0.12); color: var(--l2); border: 1px solid rgba(6,214,160,0.25); }
+  .chip.l3 { background: rgba(255,209,102,0.12); color: var(--l3); border: 1px solid rgba(255,209,102,0.25); }
+
+  /* INTERACTIVE DASHBOARD MOCK */
+  .dashboard { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 48px; }
+  .dashboard-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+  .dashboard-header h3 { font-size: 15px; font-weight: 700; }
+  .toggle-row { display: flex; gap: 8px; }
+  .toggle-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .toggle-btn.on { background: rgba(6,214,160,0.15); border-color: var(--accent); color: var(--accent); }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .metric-tile { background: var(--surface); border-radius: 10px; padding: 14px 16px; border: 1px solid var(--border); }
+  .metric-tile .mt-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px; }
+  .metric-tile .mt-val { font-size: 22px; font-weight: 800; }
+  .metric-tile .mt-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .metric-tile.ok .mt-val { color: var(--l2); }
+  .metric-tile.warn .mt-val { color: var(--l3); }
+  .metric-tile.crit .mt-val { color: var(--accent4); }
+  .metric-tile.neutral .mt-val { color: var(--accent2); }
+
+  /* ALERT FEED */
+  .alert-feed { background: #0a0c14; border-radius: 10px; padding: 14px 16px; font-family: monospace; font-size: 12px; line-height: 1.9; max-height: 220px; overflow-y: auto; }
+  .al { display: flex; gap: 10px; }
+  .al-time { color: #4a5568; flex-shrink: 0; }
+  .al-l1 { color: var(--l1); }
+  .al-l2 { color: var(--l2); }
+  .al-l3 { color: var(--l3); }
+  .al-crit { color: var(--accent4); }
+
+  /* MAPPING EXERCISE */
+  .mapping { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .mapping h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .mapping p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .map-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 600px) { .map-grid { grid-template-columns: 1fr; } }
+  .map-signals { display: flex; flex-direction: column; gap: 8px; }
+  .draggable { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 13px; cursor: pointer; transition: all 0.2s; user-select: none; }
+  .draggable:hover { border-color: var(--accent2); background: rgba(0,210,255,0.08); }
+  .draggable.used { opacity: 0.4; pointer-events: none; }
+  .drop-zones { display: flex; flex-direction: column; gap: 12px; }
+  .drop-zone { border: 2px dashed rgba(255,255,255,0.12); border-radius: 10px; padding: 12px 14px; min-height: 80px; transition: border-color 0.2s; }
+  .drop-zone h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .drop-zone.l1-zone h4 { color: var(--l1); }
+  .drop-zone.l2-zone h4 { color: var(--l2); }
+  .drop-zone.l3-zone h4 { color: var(--l3); }
+  .drop-zone.hover-zone { border-color: var(--accent); background: rgba(6,214,160,0.05); }
+  .placed-chip { display: inline-block; padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; margin: 3px; cursor: pointer; }
+  .placed-l1 { background: rgba(108,99,255,0.2); color: var(--l1); border: 1px solid rgba(108,99,255,0.4); }
+  .placed-l2 { background: rgba(6,214,160,0.15); color: var(--l2); border: 1px solid rgba(6,214,160,0.3); }
+  .placed-l3 { background: rgba(255,209,102,0.15); color: var(--l3); border: 1px solid rgba(255,209,102,0.3); }
+  .placed-wrong { background: rgba(255,101,132,0.15); color: var(--accent4); border: 1px solid rgba(255,101,132,0.3); }
+  .check-btn { margin-top: 16px; padding: 10px 24px; background: rgba(6,214,160,0.15); border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .check-btn:hover { background: rgba(6,214,160,0.25); }
+  .map-result { margin-top: 14px; font-size: 13px; padding: 12px 16px; border-radius: 8px; display: none; }
+  .map-result.show { display: block; }
+  .map-result.good { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: var(--accent); }
+  .map-result.bad { background: rgba(255,101,132,0.1); border: 1px solid rgba(255,101,132,0.3); color: var(--accent4); }
+
+  .insight-bar { background:rgba(0,210,255,0.07); border-left:4px solid var(--accent2); border-radius:0 10px 10px 0; padding:14px 18px; margin-bottom:14px; font-size:13px; color:var(--text); line-height:1.6; }
+  .insight-bar strong { color:var(--accent2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="main-course.html">â† All Concepts</a>
+  <span style="color:var(--border)">/</span>
+  <span class="nav-cur">5.2 â€” The 3-Layer Monitoring Model</span>
+</nav>
+
+<div class="hero">
+  <div class="badge">Session 5 Â· Day 2 Afternoon</div>
+  <h1>The 3-Layer Monitoring Model</h1>
+  <p>Infrastructure metrics alone can't tell you if your agent is thinking correctly. The 3-Layer Model covers Systems, Execution, and Semantic layers â€” each revealing a distinct class of failure.</p>
+</div>
+
+<div class="main">
+
+  <!-- PYRAMID + DETAIL -->
+  <div class="section-title">The 3-Layer Architecture</div>
+  <div class="pyramid-wrap">
+    <div class="pyramid-svg-col">
+      <svg width="320" height="280" viewBox="0 0 320 280" id="pyrSvg">
+        <!-- Layer 3 â€” bottom: Semantic -->
+        <g class="pyr-layer" onclick="selectLayer(3)">
+          <polygon points="10,270 310,270 240,180 80,180" fill="rgba(255,209,102,0.18)" stroke="#ffd166" stroke-width="2" id="poly3"/>
+          <text x="160" y="232" text-anchor="middle" class="pyr-label" fill="#ffd166" font-size="13">Layer 3 â€” Semantic</text>
+          <text x="160" y="250" text-anchor="middle" fill="#8892b0" font-size="11">Did the agent achieve the goal?</text>
+        </g>
+        <!-- Layer 2 â€” middle: Execution -->
+        <g class="pyr-layer" onclick="selectLayer(2)">
+          <polygon points="80,178 240,178 190,100 130,100" fill="rgba(6,214,160,0.18)" stroke="#06d6a0" stroke-width="2" id="poly2"/>
+          <text x="160" y="148" text-anchor="middle" class="pyr-label" fill="#06d6a0" font-size="13">Layer 2 â€” Execution</text>
+          <text x="160" y="166" text-anchor="middle" fill="#8892b0" font-size="11">Tool calls, chains, decisions</text>
+        </g>
+        <!-- Layer 1 â€” top: Infrastructure -->
+        <g class="pyr-layer" onclick="selectLayer(1)">
+          <polygon points="130,98 190,98 160,20" fill="rgba(108,99,255,0.25)" stroke="#6c63ff" stroke-width="2" id="poly1"/>
+          <text x="160" y="66" text-anchor="middle" class="pyr-label" fill="#6c63ff" font-size="12">Layer 1</text>
+          <text x="160" y="82" text-anchor="middle" fill="#8892b0" font-size="10">Infra</text>
+        </g>
+      </svg>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px">Click a layer to explore</div>
+    </div>
+
+    <div class="pyramid-detail" id="pyrDetail">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- SIMULATED DASHBOARD -->
+  <div class="section-title">Live Dashboard Simulation</div>
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h3>ðŸ–¥ï¸ Agent Monitoring Dashboard â€” email_drafter_agent</h3>
+      <div class="toggle-row">
+        <button class="toggle-btn on" onclick="toggleLayer(this,'l1')">L1 Infra</button>
+        <button class="toggle-btn on" onclick="toggleLayer(this,'l2')">L2 Exec</button>
+        <button class="toggle-btn on" onclick="toggleLayer(this,'l3')">L3 Semantic</button>
+      </div>
+    </div>
+
+    <div class="metric-grid" id="metricGrid"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Alert Feed</div>
+    <div class="alert-feed" id="alertFeed"></div>
+  </div>
+
+  <!-- MAPPING EXERCISE -->
+  <div class="section-title">Signal Mapping Challenge</div>
+  <div class="mapping">
+    <h3>ðŸ—‚ï¸ Assign Each Signal to the Right Layer</h3>
+    <p>Click a signal below, then click the layer it belongs to. Get 7/8 right to pass.</p>
+    <div class="map-grid">
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px">Signals to Place</div>
+        <div class="map-signals" id="signalList"></div>
+      </div>
+      <div class="drop-zones">
+        <div class="drop-zone l1-zone" id="zone1" onclick="placeSelected(1)">
+          <h4>Layer 1 â€” Infrastructure</h4>
+          <div id="placed1"></div>
+        </div>
+        <div class="drop-zone l2-zone" id="zone2" onclick="placeSelected(2)">
+          <h4>Layer 2 â€” Execution</h4>
+          <div id="placed2"></div>
+        </div>
+        <div class="drop-zone l3-zone" id="zone3" onclick="placeSelected(3)">
+          <h4>Layer 3 â€” Semantic</h4>
+          <div id="placed3"></div>
+        </div>
+      </div>
+    </div>
+    <button class="check-btn" onclick="checkMapping()">Check Answers</button>
+    <div class="map-result" id="mapResult"></div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="section-title">Key Insights</div>
+  <div class="insight-bar"><strong>Layer 1 is necessary but not sufficient.</strong> CPU, memory, and HTTP latency tell you the pipes are working. They say nothing about whether the agent is reasoning correctly.</div>
+  <div class="insight-bar"><strong>Layer 2 reveals process failures.</strong> Span tracing across tool calls exposes wrong tool selection, retry storms, and chain corruption that Layer 1 is blind to.</div>
+  <div class="insight-bar"><strong>Layer 3 is the hardest to instrument.</strong> Semantic quality requires LLM-as-judge, RAGAS metrics, or human evaluation. Most teams skip it â€” and only discover failures from user complaints.</div>
+  <div class="insight-bar"><strong>All three layers must fire alerts independently.</strong> A Layer 3 semantic failure can occur with perfect Layer 1 and Layer 2 scores â€” as seen in silent hallucination events.</div>
+</div>
+
+<script>
+const layerData = {
+  1: {
+    cls: 'l1', title: 'Layer 1 â€” Infrastructure', color: '#6c63ff',
+    desc: 'The foundation: CPU, RAM, network, and service-level metrics. These tell you the agent\'s computational environment is healthy. Tools like Prometheus, Grafana, CloudWatch, and Datadog cover this layer well. <strong>Limitation:</strong> A perfectly healthy infrastructure can run an agent that reasons incorrectly.',
+    metrics: ['CPU / Memory Usage', 'API Call Latency', 'HTTP Status Codes', 'Token Rate (req/min)', 'Queue Depth', 'Error Rate (%)'],
+    tools: ['Prometheus', 'Grafana', 'Datadog', 'CloudWatch', 'OpenTelemetry']
+  },
+  2: {
+    cls: 'l2', title: 'Layer 2 â€” Execution', color: '#06d6a0',
+    desc: 'The agent\'s decision trace: which tools were called, in what order, with what parameters, and what was returned. This layer captures the <em>how</em> of agent execution. Tools like LangSmith, Arize, and OpenTelemetry with custom spans cover this. <strong>Limitation:</strong> Correct execution of the wrong plan looks fine at this layer.',
+    metrics: ['Tool Call Sequence', 'Plan/ReAct Steps', 'Retry Count per Tool', 'Chain Depth', 'Prompt/Response Pairs', 'Decision Branch Taken'],
+    tools: ['LangSmith', 'Arize Phoenix', 'Traceloop', 'Custom OTel spans', 'Weave (W&B)']
+  },
+  3: {
+    cls: 'l3', title: 'Layer 3 â€” Semantic', color: '#ffd166',
+    desc: 'The deepest and most important layer: did the agent actually achieve the goal? This requires evaluating output quality using metrics like faithfulness, relevance, and task completion. <strong>Limitation:</strong> Expensive and slow â€” usually sampled, not run on every request.',
+    metrics: ['Task Completion Rate', 'LLM-as-Judge Score', 'Hallucination Rate', 'Answer Faithfulness', 'Goal Similarity', 'User Satisfaction'],
+    tools: ['RAGAS', 'LLM-as-Judge', 'DeepEval', 'Confident AI', 'Human eval']
+  }
+};
+
+let activeLayer = 1;
+function selectLayer(n) {
+  activeLayer = n;
+  const d = layerData[n];
+  document.getElementById('pyrDetail').innerHTML = `
+    <div class="layer-card ${d.cls}">
+      <h3>${d.title}</h3>
+      <p>${d.desc}</p>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Key Metrics</div>
+      <div class="metric-chips" style="margin-bottom:14px">${d.metrics.map(m=>`<span class="chip ${d.cls}">${m}</span>`).join('')}</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Tooling</div>
+      <div class="metric-chips">${d.tools.map(t=>`<span class="chip ${d.cls}">${t}</span>`).join('')}</div>
+    </div>
+  `;
+}
+
+// Dashboard
+const allMetrics = [
+  { layer:'l1', label:'CPU Usage', val:'38%', sub:'p95 last 5m', cls:'ok' },
+  { layer:'l1', label:'API Latency', val:'210ms', sub:'p50', cls:'ok' },
+  { layer:'l2', label:'Tool Calls/Run', val:'8.2', sub:'avg last 100 runs', cls:'neutral' },
+  { layer:'l2', label:'Retry Rate', val:'14%', sub:'â†‘ from 6%', cls:'warn' },
+  { layer:'l3', label:'Task Completion', val:'71%', sub:'â†“ from 88%', cls:'crit' },
+  { layer:'l3', label:'Faithfulness', val:'0.68', sub:'RAGAS score', cls:'warn' },
+  { layer:'l1', label:'Error Rate', val:'1.2%', sub:'HTTP 5xx', cls:'ok' },
+  { layer:'l2', label:'Avg Chain Depth', val:'12.4', sub:'max=24', cls:'warn' },
+];
+const alerts = [
+  { layer:'al-l3', time:'14:22:01', msg:'[L3-CRIT] Task completion dropped below 75% threshold (71%) â€” 3 consecutive runs' },
+  { layer:'al-l3', time:'14:21:44', msg:'[L3-WARN] Faithfulness score 0.68 â€” below 0.80 SLA' },
+  { layer:'al-l2', time:'14:21:30', msg:'[L2-WARN] Tool retry rate 14% â€” spike from baseline 6%' },
+  { layer:'al-l2', time:'14:20:15', msg:'[L2-INFO] Chain depth p95=18 â€” approaching limit of 25' },
+  { layer:'al-l1', time:'14:18:02', msg:'[L1-OK] All infrastructure metrics nominal' },
+];
+
+let layers = { l1: true, l2: true, l3: true };
+function toggleLayer(btn, l) {
+  layers[l] = !layers[l];
+  btn.classList.toggle('on', layers[l]);
+  renderDashboard();
+}
+function renderDashboard() {
+  const mg = document.getElementById('metricGrid');
+  mg.innerHTML = allMetrics.filter(m=>layers[m.layer]).map(m=>`
+    <div class="metric-tile ${m.cls}">
+      <div class="mt-label">${m.label}</div>
+      <div class="mt-val">${m.val}</div>
+      <div class="mt-sub">${m.sub}</div>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:13px;padding:10px">No layers selected</div>';
+  const af = document.getElementById('alertFeed');
+  af.innerHTML = alerts.filter(a=>{
+    if(a.layer==='al-l1') return layers.l1;
+    if(a.layer==='al-l2') return layers.l2;
+    return layers.l3;
+  }).map(a=>`<div class="al"><span class="al-time">${a.time}</span><span class="${a.layer}">${a.msg}</span></div>`).join('') || '<span style="color:var(--muted)">No alerts for selected layers</span>';
+}
+
+// Mapping exercise
+const signals = [
+  { id:'s1', label:'CPU utilisation spike', correct: 1 },
+  { id:'s2', label:'Hallucination rate 12%', correct: 3 },
+  { id:'s3', label:'Tool retry count = 7', correct: 2 },
+  { id:'s4', label:'HTTP 429 rate-limit error', correct: 1 },
+  { id:'s5', label:'LLM-as-Judge score 0.62', correct: 3 },
+  { id:'s6', label:'Tool call sequence logged', correct: 2 },
+  { id:'s7', label:'Goal similarity 0.41', correct: 3 },
+  { id:'s8', label:'Memory usage 2.1 GB', correct: 1 },
+];
+let selected = null;
+let placed = {};
+function renderSignals() {
+  document.getElementById('signalList').innerHTML = signals.map(s=>`
+    <div class="draggable${placed[s.id]?' used':''}" id="drag_${s.id}" onclick="selectSignal('${s.id}')"
+      style="${selected===s.id?'border-color:var(--accent);background:rgba(6,214,160,0.1);':''}">${s.label}</div>
+  `).join('');
+}
+function selectSignal(id) { selected = id; renderSignals(); }
+function placeSelected(layer) {
+  if (!selected) return;
+  placed[selected] = layer;
+  const s = signals.find(x=>x.id===selected);
+  document.getElementById(`placed${layer}`).innerHTML += `<span class="placed-chip placed-l${layer}" onclick="removeChip('${s.id}')" title="Click to remove">${s.label}</span>`;
+  selected = null;
+  renderSignals();
+}
+function removeChip(id) {
+  placed[id] = null;
+  document.querySelectorAll('.placed-chip').forEach(c=>{ if(c.textContent===signals.find(s=>s.id===id)?.label) c.remove(); });
+  renderSignals();
+}
+function checkMapping() {
+  let correct = 0;
+  signals.forEach(s=>{
+    if(placed[s.id]===s.correct) correct++;
+  });
+  const r = document.getElementById('mapResult');
+  r.className = `map-result show ${correct>=6?'good':'bad'}`;
+  r.textContent = correct >= 6
+    ? `âœ… ${correct}/8 correct! Great mapping. ${correct===8?'Perfect score!':''}`
+    : `âŒ ${correct}/8 correct. Review the layers: L1=Infrastructure (CPU/HTTP), L2=Execution (tool calls, spans), L3=Semantic (quality scores, hallucination rate).`;
+}
+
+selectLayer(1);
+renderDashboard();
+renderSignals();
+</script>
+</body>
+</html>

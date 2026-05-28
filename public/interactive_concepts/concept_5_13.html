@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.13 â€” The 6 Governance Dimensions</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --accent: #06d6a0;
+    --accent2: #6c63ff;
+    --accent3: #ffd166;
+    --accent4: #ff6584;
+    --accent5: #00b4d8;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(6,214,160,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  .nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  .nav a:hover { color: var(--accent); }
+  .nav-sep { color: var(--muted); font-size: 13px; }
+  .nav-current { color: var(--accent); font-size: 13px; font-weight: 700; }
+
+  .hero { background: linear-gradient(135deg, #0f1117 0%, #0d1a1f 50%, #0f1117 100%); padding: 52px 40px 44px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(6,214,160,0.1) 0%, transparent 70%); pointer-events: none; }
+  .hero-badge { display: inline-block; background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.35); color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 6px 18px; border-radius: 20px; margin-bottom: 18px; }
+  .hero h1 { font-size: clamp(24px,4vw,42px); font-weight: 800; background: linear-gradient(90deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 640px; margin: 0 auto; line-height: 1.6; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* HEX OVERVIEW (visual grid) */
+  .hex-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px; max-width: 800px; margin-left: auto; margin-right: auto; }
+  @media (max-width: 600px) { .hex-overview { grid-template-columns: repeat(2, 1fr); } }
+  .hex-card { border-radius: 16px; padding: 22px 18px; text-align: center; border: 1px solid; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+  .hex-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.25s; }
+  .hex-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+  .hex-card:hover::before { opacity: 1; }
+  .hex-card.selected { transform: translateY(-4px); box-shadow: 0 0 0 2px var(--hc), 0 16px 40px rgba(0,0,0,0.5); }
+  .hex-num { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .hex-icon { font-size: 32px; margin-bottom: 10px; }
+  .hex-title { font-size: 14px; font-weight: 800; color: var(--text); line-height: 1.3; }
+
+  /* DIMENSION DETAIL */
+  .dim-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 0; margin-bottom: 48px; overflow: hidden; }
+  .dim-header { display: flex; align-items: center; gap: 18px; padding: 28px 32px; }
+  .dim-icon-large { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
+  .dim-meta h2 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .dim-meta p { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 700px; }
+  .dim-tabs-bar { display: flex; border-top: 1px solid rgba(255,255,255,0.06); }
+  .dim-tab { flex: 1; padding: 14px; text-align: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .dim-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .dim-panel { display: none; padding: 28px 32px; }
+  .dim-panel.active { display: block; }
+
+  /* WHAT / HOW / CHECKLIST PANELS */
+  .what-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .what-item { background: var(--card); border-radius: 12px; padding: 16px; border-left: 3px solid var(--accent); }
+  .what-item-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .what-item-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .how-steps { display: flex; flex-direction: column; gap: 12px; }
+  .how-step { display: flex; gap: 16px; align-items: flex-start; background: var(--card); border-radius: 12px; padding: 14px 18px; }
+  .how-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  .how-text strong { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .how-text span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .checklist { display: flex; flex-direction: column; gap: 10px; }
+  .check-item { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border-radius: 10px; padding: 12px 16px; cursor: pointer; transition: all 0.2s; }
+  .check-item:hover { background: rgba(6,214,160,0.06); }
+  .check-box { width: 20px; height: 20px; border: 2px solid var(--muted); border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.2s; }
+  .check-item.checked .check-box { background: var(--accent); border-color: var(--accent); color: #000; }
+  .check-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .check-item.checked .check-text { text-decoration: line-through; color: var(--muted); }
+  .check-progress { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-top: 16px; overflow: hidden; }
+  .check-progress-bar { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s; width: 0%; }
+  .check-count { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  /* GOVERNANCE RADAR (simplified visual) */
+  .radar-section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .radar-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .radar-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .radar-sliders { display: flex; flex-direction: column; gap: 14px; }
+  .radar-slider { display: flex; align-items: center; gap: 16px; }
+  .rs-label { width: 200px; font-size: 13px; font-weight: 600; color: var(--text); flex-shrink: 0; }
+  .rs-track { flex: 1; height: 8px; background: rgba(255,255,255,0.07); border-radius: 4px; position: relative; cursor: pointer; }
+  .rs-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+  .rs-thumb { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #fff; position: absolute; top: -5px; cursor: grab; transform: translateX(-50%); transition: left 0.3s; }
+  .rs-value { width: 48px; text-align: right; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .radar-score { text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07); }
+  .rs-total { font-size: 36px; font-weight: 900; color: var(--accent); }
+  .rs-total-label { font-size: 13px; color: var(--muted); }
+  .rs-verdict { font-size: 14px; color: var(--text); margin-top: 8px; font-weight: 600; }
+
+  /* ROLES TABLE */
+  .roles-table { width: 100%; border-collapse: collapse; margin-bottom: 48px; border-radius: 12px; overflow: hidden; }
+  .roles-table th { background: rgba(6,214,160,0.08); padding: 12px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); text-align: left; border-bottom: 1px solid var(--border); }
+  .roles-table td { padding: 12px 16px; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  .roles-table tr:last-child td { border-bottom: none; }
+  .roles-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .role-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: var(--accent); text-decoration: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; transition: all 0.2s; margin-top: 16px; }
+  .back-btn:hover { background: rgba(6,214,160,0.2); }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="main-course.html">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">5.13 â€” The 6 Governance Dimensions</span>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Session 5 Â· Day 2 Afternoon</div>
+  <h1>The 6 Governance Dimensions</h1>
+  <p>A complete governance framework for production AI agents â€” covering who is accountable, how decisions are traced, and what controls ensure responsible deployment</p>
+</div>
+
+<div class="container">
+
+  <!-- HEX OVERVIEW -->
+  <div class="section-title">6 Dimensions â€” Click to Explore</div>
+  <div class="hex-overview" id="hexOverview"></div>
+
+  <!-- DIMENSION DETAIL -->
+  <div class="section-title">Dimension Deep Dive</div>
+  <div class="dim-detail" id="dimDetail"></div>
+
+  <!-- GOVERNANCE MATURITY RADAR -->
+  <div class="section-title">Governance Maturity Self-Assessment</div>
+  <div class="radar-section">
+    <div class="radar-title">ðŸ“Š Rate Your Organization's Governance Maturity</div>
+    <div class="radar-sub">Drag each slider to score your current maturity (0 = not started, 10 = fully implemented)</div>
+    <div class="radar-sliders" id="radarSliders"></div>
+    <div class="radar-score">
+      <div class="rs-total" id="radarTotal">0</div>
+      <div class="rs-total-label">/ 60 Total Governance Score</div>
+      <div class="rs-verdict" id="radarVerdict">Set your scores above to get a verdict</div>
+    </div>
+  </div>
+
+  <!-- ROLES & RESPONSIBILITIES -->
+  <div class="section-title">Roles & Governance Responsibilities</div>
+  <table class="roles-table">
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Primary Governance Responsibilities</th>
+        <th>Key Dimensions</th>
+      </tr>
+    </thead>
+    <tbody id="rolesBody"></tbody>
+  </table>
+
+  <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+</div>
+
+<script>
+const dimensions = [
+  {
+    num: '01', icon: 'ðŸ‘¤', title: 'Accountability & Ownership', color: '#06d6a0',
+    tagline: 'Every AI agent in production must have a named human or team accountable for its behavior, outcomes, and ongoing governance.',
+    what: [
+      { title: 'Accountable Owner', text: 'One named individual or team responsible for each deployed agent â€” cannot be shared ambiguously' },
+      { title: 'RACI Matrix', text: 'Define Responsible, Accountable, Consulted, and Informed parties for each agent deployment' },
+      { title: 'Board-Level Visibility', text: 'For high-risk agents, accountability chains must reach executive or board level' },
+      { title: 'Succession Planning', text: 'If the owner changes role, governance responsibility must transfer explicitly â€” never left vacant' }
+    ],
+    how: [
+      { step: 1, title: 'Agent Registry', text: 'Maintain a central registry of all deployed agents with owner, purpose, risk level, and last review date' },
+      { step: 2, title: 'Ownership Declaration', text: 'Require explicit sign-off from a named owner before any agent goes to production' },
+      { step: 3, title: 'Incident Chain', text: 'Define escalation chain: incident â†’ owner â†’ CISO/legal â†’ executive â€” tested with drills' },
+      { step: 4, title: 'Annual Review', text: 'Mandatory governance review every 12 months or after any major capability change' }
+    ],
+    checklist: [
+      'Named owner assigned for every production agent',
+      'RACI matrix documented for each deployment',
+      'Escalation chain tested with tabletop exercise',
+      'Agent registry maintained and current',
+      'Governance ownership transfers on role change'
+    ]
+  },
+  {
+    num: '02', icon: 'ðŸ”', title: 'Transparency & Explainability', color: '#00b4d8',
+    tagline: 'Stakeholders, users, and regulators must be able to understand what agents do, why they make decisions, and what data they use.',
+    what: [
+      { title: 'Decision Explanation', text: 'For consequential decisions, agent must produce human-readable explanation, not just output' },
+      { title: 'AI Disclosure', text: 'Users must always know they are interacting with an AI â€” no deceptive human personas' },
+      { title: 'Data Provenance', text: 'Document what training data, retrieval sources, and tools were used to produce each output' },
+      { title: 'Model Cards', text: 'Publish capability statements, known limitations, and intended use for all deployed agents' }
+    ],
+    how: [
+      { step: 1, title: 'Explanation Layer', text: 'Implement structured explanation output for high-stakes decisions â€” stored in audit trail' },
+      { step: 2, title: 'Disclosure Design', text: 'Design UI to clearly signal AI agent interaction at conversation start â€” not buried in terms' },
+      { step: 3, title: 'Source Logging', text: 'Log RAG sources, tool calls, and external data used for each response' },
+      { step: 4, title: 'Model Cards', text: 'Create and maintain model/agent cards â€” publish internally and externally as required' }
+    ],
+    checklist: [
+      'AI identity disclosed at start of every user interaction',
+      'Explanation output implemented for high-stakes decisions',
+      'Data provenance logged for all agent outputs',
+      'Model card created and maintained for each agent',
+      'Explainability tested with sample regulatory queries'
+    ]
+  },
+  {
+    num: '03', icon: 'âš–ï¸', title: 'Fairness & Non-Discrimination', color: '#6c63ff',
+    tagline: 'AI agents must produce equitable outcomes across demographic groups and protected characteristics â€” continuously monitored.',
+    what: [
+      { title: 'Bias Auditing', text: 'Regular statistical tests comparing agent outcomes across race, gender, age, disability, and other protected attributes' },
+      { title: 'Fairness Metrics', text: 'Define and track: demographic parity, equal opportunity, equalized odds â€” not just overall accuracy' },
+      { title: 'Training Data Review', text: 'Audit training and fine-tuning data for representation gaps before model deployment' },
+      { title: 'Outcome Monitoring', text: 'Continuous production monitoring for disparate impact â€” alert when gap exceeds threshold' }
+    ],
+    how: [
+      { step: 1, title: 'Baseline Audit', text: 'Before deployment, run full fairness audit using fairness testing libraries (Fairlearn, AI Fairness 360)' },
+      { step: 2, title: 'Metric Dashboard', text: 'Build fairness metric dashboard â€” track parity scores by cohort in production, not just test set' },
+      { step: 3, title: 'Threshold Alerts', text: 'Set automated alerts if parity score drops below defined threshold (e.g., 80% rule for disparate impact)' },
+      { step: 4, title: 'Remediation Plan', text: 'Define pre-approved remediation actions: data collection, re-training, human override, deployment pause' }
+    ],
+    checklist: [
+      'Pre-deployment fairness audit completed',
+      'Fairness metrics defined and baselined by cohort',
+      'Production parity monitoring dashboard live',
+      'Automated alert configured for disparate impact',
+      'Remediation plan documented and tested'
+    ]
+  },
+  {
+    num: '04', icon: 'ðŸ”’', title: 'Privacy & Data Governance', color: '#ffd166',
+    tagline: 'AI agents must handle personal and sensitive data with minimum collection, clear purpose, and full user rights.',
+    what: [
+      { title: 'Data Minimization', text: 'Agents collect and retain only data strictly necessary â€” no speculative data collection' },
+      { title: 'Purpose Limitation', text: 'Data used for one task may not be repurposed for another without explicit consent' },
+      { title: 'Retention & Deletion', text: 'Define TTL for all agent memory, logs, and outputs â€” honor user deletion requests' },
+      { title: 'Cross-User Isolation', text: 'Memory and context must never bleed between users â€” strict isolation enforced architecturally' }
+    ],
+    how: [
+      { step: 1, title: 'Data Inventory', text: 'Catalog all personal data flowing through agent pipelines â€” classify by sensitivity and regulation' },
+      { step: 2, title: 'Privacy by Design', text: 'Implement PII detection, masking in logs, and ephemeral memory as default â€” opt-in for persistence' },
+      { step: 3, title: 'Consent Flows', text: 'Design explicit consent for data retention, memory, and cross-session tracking â€” granular controls' },
+      { step: 4, title: 'DSAR Automation', text: 'Automate Data Subject Access Request handling â€” identify all agent data for a user within 30 days' }
+    ],
+    checklist: [
+      'Data inventory completed for all agent pipelines',
+      'PII detection and masking in place for logs',
+      'Memory TTL and deletion rights implemented',
+      'Cross-user context isolation verified',
+      'DSAR process documented and tested'
+    ]
+  },
+  {
+    num: '05', icon: 'ðŸ›¡ï¸', title: 'Safety & Risk Management', color: '#ff6584',
+    tagline: 'Systematic identification, assessment, and mitigation of risks before deployment â€” and continuous monitoring in production.',
+    what: [
+      { title: 'Risk Classification', text: 'Classify agent by risk level (critical/high/medium/low) based on domain, autonomy, and consequence severity' },
+      { title: 'Red-Teaming', text: 'Adversarial testing to find failure modes, jailbreaks, and harmful outputs before production' },
+      { title: 'Human-in-the-Loop', text: 'High-risk agents require human approval gates â€” autonomy scaled to risk level' },
+      { title: 'Incident Response', text: 'Documented runbooks for agent safety incidents â€” detection to containment to remediation' }
+    ],
+    how: [
+      { step: 1, title: 'Risk Register', text: 'Create agent risk register: hazard, likelihood, impact, controls, residual risk, owner' },
+      { step: 2, title: 'Red-Team Protocol', text: 'Run structured red-team exercises before each major release â€” document findings and mitigations' },
+      { step: 3, title: 'HITL Thresholds', text: 'Define autonomy thresholds by risk: low risk = full auto, high risk = human approve, critical = human execute' },
+      { step: 4, title: 'Safety Monitoring', text: 'Deploy safety monitors: loop detection, anomaly alerts, circuit breakers, kill switches' }
+    ],
+    checklist: [
+      'Risk register created and maintained for each agent',
+      'Red-team exercise completed before major releases',
+      'Human-in-the-loop thresholds defined and enforced',
+      'Safety monitoring and circuit breakers deployed',
+      'Incident response runbook tested with tabletop drill'
+    ]
+  },
+  {
+    num: '06', icon: 'ðŸ“‹', title: 'Compliance & Auditability', color: '#f4a261',
+    tagline: 'Agents must comply with applicable laws and regulations â€” with immutable audit trails that enable regulatory examination.',
+    what: [
+      { title: 'Regulatory Mapping', text: 'Map each deployment to applicable regulations: EU AI Act, GDPR, HIPAA, SEC rules, industry standards' },
+      { title: 'Immutable Audit Trail', text: 'All agent decisions, tool calls, and data access logged in tamper-proof, append-only storage' },
+      { title: 'Compliance Testing', text: 'Automated compliance checks in CI/CD pipeline â€” regulatory requirements as code' },
+      { title: 'Third-Party Audit', text: 'Independent audits for high-risk systems â€” internal audit is insufficient for critical deployments' }
+    ],
+    how: [
+      { step: 1, title: 'Regulation Mapping', text: 'Identify all applicable regulations for each agent â€” document obligations and implementation status' },
+      { step: 2, title: 'Audit Log Design', text: 'Implement append-only, encrypted, structured audit logs covering every agent action and decision' },
+      { step: 3, title: 'Compliance as Code', text: 'Encode regulatory requirements as automated tests â€” run in CI/CD to block non-compliant deployments' },
+      { step: 4, title: 'External Audit', text: 'Schedule third-party audit for high-risk agents annually â€” share results with board and regulators' }
+    ],
+    checklist: [
+      'Regulatory requirements mapped for each deployment',
+      'Immutable audit log implemented and tested',
+      'Compliance-as-code checks in CI/CD pipeline',
+      'Retention period for logs defined and enforced',
+      'External audit scheduled for high-risk agents'
+    ]
+  }
+];
+
+const roles = [
+  { role: 'Chief AI Officer / AI Lead', color: '#06d6a0', bg: 'rgba(6,214,160,0.15)', responsibilities: 'Sets AI governance policy; approves high-risk deployments; reports to board; owns agent registry; escalation endpoint', dimensions: ['Accountability', 'Safety & Risk'] },
+  { role: 'AI/ML Engineer', color: '#00b4d8', bg: 'rgba(0,180,216,0.15)', responsibilities: 'Implements safety guardrails; maintains explainability layers; red-teams models; monitors semantic KPIs; manages agent versioning', dimensions: ['Transparency', 'Safety & Risk', 'Compliance'] },
+  { role: 'Data Privacy Officer', color: '#ffd166', bg: 'rgba(255,209,102,0.15)', responsibilities: 'Reviews data flows; ensures GDPR/HIPAA compliance; approves memory retention policies; handles DSARs; audits PII handling', dimensions: ['Privacy', 'Compliance'] },
+  { role: 'Legal / Compliance', color: '#f4a261', bg: 'rgba(244,162,97,0.15)', responsibilities: 'Regulatory mapping; compliance-as-code review; audit trail design; regulatory reporting; third-party audit coordination', dimensions: ['Compliance', 'Accountability'] },
+  { role: 'Product Manager', color: '#6c63ff', bg: 'rgba(108,99,255,0.15)', responsibilities: 'Defines risk level for product features; designs consent flows and disclosure UI; ensures fairness requirements in roadmap; owns user-facing transparency', dimensions: ['Fairness', 'Transparency', 'Privacy'] },
+  { role: 'Security Engineer', color: '#ff6584', bg: 'rgba(255,101,132,0.15)', responsibilities: 'Threat modeling for agent attack vectors; prompt injection defenses; access control for tool calls; incident response for security events', dimensions: ['Safety & Risk', 'Compliance'] },
+  { role: 'Executive Sponsor', color: '#aaa', bg: 'rgba(200,200,200,0.1)', responsibilities: 'Governance sign-off for high-risk deployments; escalation endpoint; represents AI accountability to regulators; sanctions risk acceptance', dimensions: ['Accountability'] }
+];
+
+let activeIdx = 0;
+let activeDimTab = 'what';
+
+// Render hex overview
+const hexGrid = document.getElementById('hexOverview');
+dimensions.forEach((d, i) => {
+  const card = document.createElement('div');
+  card.className = `hex-card${i===0?' selected':''}`;
+  card.style.setProperty('--hc', d.color);
+  card.style.background = `${d.color}10`;
+  card.style.borderColor = i===0 ? d.color : `${d.color}40`;
+  card.innerHTML = `<div class="hex-num" style="color:${d.color}">${d.num}</div><div class="hex-icon">${d.icon}</div><div class="hex-title">${d.title}</div>`;
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.hex-card').forEach((c, ci) => {
+      c.classList.remove('selected');
+      c.style.borderColor = `${dimensions[ci].color}40`;
+    });
+    card.classList.add('selected');
+    card.style.borderColor = d.color;
+    activeIdx = i;
+    activeDimTab = 'what';
+    renderDetail();
+  });
+  hexGrid.appendChild(card);
+});
+
+// Render dimension detail
+function renderDetail() {
+  const d = dimensions[activeIdx];
+  const det = document.getElementById('dimDetail');
+  det.style.borderColor = `${d.color}50`;
+  det.innerHTML = `
+    <div class="dim-header" style="background:${d.color}08">
+      <div class="dim-icon-large" style="background:${d.color}18">${d.icon}</div>
+      <div class="dim-meta">
+        <h2>${d.num} â€” ${d.title}</h2>
+        <p>${d.tagline}</p>
+      </div>
+    </div>
+    <div class="dim-tabs-bar">
+      <div class="dim-tab active" data-tab="what">What It Covers</div>
+      <div class="dim-tab" data-tab="how">How to Implement</div>
+      <div class="dim-tab" data-tab="checklist">âœ“ Checklist</div>
+    </div>
+    <div class="dim-panel active" id="dp-what">
+      <div class="what-items">
+        ${d.what.map(item => `<div class="what-item" style="border-color:${d.color}"><div class="what-item-title">${item.title}</div><div class="what-item-text">${item.text}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="dim-panel" id="dp-how">
+      <div class="how-steps">
+        ${d.how.map((s,i) => `<div class="how-step"><div class="how-num" style="background:${d.color}18;color:${d.color}">${s.step}</div><div class="how-text"><strong>${s.title}</strong><span>${s.text}</span></div></div>`).join('')}
+      </div>
+    </div>
+    <div class="dim-panel" id="dp-checklist">
+      <div class="checklist" id="cl-items">
+        ${d.checklist.map((c, ci) => `<div class="check-item" data-ci="${ci}"><div class="check-box" id="cb${ci}"></div><div class="check-text">${c}</div></div>`).join('')}
+      </div>
+      <div class="check-progress"><div class="check-progress-bar" id="clBar"></div></div>
+      <div class="check-count" id="clCount">0 / ${d.checklist.length} completed</div>
+    </div>`;
+
+  // Tab switching
+  det.querySelectorAll('.dim-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      det.querySelectorAll('.dim-tab').forEach(t => t.classList.remove('active'));
+      det.querySelectorAll('.dim-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      det.querySelector(`#dp-${tab.dataset.tab}`).classList.add('active');
+    });
+  });
+
+  // Checklist
+  let checked = new Set();
+  det.querySelectorAll('.check-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const ci = parseInt(item.dataset.ci);
+      if (checked.has(ci)) checked.delete(ci); else checked.add(ci);
+      item.classList.toggle('checked', checked.has(ci));
+      item.querySelector('.check-box').textContent = checked.has(ci) ? 'âœ“' : '';
+      const pct = (checked.size / d.checklist.length) * 100;
+      document.getElementById('clBar').style.width = pct + '%';
+      document.getElementById('clBar').style.background = pct === 100 ? '#06d6a0' : d.color;
+      document.getElementById('clCount').textContent = `${checked.size} / ${d.checklist.length} completed`;
+    });
+  });
+}
+renderDetail();
+
+// Radar sliders
+const sliderData = dimensions.map(d => ({ label: d.title, color: d.color, value: 0 }));
+const slidersEl = document.getElementById('radarSliders');
+function updateTotal() {
+  const total = sliderData.reduce((a, b) => a + b.value, 0);
+  document.getElementById('radarTotal').textContent = total;
+  const pct = total / 60;
+  let verdict = '';
+  if (pct < 0.3) verdict = 'ðŸ”´ Early Stage â€” Significant governance gaps exist. Prioritize accountability and compliance first.';
+  else if (pct < 0.5) verdict = 'ðŸŸ¡ Developing â€” Core dimensions covered but inconsistently. Focus on automation and monitoring.';
+  else if (pct < 0.75) verdict = 'ðŸŸ¢ Maturing â€” Good foundation. Invest in continuous monitoring and third-party audit.';
+  else verdict = 'âœ… Advanced â€” Strong governance posture. Consider AI governance certification (ISO 42001).';
+  document.getElementById('radarVerdict').textContent = verdict;
+  document.getElementById('radarTotal').style.color = pct < 0.3 ? '#ff6584' : pct < 0.5 ? '#ffd166' : '#06d6a0';
+}
+sliderData.forEach((s, i) => {
+  const row = document.createElement('div');
+  row.className = 'radar-slider';
+  row.innerHTML = `
+    <div class="rs-label">${s.label}</div>
+    <div class="rs-track" id="track${i}">
+      <div class="rs-fill" id="fill${i}" style="background:${s.color};width:0%"></div>
+      <div class="rs-thumb" id="thumb${i}" style="background:${s.color};left:0%"></div>
+    </div>
+    <div class="rs-value" style="color:${s.color}" id="val${i}">0</div>`;
+  slidersEl.appendChild(row);
+
+  const track = row.querySelector(`#track${i}`);
+  const fill = row.querySelector(`#fill${i}`);
+  const thumb = row.querySelector(`#thumb${i}`);
+  const val = row.querySelector(`#val${i}`);
+
+  function setVal(pct) {
+    pct = Math.max(0, Math.min(1, pct));
+    const v = Math.round(pct * 10);
+    sliderData[i].value = v;
+    fill.style.width = (v * 10) + '%';
+    thumb.style.left = (v * 10) + '%';
+    val.textContent = v;
+    updateTotal();
+  }
+
+  track.addEventListener('click', e => {
+    const rect = track.getBoundingClientRect();
+    setVal((e.clientX - rect.left) / rect.width);
+  });
+
+  let dragging = false;
+  thumb.addEventListener('mousedown', () => dragging = true);
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const rect = track.getBoundingClientRect();
+    setVal((e.clientX - rect.left) / rect.width);
+  });
+  document.addEventListener('mouseup', () => dragging = false);
+
+  // Touch
+  thumb.addEventListener('touchstart', e => { dragging = true; e.preventDefault(); });
+  document.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const rect = track.getBoundingClientRect();
+    setVal((e.touches[0].clientX - rect.left) / rect.width);
+  });
+  document.addEventListener('touchend', () => dragging = false);
+});
+
+// Roles table
+const tbody = document.getElementById('rolesBody');
+roles.forEach(r => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><span class="role-badge" style="background:${r.bg};color:${r.color}">${r.role}</span></td>
+    <td style="color:var(--muted)">${r.responsibilities}</td>
+    <td>${r.dimensions.map(d => `<span class="role-badge" style="background:rgba(255,255,255,0.06);color:var(--muted);margin:2px 2px 2px 0;display:inline-block">${d}</span>`).join('')}</td>`;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>

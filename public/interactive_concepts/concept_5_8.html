@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.8 â€” Mitigations & Guardrails: Defence in Depth</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #ffd166; --accent2: #06d6a0; --accent3: #ff6584; --accent4: #00d2ff; --accent5: #6c63ff;
+    --text: #e8eaf6; --muted: #8892b0; --border: rgba(255,209,102,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  nav a:hover { color: var(--accent); }
+  .nav-cur { color: var(--accent); font-weight: 700; }
+
+  .hero { background: linear-gradient(135deg,#0f1117 0%,#1a1800 40%,#141200 100%); padding:56px 40px 48px; text-align:center; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(255,209,102,0.12) 0%,transparent 70%); pointer-events:none; }
+  .badge { display:inline-block; background:rgba(255,209,102,0.12); border:1px solid rgba(255,209,102,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:20px; }
+  .hero h1 { font-size:clamp(26px,3.5vw,44px); font-weight:800; background:linear-gradient(90deg,#fff 0%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:14px; }
+  .hero p { color:var(--muted); font-size:16px; max-width:640px; margin:0 auto; line-height:1.7; }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:rgba(255,209,102,0.2); }
+
+  /* DEFENCE FORTRESS */
+  .fortress { position:relative; margin-bottom:48px; }
+  .fortress-visual { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; }
+  .fort-title { text-align:center; font-size:13px; color:var(--muted); margin-bottom:24px; }
+  .layers-wrap { display:flex; flex-direction:column; gap:8px; }
+  .fort-layer { border-radius:12px; padding:16px 24px; cursor:pointer; transition:all 0.25s; display:flex; align-items:center; gap:16px; border:2px solid transparent; }
+  .fort-layer:hover { transform:scale(1.01); }
+  .fort-layer.active { border-color:rgba(255,255,255,0.3) !important; transform:scale(1.02); box-shadow:0 8px 30px rgba(0,0,0,0.5); }
+  .fl-1 { background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(108,99,255,0.15)); }
+  .fl-2 { background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(255,159,67,0.12)); }
+  .fl-3 { background:linear-gradient(135deg,rgba(255,209,102,0.2),rgba(6,214,160,0.1)); }
+  .fl-4 { background:linear-gradient(135deg,rgba(0,210,255,0.2),rgba(108,99,255,0.1)); }
+  .fl-5 { background:linear-gradient(135deg,rgba(6,214,160,0.2),rgba(0,210,255,0.1)); }
+  .fl-icon { font-size:28px; flex-shrink:0; }
+  .fl-info { flex:1; }
+  .fl-name { font-size:15px; font-weight:800; }
+  .fl-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+  .fl-status { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .status-active { background:rgba(6,214,160,0.2); color:#06d6a0; }
+
+  /* DETAIL PANEL */
+  .layer-detail-panel { margin-top:16px; background:var(--card); border-radius:14px; padding:24px; display:none; }
+  .layer-detail-panel.visible { display:block; }
+  .ldp-header { display:flex; align-items:center; gap:16px; margin-bottom:20px; }
+  .ldp-title { font-size:18px; font-weight:800; }
+  .ldp-desc { color:var(--muted); font-size:14px; line-height:1.7; margin-bottom:18px; }
+  .controls-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; margin-bottom:18px; }
+  .control-item { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px; }
+  .ci-icon { font-size:20px; margin-bottom:8px; }
+  .ci-title { font-size:13px; font-weight:700; margin-bottom:6px; }
+  .ci-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+  .code-sample { background:#0a0d14; border-radius:8px; padding:14px; font-family:'Courier New',monospace; font-size:11px; color:#e8eaf6; line-height:1.7; white-space:pre-wrap; }
+  .code-green { color:#4ec9b0; }
+  .code-yellow { color:#dcdcaa; }
+  .code-comment { color:#6a9955; }
+  .code-string { color:#ce9178; }
+
+  /* INCIDENT SIMULATOR */
+  .sim-box { background:var(--surface); border:1px solid rgba(255,209,102,0.2); border-radius:16px; padding:28px; margin-bottom:48px; }
+  .sim-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+  .sim-heading { font-size:15px; font-weight:700; }
+  .sim-attack-select { background:var(--card); border:1px solid rgba(255,255,255,0.15); border-radius:8px; color:var(--text); padding:8px 14px; font-size:12px; font-family:inherit; cursor:pointer; }
+  .pipeline { display:flex; gap:0; overflow-x:auto; padding-bottom:8px; }
+  .pipe-stage { display:flex; flex-direction:column; align-items:center; min-width:100px; }
+  .pipe-node { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; border:3px solid transparent; transition:all 0.4s; }
+  .pipe-node.blocked { border-color:#06d6a0; background:rgba(6,214,160,0.15); animation:block-pulse 0.5s ease; }
+  .pipe-node.passed { border-color:rgba(255,255,255,0.2); background:rgba(255,255,255,0.05); }
+  .pipe-node.danger { border-color:#ff6b6b; background:rgba(255,107,107,0.15); }
+  @keyframes block-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+  .pipe-label { font-size:10px; color:var(--muted); margin-top:6px; text-align:center; max-width:90px; }
+  .pipe-result { font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; margin-top:4px; }
+  .pipe-arrow { width:32px; height:52px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--muted); flex-shrink:0; }
+  .sim-verdict { margin-top:16px; padding:14px; border-radius:10px; font-size:13px; line-height:1.6; font-weight:600; }
+  .verdict-blocked { background:rgba(6,214,160,0.1); border-left:3px solid #06d6a0; color:#06d6a0; }
+  .verdict-passed { background:rgba(255,107,107,0.1); border-left:3px solid #ff6b6b; color:#ff6b6b; }
+
+  /* CHECKLIST */
+  .checklist-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-bottom:48px; }
+  .cl-card { background:var(--card); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:20px; }
+  .cl-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .cl-header span { font-size:18px; }
+  .cl-title { font-size:14px; font-weight:700; }
+  .cl-item { display:flex; align-items:flex-start; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12px; line-height:1.5; }
+  .cl-item:last-child { border-bottom:none; }
+  .cl-check { width:18px; height:18px; border-radius:5px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:10px; margin-top:1px; cursor:pointer; transition:background 0.2s; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); }
+  .cl-check.checked { background:#06d6a0; border-color:#06d6a0; color:#000; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="main-course.html">â† All Concepts</a>
+  <span style="color:var(--muted)">â€º</span>
+  <span class="nav-cur">5.8 â€” Mitigations & Guardrails: Defence in Depth</span>
+</nav>
+
+<div class="hero">
+  <div class="badge">Session 5 Â· Security</div>
+  <h1>Mitigations & Guardrails â€” Defence in Depth</h1>
+  <p>No single control stops every attack. Defence in depth layers multiple independent guardrails so that bypassing one doesn't break the entire system</p>
+</div>
+
+<div class="main">
+
+  <!-- FORTRESS LAYERS -->
+  <div class="section-title">The 5-Layer Defence Fortress â€” Click a Layer</div>
+  <div class="fortress">
+    <div class="fortress-visual">
+      <div class="fort-title">â˜ï¸ Agent receives request â€” travels inward through each defence layer</div>
+      <div class="layers-wrap">
+        <div class="fort-layer fl-1 active" onclick="selectLayer(0)">
+          <div class="fl-icon">ðŸŒ</div>
+          <div class="fl-info">
+            <div class="fl-name" style="color:#a855f7">Layer 1 â€” Perimeter</div>
+            <div class="fl-sub">Rate limiting Â· Auth Â· API gateway Â· Input length limits</div>
+          </div>
+          <span class="fl-status status-active">OUTERMOST</span>
+        </div>
+        <div class="fort-layer fl-2" onclick="selectLayer(1)">
+          <div class="fl-icon">ðŸ”</div>
+          <div class="fl-info">
+            <div class="fl-name" style="color:#ff9f43">Layer 2 â€” Input Sanitisation</div>
+            <div class="fl-sub">Injection detection Â· Format validation Â· PII stripping</div>
+          </div>
+        </div>
+        <div class="fort-layer fl-3" onclick="selectLayer(2)">
+          <div class="fl-icon">ðŸ›ï¸</div>
+          <div class="fl-info">
+            <div class="fl-name" style="color:var(--accent)">Layer 3 â€” Runtime Controls</div>
+            <div class="fl-sub">Tool call authorisation Â· Scope enforcement Â· Least privilege</div>
+          </div>
+        </div>
+        <div class="fort-layer fl-4" onclick="selectLayer(3)">
+          <div class="fl-icon">ðŸ“¤</div>
+          <div class="fl-info">
+            <div class="fl-name" style="color:var(--accent4)">Layer 4 â€” Output Filtering</div>
+            <div class="fl-sub">PII redaction Â· Safety classifiers Â· Hallucination detection</div>
+          </div>
+        </div>
+        <div class="fort-layer fl-5" onclick="selectLayer(4)">
+          <div class="fl-icon">ðŸ‘ï¸</div>
+          <div class="fl-info">
+            <div class="fl-name" style="color:var(--accent2)">Layer 5 â€” Observability & Response</div>
+            <div class="fl-sub">Audit logging Â· Anomaly detection Â· Human-in-the-loop triggers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail panels -->
+    <div class="layer-detail-panel visible" id="ldp-0">
+      <div class="ldp-header">
+        <span style="font-size:28px">ðŸŒ</span>
+        <div class="ldp-title" style="color:#a855f7">Layer 1 â€” Perimeter Controls</div>
+      </div>
+      <div class="ldp-desc">The outermost ring. These controls operate before any prompt reaches the LLM â€” they filter noise, enforce rate limits, and authenticate callers.</div>
+      <div class="controls-grid">
+        <div class="control-item"><div class="ci-icon">ðŸ”’</div><div class="ci-title">API Gateway Auth</div><div class="ci-desc">Every call must present a valid JWT / API key with appropriate scopes. Unauthenticated requests are rejected at the edge.</div></div>
+        <div class="control-item"><div class="ci-icon">â±ï¸</div><div class="ci-title">Rate Limiting</div><div class="ci-desc">Per-user, per-IP and global rate limits. Burst attacks and credential-stuffing are caught before they stress the model.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ“</div><div class="ci-title">Input Length Limits</div><div class="ci-desc">Hard cap on token count prevents context-overflow attacks and controls compute cost simultaneously.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸŒ</div><div class="ci-title">IP Allow-lists</div><div class="ci-desc">For sensitive agent deployments, restrict access to known IP ranges or VPN egress addresses.</div></div>
+      </div>
+      <div class="code-sample"><span class="code-comment"># FastAPI perimeter middleware</span>
+<span class="code-yellow">@app.middleware</span>(<span class="code-string">"http"</span>)
+<span class="code-green">async def</span> perimeter(request, call_next):
+    <span class="code-green">if</span> <span class="code-green">not</span> verify_token(request.headers.get(<span class="code-string">"Authorization"</span>)):
+        <span class="code-green">raise</span> HTTPException(<span class="code-string">403</span>)
+    <span class="code-green">if</span> len(request.body) > MAX_BODY_BYTES:
+        <span class="code-green">raise</span> HTTPException(<span class="code-string">413</span>)
+    <span class="code-green">if</span> rate_limiter.is_exceeded(request.client.host):
+        <span class="code-green">raise</span> HTTPException(<span class="code-string">429</span>)
+    <span class="code-green">return await</span> call_next(request)</div>
+    </div>
+
+    <div class="layer-detail-panel" id="ldp-1">
+      <div class="ldp-header"><span style="font-size:28px">ðŸ”</span><div class="ldp-title" style="color:#ff9f43">Layer 2 â€” Input Sanitisation</div></div>
+      <div class="ldp-desc">The prompt has passed authentication but now faces deep inspection for injection patterns, malicious content, and sensitive data before reaching the model.</div>
+      <div class="controls-grid">
+        <div class="control-item"><div class="ci-icon">ðŸ’‰</div><div class="ci-title">Injection Classifier</div><div class="ci-desc">A fast ML classifier (e.g. fine-tuned DistilBERT) labels inputs as benign or injected. High confidence injections are blocked; uncertain ones are flagged for review.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ·ï¸</div><div class="ci-title">PII Stripping</div><div class="ci-desc">Named entity recognition strips SSNs, credit card numbers, and email addresses from inputs before they enter context â€” preventing accidental memorisation.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ”£</div><div class="ci-title">Encoding Normalisation</div><div class="ci-desc">Decode base64, URL-encoding, Unicode homoglyphs, and zero-width characters used to sneak past pattern matchers.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ“‹</div><div class="ci-title">Schema Validation</div><div class="ci-desc">For structured inputs, enforce JSON schema. Reject any fields not in the allow-list to prevent parameter injection.</div></div>
+      </div>
+      <div class="code-sample"><span class="code-comment"># Injection detection pipeline</span>
+<span class="code-green">def</span> sanitise_input(text: str) -> str:
+    text = normalise_encodings(text)  <span class="code-comment"># base64, unicode</span>
+    text = strip_pii(text)            <span class="code-comment"># NER-based PII removal</span>
+    score = injection_classifier(text) <span class="code-comment"># 0.0-1.0</span>
+    <span class="code-green">if</span> score > 0.85:
+        log_security_event(<span class="code-string">"INJECTION_HIGH"</span>, text)
+        <span class="code-green">raise</span> SecurityException(<span class="code-string">"Input rejected"</span>)
+    <span class="code-green">elif</span> score > 0.5:
+        flag_for_human_review(text)
+    <span class="code-green">return</span> text</div>
+    </div>
+
+    <div class="layer-detail-panel" id="ldp-2">
+      <div class="ldp-header"><span style="font-size:28px">ðŸ›ï¸</span><div class="ldp-title" style="color:var(--accent)">Layer 3 â€” Runtime Controls</div></div>
+      <div class="ldp-desc">Controls applied during agent execution â€” governing what the agent can call, how, and under what conditions. The most impactful layer for preventing escalation.</div>
+      <div class="controls-grid">
+        <div class="control-item"><div class="ci-icon">ðŸ”‘</div><div class="ci-title">Least Privilege Tooling</div><div class="ci-desc">Each agent instance receives only the tools its task requires. Tool grants are scoped to the session and expire after task completion.</div></div>
+        <div class="control-item"><div class="ci-icon">âœ…</div><div class="ci-title">Tool Call Authorisation</div><div class="ci-desc">Before executing any tool call, verify: Does the current task scope justify this call? Is the caller authenticated? Does the target resource exist in the approved namespace?</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ‘¤</div><div class="ci-title">Human-in-the-Loop Gates</div><div class="ci-desc">Define tripwires: actions above a cost threshold, operations on sensitive resource classes, or irreversible actions require human approval before execution.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ”„</div><div class="ci-title">Rollback & Dry-Run</div><div class="ci-desc">High-risk tool calls execute in dry-run mode first, showing the proposed change for review before committing. All state changes are journaled for rollback.</div></div>
+      </div>
+      <div class="code-sample"><span class="code-comment"># Tool call authorisation guard</span>
+<span class="code-green">def</span> authorise_tool_call(agent, tool_name, args):
+    scope = agent.session.approved_tools
+    <span class="code-green">if</span> tool_name <span class="code-green">not in</span> scope:
+        <span class="code-green">raise</span> UnauthorisedToolError(tool_name)
+    <span class="code-green">if</span> is_destructive(tool_name) <span class="code-green">and not</span> agent.hitl_approved:
+        request_human_approval(agent, tool_name, args)
+        <span class="code-green">return False</span>  <span class="code-comment"># suspend until approved</span>
+    <span class="code-green">if</span> exceeds_cost_threshold(tool_name, args):
+        alert_owner(agent.owner, tool_name, args)
+        <span class="code-green">return False</span>
+    <span class="code-green">return True</span></div>
+    </div>
+
+    <div class="layer-detail-panel" id="ldp-3">
+      <div class="ldp-header"><span style="font-size:28px">ðŸ“¤</span><div class="ldp-title" style="color:var(--accent4)">Layer 4 â€” Output Filtering</div></div>
+      <div class="ldp-desc">The agent has responded â€” but before the response reaches the user or triggers further actions, it passes through output filters that catch harmful content and data leakage.</div>
+      <div class="controls-grid">
+        <div class="control-item"><div class="ci-icon">ðŸ”’</div><div class="ci-title">PII Redaction</div><div class="ci-desc">Scan all outgoing responses for SSNs, emails, phone numbers, and other PII patterns. Redact or mask before delivery.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ›¡ï¸</div><div class="ci-title">Safety Classifier</div><div class="ci-desc">Independent safety model (not the same LLM) evaluates the response for harmful, deceptive, or policy-violating content.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸŽ¯</div><div class="ci-title">Grounding Check</div><div class="ci-desc">For RAG-powered agents, verify that every factual claim in the response has a retrievable source. Hallucinated facts are flagged or stripped.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ“</div><div class="ci-title">Egress Control</div><div class="ci-desc">If the response contains a URL, file path, or outbound webhook â€” verify it's on the approved egress list. Block unexpected data exfiltration channels.</div></div>
+      </div>
+      <div class="code-sample"><span class="code-comment"># Output filtering pipeline</span>
+<span class="code-green">def</span> filter_output(response: str, context) -> str:
+    response = redact_pii(response)
+    safety_score = safety_classifier(response)
+    <span class="code-green">if</span> safety_score.harmful > 0.7:
+        log_and_block(response, safety_score)
+        <span class="code-green">return</span> SAFE_FALLBACK_MESSAGE
+    <span class="code-green">if</span> context.is_rag_task:
+        grounded = verify_grounding(response, context.retrieved_docs)
+        <span class="code-green">if not</span> grounded.sufficient:
+            response = add_uncertainty_caveat(response)
+    <span class="code-green">return</span> response</div>
+    </div>
+
+    <div class="layer-detail-panel" id="ldp-4">
+      <div class="ldp-header"><span style="font-size:28px">ðŸ‘ï¸</span><div class="ldp-title" style="color:var(--accent2)">Layer 5 â€” Observability & Response</div></div>
+      <div class="ldp-desc">Even if a threat bypasses all other layers, observability ensures it's detected quickly. This layer creates the feedback loop that makes all other layers smarter over time.</div>
+      <div class="controls-grid">
+        <div class="control-item"><div class="ci-icon">ðŸ“</div><div class="ci-title">Immutable Audit Log</div><div class="ci-desc">Every tool call, prompt, response, and decision is logged with timestamp and agent ID. Logs are write-once and shipped to a separate store attackers can't modify.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸš¨</div><div class="ci-title">Anomaly Detection</div><div class="ci-desc">Statistical baselines per agent/user/task. Sudden spikes in tool calls, unusual data access patterns, or off-hours activity trigger alerts.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ””</div><div class="ci-title">Real-Time Alerting</div><div class="ci-desc">Critical security events page on-call immediately. Non-critical events queue for daily review. All alerts include context for triage.</div></div>
+        <div class="control-item"><div class="ci-icon">ðŸ”</div><div class="ci-title">Incident Playbooks</div><div class="ci-desc">Pre-defined runbooks for common agent security incidents: injection attack, data exfiltration attempt, privilege escalation, unexpected loop.</div></div>
+      </div>
+      <div class="code-sample"><span class="code-comment"># Structured security event logging</span>
+security_logger.log({
+    <span class="code-string">"event_type"</span>: <span class="code-string">"tool_call"</span>,
+    <span class="code-string">"agent_id"</span>: agent.id,
+    <span class="code-string">"session_id"</span>: session.id,
+    <span class="code-string">"tool"</span>: tool_name,
+    <span class="code-string">"args_hash"</span>: sha256(str(args)),  <span class="code-comment"># not raw args</span>
+    <span class="code-string">"authorised"</span>: was_authorised,
+    <span class="code-string">"timestamp"</span>: utc_now(),
+    <span class="code-string">"risk_score"</span>: risk_model.score(tool_name, args)
+})</div>
+    </div>
+  </div>
+
+  <!-- INCIDENT SIMULATOR -->
+  <div class="section-title">Pipeline Attack Simulation</div>
+  <div class="sim-box">
+    <div class="sim-top">
+      <div class="sim-heading">ðŸŽ¯ See which layer catches each attack type</div>
+      <select class="sim-attack-select" id="attackSelect" onchange="runSim()">
+        <option value="0">Prompt Injection Attack</option>
+        <option value="1">Data Exfiltration Attempt</option>
+        <option value="2">Unauthorised Tool Call</option>
+        <option value="3">Jailbreak Attempt</option>
+      </select>
+    </div>
+    <div class="pipeline" id="simPipeline"></div>
+    <div class="sim-verdict" id="simVerdict"></div>
+  </div>
+
+  <!-- PRODUCTION CHECKLIST -->
+  <div class="section-title">Production Security Checklist</div>
+  <div class="checklist-grid">
+    <div class="cl-card">
+      <div class="cl-header"><span>ðŸŒ</span><div class="cl-title">Perimeter</div></div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>API authentication enforced (JWT/API key)</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Per-user rate limits configured</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Input length hard cap in place</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>TLS/HTTPS enforced end-to-end</div>
+    </div>
+    <div class="cl-card">
+      <div class="cl-header"><span>ðŸ”</span><div class="cl-title">Input Controls</div></div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Injection classifier deployed on all inputs</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>PII detection and stripping active</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Encoding normalisation pipeline</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>External content (RAG/web) treated as untrusted</div>
+    </div>
+    <div class="cl-card">
+      <div class="cl-header"><span>ðŸ›ï¸</span><div class="cl-title">Runtime Controls</div></div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Least-privilege tool grants per session</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Human-in-the-loop for destructive operations</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Tool schema locked and signed</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Rollback journal for all state changes</div>
+    </div>
+    <div class="cl-card">
+      <div class="cl-header"><span>ðŸ‘ï¸</span><div class="cl-title">Observability</div></div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Immutable audit log for all agent actions</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Anomaly detection baselines established</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Security alerting to on-call rotation</div>
+      <div class="cl-item"><div class="cl-check" onclick="toggleCheck(this)"></div>Incident runbooks documented and tested</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const panels = document.querySelectorAll('.layer-detail-panel');
+const layers = document.querySelectorAll('.fort-layer');
+function selectLayer(i) {
+  layers.forEach((l,j) => l.classList.toggle('active', j === i));
+  panels.forEach((p,j) => p.classList.toggle('visible', j === i));
+}
+
+const simData = [
+  {
+    label: "Prompt Injection",
+    stages: [
+      {icon:"ðŸŒ", name:"Perimeter", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ”", name:"Input Filter", result:"BLOCKED âœ“", color:"#06d6a0", blocked:true},
+      {icon:"ðŸ›ï¸", name:"Runtime", result:"N/A", color:"#2a2a3a"},
+      {icon:"ðŸ“¤", name:"Output", result:"N/A", color:"#2a2a3a"},
+      {icon:"ðŸ‘ï¸", name:"Observability", result:"LOGGED", color:"#ffd166"},
+    ],
+    verdict: "âœ… BLOCKED at Layer 2 (Input Sanitisation). Injection classifier detected adversarial instruction pattern with 94% confidence. Event logged to security audit trail."
+  },
+  {
+    label: "Data Exfiltration",
+    stages: [
+      {icon:"ðŸŒ", name:"Perimeter", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ”", name:"Input Filter", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ›ï¸", name:"Runtime", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ“¤", name:"Output Filter", result:"BLOCKED âœ“", color:"#06d6a0", blocked:true},
+      {icon:"ðŸ‘ï¸", name:"Observability", result:"ALERTED", color:"#ff6b6b"},
+    ],
+    verdict: "âœ… BLOCKED at Layer 4 (Output Filtering). PII redactor detected SSN pattern in response. Egress control blocked unexpected external URL in tool argument. Security team alerted."
+  },
+  {
+    label: "Unauthorised Tool",
+    stages: [
+      {icon:"ðŸŒ", name:"Perimeter", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ”", name:"Input Filter", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ›ï¸", name:"Runtime", result:"BLOCKED âœ“", color:"#06d6a0", blocked:true},
+      {icon:"ðŸ“¤", name:"Output", result:"N/A", color:"#2a2a3a"},
+      {icon:"ðŸ‘ï¸", name:"Observability", result:"LOGGED", color:"#ffd166"},
+    ],
+    verdict: "âœ… BLOCKED at Layer 3 (Runtime Controls). Tool 'admin_delete_db' not in this agent's approved tool scope. Request rejected, human approval workflow triggered."
+  },
+  {
+    label: "Jailbreak Attempt",
+    stages: [
+      {icon:"ðŸŒ", name:"Perimeter", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ”", name:"Input Filter", result:"FLAGGED", color:"#ff9f43"},
+      {icon:"ðŸ›ï¸", name:"Runtime", result:"PASS", color:"#4a4a6a"},
+      {icon:"ðŸ“¤", name:"Output Filter", result:"BLOCKED âœ“", color:"#06d6a0", blocked:true},
+      {icon:"ðŸ‘ï¸", name:"Observability", result:"ALERTED", color:"#ff6b6b"},
+    ],
+    verdict: "âœ… BLOCKED at Layer 4 (Output Filtering). Input filter flagged suspicious roleplay pattern but did not hard-block (score: 0.62). Output safety classifier caught harmful content in response. Double-layer defence worked."
+  }
+];
+
+function runSim() {
+  const idx = parseInt(document.getElementById('attackSelect').value);
+  const s = simData[idx];
+  const pipe = document.getElementById('simPipeline');
+  pipe.innerHTML = '';
+  s.stages.forEach((stage, i) => {
+    const node = document.createElement('div');
+    node.className = 'pipe-stage';
+    node.innerHTML = `
+      <div class="pipe-node" style="border-color:${stage.color};background:${stage.color}22">${stage.icon}</div>
+      <div class="pipe-label">${stage.name}</div>
+      <div class="pipe-result" style="background:${stage.color}22;color:${stage.color}">${stage.result}</div>
+    `;
+    pipe.appendChild(node);
+    setTimeout(() => {
+      const n = node.querySelector('.pipe-node');
+      if (stage.blocked) n.classList.add('blocked');
+      else if (stage.result === 'PASS') n.classList.add('passed');
+      else n.classList.add('danger');
+    }, i * 300);
+    if (i < s.stages.length - 1) {
+      const arrow = document.createElement('div');
+      arrow.className = 'pipe-arrow';
+      arrow.textContent = 'â†’';
+      pipe.appendChild(arrow);
+    }
+  });
+  const verdict = document.getElementById('simVerdict');
+  verdict.className = 'sim-verdict verdict-blocked';
+  verdict.textContent = s.verdict;
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  if (el.classList.contains('checked')) el.textContent = 'âœ“';
+  else el.textContent = '';
+}
+
+runSim();
+</script>
+</body>
+</html>

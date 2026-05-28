@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, LogOut, FolderOpen, PlayCircle, FileText,
   Plus, Trash2, ExternalLink, Eye, EyeOff, Loader2,
-  ChevronDown, ChevronRight, Pencil, X,
+  ChevronDown, ChevronRight, Pencil, X, Users, UserCheck, UserX,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -692,19 +692,163 @@ function BlogTab({ token }: { token: string }) {
   );
 }
 
+// ─── Interactive Content Users Tab ───────────────────────────────────────────
+interface ICUser { id: number; email: string; full_name: string | null; status: "active" | "inactive"; created_at: string; }
+
+function InteractiveContentTab({ token }: { token: string }) {
+  const [users, setUsers] = useState<ICUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ email: "", full_name: "", password: "", status: "active" });
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const apiFetch = mkFetch(token);
+
+  const loadUsers = useCallback(async () => {
+    setLoading(true);
+    const r = await mkFetch(token)("/api/admin/interactive-content-users").then((x) => x.json());
+    setUsers(r.users || []);
+    setLoading(false);
+  }, [token]);
+
+  useEffect(() => { loadUsers(); }, [loadUsers]);
+
+  async function addUser(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setMsg(null);
+    const res = await apiFetch("/api/admin/interactive-content-users", {
+      method: "POST",
+      body: JSON.stringify(form),
+    });
+    const d = await res.json();
+    if (res.ok) {
+      setMsg({ text: "User added successfully!", ok: true });
+      setForm({ email: "", full_name: "", password: "", status: "active" });
+      loadUsers();
+    } else {
+      setMsg({ text: d.error || "Failed to add user", ok: false });
+    }
+    setSubmitting(false);
+  }
+
+  async function toggleStatus(user: ICUser) {
+    const newStatus = user.status === "active" ? "inactive" : "active";
+    await apiFetch(`/api/admin/interactive-content-users/${user.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status: newStatus }),
+    });
+    loadUsers();
+  }
+
+  async function deleteUser(id: number) {
+    if (!confirm("Delete this user? They will lose all access.")) return;
+    await apiFetch(`/api/admin/interactive-content-users/${id}`, { method: "DELETE" });
+    loadUsers();
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Add User Form */}
+      <div className="rounded-2xl p-6" style={{ backgroundColor: "rgba(17,24,39,0.6)", border: "1px solid rgba(108,99,255,0.15)" }}>
+        <h3 className="text-base font-semibold mb-4" style={{ color: "#F1F5F9" }}>Add Course User</h3>
+        <form onSubmit={addUser} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>Email *</label>
+            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+              placeholder="student@example.com" required style={IS} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>Full Name</label>
+            <input type="text" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+              placeholder="Jane Doe" style={IS} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>Password *</label>
+            <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
+              placeholder="Minimum 8 characters" required minLength={8} style={IS} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>Status</label>
+            <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}
+              style={{ ...IS, cursor: "pointer" }}>
+              <option value="active" style={{ backgroundColor: "#111827" }}>Active</option>
+              <option value="inactive" style={{ backgroundColor: "#111827" }}>Inactive</option>
+            </select>
+          </div>
+          <StatusMsg msg={msg} />
+          <button type="submit" disabled={submitting}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105"
+            style={{ background: "linear-gradient(135deg, #6c63ff, #00d2ff)", color: "#fff", opacity: submitting ? 0.7 : 1 }}>
+            {submitting ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+            Add User
+          </button>
+        </form>
+      </div>
+
+      {/* Users List */}
+      <div className="rounded-2xl p-6" style={{ backgroundColor: "rgba(17,24,39,0.6)", border: "1px solid rgba(108,99,255,0.15)" }}>
+        <h3 className="text-base font-semibold mb-4" style={{ color: "#F1F5F9" }}>
+          Course Users ({users.length})
+        </h3>
+        {loading ? (
+          <div className="flex justify-center py-8"><Loader2 size={22} className="animate-spin" style={{ color: "#6c63ff" }} /></div>
+        ) : users.length === 0 ? (
+          <p className="text-sm" style={{ color: "#64748B" }}>No users yet. Add the first one.</p>
+        ) : (
+          <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+            {users.map((u) => (
+              <div key={u.id} className="flex items-center gap-3 p-3 rounded-xl"
+                style={{ backgroundColor: "rgba(15,23,42,0.6)", border: "1px solid rgba(30,41,59,0.8)" }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: u.status === "active" ? "rgba(108,99,255,0.15)" : "rgba(239,68,68,0.1)" }}>
+                  <Users size={14} style={{ color: u.status === "active" ? "#6c63ff" : "#EF4444" }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate" style={{ color: "#F1F5F9" }}>{u.full_name || u.email}</p>
+                  {u.full_name && <p className="text-xs truncate" style={{ color: "#64748B" }}>{u.email}</p>}
+                </div>
+                <span className="px-2 py-0.5 text-xs rounded shrink-0"
+                  style={{
+                    backgroundColor: u.status === "active" ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
+                    color: u.status === "active" ? "#10B981" : "#EF4444",
+                    border: `1px solid ${u.status === "active" ? "rgba(16,185,129,0.2)" : "rgba(239,68,68,0.2)"}`,
+                  }}>
+                  {u.status}
+                </span>
+                <button onClick={() => toggleStatus(u)} title={u.status === "active" ? "Deactivate" : "Activate"}
+                  className="p-1.5 rounded-lg transition-all hover:bg-white/5">
+                  {u.status === "active"
+                    ? <UserX size={14} style={{ color: "#F59E0B" }} />
+                    : <UserCheck size={14} style={{ color: "#10B981" }} />}
+                </button>
+                <button onClick={() => deleteUser(u.id)} title="Delete user"
+                  className="p-1.5 rounded-lg transition-all hover:bg-red-500/10">
+                  <Trash2 size={14} style={{ color: "#EF4444" }} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Export ──────────────────────────────────────────────────────────────
-type Tab = "resources" | "content" | "blog";
+type Tab = "resources" | "content" | "blog" | "ic-users";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: "resources", label: "Audio & Video Resources", icon: <FolderOpen size={15} /> },
   { id: "content", label: "Free Expert Content", icon: <PlayCircle size={15} /> },
   { id: "blog", label: "Blog Posts", icon: <FileText size={15} /> },
+  { id: "ic-users", label: "Course Users", icon: <Users size={15} /> },
 ];
 
 export default function AdminPage() {
   const [state, setState] = useState<"loading" | "login" | "dashboard">("loading");
   const [token, setToken] = useState("");
-  const [tab, setTab] = useState<Tab>("resources");
+  const [tab, setTab] = useState<Tab>("resources" as Tab);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("adminToken");
@@ -768,6 +912,7 @@ export default function AdminPage() {
             {tab === "resources" && <ResourcesTab token={token} />}
             {tab === "content" && <ContentTab token={token} />}
             {tab === "blog" && <BlogTab token={token} />}
+            {tab === "ic-users" && <InteractiveContentTab token={token} />}
           </motion.div>
         </AnimatePresence>
       </div>

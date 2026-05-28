@@ -1,0 +1,387 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.5 â€” A2A Discovery: The Agent Card</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  nav .nav-links{display:flex;gap:16px;}
+  nav a{color:var(--accent);text-decoration:none;font-size:.9rem;padding:6px 14px;border:1px solid var(--accent);border-radius:20px;transition:all .2s;}
+  nav a:hover{background:var(--accent);color:#000;}
+  nav .title{font-weight:700;font-size:1rem;}
+  .hero{background:linear-gradient(135deg,#1a0a12 0%,#0d1117 60%);border-bottom:1px solid var(--border);padding:48px 32px 36px;text-align:center;}
+  .session-tag{display:inline-block;background:var(--accent);color:#000;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;margin-bottom:12px;}
+  .hero p{color:var(--muted);font-size:1.05rem;max-width:680px;margin:0 auto;}
+  .content{max-width:960px;margin:0 auto;padding:40px 24px 60px;}
+  .section{margin-bottom:48px;}
+  .section h2{font-size:1.3rem;font-weight:700;margin-bottom:20px;color:var(--accent);display:flex;align-items:center;gap:10px;}
+  .section h2::before{content:'';display:block;width:4px;height:1.3rem;background:var(--accent);border-radius:2px;}
+
+  /* CARD ANATOMY */
+  .anatomy-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:640px){.anatomy-layout{grid-template-columns:1fr;}}
+  .card-visual{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:24px;font-family:'Courier New',monospace;font-size:.78rem;line-height:1.7;}
+  .card-visual .field{cursor:pointer;border-radius:4px;padding:1px 3px;transition:background .15s;}
+  .card-visual .field:hover,.card-visual .field.active{background:rgba(255,101,132,.15);}
+  .card-visual .ck{color:var(--accent5);}
+  .card-visual .cs{color:var(--accent3);}
+  .card-visual .cn{color:var(--accent2);}
+  .card-visual .cb{color:var(--accent4);}
+  .field-detail{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
+  .field-detail h4{font-size:.9rem;font-weight:700;margin-bottom:8px;color:var(--accent2);}
+  .field-detail p{font-size:.83rem;color:var(--muted);line-height:1.55;}
+  .field-detail .fd-required{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:8px;}
+  .fd-required.req{background:rgba(255,101,132,.15);color:var(--wrong);}
+  .fd-required.opt{background:rgba(6,214,160,.1);color:var(--correct);}
+  .field-placeholder{background:var(--surface2);border:1px dashed var(--border);border-radius:8px;padding:16px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;min-height:120px;}
+
+  /* INTERACTIVE BUILDER */
+  .builder{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+  .builder h3{font-size:1rem;font-weight:700;margin-bottom:20px;}
+  .builder-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:600px){.builder-grid{grid-template-columns:1fr;}}
+  .builder-form{display:flex;flex-direction:column;gap:14px;}
+  .form-group label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+  .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:.85rem;font-family:inherit;transition:border-color .2s;}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent);}
+  .form-group textarea{resize:vertical;min-height:60px;}
+  .builder-output{background:#090d12;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'Courier New',monospace;font-size:.76rem;line-height:1.7;overflow-y:auto;max-height:360px;}
+  .builder-output .ok{color:var(--accent5);}
+  .builder-output .os{color:var(--accent3);}
+  .builder-output .ob{color:var(--accent4);}
+  .generate-btn{margin-top:4px;background:var(--accent);color:#000;border:none;padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;transition:opacity .2s;}
+  .generate-btn:hover{opacity:.85;}
+
+  /* DISCOVERY FLOW */
+  .disc-steps{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:20px;}
+  .disc-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;text-align:center;min-width:120px;}
+  .disc-box h4{font-size:.8rem;font-weight:700;margin-bottom:3px;}
+  .disc-box.caller h4{color:var(--accent4);}
+  .disc-box.well h4{color:var(--accent3);}
+  .disc-box.cache h4{color:var(--accent2);}
+  .disc-box p{font-size:.72rem;color:var(--muted);}
+  .disc-arrow{color:var(--muted);font-size:1.3rem;padding:0 4px;}
+
+  /* QUIZ */
+  .quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+  .quiz-card h3{font-size:1rem;font-weight:700;margin-bottom:16px;line-height:1.5;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:left;color:var(--text);width:100%;}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:rgba(255,101,132,.08);}
+  .opt.correct{background:rgba(6,214,160,.15);border-color:var(--correct);color:var(--correct);}
+  .opt.wrong{background:rgba(255,101,132,.15);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:12px;font-size:.85rem;padding:10px 14px;border-radius:8px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(6,214,160,.1);color:var(--correct);border:1px solid var(--correct);}
+  .feedback.wrong{background:rgba(255,101,132,.1);color:var(--wrong);border:1px solid var(--wrong);}
+  .reset-btn{margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .score-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px;}
+  .score-display{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .score-label{color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_4.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_3_6.html">Next â†’</a>
+  </div>
+  <span class="title">3.5 â€” A2A Discovery: The Agent Card</span>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <h1>A2A Discovery: The Agent Card</h1>
+  <p>The JSON document at <code>/.well-known/agent.json</code> that tells the world what an agent can do â€” A2A's discovery mechanism.</p>
+</div>
+<div class="content">
+
+  <!-- WHAT IS THE AGENT CARD -->
+  <div class="section">
+    <h2>Agent Card Anatomy â€” Click a Field</h2>
+    <div class="anatomy-layout">
+      <div class="card-visual" id="cardVisual">
+<span class="field ck" data-field="name" onclick="showField('name',this)">"name"</span>: <span class="cs">"ResearchAgent"</span>,
+<span class="field ck" data-field="desc" onclick="showField('desc',this)">"description"</span>: <span class="cs">"Web research and summarization"</span>,
+<span class="field ck" data-field="url" onclick="showField('url',this)">"url"</span>: <span class="cs">"https://agents.acme.com/research"</span>,
+<span class="field ck" data-field="version" onclick="showField('version',this)">"version"</span>: <span class="cs">"1.2.0"</span>,
+<span class="field ck" data-field="auth" onclick="showField('auth',this)">"defaultInputModes"</span>: [<span class="cs">"text/plain"</span>],
+<span class="field ck" data-field="output" onclick="showField('output',this)">"defaultOutputModes"</span>: [<span class="cs">"text/plain"</span>, <span class="cs">"application/json"</span>],
+<span class="field ck" data-field="caps" onclick="showField('caps',this)">"capabilities"</span>: {
+  <span class="cs">"streaming"</span>: <span class="cb">true</span>,
+  <span class="cs">"pushNotifications"</span>: <span class="cb">false</span>
+},
+<span class="field ck" data-field="skills" onclick="showField('skills',this)">"skills"</span>: [{
+  <span class="cs">"id"</span>: <span class="cs">"web-research"</span>,
+  <span class="cs">"name"</span>: <span class="cs">"Web Research"</span>,
+  <span class="cs">"description"</span>: <span class="cs">"Search and summarize"</span>,
+  <span class="cs">"tags"</span>: [<span class="cs">"research"</span>, <span class="cs">"search"</span>],
+  <span class="cs">"examples"</span>: [<span class="cs">"Summarize AI trends"</span>]
+}],
+<span class="field ck" data-field="authschemes" onclick="showField('authschemes',this)">"securitySchemes"</span>: {
+  <span class="cs">"bearerAuth"</span>: { <span class="cs">"type"</span>: <span class="cs">"http"</span>, <span class="cs">"scheme"</span>: <span class="cs">"bearer"</span> }
+}
+      </div>
+      <div id="fieldDetail">
+        <div class="field-placeholder">â† Click any field in the Agent Card to see what it means</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCOVERY FLOW -->
+  <div class="section">
+    <h2>Discovery Flow</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+      <div class="disc-steps">
+        <div class="disc-box caller"><h4>ðŸ¤– Caller Agent</h4><p>Needs a research agent</p></div>
+        <div class="disc-arrow">â†’</div>
+        <div class="disc-box well"><h4>GET /.well-known/agent.json</h4><p>Fetch from target domain</p></div>
+        <div class="disc-arrow">â†’</div>
+        <div class="disc-box well"><h4>Parse Agent Card</h4><p>Read skills, caps, auth</p></div>
+        <div class="disc-arrow">â†’</div>
+        <div class="disc-box cache"><h4>Cache Card</h4><p>TTL from Cache-Control</p></div>
+        <div class="disc-arrow">â†’</div>
+        <div class="disc-box caller"><h4>tasks/send</h4><p>Now start delegation</p></div>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:16px;font-size:.84rem;color:var(--muted);line-height:1.6;">
+        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 1 â€” Fetch:</strong> The calling agent does a simple HTTP GET to <code style="color:var(--accent2)">https://target-agent-domain.com/.well-known/agent.json</code>. No auth needed â€” discovery is public.</p>
+        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 2 â€” Validate:</strong> Parse the JSON and confirm the agent has the skills needed (check <code style="color:var(--accent2)">skills[].tags</code> and <code style="color:var(--accent2)">skills[].description</code>).</p>
+        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 3 â€” Check capabilities:</strong> Verify <code style="color:var(--accent2)">capabilities.streaming</code> if you need live updates. Check <code style="color:var(--accent2)">defaultInputModes</code> to know what content types to send.</p>
+        <p><strong style="color:var(--text)">Step 4 â€” Auth setup:</strong> Read <code style="color:var(--accent2)">securitySchemes</code> to understand how to authenticate. Then obtain credentials via that scheme before calling <code style="color:var(--accent2)">tasks/send</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE BUILDER -->
+  <div class="section">
+    <h2>Agent Card Builder</h2>
+    <div class="builder">
+      <h3>ðŸ”§ Fill in the fields to generate your Agent Card JSON</h3>
+      <div class="builder-grid">
+        <div class="builder-form">
+          <div class="form-group">
+            <label>Agent Name</label>
+            <input type="text" id="b-name" value="DataAnalystAgent" oninput="updateCard()">
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" id="b-desc" value="Analyze datasets and produce insights" oninput="updateCard()">
+          </div>
+          <div class="form-group">
+            <label>URL</label>
+            <input type="text" id="b-url" value="https://agents.myco.com/analyst" oninput="updateCard()">
+          </div>
+          <div class="form-group">
+            <label>Version</label>
+            <input type="text" id="b-ver" value="1.0.0" oninput="updateCard()">
+          </div>
+          <div class="form-group">
+            <label>Skill Name</label>
+            <input type="text" id="b-skill" value="data-analysis" oninput="updateCard()">
+          </div>
+          <div class="form-group">
+            <label>Skill Tags (comma-separated)</label>
+            <input type="text" id="b-tags" value="analytics, charts, csv" oninput="updateCard()">
+          </div>
+          <div class="form-group">
+            <label>Streaming Support</label>
+            <select id="b-stream" onchange="updateCard()">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <button class="generate-btn" onclick="updateCard()">Regenerate</button>
+        </div>
+        <div class="builder-output" id="cardOutput"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz â€” Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. Where is the Agent Card served in the A2A protocol?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','b')">A) At the <code>/agent/capabilities</code> endpoint</button>
+        <button class="opt" onclick="answer('q1','b','b')">B) At <code>/.well-known/agent.json</code> on the agent's domain</button>
+        <button class="opt" onclick="answer('q1','c','b')">C) Embedded in the first A2A task response</button>
+        <button class="opt" onclick="answer('q1','d','b')">D) In the HTTP response headers of any task call</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. Why is the Agent Card endpoint publicly accessible (no auth required)?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','c')">A) The A2A spec doesn't support auth for discovery endpoints</button>
+        <button class="opt" onclick="answer('q2','b','c')">B) The Agent Card only contains encrypted data that's safe to expose</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) Discovery must happen before credentials are obtained â€” a caller needs to know what auth scheme to use before it can authenticate</button>
+        <button class="opt" onclick="answer('q2','d','c')">D) All A2A traffic is unauthenticated by design</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. What does the <code>capabilities.streaming: true</code> field in an Agent Card indicate?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','b')">A) The agent can process multiple tasks simultaneously</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) The agent supports <code>tasks/sendSubscribe</code> for real-time SSE status updates during task execution</button>
+        <button class="opt" onclick="answer('q3','c','b')">C) The agent can stream binary files as output</button>
+        <button class="opt" onclick="answer('q3','d','b')">D) The agent uses WebSockets instead of HTTP</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. A caller agent checks the Agent Card and sees <code>"defaultInputModes": ["text/plain"]</code>. What should it NOT send to this agent?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','c')">A) Plain text task descriptions</button>
+        <button class="opt" onclick="answer('q4','b','c')">B) Single-line instructions</button>
+        <button class="opt" onclick="answer('q4','c','c')">C) Binary image data or structured JSON objects as the primary input</button>
+        <button class="opt" onclick="answer('q4','d','c')">D) Long-form prose documents</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. What is the purpose of the <code>skills</code> array in the Agent Card?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','b')">A) It lists the MCP tool functions the agent exposes</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) It describes discrete capabilities the agent has â€” each with tags and examples â€” so callers can match tasks to the right agent</button>
+        <button class="opt" onclick="answer('q5','c','b')">C) It defines the OAuth scopes required to call each feature</button>
+        <button class="opt" onclick="answer('q5','d','b')">D) It contains the agent's pricing model per skill</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div>
+<script>
+// â”€â”€ FIELD DETAILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const fields = {
+  name: { title: '"name"', req: true, desc: 'Human-readable identifier for the agent. Used by calling agents and dashboards to identify which agent handled a task. Should be unique within your organization.' },
+  desc: { title: '"description"', req: true, desc: 'A natural language description of what the agent does. LLM-based orchestrators read this to decide which agent to delegate to â€” write it to be search-friendly and precise.' },
+  url: { title: '"url"', req: true, desc: 'The base URL where the agent\'s A2A endpoint lives. All A2A methods (tasks/send, tasks/get, etc.) are called against this URL as the root.' },
+  version: { title: '"version"', req: true, desc: 'Semantic version of the agent API. Callers can use this to detect breaking changes. Bump the major version when removing or renaming skills or changing authentication.' },
+  auth: { title: '"defaultInputModes"', req: true, desc: 'MIME types the agent accepts as input (e.g., "text/plain", "application/json", "image/png"). Callers must format their task messages accordingly â€” sending unsupported types will result in errors.' },
+  output: { title: '"defaultOutputModes"', req: false, desc: 'MIME types the agent can produce as output artifacts. Helps callers know what to expect and how to parse the result. Multiple modes indicate the agent can return different formats.' },
+  caps: { title: '"capabilities"', req: true, desc: 'Machine-readable flags: "streaming" (supports tasks/sendSubscribe), "pushNotifications" (supports webhook callbacks), "stateTransitionHistory" (task state history is available in responses).' },
+  skills: { title: '"skills"', req: true, desc: 'Array of discrete capabilities the agent offers. Each skill has: id, name, description, tags (for searchability), inputModes, outputModes, and examples. Used by orchestrators to route tasks to the right agent.' },
+  authschemes: { title: '"securitySchemes"', req: true, desc: 'Describes how to authenticate. Follows OpenAPI Security Scheme format. Common types: "http" with "bearer" scheme (OAuth 2.0 JWT), "apiKey". Callers must obtain credentials matching this scheme before calling tasks/send.' }
+};
+
+let activeField = null;
+function showField(id, el) {
+  document.querySelectorAll('.field').forEach(f => f.classList.remove('active'));
+  const detail = document.getElementById('fieldDetail');
+  if (activeField === id) {
+    detail.innerHTML = '<div class="field-placeholder">â† Click any field in the Agent Card to see what it means</div>';
+    activeField = null;
+    return;
+  }
+  activeField = id;
+  el.classList.add('active');
+  const f = fields[id];
+  detail.innerHTML = `
+    <div class="field-detail">
+      <span class="fd-required ${f.req ? 'req' : 'opt'}">${f.req ? 'Required' : 'Optional'}</span>
+      <h4>${f.title}</h4>
+      <p>${f.desc}</p>
+    </div>`;
+}
+
+// â”€â”€ CARD BUILDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function updateCard() {
+  const name = document.getElementById('b-name').value || 'MyAgent';
+  const desc = document.getElementById('b-desc').value || 'An AI agent';
+  const url = document.getElementById('b-url').value || 'https://example.com/agent';
+  const ver = document.getElementById('b-ver').value || '1.0.0';
+  const skill = document.getElementById('b-skill').value || 'default-skill';
+  const tags = document.getElementById('b-tags').value.split(',').map(t => `"${t.trim()}"`).join(', ');
+  const stream = document.getElementById('b-stream').value;
+
+  const card = `<span class="ok">{</span>
+  <span class="ok">"name"</span>: <span class="os">"${name}"</span>,
+  <span class="ok">"description"</span>: <span class="os">"${desc}"</span>,
+  <span class="ok">"url"</span>: <span class="os">"${url}"</span>,
+  <span class="ok">"version"</span>: <span class="os">"${ver}"</span>,
+  <span class="ok">"defaultInputModes"</span>: [<span class="os">"text/plain"</span>],
+  <span class="ok">"defaultOutputModes"</span>: [<span class="os">"text/plain"</span>],
+  <span class="ok">"capabilities"</span>: {
+    <span class="ok">"streaming"</span>: <span class="ob">${stream}</span>,
+    <span class="ok">"pushNotifications"</span>: <span class="ob">false</span>
+  },
+  <span class="ok">"skills"</span>: [{
+    <span class="ok">"id"</span>: <span class="os">"${skill}"</span>,
+    <span class="ok">"name"</span>: <span class="os">"${skill}"</span>,
+    <span class="ok">"description"</span>: <span class="os">"${desc}"</span>,
+    <span class="ok">"tags"</span>: [${tags}]
+  }],
+  <span class="ok">"securitySchemes"</span>: {
+    <span class="ok">"bearerAuth"</span>: {
+      <span class="ok">"type"</span>: <span class="os">"http"</span>,
+      <span class="ok">"scheme"</span>: <span class="os">"bearer"</span>
+    }
+  }
+<span class="ok">}</span>`;
+  document.getElementById('cardOutput').innerHTML = card;
+}
+updateCard();
+
+// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1: 'The Agent Card lives at /.well-known/agent.json â€” following the "well-known" URI convention from RFC 8615, the same pattern used by OpenID Connect discovery.',
+      q2: 'Discovery is intentionally public because you need to read the Agent Card to know WHAT auth scheme to use. You can\'t authenticate before you know how to authenticate.',
+      q3: 'streaming:true means the agent supports tasks/sendSubscribe, which opens an SSE stream for real-time TaskStatusUpdateEvent and TaskArtifactUpdateEvent messages.',
+      q4: 'If an agent only accepts "text/plain", you should not send binary images or structured JSON objects. The agent would reject them with an unsupported input mode error.',
+      q5: 'The skills array describes what the agent can do in a human and machine-readable way. Orchestrators match task requirements against skill descriptions, tags, and examples to route correctly.'
+    };
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => { o.disabled = false; o.classList.remove('correct','wrong'); });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

@@ -190,7 +190,7 @@ export default function AgenticAIShowcase() {
 
             <div className="flex flex-wrap gap-3">
               <motion.a
-                href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
+                href="mailto:primitiveinformatics@gmail.com?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm"
@@ -204,7 +204,7 @@ export default function AgenticAIShowcase() {
                 Join Free Intro Session
               </motion.a>
               <motion.a
-                href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Agentic%20AI%202-Day%20Workshop"
+                href="mailto:primitiveinformatics@gmail.com?subject=Register%20for%20Agentic%20AI%202-Day%20Workshop"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all"

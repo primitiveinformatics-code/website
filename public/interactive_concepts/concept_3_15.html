@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.15 Embeddings | Agentic AI</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --green: #06d6a0; --yellow: #ffd166;
+    --blue: #00d2ff; --purple: #c678dd; --orange: #e5c07b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px;
+        display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.85rem; padding: 6px 12px;
+          border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+  nav a:hover { background: var(--surface2); border-color: var(--accent); }
+  nav span { color: var(--muted); font-size: 0.8rem; }
+
+  .hero { background: linear-gradient(135deg, #0a0d1a 0%, #0a1520 100%);
+          border-bottom: 1px solid var(--border); padding: 48px 24px 36px; text-align: center; }
+  .hero .tag { display: inline-block; background: rgba(198,120,221,0.12); color: var(--purple);
+               border: 1px solid rgba(198,120,221,0.3); border-radius: 20px; padding: 4px 14px;
+               font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+  .hero h1 span { color: var(--purple); }
+  .hero p { color: var(--muted); max-width: 640px; margin: 0 auto; font-size: 1rem; }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 40px 24px; }
+  .section { margin-bottom: 52px; }
+  .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* CONCEPT VISUAL */
+  .embed-visual { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 24px; }
+  .visual-flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+  .vf-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px; text-align: center; }
+  .vf-box .vf-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .vf-box .vf-content { font-size: 0.9rem; font-weight: 600; }
+  .vf-arrow { color: var(--muted); font-size: 1.4rem; }
+  .vf-vector { background: rgba(198,120,221,0.08); border: 1px solid rgba(198,120,221,0.25); border-radius: 8px; padding: 12px 18px; font-family: monospace; font-size: 0.78rem; color: var(--purple); text-align: center; }
+  .vf-vector .vf-label { color: var(--muted); }
+  .similarity-demo { margin-top: 20px; }
+  .sim-pair { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .sim-text { flex: 1; min-width: 160px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; }
+  .sim-bar-wrap { flex: 2; min-width: 200px; }
+  .sim-bar-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .sim-bar { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+  .sim-fill { height: 100%; border-radius: 5px; transition: width 0.6s ease; }
+
+  /* DIMENSIONS EXPLORER */
+  .dim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .dim-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.2s; }
+  .dim-card:hover, .dim-card.active { border-color: var(--purple); background: rgba(198,120,221,0.05); }
+  .dim-card .dim-size { font-size: 1.6rem; font-weight: 700; color: var(--purple); }
+  .dim-card .dim-name { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  .dim-card .dim-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .dim-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--border); color: var(--muted); }
+  .dim-detail { background: var(--surface); border: 1px solid var(--purple); border-radius: 10px; padding: 20px; margin-top: 16px; display: none; }
+  .dim-detail.show { display: block; }
+
+  /* MODEL COMPARISON */
+  .model-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .model-table th { background: var(--surface2); padding: 10px 12px; text-align: left; border: 1px solid var(--border); color: var(--muted); font-weight: 600; }
+  .model-table td { padding: 10px 12px; border: 1px solid var(--border); vertical-align: top; }
+  .model-table tr:hover td { background: var(--surface); }
+  .tag-good { color: var(--green); font-weight: 600; }
+  .tag-bad { color: var(--accent); font-weight: 600; }
+  .tag-med { color: var(--yellow); font-weight: 600; }
+  .model-name { font-weight: 700; color: var(--text); }
+  .model-badge { display: inline-block; font-size: 0.7rem; padding: 1px 7px; border-radius: 10px; margin-left: 4px; }
+  .badge-cloud { background: rgba(0,210,255,0.12); color: var(--blue); border: 1px solid rgba(0,210,255,0.25); }
+  .badge-oss { background: rgba(6,214,160,0.12); color: var(--green); border: 1px solid rgba(6,214,160,0.25); }
+
+  /* COSINE SIMILARITY DEMO */
+  .cosine-demo { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .formula { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 14px 20px; font-family: monospace; font-size: 0.9rem; color: var(--purple); text-align: center; margin-bottom: 20px; }
+  .angle-selector { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .angle-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+  .angle-btn.active { border-color: var(--purple); color: var(--purple); background: rgba(198,120,221,0.1); }
+  .cosine-result { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .cos-canvas-wrap { position: relative; }
+  canvas#cosineCanvas { border-radius: 8px; }
+  .cos-readout { flex: 1; min-width: 200px; }
+  .cos-metric { background: var(--surface2); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+  .cos-metric h4 { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .cos-metric .cos-val { font-size: 1.5rem; font-weight: 700; color: var(--purple); }
+  .cos-metric .cos-interp { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+  /* CODE */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+        font-family: 'Consolas','Monaco',monospace; font-size: 0.8rem; overflow-x: auto; line-height: 1.6; }
+  .kw { color: #ff7b72; } .str { color: #a5d6ff; } .cm { color: var(--muted); }
+  .fn { color: #d2a8ff; } .cls { color: #ffa657; } .num { color: #79c0ff; }
+  .info-box { background: rgba(198,120,221,0.06); border: 1px solid rgba(198,120,221,0.2); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+  .info-box strong { color: var(--purple); }
+
+  /* QUIZ */
+  .quiz-header { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+                 display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .score-display { background: rgba(198,120,221,0.1); border: 1px solid rgba(198,120,221,0.3);
+                   color: var(--purple); padding: 4px 16px; border-radius: 20px; font-weight: 700; }
+  .question { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .question p { font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+         color: var(--text); cursor: pointer; text-align: left; font-size: 0.88rem; transition: all 0.2s; }
+  .opt:hover:not(:disabled) { border-color: var(--purple); background: rgba(198,120,221,0.08); }
+  .opt.correct { background: rgba(6,214,160,0.15); border-color: var(--green); color: var(--green); }
+  .opt.wrong { background: rgba(248,81,73,0.15); border-color: #f85149; color: #f85149; }
+  .opt:disabled { cursor: default; }
+  .feedback { margin-top: 10px; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.3); }
+  .feedback.wrong { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+  .reset-btn { margin-top: 8px; background: none; border: 1px solid var(--border); color: var(--muted);
+               padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--purple); color: var(--purple); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_3_14.html">â† Chunking Strategies</a>
+  <span>Session 3 Â· Concept 3.15</span>
+  <a href="concept_3_16.html">Vector Databases â†’</a>
+</nav>
+<nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
+  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+</nav>
+
+<div class="hero">
+  <div class="tag">Session 3 Â· Concept 3.15</div>
+  <h1>Embeddings: <span>Meaning as Numbers</span></h1>
+  <p>How text is converted into dense vectors, why cosine similarity works, and which embedding model to pick for your RAG system.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHAT ARE EMBEDDINGS -->
+  <div class="section">
+    <div class="section-title">What Are Embeddings?</div>
+    <div class="info-box">
+      <strong>The core idea:</strong> An embedding model reads a piece of text and outputs a list of floating-point numbers (a vector). Texts with similar meaning produce vectors that point in similar directions in high-dimensional space. This transforms the fuzzy problem of "semantic similarity" into a precise mathematical operation: cosine similarity.
+    </div>
+    <div class="embed-visual">
+      <div class="visual-flow">
+        <div class="vf-box"><div class="vf-label">Input text</div><div class="vf-content">"How do I reset my password?"</div></div>
+        <div class="vf-arrow">â†’</div>
+        <div class="vf-box" style="border-color:var(--purple)"><div class="vf-label">Embedding Model</div><div class="vf-content" style="color:var(--purple)">text-embedding-3-small</div></div>
+        <div class="vf-arrow">â†’</div>
+        <div class="vf-vector"><div class="vf-label">1536-dim vector</div>[0.021, -0.847, 0.334, 0.109, -0.562, 0.781, ...]</div>
+      </div>
+      <div class="similarity-demo">
+        <div style="font-size:0.85rem; color:var(--muted); margin-bottom:12px;">Cosine similarity between query and different passages:</div>
+        <div class="sim-pair">
+          <div class="sim-text">"Steps to change your account password"</div>
+          <div class="sim-bar-wrap">
+            <div class="sim-bar-label"><span>Cosine similarity</span><span style="color:var(--green);">0.94</span></div>
+            <div class="sim-bar"><div class="sim-fill" style="width:94%; background:var(--green);"></div></div>
+          </div>
+        </div>
+        <div class="sim-pair">
+          <div class="sim-text">"How to recover a forgotten login credential"</div>
+          <div class="sim-bar-wrap">
+            <div class="sim-bar-label"><span>Cosine similarity</span><span style="color:var(--blue);">0.81</span></div>
+            <div class="sim-bar"><div class="sim-fill" style="width:81%; background:var(--blue);"></div></div>
+          </div>
+        </div>
+        <div class="sim-pair">
+          <div class="sim-text">"Product pricing and subscription plans"</div>
+          <div class="sim-bar-wrap">
+            <div class="sim-bar-label"><span>Cosine similarity</span><span style="color:var(--yellow);">0.31</span></div>
+            <div class="sim-bar"><div class="sim-fill" style="width:31%; background:var(--yellow);"></div></div>
+          </div>
+        </div>
+        <div class="sim-pair">
+          <div class="sim-text">"The quarterly earnings report for Q3"</div>
+          <div class="sim-bar-wrap">
+            <div class="sim-bar-label"><span>Cosine similarity</span><span style="color:var(--accent);">0.08</span></div>
+            <div class="sim-bar"><div class="sim-fill" style="width:8%; background:var(--accent);"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COSINE SIMILARITY -->
+  <div class="section">
+    <div class="section-title">Cosine Similarity â€” The Math</div>
+    <div class="cosine-demo">
+      <div class="formula">similarity(A, B) = (A Â· B) / (â€–Aâ€– Ã— â€–Bâ€–) â†’ range: [-1, +1]</div>
+      <p style="color:var(--muted); font-size:0.88rem; margin-bottom:16px;">Click an angle to see how the angle between two vectors maps to a similarity score:</p>
+      <div class="angle-selector">
+        <button class="angle-btn active" onclick="setCosine(0)">0Â° â€” Identical</button>
+        <button class="angle-btn" onclick="setCosine(30)">30Â° â€” Very similar</button>
+        <button class="angle-btn" onclick="setCosine(60)">60Â° â€” Related</button>
+        <button class="angle-btn" onclick="setCosine(90)">90Â° â€” Unrelated</button>
+        <button class="angle-btn" onclick="setCosine(135)">135Â° â€” Opposite</button>
+      </div>
+      <div class="cosine-result">
+        <div class="cos-canvas-wrap">
+          <canvas id="cosineCanvas" width="220" height="220"></canvas>
+        </div>
+        <div class="cos-readout">
+          <div class="cos-metric">
+            <h4>Angle (Î¸)</h4>
+            <div class="cos-val" id="cos-angle">0Â°</div>
+          </div>
+          <div class="cos-metric">
+            <h4>Cosine Similarity</h4>
+            <div class="cos-val" id="cos-score">1.000</div>
+            <div class="cos-interp" id="cos-interp">Identical â€” same meaning</div>
+          </div>
+          <div class="cos-metric">
+            <h4>Retrieval Decision</h4>
+            <div class="cos-val" id="cos-decision" style="font-size:1rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIMENSIONS -->
+  <div class="section">
+    <div class="section-title">Vector Dimensions: What They Mean</div>
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:16px;">Click a dimension size to explore the trade-offs.</p>
+    <div class="dim-grid">
+      <div class="dim-card" onclick="showDim(0, this)">
+        <div class="dim-size">256</div>
+        <div class="dim-name">Ultra-compact</div>
+        <div class="dim-tags"><span class="dim-tag">Fast search</span><span class="dim-tag">Low storage</span></div>
+      </div>
+      <div class="dim-card" onclick="showDim(1, this)">
+        <div class="dim-size">768</div>
+        <div class="dim-name">Standard</div>
+        <div class="dim-tags"><span class="dim-tag">BERT-class</span><span class="dim-tag">Balanced</span></div>
+      </div>
+      <div class="dim-card" onclick="showDim(2, this)">
+        <div class="dim-size">1536</div>
+        <div class="dim-name">Production default</div>
+        <div class="dim-tags"><span class="dim-tag">OpenAI small</span><span class="dim-tag">Most common</span></div>
+      </div>
+      <div class="dim-card" onclick="showDim(3, this)">
+        <div class="dim-size">3072</div>
+        <div class="dim-name">High fidelity</div>
+        <div class="dim-tags"><span class="dim-tag">OpenAI large</span><span class="dim-tag">Best accuracy</span></div>
+      </div>
+    </div>
+    <div class="dim-detail" id="dim-detail">
+      <h4 id="dd-title" style="color:var(--purple); margin-bottom:8px;"></h4>
+      <p id="dd-body" style="color:var(--muted); font-size:0.88rem; line-height:1.7;"></p>
+    </div>
+  </div>
+
+  <!-- MODEL COMPARISON -->
+  <div class="section">
+    <div class="section-title">Embedding Model Comparison</div>
+    <div style="overflow-x:auto;">
+      <table class="model-table">
+        <thead>
+          <tr><th>Model</th><th>Dims</th><th>MTEB Score</th><th>Cost</th><th>Speed</th><th>Best For</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="model-name">text-embedding-3-small</span><span class="model-badge badge-cloud">API</span></td>
+            <td>1536</td><td class="tag-good">62.3</td><td class="tag-good">$0.02/1M tokens</td><td class="tag-good">Very fast</td>
+            <td>General RAG, production default</td>
+          </tr>
+          <tr>
+            <td><span class="model-name">text-embedding-3-large</span><span class="model-badge badge-cloud">API</span></td>
+            <td>3072</td><td class="tag-good">64.6</td><td class="tag-med">$0.13/1M tokens</td><td class="tag-med">Fast</td>
+            <td>High-accuracy tasks, legal, medical</td>
+          </tr>
+          <tr>
+            <td><span class="model-name">nomic-embed-text-v1.5</span><span class="model-badge badge-oss">OSS</span></td>
+            <td>768</td><td class="tag-med">62.0</td><td class="tag-good">Free (local)</td><td class="tag-med">Fast</td>
+            <td>Air-gapped, privacy-sensitive, cost-sensitive</td>
+          </tr>
+          <tr>
+            <td><span class="model-name">bge-m3</span><span class="model-badge badge-oss">OSS</span></td>
+            <td>1024</td><td class="tag-good">63.1</td><td class="tag-good">Free (local)</td><td class="tag-med">Moderate</td>
+            <td>Multilingual, hybrid (dense+sparse)</td>
+          </tr>
+          <tr>
+            <td><span class="model-name">Cohere embed-v3</span><span class="model-badge badge-cloud">API</span></td>
+            <td>1024</td><td class="tag-good">64.5</td><td class="tag-med">$0.10/1M tokens</td><td class="tag-good">Very fast</td>
+            <td>Enterprise search, multilingual</td>
+          </tr>
+          <tr>
+            <td><span class="model-name">all-MiniLM-L6-v2</span><span class="model-badge badge-oss">OSS</span></td>
+            <td>384</td><td class="tag-bad">56.3</td><td class="tag-good">Free (local)</td><td class="tag-good">Very fast</td>
+            <td>Prototyping only â€” not production grade</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px; font-size:0.82rem; color:var(--muted);">MTEB = Massive Text Embedding Benchmark â€” industry-standard evaluation across 56 tasks. Higher is better (max ~68).</div>
+  </div>
+
+  <!-- CODE -->
+  <div class="section">
+    <div class="section-title">Embedding in Practice</div>
+    <pre><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+client = <span class="cls">OpenAI</span>()
+
+<span class="kw">def</span> <span class="fn">embed</span>(texts: <span class="fn">list</span>[str]) -> <span class="fn">list</span>[<span class="fn">list</span>[<span class="fn">float</span>]]:
+    <span class="cm"># Batch embedding â€” much cheaper than one call per text</span>
+    response = client.embeddings.<span class="fn">create</span>(
+        model=<span class="str">"text-embedding-3-small"</span>,
+        input=texts,
+        <span class="cm"># Matryoshka: truncate to smaller dims for speed</span>
+        dimensions=<span class="num">512</span>  <span class="cm"># optional: reduce from 1536 â†’ 512</span>
+    )
+    <span class="kw">return</span> [d.embedding <span class="kw">for</span> d <span class="kw">in</span> response.data]
+
+<span class="kw">def</span> <span class="fn">cosine_similarity</span>(a: <span class="fn">list</span>[<span class="fn">float</span>], b: <span class="fn">list</span>[<span class="fn">float</span>]) -> <span class="fn">float</span>:
+    a, b = np.<span class="fn">array</span>(a), np.<span class="fn">array</span>(b)
+    <span class="kw">return</span> float(np.<span class="fn">dot</span>(a, b) / (np.<span class="fn">linalg</span>.<span class="fn">norm</span>(a) * np.<span class="fn">linalg</span>.<span class="fn">norm</span>(b)))
+
+<span class="cm"># In RAG: embed query and find nearest neighbours</span>
+query_vec = <span class="fn">embed</span>([<span class="str">"How do I reset my password?"</span>])[<span class="num">0</span>]
+<span class="cm"># Then pass to vector DB for ANN search</span>
+results = vector_db.<span class="fn">query</span>(vector=query_vec, top_k=<span class="num">5</span>)</pre>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="quiz-header">
+      <h3>ðŸ§  Knowledge Check</h3>
+      <div class="score-display" id="scoreDisplay">0 / 5</div>
+    </div>
+
+    <div class="question" id="q1">
+      <p>1. What does a cosine similarity score of 0.0 between two vectors mean?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q1','a','c')">a) The two texts are identical</button>
+        <button class="opt" onclick="answer('q1','b','c')">b) The two texts are complete opposites in meaning</button>
+        <button class="opt" onclick="answer('q1','c','c')">c) The two texts are semantically unrelated â€” vectors point at 90Â° to each other</button>
+        <button class="opt" onclick="answer('q1','d','c')">d) The embedding model failed to produce a valid vector</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q2">
+      <p>2. Why must you use the same embedding model for both document indexing and query-time embedding?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q2','a','b')">a) Different models produce vectors of different lengths that can't be stored together</button>
+        <button class="opt" onclick="answer('q2','b','b')">b) Vectors are only meaningfully comparable within the same vector space produced by the same model</button>
+        <button class="opt" onclick="answer('q2','c','b')">c) The vector DB license requires a single embedding model</button>
+        <button class="opt" onclick="answer('q2','d','b')">d) Different models use different tokenizers that would cause index corruption</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q3">
+      <p>3. The MTEB benchmark measures:</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q3','a','c')">a) Embedding model inference speed in tokens per second</button>
+        <button class="opt" onclick="answer('q3','b','c')">b) The cost per million tokens for each embedding API</button>
+        <button class="opt" onclick="answer('q3','c','c')">c) Embedding model quality across 56 standardized semantic tasks</button>
+        <button class="opt" onclick="answer('q3','d','c')">d) The maximum document length each model can process</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q4">
+      <p>4. You need to build a RAG system that must run entirely on-premises with no external API calls due to data privacy requirements. Which embedding model is the best choice?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q4','a','b')">a) text-embedding-3-large (OpenAI API)</button>
+        <button class="opt" onclick="answer('q4','b','b')">b) nomic-embed-text-v1.5 or bge-m3 (open-source, runs locally)</button>
+        <button class="opt" onclick="answer('q4','c','b')">c) Cohere embed-v3</button>
+        <button class="opt" onclick="answer('q4','d','b')">d) all-MiniLM-L6-v2 (highest accuracy)</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q5">
+      <p>5. OpenAI's text-embedding-3 models support "Matryoshka" dimensionality reduction. What does this allow you to do?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q5','a','d')">a) Use the model without an API key for development purposes</button>
+        <button class="opt" onclick="answer('q5','b','d')">b) Embed multiple languages using a single model endpoint</button>
+        <button class="opt" onclick="answer('q5','c','d')">c) Automatically tune chunk sizes based on document complexity</button>
+        <button class="opt" onclick="answer('q5','d','d')">d) Truncate vectors to smaller dimensions (e.g., 1536 â†’ 512) to trade some accuracy for lower storage and faster search</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// COSINE DEMO
+const canvas = document.getElementById('cosineCanvas');
+const ctx = canvas.getContext('2d');
+let currentAngle = 0;
+
+function setCosine(deg) {
+  currentAngle = deg;
+  document.querySelectorAll('.angle-btn').forEach((b, i) => {
+    b.classList.toggle('active', [0,30,60,90,135][i] === deg);
+  });
+  drawCosine(deg);
+  const rad = deg * Math.PI / 180;
+  const score = Math.cos(rad);
+  document.getElementById('cos-angle').textContent = deg + 'Â°';
+  document.getElementById('cos-score').textContent = score.toFixed(3);
+  const interps = {
+    0: 'Identical vectors â€” same meaning',
+    30: 'Very high similarity â€” near-duplicate',
+    60: 'Moderate similarity â€” related topic',
+    90: 'Orthogonal â€” semantically unrelated',
+    135: 'Negative â€” opposite meaning'
+  };
+  const decisions = {
+    0: 'âœ… Always retrieve',
+    30: 'âœ… Retrieve (top-k hit)',
+    60: 'âš  Borderline â€” depends on threshold',
+    90: 'âŒ Skip â€” not relevant',
+    135: 'âŒ Skip â€” contradictory'
+  };
+  document.getElementById('cos-interp').textContent = interps[deg];
+  document.getElementById('cos-decision').textContent = decisions[deg];
+  document.getElementById('cos-decision').style.color = deg <= 30 ? 'var(--green)' : deg === 60 ? 'var(--yellow)' : 'var(--accent)';
+}
+
+function drawCosine(deg) {
+  const cx = 110, cy = 110, r = 85;
+  ctx.clearRect(0, 0, 220, 220);
+  ctx.strokeStyle = '#30363d'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx - r - 10, cy); ctx.lineTo(cx + r + 10, cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, cy - r - 10); ctx.lineTo(cx, cy + r + 10); ctx.stroke();
+
+  // Vector A (fixed â€” pointing right)
+  ctx.strokeStyle = 'var(--blue)'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + r, cy); ctx.stroke();
+  ctx.fillStyle = 'var(--blue)'; ctx.font = '12px monospace';
+  ctx.fillText('A', cx + r + 4, cy - 4);
+
+  // Vector B (rotated by angle)
+  const rad = (deg * Math.PI) / 180;
+  const bx = cx + r * Math.cos(-rad), by = cy + r * Math.sin(-rad);
+  ctx.strokeStyle = 'var(--purple)'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(bx, by); ctx.stroke();
+  ctx.fillStyle = 'var(--purple)';
+  ctx.fillText('B', bx + 4, by - 4);
+
+  // Angle arc
+  if (deg > 0) {
+    ctx.strokeStyle = '#ffd16688'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(cx, cy, 28, -Math.PI * 2 + (Math.PI / 180) * deg * -1, 0); ctx.stroke();
+    ctx.fillStyle = 'var(--yellow)'; ctx.font = '11px sans-serif';
+    ctx.fillText(deg + 'Â°', cx + 14, cy - 10);
+  }
+}
+setCosine(0);
+
+// DIMENSIONS
+const dimData = [
+  { title: '256 dimensions â€” Ultra-compact', body: 'Very small vectors. Fast to search, cheap to store, but significant information loss for complex semantic tasks. Best suited for simple keyword-adjacent retrieval or edge deployments with tight memory constraints. Not recommended for production RAG.' },
+  { title: '768 dimensions â€” Standard BERT-class', body: 'The original BERT embedding size. Many open-source models (sentence-transformers, nomic-embed) use this dimension. Good quality-to-cost ratio. Works well for most English-language RAG systems. This is the default for many open-source embedding models.' },
+  { title: '1536 dimensions â€” Production default', body: 'OpenAI text-embedding-3-small outputs 1536-dim vectors. This is the de-facto standard for production RAG systems in 2024â€“2025. Excellent semantic quality, widely supported by all major vector databases. Start here unless you have a specific reason to deviate.' },
+  { title: '3072 dimensions â€” High fidelity', body: 'OpenAI text-embedding-3-large. Maximum semantic expressiveness â€” captures fine-grained meaning differences. Storage and search costs are 2x compared to 1536. Worthwhile for high-stakes retrieval (legal, medical, financial) where retrieval errors are costly. MTEB improvement: ~2.3 points over small.' }
+];
+
+function showDim(idx, el) {
+  document.querySelectorAll('.dim-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('dd-title').textContent = dimData[idx].title;
+  document.getElementById('dd-body').textContent = dimData[idx].body;
+  document.getElementById('dim-detail').classList.add('show');
+}
+
+// QUIZ
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'Cosine = cos(90Â°) = 0. Orthogonal vectors share no directional component â€” semantically unrelated.',
+  q2: 'Each model creates its own unique vector space. Cross-model comparison produces meaningless similarity scores.',
+  q3: 'MTEB evaluates embedding quality across 56 tasks including classification, clustering, retrieval, and reranking.',
+  q4: 'nomic-embed-text and bge-m3 run locally on your hardware â€” no API calls, no data leaving your infrastructure.',
+  q5: 'Matryoshka Representation Learning allows the same model to produce shorter vectors that retain most of the accuracy of longer ones, enabling a speed/accuracy trade-off at query time.'
+};
+
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

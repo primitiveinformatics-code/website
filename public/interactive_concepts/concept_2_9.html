@@ -1,0 +1,531 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Single-Agent vs. Multi-Agent Systems | Agentic AI Course</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #21263a;
+    --card2: #1a1f30;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --accent: #00d2ff;
+    --accent2: #0099cc;
+    --single: #ffd166;
+    --multi: #06d6a0;
+    --border: rgba(0,210,255,0.18);
+    --radius: 12px;
+    --correct: #06d6a0;
+    --wrong: #ef476f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+
+  /* NAV */
+  nav { background: rgba(15,17,23,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav .brand { font-size: 0.8rem; color: var(--muted); }
+  nav .brand span { color: var(--accent); font-weight: 700; }
+  nav .nav-links { display: flex; gap: 12px; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); transition: all 0.2s; }
+  nav a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* HERO */
+  .hero { text-align: center; padding: 64px 24px 48px; background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,210,255,0.12) 0%, transparent 70%); }
+  .session-tag { display: inline-block; background: rgba(0,210,255,0.15); color: var(--accent); border: 1px solid rgba(0,210,255,0.4); border-radius: 20px; padding: 4px 16px; font-size: 0.78rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 12px; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); max-width: 600px; margin: 0 auto; font-size: 1.05rem; }
+
+  /* SECTION */
+  section { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+  .section-title { font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* SPLIT COMPARE */
+  .split-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .compare-card { background: var(--card); border-radius: var(--radius); padding: 28px; border: 2px solid transparent; }
+  .compare-card.single { border-color: rgba(255,209,102,0.35); }
+  .compare-card.multi { border-color: rgba(6,214,160,0.35); }
+  .compare-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+  .compare-card.single h3 { color: var(--single); }
+  .compare-card.multi h3 { color: var(--multi); }
+  .compare-card .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+  .pro-list, .con-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .pro-list li::before { content: 'âœ“ '; color: var(--correct); font-weight: 700; }
+  .con-list li::before { content: 'âœ— '; color: var(--wrong); font-weight: 700; }
+  .pro-list li, .con-list li { font-size: 0.9rem; color: var(--muted); }
+  .list-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin: 16px 0 8px; }
+
+  /* MAS PATTERN */
+  .mas-pattern { background: var(--card); border-radius: var(--radius); padding: 32px; border: 1px solid var(--border); }
+  .pattern-flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; justify-content: center; margin: 24px 0; }
+  .pattern-node { background: var(--card2); border-radius: 10px; padding: 20px 24px; text-align: center; cursor: pointer; border: 2px solid var(--border); transition: all 0.25s; min-width: 160px; flex: 1; }
+  .pattern-node:hover, .pattern-node.active { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .pattern-node.active.planner { border-color: var(--accent); background: rgba(0,210,255,0.1); }
+  .pattern-node.active.executor { border-color: var(--single); background: rgba(255,209,102,0.1); }
+  .pattern-node.active.critic { border-color: var(--multi); background: rgba(6,214,160,0.1); }
+  .pattern-node .node-icon { font-size: 2rem; margin-bottom: 8px; }
+  .pattern-node .node-title { font-weight: 700; font-size: 0.95rem; }
+  .pattern-node .node-subtitle { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+  .pattern-arrow { display: flex; align-items: center; padding: 0 8px; color: var(--muted); font-size: 1.4rem; align-self: center; }
+  .node-detail { background: var(--card2); border-radius: 10px; padding: 20px 24px; margin-top: 16px; border-left: 3px solid var(--accent); min-height: 80px; transition: all 0.2s; }
+  .node-detail h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .node-detail p { color: var(--muted); font-size: 0.9rem; }
+  .node-detail .examples { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .node-detail .example-chip { background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.3); color: var(--accent); border-radius: 20px; padding: 3px 12px; font-size: 0.78rem; }
+
+  /* TRADE-OFF TABLE */
+  .tradeoff-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; }
+  .tradeoff-table th { background: rgba(0,210,255,0.12); color: var(--accent); font-size: 0.85rem; font-weight: 700; padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); }
+  .tradeoff-table td { padding: 12px 18px; font-size: 0.88rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+  .tradeoff-table tr:last-child td { border-bottom: none; }
+  .tradeoff-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge { display: inline-block; border-radius: 12px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
+  .badge.good { background: rgba(6,214,160,0.15); color: var(--multi); }
+  .badge.bad { background: rgba(239,71,111,0.15); color: var(--wrong); }
+  .badge.neutral { background: rgba(136,146,176,0.15); color: var(--muted); }
+
+  /* USE-CASE MATCHER */
+  .matcher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .matcher-card { background: var(--card); border-radius: var(--radius); padding: 20px; border: 2px solid var(--border); cursor: pointer; transition: all 0.25s; }
+  .matcher-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+  .matcher-card.revealed.single-ans { border-color: var(--single); }
+  .matcher-card.revealed.multi-ans { border-color: var(--multi); }
+  .matcher-card .scenario { font-size: 0.88rem; color: var(--text); margin-bottom: 10px; }
+  .matcher-card .answer { display: none; font-size: 0.82rem; padding: 8px 12px; border-radius: 8px; margin-top: 8px; font-weight: 600; }
+  .matcher-card.revealed .answer { display: block; }
+  .matcher-card.revealed.single-ans .answer { background: rgba(255,209,102,0.1); color: var(--single); }
+  .matcher-card.revealed.multi-ans .answer { background: rgba(6,214,160,0.1); color: var(--multi); }
+  .matcher-card .reason { display: none; font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+  .matcher-card.revealed .reason { display: block; }
+  .matcher-hint { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; }
+
+  /* BENCHMARK */
+  .benchmark-box { background: var(--card); border-radius: var(--radius); padding: 28px; border: 1px solid var(--border); text-align: center; }
+  .big-stat { font-size: 3.5rem; font-weight: 900; color: var(--multi); line-height: 1; }
+  .big-stat-label { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+  .stat-row { display: flex; gap: 20px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+  .stat-item { background: var(--card2); border-radius: 10px; padding: 16px 24px; text-align: center; min-width: 140px; }
+  .stat-item .num { font-size: 1.6rem; font-weight: 800; }
+  .stat-item.s1 .num { color: var(--single); }
+  .stat-item.s2 .num { color: var(--multi); }
+  .stat-item .lbl { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+  /* QUIZ */
+  .quiz-container { background: var(--card); border-radius: var(--radius); padding: 32px; border: 1px solid var(--border); }
+  .quiz-score { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .score-display { font-size: 1rem; color: var(--muted); }
+  .score-display span { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+  .q-block { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .q-block:last-of-type { border-bottom: none; }
+  .q-num { font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .q-text { font-size: 1rem; font-weight: 600; margin-bottom: 14px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--card2); border: 2px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+  .opt:hover:not(.locked) { border-color: var(--accent); background: rgba(0,210,255,0.06); }
+  .opt.correct { border-color: var(--correct); background: rgba(6,214,160,0.1); color: var(--correct); }
+  .opt.wrong { border-color: var(--wrong); background: rgba(239,71,111,0.1); color: var(--wrong); }
+  .opt .opt-icon { font-size: 1rem; flex-shrink: 0; opacity: 0; }
+  .opt.correct .opt-icon, .opt.wrong .opt-icon { opacity: 1; }
+  .feedback { display: none; margin-top: 12px; padding: 14px 16px; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: rgba(6,214,160,0.08); border-left: 3px solid var(--correct); color: #a8f0d8; }
+  .feedback.wrong-fb { background: rgba(239,71,111,0.08); border-left: 3px solid var(--wrong); color: #f8c3ce; }
+  .q-reset { display: none; margin-top: 10px; background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+  .q-reset:hover { border-color: var(--accent); color: var(--accent); }
+  .q-reset.show { display: inline-block; }
+
+  @media (max-width: 700px) {
+    .split-compare { grid-template-columns: 1fr; }
+    .pattern-flow { flex-direction: column; align-items: center; }
+    .pattern-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Agentic AI Course Â· <span>Session 2</span></div>
+  <div class="nav-links">
+    <a href="concept_2_6.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_2_12.html">Next â†’</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="session-tag">Session 2 Â· Concept 2.9</div>
+  <h1>Single-Agent vs. <span>Multi-Agent</span> Systems</h1>
+  <p>When one intelligent agent is enough â€” and when you need a team of specialized agents working in concert.</p>
+</div>
+
+<!-- SPLIT COMPARE -->
+<section>
+  <div class="section-title">Core Comparison</div>
+  <div class="split-compare">
+    <div class="compare-card single">
+      <h3>ðŸ¤– Single-Agent</h3>
+      <div class="subtitle">One model, one context, one decision loop</div>
+      <div class="list-label">Strengths</div>
+      <ul class="pro-list">
+        <li>Simpler to deploy, debug, and trace</li>
+        <li>Lower latency â€” no inter-agent communication</li>
+        <li>High consistency for well-defined tasks</li>
+        <li>Easier cost estimation and control</li>
+        <li>Full context available at every decision</li>
+      </ul>
+      <div class="list-label">Limitations</div>
+      <ul class="con-list">
+        <li>Cognitive overload on complex tasks</li>
+        <li>Context fills up â†’ hallucination risk</li>
+        <li>Can't hold multiple personas simultaneously</li>
+        <li>Sequential only â€” no parallel execution</li>
+        <li>Single point of failure</li>
+      </ul>
+    </div>
+    <div class="compare-card multi">
+      <h3>ðŸ¤ Multi-Agent System</h3>
+      <div class="subtitle">Planner + Executor + Critic working together</div>
+      <div class="list-label">Strengths</div>
+      <ul class="pro-list">
+        <li>Up to 90% better on complex benchmarks</li>
+        <li>Parallel task execution across agents</li>
+        <li>Specialized agents = focused, smaller contexts</li>
+        <li>Critic agent catches errors before they cascade</li>
+        <li>Scales horizontally with task complexity</li>
+      </ul>
+      <div class="list-label">Limitations</div>
+      <ul class="con-list">
+        <li>Higher token cost from coordination overhead</li>
+        <li>Higher latency from multi-step loops</li>
+        <li>Harder to debug distributed failure modes</li>
+        <li>Orchestration logic adds complexity</li>
+        <li>Context synchronization between agents needed</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section>
+  <div class="section-title">Performance Evidence</div>
+  <div class="benchmark-box">
+    <div class="big-stat">~90%</div>
+    <div class="big-stat-label">improvement on complex, multi-step benchmarks when using MAS vs. single agent</div>
+    <div class="stat-row">
+      <div class="stat-item s1">
+        <div class="num">~65%</div>
+        <div class="lbl">Single Agent on<br>HumanEval Complex</div>
+      </div>
+      <div class="stat-item s2">
+        <div class="num">~87%</div>
+        <div class="lbl">Multi-Agent on<br>HumanEval Complex</div>
+      </div>
+      <div class="stat-item s1">
+        <div class="num">1Ã—</div>
+        <div class="lbl">Single Agent<br>latency baseline</div>
+      </div>
+      <div class="stat-item s2">
+        <div class="num">2-4Ã—</div>
+        <div class="lbl">MAS latency<br>overhead</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAS PATTERN -->
+<section>
+  <div class="section-title">The Planner â†’ Executor â†’ Critic Pattern</div>
+  <div class="mas-pattern">
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">Click each agent role to learn what it does and how it contributes to the system.</p>
+    <div class="pattern-flow">
+      <div class="pattern-node planner" onclick="showNodeDetail('planner')">
+        <div class="node-icon">ðŸ§ </div>
+        <div class="node-title">Planner</div>
+        <div class="node-subtitle">Breaks down goals</div>
+      </div>
+      <div class="pattern-arrow">â†’</div>
+      <div class="pattern-node executor" onclick="showNodeDetail('executor')">
+        <div class="node-icon">âš™ï¸</div>
+        <div class="node-title">Executor</div>
+        <div class="node-subtitle">Carries out subtasks</div>
+      </div>
+      <div class="pattern-arrow">â†’</div>
+      <div class="pattern-node critic" onclick="showNodeDetail('critic')">
+        <div class="node-icon">ðŸ”</div>
+        <div class="node-title">Critic</div>
+        <div class="node-subtitle">Validates output quality</div>
+      </div>
+    </div>
+    <div class="node-detail" id="nodeDetail">
+      <h4>Click an agent role above to explore it</h4>
+      <p>The Planner â†’ Executor â†’ Critic pattern is the most common multi-agent architecture in production systems.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TRADE-OFF TABLE -->
+<section>
+  <div class="section-title">Decision Matrix</div>
+  <table class="tradeoff-table">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Single-Agent</th>
+        <th>Multi-Agent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Deployment complexity</strong></td>
+        <td><span class="badge good">Low</span></td>
+        <td><span class="badge bad">High</span></td>
+      </tr>
+      <tr>
+        <td><strong>Debugging / tracing</strong></td>
+        <td><span class="badge good">Easy</span></td>
+        <td><span class="badge bad">Hard (distributed)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Latency</strong></td>
+        <td><span class="badge good">Low</span></td>
+        <td><span class="badge bad">Higher</span></td>
+      </tr>
+      <tr>
+        <td><strong>Token cost</strong></td>
+        <td><span class="badge good">Low</span></td>
+        <td><span class="badge bad">High</span></td>
+      </tr>
+      <tr>
+        <td><strong>Complex task performance</strong></td>
+        <td><span class="badge bad">Limited</span></td>
+        <td><span class="badge good">Excellent</span></td>
+      </tr>
+      <tr>
+        <td><strong>Parallel execution</strong></td>
+        <td><span class="badge bad">None</span></td>
+        <td><span class="badge good">Yes</span></td>
+      </tr>
+      <tr>
+        <td><strong>Specialization</strong></td>
+        <td><span class="badge bad">Generalist only</span></td>
+        <td><span class="badge good">Role-specific agents</span></td>
+      </tr>
+      <tr>
+        <td><strong>Error self-correction</strong></td>
+        <td><span class="badge neutral">Limited</span></td>
+        <td><span class="badge good">Critic agent pattern</span></td>
+      </tr>
+      <tr>
+        <td><strong>Best for</strong></td>
+        <td style="color:var(--muted);font-size:0.85rem;">Focused, well-defined tasks; quick prototypes</td>
+        <td style="color:var(--muted);font-size:0.85rem;">Multi-domain research, complex pipelines, long-horizon tasks</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- USE-CASE MATCHER -->
+<section>
+  <div class="section-title">Use-Case Matcher</div>
+  <p class="matcher-hint">Click each scenario to reveal whether Single-Agent or Multi-Agent is the right choice and why.</p>
+  <div class="matcher-grid">
+
+    <div class="matcher-card" onclick="revealMatch(this)">
+      <div class="scenario">ðŸ“§ Summarize a customer support email and draft a reply</div>
+      <div class="answer">âœ“ Single-Agent</div>
+      <div class="reason">Short, well-scoped task with clear input/output. One model handles it cleanly within context limits.</div>
+    </div>
+
+    <div class="matcher-card multi-ans" onclick="revealMatch(this)">
+      <div class="scenario">ðŸ”¬ Research a topic across 20+ sources, synthesize findings, fact-check claims, and produce a report</div>
+      <div class="answer">âœ“ Multi-Agent</div>
+      <div class="reason">Research â†’ Synthesis â†’ Critique pattern maps perfectly to Planner + Executor + Critic. Single agent would overflow context.</div>
+    </div>
+
+    <div class="matcher-card single-ans" onclick="revealMatch(this)">
+      <div class="scenario">ðŸ§® Classify customer feedback into sentiment categories</div>
+      <div class="answer">âœ“ Single-Agent</div>
+      <div class="reason">Repetitive classification is a focused task. Adding orchestration overhead would add cost and latency with no benefit.</div>
+    </div>
+
+    <div class="matcher-card multi-ans" onclick="revealMatch(this)">
+      <div class="scenario">ðŸ—ï¸ Build a full-stack app: design DB schema, write backend, generate frontend, write tests, create documentation</div>
+      <div class="answer">âœ“ Multi-Agent</div>
+      <div class="reason">Five distinct domains requiring specialized expertise. Parallel execution of backend + frontend agents drastically reduces time.</div>
+    </div>
+
+    <div class="matcher-card single-ans" onclick="revealMatch(this)">
+      <div class="scenario">ðŸ“… Extract meeting times from an email and add to calendar</div>
+      <div class="answer">âœ“ Single-Agent</div>
+      <div class="reason">Short, deterministic task. Multi-agent overhead would be pure waste here â€” this completes in a single ReAct loop.</div>
+    </div>
+
+    <div class="matcher-card multi-ans" onclick="revealMatch(this)">
+      <div class="scenario">ðŸ›’ E-commerce order agent: validate inventory, process payment, update shipping system, notify customer, handle exceptions</div>
+      <div class="answer">âœ“ Multi-Agent</div>
+      <div class="reason">Multiple external systems with distinct failure modes. Dedicated agents per system (inventory, payments, notifications) isolate failures.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section>
+  <div class="section-title">Check Your Understanding</div>
+  <div class="quiz-container">
+    <div class="quiz-score">
+      <div class="score-display">Score: <span id="scoreDisplay">0</span> / 5</div>
+      <div style="font-size:0.8rem;color:var(--muted);">Click an answer to check it</div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 5</div>
+      <div class="q-text">What is the PRIMARY risk of using a single agent for very complex, long-horizon tasks?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">âœ—</span>a) It can only use one tool at a time</div>
+        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">âœ“</span>b) Context window fills up, increasing hallucination risk</div>
+        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">âœ—</span>c) It cannot be connected to APIs</div>
+        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">âœ—</span>d) It runs too fast and skips important steps</div>
+      </div>
+      <div class="feedback correct-fb" id="q1-correct">âœ“ Exactly right. A single agent's context window is finite. As task complexity grows, older context gets truncated â€” causing the model to "forget" earlier steps and hallucinate. This is the core failure mode that multi-agent architectures solve by giving each agent a focused, bounded context.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">âœ— The real issue is context overflow. Single agents can use many tools, can connect to APIs, and don't skip steps by design â€” but as task complexity grows, their fixed context window fills up, truncating earlier reasoning and causing hallucinations. This is why MAS uses specialized agents with scoped contexts.</div>
+      <button class="q-reset" onclick="resetQ('q1')">â†º Try again</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 5</div>
+      <div class="q-text">In the Planner â†’ Executor â†’ Critic pattern, what is the Critic agent's primary role?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">âœ—</span>a) Breaking the user's goal into subtasks</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">âœ—</span>b) Calling external APIs and tools</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">âœ“</span>c) Validating output quality before it reaches the user</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">âœ—</span>d) Storing long-term memory for the system</div>
+      </div>
+      <div class="feedback correct-fb" id="q2-correct">âœ“ Correct! The Critic agent is the quality gate. It reviews the Executor's output against the original plan and criteria â€” catching errors, inconsistencies, or incomplete work before they propagate downstream or reach users. This is what gives MAS systems their self-correction capability.</div>
+      <div class="feedback wrong-fb" id="q2-wrong">âœ— Breaking goals into subtasks = Planner. Calling APIs = Executor. Memory storage is typically a separate component. The Critic's job is validation â€” it reviews the Executor's output and checks it against the original goal, acting as a quality gate before results reach the user.</div>
+      <button class="q-reset" onclick="resetQ('q2')">â†º Try again</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 5</div>
+      <div class="q-text">Which scenario is BEST suited for a single-agent architecture?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q3','a','b')"><span class="opt-icon">âœ—</span>a) Research 30 competitors, analyze pricing, create a strategic report</div>
+        <div class="opt" onclick="answer('q3','b','b')"><span class="opt-icon">âœ“</span>b) Classify customer support tickets by urgency level</div>
+        <div class="opt" onclick="answer('q3','c','b')"><span class="opt-icon">âœ—</span>c) Build and deploy a microservices application</div>
+        <div class="opt" onclick="answer('q3','d','b')"><span class="opt-icon">âœ—</span>d) Coordinate legal review, technical audit, and financial analysis simultaneously</div>
+      </div>
+      <div class="feedback correct-fb" id="q3-correct">âœ“ Right. Ticket classification is a focused, repetitive task with clear input (ticket text) and output (urgency label). It's well within a single model's context limit. Adding multi-agent overhead would increase cost and latency with zero quality benefit.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">âœ— Think about scope and context. Options (a), (c), and (d) all require multiple domains, long contexts, or parallel execution â€” all MAS strengths. Ticket classification is a focused, single-context task: one input, one output, minimal reasoning chains. That's the single-agent sweet spot.</div>
+      <button class="q-reset" onclick="resetQ('q3')">â†º Try again</button>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 5</div>
+      <div class="q-text">Multi-agent systems outperform single agents on complex tasks by approximately how much, according to benchmarks?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">âœ—</span>a) ~10%</div>
+        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">âœ—</span>b) ~30%</div>
+        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">âœ“</span>c) ~90%</div>
+        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">âœ—</span>d) 2-3Ã—</div>
+      </div>
+      <div class="feedback correct-fb" id="q4-correct">âœ“ Correct â€” approximately 90% improvement on complex, multi-step benchmarks. This dramatic gap comes from specialized agents handling focused subtasks with bounded contexts, plus the Critic layer catching errors that single agents miss entirely. The gap narrows significantly on simple tasks where single agents remain competitive.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">âœ— The benchmark improvement is approximately 90%. This sounds extreme, but it reflects that complex tasks specifically exploit everything MAS does well â€” parallel specialization, focused contexts, and error correction. Simple tasks show much smaller differences, which is why architecture choice must match task complexity.</div>
+      <button class="q-reset" onclick="resetQ('q4')">â†º Try again</button>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 5</div>
+      <div class="q-text">What is the BIGGEST hidden cost of multi-agent systems that often surprises teams in production?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q5','a','b')"><span class="opt-icon">âœ—</span>a) The models themselves are more expensive per token</div>
+        <div class="opt" onclick="answer('q5','b','b')"><span class="opt-icon">âœ“</span>b) Token cost multiplies from orchestration overhead and inter-agent communication</div>
+        <div class="opt" onclick="answer('q5','c','b')"><span class="opt-icon">âœ—</span>c) You need custom hardware to run multiple agents</div>
+        <div class="opt" onclick="answer('q5','d','b')"><span class="opt-icon">âœ—</span>d) Regulatory approval is required for multi-agent systems</div>
+      </div>
+      <div class="feedback correct-fb" id="q5-correct">âœ“ Exactly. In a MAS, every agent-to-agent message, every context handoff, every Plannerâ†’Executorâ†’Critic loop burns tokens. A task that costs $0.01 with a single agent might cost $0.30 with a 5-agent system due to orchestration messages, repeated context injection, and Critic re-evaluation cycles. This catches teams off guard at scale.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">âœ— The models use the same per-token pricing regardless of architecture. The real cost multiplier is orchestration: every inter-agent message, context handoff, and Critic review cycle burns tokens. A single agent call becomes 5-10 LLM calls in a MAS. At scale, what cost $100/day becomes $1,000/day â€” this is the production surprise that kills MAS budgets.</div>
+      <button class="q-reset" onclick="resetQ('q5')">â†º Try again</button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  let score = 0;
+  const answered = {};
+
+  const nodeDetails = {
+    planner: {
+      color: 'var(--accent)',
+      title: 'ðŸ§  Planner Agent',
+      desc: 'Receives the high-level user goal and decomposes it into ordered, executable subtasks. The Planner understands dependencies between tasks and creates a directed execution graph â€” deciding which subtasks can run in parallel vs. sequentially.',
+      examples: ['Goal decomposition', 'Dependency mapping', 'Priority ordering', 'Parallel task identification']
+    },
+    executor: {
+      color: 'var(--single)',
+      title: 'âš™ï¸ Executor Agent(s)',
+      desc: 'Carries out individual subtasks from the Planner\'s roadmap. In sophisticated systems, multiple specialized Executor agents run in parallel â€” one for web search, one for code generation, one for data analysis. Each Executor has a focused, bounded context.',
+      examples: ['Web search & retrieval', 'Code generation', 'API calls', 'Data transformation', 'File I/O']
+    },
+    critic: {
+      color: 'var(--multi)',
+      title: 'ðŸ” Critic Agent',
+      desc: 'Reviews completed subtask outputs against the original goal and quality criteria. The Critic is the system\'s self-correction mechanism â€” it can flag failures, request re-execution, or escalate to the Planner for replanning. Without a Critic, errors cascade silently.',
+      examples: ['Output validation', 'Factual consistency check', 'Goal alignment verification', 'Error detection', 'Replanning trigger']
+    }
+  };
+
+  function showNodeDetail(role) {
+    const d = nodeDetails[role];
+    const detail = document.getElementById('nodeDetail');
+    detail.style.borderLeftColor = d.color;
+    detail.innerHTML = `<h4 style="color:${d.color}">${d.title}</h4>
+      <p>${d.desc}</p>
+      <div class="examples">${d.examples.map(e => `<span class="example-chip">${e}</span>`).join('')}</div>`;
+    document.querySelectorAll('.pattern-node').forEach(n => n.classList.remove('active'));
+    document.querySelector('.pattern-node.' + role).classList.add('active');
+  }
+
+  function revealMatch(card) {
+    card.classList.add('revealed');
+    const answer = card.querySelector('.answer').textContent;
+    if (answer.includes('Single')) card.classList.add('single-ans');
+    else card.classList.add('multi-ans');
+  }
+
+  function answer(qid, chosen, correct) {
+    if (answered[qid]) return;
+    answered[qid] = true;
+    const block = document.getElementById(qid);
+    const opts = block.querySelectorAll('.opt');
+    opts.forEach(o => o.classList.add('locked'));
+    const letters = ['a','b','c','d'];
+    opts[letters.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+    if (chosen !== correct) opts[letters.indexOf(correct)].classList.add('correct');
+    const isCorrect = chosen === correct;
+    if (isCorrect) { score++; document.getElementById('scoreDisplay').textContent = score; }
+    document.getElementById(qid + '-' + (isCorrect ? 'correct' : 'wrong')).classList.add('show');
+    block.querySelector('.q-reset').classList.add('show');
+  }
+
+  function resetQ(qid) {
+    if (!answered[qid]) return;
+    delete answered[qid];
+    const block = document.getElementById(qid);
+    block.querySelectorAll('.opt').forEach(o => { o.classList.remove('correct','wrong','locked'); });
+    block.querySelectorAll('.feedback').forEach(f => f.classList.remove('show'));
+    block.querySelector('.q-reset').classList.remove('show');
+    if (score > 0) { score--; document.getElementById('scoreDisplay').textContent = score; }
+  }
+</script>
+</body>
+</html>

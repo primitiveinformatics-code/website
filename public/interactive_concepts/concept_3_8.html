@@ -1,0 +1,467 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.8 â€” Prompt Engineering for Agents</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  nav .nav-links{display:flex;gap:16px;}
+  nav a{color:var(--accent);text-decoration:none;font-size:.9rem;padding:6px 14px;border:1px solid var(--accent);border-radius:20px;transition:all .2s;}
+  nav a:hover{background:var(--accent);color:#000;}
+  nav .title{font-weight:700;font-size:1rem;}
+  .hero{background:linear-gradient(135deg,#1a0a12 0%,#0d1117 60%);border-bottom:1px solid var(--border);padding:48px 32px 36px;text-align:center;}
+  .session-tag{display:inline-block;background:var(--accent);color:#000;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;margin-bottom:12px;}
+  .hero p{color:var(--muted);font-size:1.05rem;max-width:680px;margin:0 auto;}
+  .content{max-width:960px;margin:0 auto;padding:40px 24px 60px;}
+  .section{margin-bottom:48px;}
+  .section h2{font-size:1.3rem;font-weight:700;margin-bottom:20px;color:var(--accent);display:flex;align-items:center;gap:10px;}
+  .section h2::before{content:'';display:block;width:4px;height:1.3rem;background:var(--accent);border-radius:2px;}
+
+  /* TECHNIQUE ACCORDION */
+  .acc{margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+  .acc-h{padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .2s;}
+  .acc-h:hover{background:var(--surface2);}
+  .acc-h .acc-title{display:flex;align-items:center;gap:12px;font-weight:700;font-size:.95rem;}
+  .acc-h .acc-icon{font-size:1.4rem;}
+  .acc-h .acc-impact{font-size:.72rem;padding:3px 10px;border-radius:12px;font-weight:600;}
+  .acc-h .chevron{color:var(--muted);transition:transform .3s;}
+  .acc-h.open .chevron{transform:rotate(180deg);}
+  .acc-body{display:none;padding:0 20px 20px;}
+  .acc-body.open{display:block;}
+
+  /* BEFORE/AFTER COMPARATOR */
+  .ba-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+  .ba-selector{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+  .ba-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 16px;color:var(--muted);font-size:.82rem;cursor:pointer;transition:all .2s;}
+  .ba-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .ba-btn.active{background:rgba(255,101,132,.1);border-color:var(--accent);color:var(--accent);font-weight:700;}
+  .ba-panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:600px){.ba-panels{grid-template-columns:1fr;}}
+  .ba-panel{background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .ba-panel-header{padding:10px 14px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  .ba-panel.before .ba-panel-header{background:rgba(255,101,132,.1);color:var(--wrong);}
+  .ba-panel.after .ba-panel-header{background:rgba(6,214,160,.1);color:var(--correct);}
+  .ba-panel pre{padding:14px;font-family:'Courier New',monospace;font-size:.76rem;line-height:1.65;white-space:pre-wrap;color:var(--muted);}
+  .ba-panel.after pre{color:var(--text);}
+  .ba-verdict{background:var(--surface2);border-radius:8px;padding:14px 16px;font-size:.83rem;color:var(--muted);line-height:1.55;margin-top:12px;}
+  .ba-verdict strong{color:var(--text);}
+
+  /* 7 LAYERS */
+  .layers-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+  .layer-row{display:flex;align-items:stretch;margin-bottom:8px;cursor:pointer;}
+  .layer-num{background:var(--accent);color:#000;width:32px;border-radius:8px 0 0 8px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;flex-shrink:0;}
+  .layer-main{flex:1;background:var(--surface2);border:1px solid var(--border);border-left:none;border-radius:0 8px 8px 0;padding:12px 16px;transition:border-color .2s;}
+  .layer-row:hover .layer-main,.layer-row.active .layer-main{border-color:var(--accent);}
+  .layer-main h4{font-size:.88rem;font-weight:700;margin-bottom:3px;}
+  .layer-main p{font-size:.78rem;color:var(--muted);}
+  .layer-detail{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:4px;margin-bottom:8px;display:none;}
+  .layer-detail.show{display:block;}
+  .layer-detail h5{font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--accent2);}
+  .layer-detail pre{font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);line-height:1.55;white-space:pre-wrap;background:#090d12;padding:12px;border-radius:6px;}
+
+  /* QUIZ */
+  .quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+  .quiz-card h3{font-size:1rem;font-weight:700;margin-bottom:16px;line-height:1.5;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:left;color:var(--text);width:100%;}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:rgba(255,101,132,.08);}
+  .opt.correct{background:rgba(6,214,160,.15);border-color:var(--correct);color:var(--correct);}
+  .opt.wrong{background:rgba(255,101,132,.15);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:12px;font-size:.85rem;padding:10px 14px;border-radius:8px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(6,214,160,.1);color:var(--correct);border:1px solid var(--correct);}
+  .feedback.wrong{background:rgba(255,101,132,.1);color:var(--wrong);border:1px solid var(--wrong);}
+  .reset-btn{margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .score-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px;}
+  .score-display{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .score-label{color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_7.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_3_9.html">Next â†’</a>
+  </div>
+  <span class="title">3.8 â€” Prompt Engineering for Agents</span>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <h1>Prompt Engineering for Agents</h1>
+  <p>Agent prompts aren't chatbot prompts. They define identity, constrain behavior, specify tool usage, and shape output â€” learn the techniques that make the difference.</p>
+</div>
+<div class="content">
+
+  <!-- KEY TECHNIQUES -->
+  <div class="section">
+    <h2>6 Agent Prompting Techniques</h2>
+
+    <div class="acc">
+      <div class="acc-h" onclick="toggleAcc('persona')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸŽ­</span> Persona & Role Definition
+          <span class="acc-impact" style="background:rgba(6,214,160,.1);color:var(--accent3);">High Impact</span>
+        </div><span class="chevron">â–¼</span>
+      </div>
+      <div class="acc-body" id="acc-persona">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Give the agent a clear professional identity. This primes the LLM's output style, vocabulary, confidence level, and how it handles edge cases.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:#090d12;border:1px solid var(--wrong);border-radius:8px;padding:14px;">
+            <div style="font-size:.72rem;font-weight:700;color:var(--wrong);margin-bottom:8px;">âŒ WEAK</div>
+            <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--muted);white-space:pre-wrap;">You are a helpful assistant.
+Answer questions and help users.</pre>
+          </div>
+          <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
+            <div style="font-size:.72rem;font-weight:700;color:var(--correct);margin-bottom:8px;">âœ“ STRONG</div>
+            <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">You are a Senior Data Analyst agent
+at Acme Corp's analytics platform.
+You specialize in SQL query generation,
+trend analysis, and executive summaries.
+You never guess at data â€” you query it.</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="toggleAcc('constraints')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸš§</span> Explicit Constraints
+          <span class="acc-impact" style="background:rgba(255,101,132,.1);color:var(--wrong);">Critical</span>
+        </div><span class="chevron">â–¼</span>
+      </div>
+      <div class="acc-body" id="acc-constraints">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Tell the agent explicitly what it MUST NOT do. LLMs try to be helpful by default â€” without hard constraints they will improvise.</p>
+        <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
+          <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">CONSTRAINTS:
+- NEVER execute destructive SQL (DELETE, DROP, TRUNCATE)
+- NEVER send emails without explicit user confirmation
+- NEVER access file paths outside /workspace/data/
+- NEVER make more than 5 tool calls per user turn
+- If unsure about scope, ASK â€” do not assume</pre>
+        </div>
+        <p style="font-size:.82rem;color:var(--muted);margin-top:12px;">ðŸ’¡ Use numbered lists or clear headings like "CONSTRAINTS:" â€” easier for the model to parse than buried inline text.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="toggleAcc('tools')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸ”§</span> Tool Usage Instructions
+          <span class="acc-impact" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
+        </div><span class="chevron">â–¼</span>
+      </div>
+      <div class="acc-body" id="acc-tools">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Tell the agent WHEN to use each tool â€” not just that they exist. Without guidance, agents either under-use or over-use tools.</p>
+        <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
+          <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">TOOL USAGE RULES:
+- Use web_search ONLY for information published after 2024
+- Use db_query for ALL factual questions about user data
+- Use code_executor to verify any numeric calculations
+- Prefer db_query over web_search when data may exist locally
+- After web_search, always verify with a second source
+  before stating facts as certain</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="toggleAcc('output')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸ“</span> Output Format Specification
+          <span class="acc-impact" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
+        </div><span class="chevron">â–¼</span>
+      </div>
+      <div class="acc-body" id="acc-output">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Agents often feed results to downstream systems. Consistent structured output prevents parsing failures in automated pipelines.</p>
+        <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
+          <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">OUTPUT FORMAT:
+Always respond with valid JSON matching this schema:
+{
+  "status": "success" | "error" | "needs_input",
+  "summary": "1-2 sentence plain English summary",
+  "data": {...},  // structured result
+  "next_steps": ["step1", "step2"],
+  "tools_used": ["tool_name"]
+}
+Never wrap JSON in markdown code blocks.</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="toggleAcc('cot')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸ§ </span> Chain-of-Thought Guidance
+          <span class="acc-impact" style="background:rgba(6,214,160,.1);color:var(--accent3);">High Impact</span>
+        </div><span class="chevron">â–¼</span>
+      </div>
+      <div class="acc-body" id="acc-cot">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Instruct the agent to reason step-by-step before acting. This dramatically improves accuracy on multi-step tasks and reduces hallucinated tool calls.</p>
+        <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
+          <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">REASONING PROCESS:
+Before calling any tool, think through:
+1. What do I already know? (check context first)
+2. What do I need to find out?
+3. Which tool is best suited for this?
+4. What could go wrong with this tool call?
+
+After receiving tool results:
+5. Does this answer the question fully?
+6. Do I need another tool, or can I respond now?
+
+Think step-by-step. Do NOT skip steps.</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="toggleAcc('termination')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸ</span> Termination Conditions
+          <span class="acc-impact" style="background:rgba(255,101,132,.1);color:var(--wrong);">Critical</span>
+        </div><span class="chevron">â–¼</span>
+      </div>
+      <div class="acc-body" id="acc-termination">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Without explicit stopping rules, agents can loop indefinitely. Define DONE conditions clearly to prevent infinite tool call loops.</p>
+        <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
+          <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">TERMINATION RULES:
+STOP and respond to the user when:
+- You have a complete answer with evidence
+- You have called the same tool 3 times without progress
+- You have made 10 total tool calls in this turn
+- You encounter an error you cannot recover from
+
+NEVER:
+- Call tools in a loop hoping for different results
+- Continue after 10 tool calls without asking the user
+- Proceed if you're unsure whether action is reversible</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE/AFTER COMPARATOR -->
+  <div class="section">
+    <h2>Before / After Comparator</h2>
+    <div class="ba-container">
+      <div class="ba-selector">
+        <button class="ba-btn active" onclick="showBA(0,this)">Research Agent</button>
+        <button class="ba-btn" onclick="showBA(1,this)">Data Agent</button>
+        <button class="ba-btn" onclick="showBA(2,this)">Coding Agent</button>
+      </div>
+      <div class="ba-panels">
+        <div class="ba-panel before">
+          <div class="ba-panel-header">âŒ Before â€” Weak Prompt</div>
+          <pre id="ba-before"></pre>
+        </div>
+        <div class="ba-panel after">
+          <div class="ba-panel-header">âœ“ After â€” Production Prompt</div>
+          <pre id="ba-after"></pre>
+        </div>
+      </div>
+      <div class="ba-verdict" id="ba-verdict"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz â€” Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. Why do agent system prompts need termination conditions that chatbot prompts don't?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','c')">A) Agents have a shorter context window than chatbots</button>
+        <button class="opt" onclick="answer('q1','b','c')">B) LLMs forget their instructions after 10 tool calls</button>
+        <button class="opt" onclick="answer('q1','c','c')">C) Agents can loop indefinitely calling tools â€” without explicit stopping rules they have no natural end signal like a user turn does</button>
+        <button class="opt" onclick="answer('q1','d','c')">D) Termination conditions are only needed when using external APIs</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. What is the effect of adding chain-of-thought instructions to an agent system prompt?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','b')">A) It makes the agent's responses longer and harder for users to read</button>
+        <button class="opt" onclick="answer('q2','b','b')">B) It improves accuracy on multi-step tasks and reduces hallucinated tool calls by forcing the model to reason before acting</button>
+        <button class="opt" onclick="answer('q2','c','b')">C) It slows down the agent by requiring extra API calls</button>
+        <button class="opt" onclick="answer('q2','d','b')">D) It only helps with math problems, not general tool use</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. Why should tool usage instructions specify WHEN to use each tool â€” not just list them?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','b')">A) The LLM doesn't know which tools are available unless told</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) Without guidance, agents either under-use tools (relying on training data) or over-use them (calling tools for things they already know)</button>
+        <button class="opt" onclick="answer('q3','c','b')">C) Tool names are too ambiguous for the LLM to understand without examples</button>
+        <button class="opt" onclick="answer('q3','d','b')">D) It's a security requirement to prevent tool misuse</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. An agent is generating reports consumed by a downstream data pipeline. Which prompting technique is MOST critical?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','c')">A) Persona definition â€” so reports have consistent tone</button>
+        <button class="opt" onclick="answer('q4','b','c')">B) Chain-of-thought â€” so reasoning is visible</button>
+        <button class="opt" onclick="answer('q4','c','c')">C) Output format specification â€” so downstream JSON parsing doesn't break</button>
+        <button class="opt" onclick="answer('q4','d','c')">D) Termination conditions â€” so the agent doesn't run too long</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. Which of these is a key difference between agent prompts and standard chatbot prompts?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','d')">A) Agent prompts must be shorter to fit in the context window</button>
+        <button class="opt" onclick="answer('q5','b','d')">B) Agent prompts always require chain-of-thought, chatbot prompts never do</button>
+        <button class="opt" onclick="answer('q5','c','d')">C) Agent prompts don't need persona definitions</button>
+        <button class="opt" onclick="answer('q5','d','d')">D) Agent prompts must define tool usage rules, constraints, termination conditions, and output schemas that chatbot prompts don't need</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div>
+<script>
+// â”€â”€ ACCORDION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function toggleAcc(id) {
+  const body = document.getElementById('acc-' + id);
+  const header = body.previousElementSibling;
+  body.classList.toggle('open');
+  header.classList.toggle('open');
+}
+
+// â”€â”€ BEFORE/AFTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const baData = [
+  {
+    before: `You are a research assistant.
+Help users find information
+about topics they ask about.`,
+    after: `You are a Web Research Agent for Acme Corp.
+Your job: find accurate, current information
+from the web and synthesize it into
+structured reports.
+
+CONSTRAINTS:
+- Only use web_search for post-2024 topics
+- Always cite 2+ sources per factual claim
+- NEVER state uncertain things as facts
+- Stop after 8 tool calls and report what you have
+
+OUTPUT: JSON with fields:
+  summary, sources[], confidence (0-1), gaps[]`,
+    verdict: '<strong>What changed:</strong> Added clear role, explicit constraints, tool rules, citation requirements, loop prevention, and structured output schema. The "after" version will produce consistent, citable, pipeline-friendly reports rather than informal ad-hoc answers.'
+  },
+  {
+    before: `You help users with data analysis.
+Use the database when needed.
+Answer questions about the data.`,
+    after: `You are a Data Analysis Agent for Acme Corp.
+You have access to the Postgres analytics DB.
+
+TOOL RULES:
+- ALWAYS query the DB for factual questions about data
+- NEVER guess metrics â€” query them
+- Only run SELECT queries (reads only)
+- Limit results to 1000 rows unless asked for more
+
+CONSTRAINTS:
+- Never expose raw PII (mask email, phone fields)
+- Stop if you run the same query twice with same params
+- Max 6 DB queries per request
+
+OUTPUT: JSON { metric, value, period, sql_used, notes }`,
+    verdict: '<strong>What changed:</strong> The "after" version prevents PII exposure, stops wasted repeated queries, limits read scope, specifies output schema, and clarifies the DB-first approach. Critical for production data agents.'
+  },
+  {
+    before: `You are a coding assistant.
+Write code and fix bugs.
+Use the code executor tool.`,
+    after: `You are a Coding Agent with sandbox execution.
+You write Python code, run it, and fix it.
+
+REASONING:
+1. Read the task carefully â€” identify edge cases
+2. Write code incrementally â€” test small pieces first
+3. Run code before declaring it correct
+4. If execution fails, read error, fix, retry (max 3x)
+
+CONSTRAINTS:
+- NEVER write code that modifies files outside /sandbox/
+- NEVER import networking libraries (requests, urllib)
+- NEVER run code that could loop infinitely
+- Always add input validation
+
+OUTPUT: { code, output, status, explanation }`,
+    verdict: '<strong>What changed:</strong> Added a step-by-step reasoning process, security constraints (no network, no filesystem escapes), retry limits, incremental testing discipline, and structured output. The "after" version is safe to run in production.'
+  }
+];
+
+function showBA(idx, btn) {
+  document.querySelectorAll('.ba-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ba-before').textContent = baData[idx].before;
+  document.getElementById('ba-after').textContent = baData[idx].after;
+  document.getElementById('ba-verdict').innerHTML = baData[idx].verdict;
+}
+showBA(0, document.querySelector('.ba-btn.active'));
+
+// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1: 'In a chatbot, the user\'s next message acts as a natural break. Agents run autonomously calling tools in loops â€” without explicit stopping rules (max calls, done conditions), they can loop indefinitely costing money and time.',
+      q2: 'Chain-of-thought forces the model to reason before acting â€” checking what it knows, what it needs, which tool to use. This dramatically reduces hallucinated tool calls and improves accuracy on complex multi-step tasks.',
+      q3: 'LLMs by default may call web search for things they already know (wasting budget) or fail to call the DB for things they should (returning stale training data). Explicit rules like "use DB for all internal data" guide behavior correctly.',
+      q4: 'For machine-to-machine pipelines, output format is critical. If the agent suddenly wraps JSON in a markdown code block or changes field names, the downstream parser breaks. Consistent schema specification prevents this.',
+      q5: 'Agent prompts must address: tool selection logic, usage constraints, loop prevention/termination, and output schemas for automated consumption. These concerns don\'t exist in conversational chatbot prompts where a human reads free-form text.'
+    };
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => { o.disabled = false; o.classList.remove('correct','wrong'); });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

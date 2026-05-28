@@ -1,0 +1,564 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 The Platform Shift â€” Agentic AI</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --accent: #6c63ff;
+    --accent2: #00d2ff;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(108,99,255,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,17,23,0.9);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .nav-home {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .nav-home:hover { color: var(--text); }
+  .nav-sep { color: var(--border); font-size: 14px; }
+  .nav-current { color: var(--accent); font-size: 13px; font-weight: 700; }
+  .nav-arrows { margin-left: auto; display: flex; gap: 8px; }
+  .nav-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    padding: 60px 40px 48px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .concept-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero-lead {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 680px;
+  }
+  .hero-stat-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 22px;
+    min-width: 150px;
+  }
+  .hero-stat-num {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+  .hero-stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 12px; bottom: 12px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -36px; top: 14px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    transition: all 0.2s;
+  }
+  .tl-item.active::before,
+  .tl-item:hover::before {
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .tl-connector {
+    position: absolute;
+    left: -31px; top: 24px;
+    width: 2px;
+    background: rgba(108,99,255,0.25);
+  }
+  .tl-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    transition: all 0.25s;
+  }
+  .tl-item:hover .tl-card,
+  .tl-item.active .tl-card {
+    border-color: rgba(108,99,255,0.5);
+    background: rgba(33,38,58,0.9);
+  }
+  .tl-era {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .tl-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .tl-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.6;
+    display: none;
+  }
+  .tl-item.active .tl-desc { display: block; }
+  .tl-arrow {
+    font-size: 18px;
+    color: var(--accent);
+    margin-top: 8px;
+    display: none;
+  }
+  .tl-item.active .tl-arrow { display: block; }
+
+  /* MYTH BUSTERS / KEY POINTS */
+  .key-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .key-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: all 0.2s;
+  }
+  .key-card:hover {
+    border-color: rgba(108,99,255,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .key-icon { font-size: 28px; margin-bottom: 12px; }
+  .key-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .key-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* METRIC HIGHLIGHT */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .metric-card {
+    background: linear-gradient(135deg, var(--card) 0%, rgba(108,99,255,0.08) 100%);
+    border: 1px solid rgba(108,99,255,0.25);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+  }
+  .metric-num {
+    font-size: 36px;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .metric-unit {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-left: 4px;
+  }
+  .metric-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* QUIZ */
+  .quiz-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .quiz-q {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .quiz-option {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--muted);
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .quiz-option:hover { background: rgba(108,99,255,0.1); border-color: rgba(108,99,255,0.3); color: var(--text); }
+  .quiz-option.correct { background: rgba(6,214,160,0.12); border-color: #06d6a0; color: #06d6a0; }
+  .quiz-option.wrong { background: rgba(255,101,132,0.1); border-color: #ff6584; color: #ff6584; }
+  .quiz-feedback {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: #06d6a0; }
+  .quiz-feedback.wrong { background: rgba(255,101,132,0.08); border: 1px solid rgba(255,101,132,0.25); color: #ff8fa3; }
+  .quiz-reset {
+    margin-top: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+  }
+  .quiz-reset.show { display: inline-block; }
+
+  /* KEY TAKEAWAY */
+  .takeaway {
+    background: linear-gradient(135deg, rgba(108,99,255,0.12) 0%, rgba(0,210,255,0.06) 100%);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 22px 26px;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .takeaway strong { color: var(--accent2); }
+
+  @media (max-width: 600px) {
+    .hero, .content { padding-left: 20px; padding-right: 20px; }
+    .metrics-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="pre-course.html" class="nav-home">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">1.1 The Platform Shift</span>
+  <div class="nav-arrows">
+    <a href="concept_1_2.html" class="nav-btn">Next: Myths vs Reality â†’</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="concept-badge">Session 1 Â· Pre-Course Â· Concept 1.1</div>
+  <h1>The Platform Shift</h1>
+  <p class="hero-lead">Every decade, a new computing paradigm resets the entire industry. We're in the middle of the biggest one yet â€” the shift to Agentic AI. Understanding this shift separates architects who build the future from developers stuck maintaining the past.</p>
+  <div class="hero-stat-row">
+    <div class="hero-stat">
+      <span class="hero-stat-num">73%</span>
+      <span class="hero-stat-label">Enterprise dev teams deploying agents in 2025</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">4Ã—</span>
+      <span class="hero-stat-label">Salary premium for agentic architects</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">18mo</span>
+      <span class="hero-stat-label">Window before it becomes baseline requirement</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-title">Software Evolution Timeline</div>
+    <div class="timeline">
+
+      <div class="tl-item" onclick="toggleTl(this)">
+        <div class="tl-card">
+          <div class="tl-era">Era 1 Â· 1990s</div>
+          <div class="tl-title">Client/Server</div>
+          <div class="tl-desc">Thick clients talking to centralised servers. Applications lived on your machine. The internet was just starting. Competitive advantage came from having faster hardware and better local software.</div>
+        </div>
+      </div>
+
+      <div class="tl-item" onclick="toggleTl(this)">
+        <div class="tl-card">
+          <div class="tl-era">Era 2 Â· 2000s</div>
+          <div class="tl-title">Web Apps</div>
+          <div class="tl-desc">Logic moved to the browser and the cloud. SaaS was born. The database became king. Developers who understood HTTP, SQL, and REST could build global products. "The network is the computer" became real.</div>
+        </div>
+      </div>
+
+      <div class="tl-item" onclick="toggleTl(this)">
+        <div class="tl-card">
+          <div class="tl-era">Era 3 Â· 2010s</div>
+          <div class="tl-title">Mobile / Cloud</div>
+          <div class="tl-desc">The smartphone flipped access upside down. Compute became elastic. Docker and Kubernetes changed how software was built and deployed. Cloud-native was the new standard â€” if you didn't design for it, you were rebuilding.</div>
+        </div>
+      </div>
+
+      <div class="tl-item" onclick="toggleTl(this)">
+        <div class="tl-card">
+          <div class="tl-era">Era 4 Â· 2020â€“2023</div>
+          <div class="tl-title">LLMs / Chatbots</div>
+          <div class="tl-desc">GPT-3, ChatGPT, and Claude showed that language models could reason. Every company added a chatbot. But chatbots are still reactive â€” ask a question, get an answer. No memory, no planning, no action. The real revolution was still coming.</div>
+        </div>
+      </div>
+
+      <div class="tl-item active" onclick="toggleTl(this)">
+        <div class="tl-card">
+          <div class="tl-era">Era 5 Â· 2024 â†’ NOW</div>
+          <div class="tl-title">ðŸš€ Agentic AI</div>
+          <div class="tl-desc">The shift from LLM-as-oracle to LLM-as-executive. Agents don't just answer â€” they reason, plan, use tools, remember context, and autonomously execute multi-step tasks. This is not incremental improvement. This is a new computing paradigm, as fundamental as the shift to the web.</div>
+          <div class="tl-arrow">â†“ We are here</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- WHAT IS AGENTIC AI -->
+  <div class="section">
+    <div class="section-title">What Agentic AI Actually Is</div>
+    <div class="key-grid">
+      <div class="key-card">
+        <div class="key-icon">ðŸ§ </div>
+        <div class="key-title">Reasons Autonomously</div>
+        <div class="key-body">The LLM isn't just generating text â€” it's deciding what to do next, which tools to use, and whether its last action succeeded. This is cognition, not autocomplete.</div>
+      </div>
+      <div class="key-card">
+        <div class="key-icon">ðŸ“‹</div>
+        <div class="key-title">Plans Across Multiple Steps</div>
+        <div class="key-body">An agent can decompose a goal like "prepare a competitive analysis report" into subtasks, execute them in the right order, and handle failures along the way â€” without human hand-holding.</div>
+      </div>
+      <div class="key-card">
+        <div class="key-icon">âš¡</div>
+        <div class="key-title">Acts on the World</div>
+        <div class="key-body">Agents call real APIs, write and execute code, browse the web, manage files, send emails, and trigger workflows. They don't just describe actions â€” they perform them.</div>
+      </div>
+      <div class="key-card">
+        <div class="key-icon">ðŸ”„</div>
+        <div class="key-title">Operates in a Loop</div>
+        <div class="key-body">Unlike a chatbot that runs once per message, an agent loops: Observe â†’ Think â†’ Act â†’ Observe again. It continues until the goal is achieved or a termination condition is met.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHY NOW -->
+  <div class="section">
+    <div class="section-title">Why This Shift Is Happening Now</div>
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-num">ðŸ–¥ï¸</div>
+        <div class="metric-label"><strong>Compute</strong><br>GPUs got 1,000Ã— cheaper in a decade. Running billion-parameter models is now economically viable at scale.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">ðŸ¤–</div>
+        <div class="metric-label"><strong>Capable LLMs</strong><br>Models like GPT-4o, Claude 3, and Gemini 1.5 can follow complex instructions, use tools reliably, and reason across long contexts.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">ðŸ”§</div>
+        <div class="metric-label"><strong>Tooling Convergence</strong><br>MCP, A2A, LangGraph, LangChain, and others created the plumbing to connect LLMs to real systems reliably and at scale.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY TAKEAWAY -->
+  <div class="section">
+    <div class="section-title">Key Takeaway</div>
+    <div class="takeaway">
+      Agentic AI isn't just a new feature â€” it's a <strong>new computing paradigm</strong>. The developers and architects who understand how to build reliable, secure, and cost-effective agentic systems will define the next decade of software. The 18-month window before this becomes a baseline expectation is the competitive opportunity.
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="section-title">Quick Check</div>
+    <div class="quiz-box">
+      <div class="quiz-q">What is the key difference between an LLM chatbot (Era 4) and an Agentic AI system (Era 5)?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="checkAnswer(this, false)">Agents use larger language models than chatbots</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">Agents autonomously reason, plan, and act in a loop â€” chatbots respond once per turn</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">Agents are just chatbots with internet access</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">The difference is mainly in the UI â€” agents have better interfaces</button>
+      </div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <button class="quiz-reset" id="quiz-reset" onclick="resetQuiz()">Try Again</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleTl(el) {
+  const items = document.querySelectorAll('.tl-item');
+  items.forEach(i => { if (i !== el) i.classList.remove('active'); });
+  el.classList.toggle('active');
+}
+
+function checkAnswer(btn, isCorrect) {
+  const options = document.querySelectorAll('.quiz-option');
+  const feedback = document.getElementById('quiz-feedback');
+  const reset = document.getElementById('quiz-reset');
+  options.forEach(o => o.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    options.forEach(o => {
+      if (o.getAttribute('onclick').includes('true')) o.classList.add('correct');
+    });
+  }
+  feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+  feedback.textContent = isCorrect
+    ? 'âœ“ Exactly right. The loop is the key insight. Chatbots are single-turn reactive systems. Agents operate in a continuous Observeâ†’Thinkâ†’Act cycle until a goal is achieved â€” that\'s what makes them "agentic".'
+    : 'âœ— Not quite. The core distinction isn\'t about model size or internet access â€” it\'s about the autonomous loop. Agents decide their own next action, use tools, observe results, and continue until the goal is done.';
+  reset.className = 'quiz-reset show';
+}
+
+function resetQuiz() {
+  const options = document.querySelectorAll('.quiz-option');
+  const feedback = document.getElementById('quiz-feedback');
+  const reset = document.getElementById('quiz-reset');
+  options.forEach(o => { o.disabled = false; o.className = 'quiz-option'; });
+  feedback.className = 'quiz-feedback';
+  reset.className = 'quiz-reset';
+}
+</script>
+
+</body>
+</html>

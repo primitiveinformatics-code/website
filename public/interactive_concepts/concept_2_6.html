@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.6 Planning Strategies â€” Agentic AI</title>
+<style>
+  :root{--bg:#0f1117;--card:#21263a;--accent:#00d2ff;--accent2:#6c63ff;--green:#06d6a0;--yellow:#ffd166;--red:#ff6584;--orange:#ff9f43;--text:#e8eaf6;--muted:#8892b0;--border:rgba(0,210,255,0.18);
+  --cot:#6c63ff;--tot:#ffd166;--ref:#06d6a0;--rwo:#ff9f43;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding-bottom:80px;}
+  nav{display:flex;align-items:center;gap:10px;padding:16px 32px;border-bottom:1px solid var(--border);background:rgba(15,17,23,.9);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);}
+  .nav-home{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;}.nav-home:hover{color:var(--text);}
+  .nav-sep{color:var(--border);}.nav-current{color:var(--accent);font-size:13px;font-weight:700;}
+  .nav-arrows{margin-left:auto;display:flex;gap:8px;}
+  .nav-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;}
+  .nav-btn:hover{background:var(--accent);color:#0f1117;border-color:var(--accent);}
+  .hero{padding:56px 40px 44px;max-width:960px;margin:0 auto;}
+  .concept-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.3);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:20px;}
+  h1{font-size:clamp(26px,3.5vw,44px);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:16px;}
+  .hero-lead{font-size:17px;color:var(--muted);line-height:1.7;max-width:680px;}
+  .content{max-width:960px;margin:0 auto;padding:0 40px;}
+  .section{margin-bottom:52px;}
+  .section-title{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* â”€â”€ STRATEGY CARDS â”€â”€ */
+  .strat-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .strat-tab{padding:10px 20px;border-radius:10px;border:2px solid transparent;font-size:13px;font-weight:800;cursor:pointer;transition:all .25s;background:var(--card);}
+  .strat-tab.t-cot{color:var(--cot);}
+  .strat-tab.t-tot{color:var(--tot);}
+  .strat-tab.t-ref{color:var(--ref);}
+  .strat-tab.t-rwo{color:var(--rwo);}
+  .strat-tab.active.t-cot{border-color:var(--cot);background:rgba(108,99,255,.1);}
+  .strat-tab.active.t-tot{border-color:var(--tot);background:rgba(255,209,102,.08);}
+  .strat-tab.active.t-ref{border-color:var(--ref);background:rgba(6,214,160,.08);}
+  .strat-tab.active.t-rwo{border-color:var(--rwo);background:rgba(255,159,67,.08);}
+  .strat-panel{display:none;}
+  .strat-panel.active{display:block;}
+  .strat-big{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;}
+  .strat-big.s-cot{border-top:3px solid var(--cot);}
+  .strat-big.s-tot{border-top:3px solid var(--tot);}
+  .strat-big.s-ref{border-top:3px solid var(--ref);}
+  .strat-big.s-rwo{border-top:3px solid var(--rwo);}
+  .strat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px;flex-wrap:wrap;}
+  .strat-head-left h3{font-size:22px;font-weight:900;margin-bottom:4px;}
+  .strat-head-left .sub{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+  .cost-badge{text-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 16px;min-width:100px;}
+  .cost-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .cost-val{font-size:16px;font-weight:800;}
+  .strat-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+  .strat-flow{background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.9;font-family:'Courier New',monospace;margin-bottom:16px;}
+  .strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .strat-prop{background:rgba(255,255,255,.03);border-radius:10px;padding:13px 15px;border-left:3px solid;}
+  .strat-prop-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .strat-prop-val{font-size:13px;color:var(--text);line-height:1.5;}
+
+  /* â”€â”€ DECISION TREE â”€â”€ */
+  .dtree{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;}
+  .dt-node{display:flex;flex-direction:column;gap:0;margin-bottom:0;}
+  .dt-q{background:rgba(0,210,255,.08);border:1px solid rgba(0,210,255,.2);border-radius:10px;padding:14px 18px;font-size:14px;font-weight:700;color:var(--accent);cursor:pointer;transition:all .2s;}
+  .dt-q:hover{background:rgba(0,210,255,.14);}
+  .dt-branches{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;margin-bottom:10px;margin-left:20px;}
+  .dt-branch{background:rgba(255,255,255,.03);border-radius:8px;padding:10px 14px;border-left:3px solid;}
+  .dt-branch-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+  .dt-branch-val{font-size:13px;color:var(--muted);line-height:1.5;}
+  .dt-branch .rec{font-weight:700;margin-top:6px;font-size:13.5px;}
+  .dt-branch.yes{border-left-color:var(--green);}
+  .dt-branch.no{border-left-color:var(--red);}
+  .dt-branch.yes .dt-branch-label{color:var(--green);}
+  .dt-branch.no .dt-branch-label{color:var(--red);}
+
+  /* â”€â”€ COMPARISON TABLE â”€â”€ */
+  .cmp-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .cmp-table th{padding:11px 14px;background:rgba(255,255,255,.04);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);text-align:left;}
+  .cmp-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.55;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:800;white-space:nowrap;}
+
+  /* â”€â”€ QUIZ â”€â”€ */
+  .quiz-set{display:flex;flex-direction:column;gap:24px;}
+  .quiz-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;}
+  .quiz-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .quiz-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:18px;line-height:1.55;}
+  .quiz-options{display:flex;flex-direction:column;gap:9px;}
+  .quiz-option{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:13.5px;color:var(--muted);transition:all .2s;text-align:left;}
+  .quiz-option:hover:not(:disabled){background:rgba(0,210,255,.08);border-color:rgba(0,210,255,.3);color:var(--text);}
+  .quiz-option.correct{background:rgba(6,214,160,.12);border-color:#06d6a0;color:#06d6a0;}
+  .quiz-option.wrong{background:rgba(255,101,132,.1);border-color:#ff6584;color:#ff6584;}
+  .quiz-feedback{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:13.5px;line-height:1.6;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);color:#06d6a0;}
+  .quiz-feedback.wrong{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.25);color:#ff8fa3;}
+  .quiz-reset{margin-top:12px;background:var(--accent2);color:white;border:none;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:none;}
+  .quiz-reset.show{display:inline-block;}
+  .score-box{background:linear-gradient(135deg,rgba(0,210,255,.12),rgba(108,99,255,.08));border:1px solid rgba(0,210,255,.3);border-radius:14px;padding:20px 26px;text-align:center;margin-top:24px;display:none;}
+  .score-box.show{display:block;}
+  .score-num{font-size:42px;font-weight:900;color:var(--accent);}
+  .score-label{font-size:13px;color:var(--muted);margin-top:4px;}
+  .takeaway{background:linear-gradient(135deg,rgba(0,210,255,.1),rgba(108,99,255,.06));border:1px solid rgba(0,210,255,.3);border-left:4px solid var(--accent);border-radius:12px;padding:22px 26px;font-size:15px;color:var(--text);line-height:1.7;}
+  .takeaway strong{color:var(--accent);}
+  @media(max-width:700px){.hero,.content{padding-left:20px;padding-right:20px;}.strat-grid,.dt-branches{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="main-course.html" class="nav-home">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">2.6 Planning Strategies</span>
+  <div class="nav-arrows">
+    <a href="concept_2_3.html" class="nav-btn">â† BDI Model</a>
+    <a href="concept_2_9.html" class="nav-btn">Single vs Multi-Agent â†’</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="concept-badge">Session 2 Â· Day 1 Forenoon Â· Concept 2.6</div>
+  <h1>Planning Strategies</h1>
+  <p class="hero-lead">Good planning dramatically reduces tool-call count and cost on complex tasks. The right strategy depends on task structure. Choosing incorrectly costs 3â€“10Ã— more tokens and produces worse results. This is one of the highest-leverage decisions in agent design.</p>
+</div>
+
+<div class="content">
+
+  <!-- STRATEGY EXPLORER -->
+  <div class="section">
+    <div class="section-title">The 4 Planning Strategies â€” Explore Each</div>
+    <div class="strat-tabs">
+      <button class="strat-tab t-cot active" onclick="showStrat('cot',this)">ðŸ”— Chain of Thought</button>
+      <button class="strat-tab t-tot" onclick="showStrat('tot',this)">ðŸŒ³ Tree of Thoughts</button>
+      <button class="strat-tab t-ref" onclick="showStrat('ref',this)">ðŸ” Reflexion</button>
+      <button class="strat-tab t-rwo" onclick="showStrat('rwo',this)">âš¡ ReWOO</button>
+    </div>
+
+    <!-- CoT -->
+    <div class="strat-panel active" id="sp-cot">
+      <div class="strat-big s-cot">
+        <div class="strat-head">
+          <div class="strat-head-left"><h3 style="color:var(--cot)">Chain of Thought (CoT)</h3><div class="sub">Sequential reasoning before action</div></div>
+          <div class="cost-badge"><div class="cost-label">Token Cost</div><div class="cost-val" style="color:var(--cot)">Low</div></div>
+        </div>
+        <div class="strat-desc">The simplest planning strategy: prompt the agent to "think step by step" before taking any action. Instead of jumping directly to a tool call, the agent articulates its reasoning chain first. This dramatically reduces wrong first moves on complex problems.</div>
+        <div class="strat-flow">
+Prompt: "Think step by step before answering."<br>
+â†’ Agent Thought: "Step 1: I need X. Step 2: To get X I need Y. Step 3: I'll call tool_A..."<br>
+â†’ Action: tool_A(params)<br>
+â†’ Repeat
+        </div>
+        <div class="strat-grid">
+          <div class="strat-prop" style="border-left-color:var(--cot)"><div class="strat-prop-label">Best for</div><div class="strat-prop-val">Linear problems where one correct path exists. Default for most tasks.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--cot)"><div class="strat-prop-label">Key benefit</div><div class="strat-prop-val">Zero additional infrastructure. Just a prompt instruction. Reduces hallucination on multi-step tasks.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--red)"><div class="strat-prop-label">Limitation</div><div class="strat-prop-val">Only explores ONE path. If it goes wrong early, no recovery without starting over.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--cot)"><div class="strat-prop-label">Implemented in</div><div class="strat-prop-val">All major frameworks â€” just add "think step by step" to the system prompt</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ToT -->
+    <div class="strat-panel" id="sp-tot">
+      <div class="strat-big s-tot">
+        <div class="strat-head">
+          <div class="strat-head-left"><h3 style="color:var(--tot)">Tree of Thoughts (ToT)</h3><div class="sub">Multi-path exploration with evaluation</div></div>
+          <div class="cost-badge"><div class="cost-label">Token Cost</div><div class="cost-val" style="color:var(--tot)">High</div></div>
+        </div>
+        <div class="strat-desc">The agent explores multiple solution branches simultaneously, evaluates each one's promise, and selects the best path forward. Think of it as running several parallel CoT chains and picking the winner. More powerful but significantly more expensive.</div>
+        <div class="strat-flow">
+Generate 3 candidate approaches â†’ Evaluate each â†’ Select best<br>
+â†’ Expand best branch â†’ Generate 3 sub-approaches â†’ Evaluate<br>
+â†’ Repeat until solution found or depth exceeded
+        </div>
+        <div class="strat-grid">
+          <div class="strat-prop" style="border-left-color:var(--tot)"><div class="strat-prop-label">Best for</div><div class="strat-prop-val">Problems with multiple valid approaches where the best path isn't obvious upfront (code debugging, creative writing, complex reasoning).</div></div>
+          <div class="strat-prop" style="border-left-color:var(--tot)"><div class="strat-prop-label">Key benefit</div><div class="strat-prop-val">Doesn't get stuck on one wrong path. Explores solution space. Can backtrack.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--red)"><div class="strat-prop-label">Limitation</div><div class="strat-prop-val">2â€“5Ã— more expensive than CoT. Requires evaluation logic. Overkill for routine tasks.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--tot)"><div class="strat-prop-label">Rule of thumb</div><div class="strat-prop-val">Use when a wrong first step is very costly and hard to recover from</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reflexion -->
+    <div class="strat-panel" id="sp-ref">
+      <div class="strat-big s-ref">
+        <div class="strat-head">
+          <div class="strat-head-left"><h3 style="color:var(--ref)">Reflexion</h3><div class="sub">Learn from failure across attempts</div></div>
+          <div class="cost-badge"><div class="cost-label">Token Cost</div><div class="cost-val" style="color:var(--ref)">Medium</div></div>
+        </div>
+        <div class="strat-desc">The agent reviews its own failed attempts and explicitly articulates WHY they failed before retrying. Unlike simple retry logic, Reflexion extracts a lesson from each failure and uses it to inform the next attempt. It uses Episodic Memory to store past attempts.</div>
+        <div class="strat-flow">
+Attempt 1 â†’ Fails â†’ Store in Episodic Memory<br>
+â†’ Reflect: "Why did Attempt 1 fail? What would I do differently?"<br>
+â†’ Attempt 2 with refined plan â†’ Fails again â†’ Store<br>
+â†’ Reflect: "What BOTH attempts got wrong..."<br>
+â†’ Attempt 3 informed by all prior failures
+        </div>
+        <div class="strat-grid">
+          <div class="strat-prop" style="border-left-color:var(--ref)"><div class="strat-prop-label">Best for</div><div class="strat-prop-val">Tasks where quality matters more than speed. Code generation, complex reasoning, tasks that benefit from iterative refinement.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--ref)"><div class="strat-prop-label">Key benefit</div><div class="strat-prop-val">Agent gets smarter across attempts. The failure analysis itself generates new, useful reasoning.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--red)"><div class="strat-prop-label">Limitation</div><div class="strat-prop-val">Requires Episodic Memory. Multiple attempts = higher latency. Set a max retry limit (3â€“5 typically).</div></div>
+          <div class="strat-prop" style="border-left-color:var(--ref)"><div class="strat-prop-label">Uses</div><div class="strat-prop-val">Episodic Memory to store past attempt logs + outcomes for the reflection step</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ReWOO -->
+    <div class="strat-panel" id="sp-rwo">
+      <div class="strat-big s-rwo">
+        <div class="strat-head">
+          <div class="strat-head-left"><h3 style="color:var(--rwo)">ReWOO</h3><div class="sub">Reasoning Without Observation â€” parallel execution</div></div>
+          <div class="cost-badge"><div class="cost-label">Token Cost</div><div class="cost-val" style="color:var(--rwo)">Lowest</div></div>
+        </div>
+        <div class="strat-desc">ReAct is serial â€” it waits for each tool result before planning the next step. ReWOO (Reasoning Without Observation) generates the FULL plan upfront with placeholders, then executes all tool calls IN PARALLEL. Dramatically faster and cheaper for predictable workflows.</div>
+        <div class="strat-flow">
+Plan phase (ONE LLM call):<br>
+  Step1: search_web("query1") â†’ Result1<br>
+  Step2: search_web("query2") â†’ Result2<br>
+  Step3: calculate(Result1, Result2) â†’ FinalAnswer<br>
+<br>
+Execute phase (PARALLEL):<br>
+  Step1 &amp;&amp; Step2 run simultaneously â†’ results fill placeholders<br>
+  Step3 runs with filled values â†’ FinalAnswer
+        </div>
+        <div class="strat-grid">
+          <div class="strat-prop" style="border-left-color:var(--rwo)"><div class="strat-prop-label">Best for</div><div class="strat-prop-val">Tasks where the full sequence can be articulated BEFORE executing any step. Data pipelines, report generation, structured research.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--rwo)"><div class="strat-prop-label">Key benefit</div><div class="strat-prop-val">Decouples slow LLM reasoning from fast tool execution. 2â€“5Ã— latency improvement over ReAct for predictable tasks.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--red)"><div class="strat-prop-label">Limitation</div><div class="strat-prop-val">Less adaptive â€” if Step 3 depends on Step 1's result in unexpected ways, the pre-made plan breaks. Use ReAct when steps are highly interdependent.</div></div>
+          <div class="strat-prop" style="border-left-color:var(--rwo)"><div class="strat-prop-label">Decision rule</div><div class="strat-prop-val">Can you write the full plan before executing ANY step? â†’ Use ReWOO</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DECISION TREE -->
+  <div class="section">
+    <div class="section-title">Which Strategy to Use? â€” Decision Guide</div>
+    <div class="dtree">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Start at the top. Follow the branch that matches your task.</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div class="dt-q">Q1: Can you write the FULL plan with all tool calls BEFORE executing any?</div>
+          <div class="dt-branches">
+            <div class="dt-branch yes"><div class="dt-branch-label">âœ“ Yes</div><div class="dt-branch-val">The workflow is predictable.</div><div class="rec" style="color:var(--rwo)">â†’ Use ReWOO for parallel execution + lowest token cost</div></div>
+            <div class="dt-branch no"><div class="dt-branch-label">âœ— No</div><div class="dt-branch-val">Each step depends on the last.</div><div class="rec" style="color:var(--muted)">â†’ Continue to Q2</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="dt-q">Q2: Does quality matter more than speed? Is wrong-first-step costly?</div>
+          <div class="dt-branches">
+            <div class="dt-branch yes"><div class="dt-branch-label">âœ“ Yes (high-stakes)</div><div class="dt-branch-val">Wrong early steps are expensive to recover.</div><div class="rec" style="color:var(--tot)">â†’ Use Tree of Thoughts to explore multiple paths</div></div>
+            <div class="dt-branch no"><div class="dt-branch-label">âœ— No (standard task)</div><div class="dt-branch-val">Reasonable first path is fine.</div><div class="rec" style="color:var(--muted)">â†’ Continue to Q3</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="dt-q">Q3: Does this task benefit from learning from failures? (Code, complex reasoning)</div>
+          <div class="dt-branches">
+            <div class="dt-branch yes"><div class="dt-branch-label">âœ“ Yes</div><div class="dt-branch-val">Iterative refinement improves quality significantly.</div><div class="rec" style="color:var(--ref)">â†’ Use Reflexion with Episodic Memory + max 3â€“5 retries</div></div>
+            <div class="dt-branch no"><div class="dt-branch-label">âœ— No</div><div class="dt-branch-val">Standard task, reasonable path.</div><div class="rec" style="color:var(--cot)">â†’ Use Chain of Thought â€” simplest, cheapest, default choice</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="section">
+    <div class="section-title">Side-by-Side Comparison</div>
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:14px;">
+      <table class="cmp-table">
+        <thead><tr><th>Strategy</th><th>Approach</th><th>Token Cost</th><th>Latency</th><th>Best Use Case</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--cot)">Chain of Thought</td><td style="color:var(--muted)">Think step-by-step before acting, one path</td><td>Low</td><td>Low</td><td>Default â€” most tasks, linear workflows</td></tr>
+          <tr><td style="color:var(--tot)">Tree of Thoughts</td><td style="color:var(--muted)">Explore multiple branches, evaluate, pick best</td><td>High (2â€“5Ã—)</td><td>High</td><td>High-stakes decisions, complex reasoning, code</td></tr>
+          <tr><td style="color:var(--ref)">Reflexion</td><td style="color:var(--muted)">Retry with lessons from previous failures</td><td>Medium</td><td>High (retries)</td><td>Quality-first tasks, iterative refinement</td></tr>
+          <tr><td style="color:var(--rwo)">ReWOO</td><td style="color:var(--muted)">Plan all steps upfront, execute in parallel</td><td>Lowest</td><td>Lowest</td><td>Predictable workflows, data pipelines, reports</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <div class="section">
+    <div class="section-title">Key Takeaway</div>
+    <div class="takeaway">Planning strategy is <strong>one of the highest-leverage decisions in agent design</strong>. The default (Chain of Thought) works for most tasks at minimum cost. For predictable parallel workflows, ReWOO can cut latency 5Ã—. For iterative quality improvement, Reflexion. For high-stakes exploration, Tree of Thoughts. <strong>Wrong strategy choice = 3â€“10Ã— unnecessary token spend with worse results.</strong></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="section-title">Knowledge Check â€” 5 Questions</div>
+    <div class="quiz-set">
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 1 of 5</div>
+        <div class="quiz-q">An agent must fetch stock data for 50 companies, then generate a summary for each. The steps are completely predictable and independent. Which planning strategy minimises latency?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Chain of Thought â€” simplest and fastest</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Reflexion â€” because data fetching might fail and need retries</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Tree of Thoughts â€” to explore different summary approaches</button>
+          <button class="quiz-option" onclick="qa(this,true,'q1')">ReWOO â€” the full plan can be written upfront and all 50 fetches can execute in parallel</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q1"></div>
+        <button class="quiz-reset" id="rst-q1" onclick="resetQ('q1')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 2 of 5</div>
+        <div class="quiz-q">What is the key advantage of Reflexion over simple retry logic (just calling the tool again)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Reflexion is faster than simple retries</button>
+          <button class="quiz-option" onclick="qa(this,true,'q2')">Reflexion extracts an explicit lesson from each failure and uses it to change the approach â€” simple retries repeat the same wrong action, Reflexion adapts based on why it failed</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Reflexion uses less memory than simple retries</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Simple retries and Reflexion are the same â€” both just try again</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q2"></div>
+        <button class="quiz-reset" id="rst-q2" onclick="resetQ('q2')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 3 of 5</div>
+        <div class="quiz-q">When would ReWOO FAIL and ReAct be the better choice?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q3')">When the task has more than 5 steps</button>
+          <button class="quiz-option" onclick="qa(this,true,'q3')">When later steps depend on earlier results in unpredictable ways â€” ReWOO's upfront plan can't adapt to unexpected tool results mid-execution</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">When the task requires external API calls</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">When the user wants fast results</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q3"></div>
+        <button class="quiz-reset" id="rst-q3" onclick="resetQ('q3')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 4 of 5</div>
+        <div class="quiz-q">A team decides to use Tree of Thoughts for every agent task â€” including simple customer FAQ lookups. What problem will this cause?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q4')">The agent will give incorrect answers for simple questions</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Tree of Thoughts cannot handle text-based tasks</button>
+          <button class="quiz-option" onclick="qa(this,true,'q4')">Massive over-spend: ToT costs 2â€“5Ã— more than CoT. For simple FAQ lookups, Chain of Thought (or even a single call) is sufficient. Using ToT everywhere is like hiring a PhD committee to answer "what are your opening hours?"</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">The agent will explore too many paths and never return an answer</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q4"></div>
+        <button class="quiz-reset" id="rst-q4" onclick="resetQ('q4')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 5 of 5</div>
+        <div class="quiz-q">Which memory type is REQUIRED for Reflexion to work correctly, and why?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Working Memory â€” to hold all attempts simultaneously in the context window</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Semantic Memory â€” to retrieve similar past tasks from the vector database</button>
+          <button class="quiz-option" onclick="qa(this,true,'q5')">Episodic Memory â€” Reflexion stores each failed attempt as a structured episode (actions taken + outcome) so the reflection step can review WHY it failed and extract a specific lesson for the next attempt</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Procedural Memory â€” to store retry templates for future use</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q5"></div>
+        <button class="quiz-reset" id="rst-q5" onclick="resetQ('q5')">Try Again</button>
+      </div>
+
+    </div>
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">â€”</div>
+      <div class="score-label">questions answered correctly</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showStrat(type,btn){
+  document.querySelectorAll('.strat-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.strat-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sp-'+type).classList.add('active');
+}
+const answers={};
+const cfb={
+  q1:'âœ“ Correct. This is the perfect ReWOO scenario: predictable workflow + independent parallel steps. ReWOO generates the full plan in ONE LLM call, then fires all 50 data fetches simultaneously. ReAct would do this serially â€” fetch company 1, wait, summarise, fetch company 2, wait... 50Ã— slower.',
+  q2:'âœ“ Exactly. Simple retry = same action again, hoping for different results (definition of insanity). Reflexion = diagnose WHY it failed, generate an explicit improvement hypothesis, then retry with that hypothesis. It uses Episodic Memory to store the failure record and the reflection uses that record to change the approach.',
+  q3:'âœ“ Correct. ReWOO\'s core assumption is that the full plan is valid before any tool runs. If Step 3\'s query depends on a value returned by Step 2 in an unexpected format, the pre-built plan is broken and there\'s no mechanism to adapt mid-execution. ReAct\'s observe-think-act loop handles exactly this kind of interdependency.',
+  q4:'âœ“ Right. Tree of Thoughts is a high-cost planning strategy designed for high-value decisions where multiple paths exist and wrong early choices are expensive. Applied to simple lookups, it\'s pure waste â€” 2â€“5Ã— the token cost for zero benefit. Match the strategy to task complexity.',
+  q5:'âœ“ Exactly. Episodic Memory stores the log of what happened: what the agent tried, what the result was, what went wrong. Without this persistent record, the reflection step has nothing to reason about. Working Memory (context window) alone would lose past attempts when the context fills up.'
+};
+const wfb={
+  q1:'âœ— CoT, Reflexion, and ToT are all serial strategies â€” they wait for each step before deciding the next. The scenario describes 50 independent, predictable steps â€” that\'s the ReWOO use case. Plan once, execute all 50 in parallel.',
+  q2:'âœ— Simple retry and Reflexion differ fundamentally in what happens between attempts. Simple retry: "try again." Reflexion: "analyse why it failed, form a hypothesis about what to do differently, then try again with that hypothesis." The explicit failure analysis is what makes Reflexion effective on hard tasks.',
+  q3:'âœ— Step count and API usage aren\'t the deciding factors. ReWOO breaks specifically when later steps depend on earlier results in ways that couldn\'t be anticipated when the plan was written. If the plan is fully specified and steps are independent or have predictable dependencies, ReWOO wins.',
+  q4:'âœ— ToT generates correct answers for simple tasks â€” it\'s just massively over-engineered and expensive for them. The problem is cost, not correctness. Applying ToT universally is like routing all traffic through your most expensive data center â€” correct, but financially unsustainable.',
+  q5:'âœ— Working Memory can only hold what fits in the context window â€” in a long Reflexion loop, earlier attempts get pushed out. Semantic Memory retrieves by similarity, not by episode sequence. Reflexion specifically requires Episodic Memory: a structured, persistent log of past attempts with their outcomes, queryable for the reflection step.'
+};
+function qa(btn,isCorrect,qid){
+  if(answers[qid]!==undefined)return;
+  answers[qid]=isCorrect;
+  const opts=btn.closest('.quiz-box').querySelectorAll('.quiz-option');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect)opts.forEach(o=>{if(o.getAttribute('onclick').includes('true'))o.classList.add('correct');});
+  const fb=document.getElementById('fb-'+qid);
+  fb.className='quiz-feedback show '+(isCorrect?'correct':'wrong');
+  fb.textContent=isCorrect?cfb[qid]:wfb[qid];
+  document.getElementById('rst-'+qid).className='quiz-reset show';
+  updateScore();
+}
+function resetQ(qid){
+  delete answers[qid];
+  const box=document.getElementById('fb-'+qid).closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(o=>{o.disabled=false;o.className='quiz-option';});
+  document.getElementById('fb-'+qid).className='quiz-feedback';
+  document.getElementById('rst-'+qid).className='quiz-reset';
+  updateScore();
+}
+function updateScore(){
+  const c=Object.values(answers).filter(Boolean).length;
+  const t=Object.keys(answers).length;
+  if(t>0){document.getElementById('score-box').classList.add('show');document.getElementById('score-num').textContent=c+'/5 correct';}
+}
+</script>
+</body>
+</html>

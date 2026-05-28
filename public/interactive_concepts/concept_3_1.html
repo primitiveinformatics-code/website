@@ -1,0 +1,690 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.1 â€” MCP: Model Context Protocol</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --accent2: #ffd166; --accent3: #06d6a0;
+    --accent4: #6c63ff; --accent5: #00d2ff;
+    --correct: #06d6a0; --wrong: #ff6584; --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* NAV */
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  nav .nav-links { display: flex; gap: 16px; align-items: center; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.9rem; padding: 6px 14px; border: 1px solid var(--accent); border-radius: 20px; transition: all .2s; }
+  nav a:hover { background: var(--accent); color: #000; }
+  nav .title { font-weight: 700; font-size: 1rem; color: var(--text); }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #1a0a12 0%, #0d1117 60%); border-bottom: 1px solid var(--border); padding: 48px 32px 36px; text-align: center; }
+  .session-tag { display: inline-block; background: var(--accent); color: #000; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 1.05rem; max-width: 680px; margin: 0 auto; }
+
+  /* LAYOUT */
+  .content { max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
+  .section { margin-bottom: 48px; }
+  .section h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+  .section h2::before { content: ''; display: block; width: 4px; height: 1.3rem; background: var(--accent); border-radius: 2px; }
+
+  /* WHAT IS MCP CARDS */
+  .what-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+  .what-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; transition: border-color .2s; }
+  .what-card:hover { border-color: var(--accent); }
+  .what-card .icon { font-size: 2rem; margin-bottom: 10px; }
+  .what-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+  .what-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; overflow-x: auto; }
+  .arch-diagram { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: nowrap; min-width: 620px; }
+  .arch-box { background: var(--surface2); border: 2px solid var(--border); border-radius: 10px; padding: 16px 20px; text-align: center; min-width: 130px; }
+  .arch-box.client { border-color: var(--accent4); }
+  .arch-box.server { border-color: var(--accent); }
+  .arch-box.resource { border-color: var(--accent3); }
+  .arch-box h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
+  .arch-box.client h4 { color: var(--accent4); }
+  .arch-box.server h4 { color: var(--accent); }
+  .arch-box.resource h4 { color: var(--accent3); }
+  .arch-box ul { list-style: none; font-size: 0.75rem; color: var(--muted); text-align: left; }
+  .arch-box ul li::before { content: 'â€¢ '; color: var(--muted); }
+  .arch-arrow { font-size: 1.8rem; color: var(--muted); padding: 0 8px; flex-shrink: 0; }
+  .arch-label { font-size: 0.7rem; color: var(--accent2); text-align: center; margin-top: 6px; font-weight: 600; }
+
+  /* TRANSPORT TAB */
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 18px; color: var(--muted); font-size: 0.85rem; cursor: pointer; transition: all .2s; }
+  .tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* MESSAGE FLOW */
+  .flow-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .flow-step { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 12px; padding: 14px; background: var(--surface2); border-radius: 8px; border-left: 3px solid var(--border); transition: border-color .3s; }
+  .flow-step.highlight { border-left-color: var(--accent); }
+  .flow-step .step-num { background: var(--accent); color: #000; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .flow-step .step-content h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .flow-step .step-content p { font-size: 0.82rem; color: var(--muted); }
+  .flow-step .step-content code { font-family: 'Courier New', monospace; font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px; color: var(--accent2); }
+
+  /* JSON BLOCKS */
+  .json-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media (max-width: 600px) { .json-pair { grid-template-columns: 1fr; } }
+  .json-block { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .json-block h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em; }
+  .json-block.request h4 { color: var(--accent4); }
+  .json-block.response h4 { color: var(--accent3); }
+  .json-block pre { font-family: 'Courier New', monospace; font-size: 0.78rem; color: var(--text); line-height: 1.6; white-space: pre-wrap; }
+  .json-key { color: var(--accent5); }
+  .json-str { color: var(--accent3); }
+  .json-num { color: var(--accent2); }
+
+  /* LIVE SIMULATOR */
+  .simulator { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .sim-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .sim-header h3 { font-size: 1rem; font-weight: 700; }
+  .sim-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+  .sim-btn { background: var(--surface2); border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all .2s; }
+  .sim-btn:hover { background: var(--accent); color: #000; }
+  .sim-log { background: #090d12; border: 1px solid var(--border); border-radius: 8px; padding: 16px; min-height: 200px; font-family: 'Courier New', monospace; font-size: 0.8rem; line-height: 1.7; overflow-y: auto; max-height: 340px; }
+  .sim-log .log-line { margin-bottom: 2px; }
+  .log-client { color: var(--accent4); }
+  .log-server { color: var(--accent); }
+  .log-transport { color: var(--accent2); }
+  .log-result { color: var(--accent3); }
+  .log-info { color: var(--muted); }
+  .sim-log .timestamp { color: #4a5568; margin-right: 8px; }
+
+  /* TOOL REGISTRATION */
+  .reg-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .reg-step { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; position: relative; }
+  .reg-step .step-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .reg-step h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+  .reg-step p { font-size: 0.78rem; color: var(--muted); }
+  .reg-arrow { display: flex; align-items: center; justify-content: center; color: var(--accent2); font-size: 1.4rem; }
+  .reg-grid { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .compare-table th { background: var(--surface2); padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--border); font-weight: 700; }
+  .compare-table th:first-child { color: var(--muted); }
+  .compare-table th.s3 { color: var(--accent); }
+  .compare-table th.alt { color: var(--accent2); }
+  .compare-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .compare-table td:first-child { font-weight: 600; color: var(--text); }
+  .compare-table .yes { color: var(--correct); font-weight: 700; }
+  .compare-table .no { color: var(--wrong); }
+  .compare-table .partial { color: var(--accent2); }
+
+  /* QUIZ */
+  .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+  .quiz-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: pointer; font-size: 0.9rem; transition: all .2s; text-align: left; color: var(--text); width: 100%; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(255,101,132,.08); }
+  .opt.correct { background: rgba(6,214,160,.15); border-color: var(--correct); color: var(--correct); }
+  .opt.wrong { background: rgba(255,101,132,.15); border-color: var(--wrong); color: var(--wrong); }
+  .feedback { margin-top: 12px; font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,.1); color: var(--correct); border: 1px solid var(--correct); }
+  .feedback.wrong { background: rgba(255,101,132,.1); color: var(--wrong); border: 1px solid var(--wrong); }
+  .reset-btn { margin-top: 10px; background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .score-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 24px; margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+  .score-display { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+  .score-label { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a href="concept_2_12.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_3_2.html">Next â†’</a>
+  </div>
+  <span class="title">3.1 â€” MCP: Model Context Protocol</span>
+</nav>
+
+<div class="hero">
+  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <h1>MCP: Model Context Protocol</h1>
+  <p>The open standard that lets AI agents securely discover and call external tools â€” a universal plug for capabilities.</p>
+</div>
+
+<div class="content">
+
+  <!-- WHAT IS MCP -->
+  <div class="section">
+    <h2>What Is MCP?</h2>
+    <div class="what-grid">
+      <div class="what-card">
+        <div class="icon">ðŸ”Œ</div>
+        <h3>Universal Plug</h3>
+        <p>One protocol to connect any AI model to any tool or data source â€” no custom integrations per model.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">ðŸ“œ</div>
+        <h3>Open Standard</h3>
+        <p>Released by Anthropic in 2024; now adopted by OpenAI, Google DeepMind, and major IDE makers.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">ðŸ”’</div>
+        <h3>Security-First</h3>
+        <p>Servers declare capabilities explicitly. Clients request only what they need. No implicit access.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">âš¡</div>
+        <h3>Stateful Sessions</h3>
+        <p>Unlike REST, MCP maintains session state so agents can have multi-turn tool conversations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT-SERVER ARCHITECTURE -->
+  <div class="section">
+    <h2>Clientâ€“Server Architecture</h2>
+    <div class="arch-container">
+      <div class="arch-diagram">
+        <div class="arch-box client">
+          <h4>MCP Client</h4>
+          <ul>
+            <li>LLM / Agent</li>
+            <li>Claude / GPT-4</li>
+            <li>Cursor IDE</li>
+            <li>Custom app</li>
+          </ul>
+          <div class="arch-label">Initiates requests</div>
+        </div>
+        <div>
+          <div class="arch-arrow">â‡„</div>
+          <div style="font-size:0.68rem;color:var(--accent2);text-align:center;margin-top:4px;">JSON-RPC 2.0<br>over stdio / SSE</div>
+        </div>
+        <div class="arch-box server">
+          <h4>MCP Server</h4>
+          <ul>
+            <li>Tools (functions)</li>
+            <li>Resources (data)</li>
+            <li>Prompts (templates)</li>
+            <li>Sampling</li>
+          </ul>
+          <div class="arch-label">Exposes capabilities</div>
+        </div>
+        <div>
+          <div class="arch-arrow">â†’</div>
+          <div style="font-size:0.68rem;color:var(--accent2);text-align:center;margin-top:4px;">Calls backends</div>
+        </div>
+        <div class="arch-box resource">
+          <h4>Resources</h4>
+          <ul>
+            <li>Databases</li>
+            <li>File systems</li>
+            <li>External APIs</li>
+            <li>Git repos</li>
+          </ul>
+          <div class="arch-label">Actual data/services</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSPORT LAYER -->
+  <div class="section">
+    <h2>Transport Layer & Message Types</h2>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="showTab('stdio', this)">stdio Transport</button>
+      <button class="tab-btn" onclick="showTab('sse', this)">SSE Transport</button>
+      <button class="tab-btn" onclick="showTab('msgs', this)">Message Types</button>
+    </div>
+
+    <div id="tab-stdio" class="tab-panel active">
+      <div class="flow-container">
+        <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">Used for <strong style="color:var(--text)">local MCP servers</strong> running on the same machine (CLI tools, IDE plugins, desktop agents).</p>
+        <div class="flow-step highlight">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Client spawns server process</h4>
+            <p>The MCP client starts the server as a subprocess: <code>node mcp-server.js</code></p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Communication via stdin/stdout</h4>
+            <p>Client writes JSON-RPC messages to the server's <code>stdin</code>; reads responses from <code>stdout</code></p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Newline-delimited JSON</h4>
+            <p>Each message is a single JSON line terminated by <code>\n</code> â€” no framing headers needed</p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Process lifecycle tied to client</h4>
+            <p>Server process exits when client disconnects â€” no persistent background service required</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-sse" class="tab-panel">
+      <div class="flow-container">
+        <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">Used for <strong style="color:var(--text)">remote MCP servers</strong> accessible over HTTP (cloud APIs, shared team servers).</p>
+        <div class="flow-step highlight">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Client opens SSE connection</h4>
+            <p>HTTP GET to <code>/sse</code> endpoint â€” server keeps connection open for streaming events</p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Client sends requests via HTTP POST</h4>
+            <p>Tool calls sent as HTTP POST to <code>/message</code> endpoint with JSON-RPC body</p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Server streams responses over SSE</h4>
+            <p>Results flow back through the open SSE stream as <code>data:</code> events â€” enables streaming</p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Auth via HTTP headers</h4>
+            <p>Bearer tokens, API keys, or OAuth passed in standard <code>Authorization</code> headers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-msgs" class="tab-panel">
+      <div class="flow-container">
+        <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">MCP defines <strong style="color:var(--text)">three JSON-RPC message types</strong> for clientâ€“server communication.</p>
+        <div class="flow-step highlight">
+          <div class="step-num">R</div>
+          <div class="step-content">
+            <h4>Request</h4>
+            <p>Client â†’ Server. Has an <code>id</code>, <code>method</code>, and optional <code>params</code>. Expects a response.</p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">P</div>
+          <div class="step-content">
+            <h4>Response</h4>
+            <p>Server â†’ Client. Matches <code>id</code> of the request. Contains <code>result</code> or <code>error</code>.</p>
+          </div>
+        </div>
+        <div class="flow-step highlight">
+          <div class="step-num">N</div>
+          <div class="step-content">
+            <h4>Notification</h4>
+            <p>Either direction. No <code>id</code> â€” fire-and-forget. Used for progress updates and logs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOL REGISTRATION FLOW -->
+  <div class="section">
+    <h2>Tool Registration & Discovery Flow</h2>
+    <div class="flow-container">
+      <div style="margin-bottom:20px;">
+        <div class="reg-grid">
+          <div class="reg-step">
+            <div class="step-icon">ðŸ¤</div>
+            <h4>initialize</h4>
+            <p>Client sends protocol version + capabilities</p>
+          </div>
+          <div class="reg-arrow">â†’</div>
+          <div class="reg-step">
+            <div class="step-icon">ðŸ“‹</div>
+            <h4>tools/list</h4>
+            <p>Client requests all available tools from server</p>
+          </div>
+          <div class="reg-arrow">â†’</div>
+          <div class="reg-step">
+            <div class="step-icon">ðŸ“</div>
+            <h4>Tool Schemas</h4>
+            <p>Server returns name, description, inputSchema per tool</p>
+          </div>
+          <div class="reg-arrow">â†’</div>
+          <div class="reg-step">
+            <div class="step-icon">ðŸ’‰</div>
+            <h4>Inject to LLM</h4>
+            <p>Client adds tools to model's system prompt or API call</p>
+          </div>
+          <div class="reg-arrow">â†’</div>
+          <div class="reg-step">
+            <div class="step-icon">âš¡</div>
+            <h4>tools/call</h4>
+            <p>Client executes tool call with validated arguments</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="json-pair">
+        <div class="json-block request">
+          <h4>Tool Definition (Server â†’ Client)</h4>
+          <pre><span class="json-key">"tools"</span>: [{
+  <span class="json-key">"name"</span>: <span class="json-str">"search_web"</span>,
+  <span class="json-key">"description"</span>: <span class="json-str">"Search the web for current info"</span>,
+  <span class="json-key">"inputSchema"</span>: {
+    <span class="json-key">"type"</span>: <span class="json-str">"object"</span>,
+    <span class="json-key">"properties"</span>: {
+      <span class="json-key">"query"</span>: {
+        <span class="json-key">"type"</span>: <span class="json-str">"string"</span>,
+        <span class="json-key">"description"</span>: <span class="json-str">"Search query"</span>
+      }
+    },
+    <span class="json-key">"required"</span>: [<span class="json-str">"query"</span>]
+  }
+}]</pre>
+        </div>
+        <div class="json-block response">
+          <h4>Tool Call (Client â†’ Server)</h4>
+          <pre>{
+  <span class="json-key">"jsonrpc"</span>: <span class="json-str">"2.0"</span>,
+  <span class="json-key">"id"</span>: <span class="json-num">42</span>,
+  <span class="json-key">"method"</span>: <span class="json-str">"tools/call"</span>,
+  <span class="json-key">"params"</span>: {
+    <span class="json-key">"name"</span>: <span class="json-str">"search_web"</span>,
+    <span class="json-key">"arguments"</span>: {
+      <span class="json-key">"query"</span>: <span class="json-str">"MCP protocol spec 2024"</span>
+    }
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE SIMULATOR -->
+  <div class="section">
+    <h2>Live MCP Session Simulator</h2>
+    <div class="simulator">
+      <div class="sim-header">
+        <h3>ðŸ”¬ MCP Message Exchange</h3>
+        <div class="sim-controls">
+          <button class="sim-btn" onclick="simStep('init')">1. Initialize</button>
+          <button class="sim-btn" onclick="simStep('list')">2. List Tools</button>
+          <button class="sim-btn" onclick="simStep('call')">3. Call Tool</button>
+          <button class="sim-btn" onclick="simStep('result')">4. Get Result</button>
+          <button class="sim-btn" onclick="simClear()">Clear</button>
+        </div>
+      </div>
+      <div class="sim-log" id="simLog">
+        <div class="log-line log-info"><span class="timestamp">[ready]</span> Click the buttons above to simulate an MCP session step by step.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MCP vs ALTERNATIVES -->
+  <div class="section">
+    <h2>MCP vs Alternatives</h2>
+    <div style="overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th class="s3">MCP</th>
+            <th class="alt">Custom Functions (OpenAI)</th>
+            <th class="alt">Plugins (old)</th>
+            <th class="alt">Direct API calls</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cross-model standard</td>
+            <td class="yes">âœ“ Yes</td>
+            <td class="no">âœ— OpenAI only</td>
+            <td class="no">âœ— ChatGPT only</td>
+            <td class="no">âœ— Custom per API</td>
+          </tr>
+          <tr>
+            <td>Tool discovery</td>
+            <td class="yes">âœ“ Dynamic</td>
+            <td class="partial">~ Predefined JSON</td>
+            <td class="partial">~ OpenAPI spec</td>
+            <td class="no">âœ— Hardcoded</td>
+          </tr>
+          <tr>
+            <td>Stateful sessions</td>
+            <td class="yes">âœ“ Built-in</td>
+            <td class="no">âœ— Stateless</td>
+            <td class="no">âœ— Stateless</td>
+            <td class="partial">~ Manual</td>
+          </tr>
+          <tr>
+            <td>Streaming support</td>
+            <td class="yes">âœ“ SSE native</td>
+            <td class="partial">~ Streaming API</td>
+            <td class="no">âœ— No</td>
+            <td class="partial">~ Depends</td>
+          </tr>
+          <tr>
+            <td>Local server support</td>
+            <td class="yes">âœ“ stdio</td>
+            <td class="no">âœ— HTTP only</td>
+            <td class="no">âœ— HTTP only</td>
+            <td class="partial">~ Depends</td>
+          </tr>
+          <tr>
+            <td>Resources & prompts</td>
+            <td class="yes">âœ“ First-class</td>
+            <td class="no">âœ— Not in spec</td>
+            <td class="no">âœ— Not in spec</td>
+            <td class="no">âœ— No standard</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz â€” Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. What transport does MCP use for local servers running on the same machine?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','b')">A) HTTP/REST</button>
+        <button class="opt" onclick="answer('q1','b','b')">B) stdio (stdin/stdout)</button>
+        <button class="opt" onclick="answer('q1','c','b')">C) WebSockets</button>
+        <button class="opt" onclick="answer('q1','d','b')">D) gRPC</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. Which JSON-RPC message type is used for fire-and-forget communication (no response expected)?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','c')">A) Request</button>
+        <button class="opt" onclick="answer('q2','b','c')">B) Response</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) Notification</button>
+        <button class="opt" onclick="answer('q2','d','c')">D) Event</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. When an MCP client calls <code>tools/list</code>, what does the server return?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','b')">A) A list of active user sessions</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) Tool names, descriptions, and input schemas</button>
+        <button class="opt" onclick="answer('q3','c','b')">C) Authentication tokens for each tool</button>
+        <button class="opt" onclick="answer('q3','d','b')">D) The server's current resource usage</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. What is a key advantage of MCP over custom OpenAI function definitions?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','a')">A) MCP is a cross-model open standard; OpenAI functions work only with OpenAI models</button>
+        <button class="opt" onclick="answer('q4','b','a')">B) MCP responses are faster because they use binary encoding</button>
+        <button class="opt" onclick="answer('q4','c','a')">C) OpenAI functions don't support JSON schemas</button>
+        <button class="opt" onclick="answer('q4','d','a')">D) MCP doesn't require any server infrastructure</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. In MCP's SSE transport, how does a client send a tool call to the server?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','b')">A) By writing to the server's stdin stream</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) Via HTTP POST to a <code>/message</code> endpoint</button>
+        <button class="opt" onclick="answer('q5','c','b')">C) By broadcasting an SSE event from the client</button>
+        <button class="opt" onclick="answer('q5','d','b')">D) Through a shared memory buffer</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+// â”€â”€ TAB SYSTEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// â”€â”€ SIMULATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const log = document.getElementById('simLog');
+let ts = 0;
+
+function simLog(msg, cls) {
+  ts += Math.floor(Math.random() * 30) + 10;
+  const t = String(ts).padStart(5, '0');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + cls;
+  line.innerHTML = `<span class="timestamp">[${t}ms]</span> ${msg}`;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+function simClear() {
+  log.innerHTML = '<div class="log-line log-info"><span class="timestamp">[ready]</span> Click the buttons above to simulate an MCP session step by step.</div>';
+  ts = 0;
+}
+
+function simStep(step) {
+  switch(step) {
+    case 'init':
+      simLog('CLIENT â†’ SERVER: <strong>initialize</strong> request', 'log-client');
+      simLog('&nbsp;&nbsp;{ "jsonrpc": "2.0", "id": 1, "method": "initialize",', 'log-transport');
+      simLog('&nbsp;&nbsp;&nbsp;&nbsp;"params": { "protocolVersion": "2024-11-05",', 'log-transport');
+      simLog('&nbsp;&nbsp;&nbsp;&nbsp;"capabilities": { "roots": {}, "sampling": {} } } }', 'log-transport');
+      setTimeout(() => {
+        simLog('SERVER â†’ CLIENT: <strong>initialize</strong> response', 'log-server');
+        simLog('&nbsp;&nbsp;{ "result": { "protocolVersion": "2024-11-05",', 'log-transport');
+        simLog('&nbsp;&nbsp;&nbsp;&nbsp;"serverInfo": { "name": "filesystem-mcp", "version": "1.2.0" },', 'log-transport');
+        simLog('&nbsp;&nbsp;&nbsp;&nbsp;"capabilities": { "tools": {}, "resources": {} } } }', 'log-transport');
+        simLog('âœ“ Session established. Protocol version negotiated.', 'log-result');
+      }, 400);
+      break;
+
+    case 'list':
+      simLog('CLIENT â†’ SERVER: <strong>tools/list</strong> request', 'log-client');
+      simLog('&nbsp;&nbsp;{ "jsonrpc": "2.0", "id": 2, "method": "tools/list" }', 'log-transport');
+      setTimeout(() => {
+        simLog('SERVER â†’ CLIENT: <strong>tools/list</strong> response (3 tools found)', 'log-server');
+        simLog('&nbsp;&nbsp;tools: [ "read_file", "write_file", "list_directory" ]', 'log-transport');
+        simLog('&nbsp;&nbsp;Each tool includes: name, description, inputSchema (JSON Schema)', 'log-transport');
+        simLog('âœ“ Tools discovered. LLM system prompt updated with tool definitions.', 'log-result');
+      }, 400);
+      break;
+
+    case 'call':
+      simLog('LLM decided to call: <strong>read_file</strong>', 'log-info');
+      simLog('CLIENT â†’ SERVER: <strong>tools/call</strong> request', 'log-client');
+      simLog('&nbsp;&nbsp;{ "jsonrpc": "2.0", "id": 3, "method": "tools/call",', 'log-transport');
+      simLog('&nbsp;&nbsp;&nbsp;&nbsp;"params": { "name": "read_file",', 'log-transport');
+      simLog('&nbsp;&nbsp;&nbsp;&nbsp;"arguments": { "path": "/workspace/config.yaml" } } }', 'log-transport');
+      simLog('â³ Server executing tool...', 'log-info');
+      break;
+
+    case 'result':
+      simLog('SERVER â†’ CLIENT: <strong>tools/call</strong> response', 'log-server');
+      simLog('&nbsp;&nbsp;{ "result": { "content": [{ "type": "text",', 'log-transport');
+      simLog('&nbsp;&nbsp;&nbsp;&nbsp;"text": "model: gpt-4\\ntemperature: 0.7\\nmax_tokens: 2000" }],', 'log-transport');
+      simLog('&nbsp;&nbsp;&nbsp;&nbsp;"isError": false } }', 'log-transport');
+      simLog('âœ“ Result injected into LLM context as tool observation.', 'log-result');
+      simLog('ðŸ”„ LLM continues reasoning with file contents...', 'log-result');
+      break;
+  }
+}
+
+// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let score = 0;
+const answered = {};
+
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1: 'stdio (stdin/stdout) is the local transport â€” JSON messages flow through the process\'s standard streams.',
+      q2: 'Notifications have no id field, so no response is expected â€” used for progress updates and logs.',
+      q3: 'tools/list returns each tool\'s name, description, and inputSchema so the client can populate the LLM\'s tool list.',
+      q4: 'MCP is an open standard adopted across model providers; OpenAI function definitions only work within OpenAI\'s ecosystem.',
+      q5: 'In SSE transport, the client sends tool calls as HTTP POST to /message; responses stream back over the open SSE connection.'
+    };
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false;
+    o.classList.remove('correct', 'wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback';
+  fb.textContent = '';
+}
+</script>
+</body>
+</html>

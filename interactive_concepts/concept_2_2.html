@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 4 Pillars of Agent Characteristics | Agentic AI Course</title>
+<style>
+  :root {
+    --bg:#0f1117; --card:#21263a; --card2:#1a1f30; --text:#e8eaf6; --muted:#8892b0;
+    --accent:#00d2ff; --border:rgba(0,210,255,0.18); --radius:12px;
+    --p1:#6c63ff; --p2:#ffd166; --p3:#ff6584; --p4:#06d6a0;
+    --correct:#06d6a0; --wrong:#ef476f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6}
+  nav{background:rgba(15,17,23,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  nav .brand{font-size:.8rem;color:var(--muted)} nav .brand span{color:var(--accent);font-weight:700}
+  nav .nav-links{display:flex;gap:12px}
+  nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:6px 14px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+  nav a:hover{color:var(--accent);border-color:var(--accent)}
+  .hero{text-align:center;padding:64px 24px 48px;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(0,210,255,.12) 0%,transparent 70%)}
+  .session-tag{display:inline-block;background:rgba(0,210,255,.15);color:var(--accent);border:1px solid rgba(0,210,255,.4);border-radius:20px;padding:4px 16px;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:12px}
+  .hero h1 span{color:var(--accent)}
+  .hero p{color:var(--muted);max-width:600px;margin:0 auto;font-size:1.05rem}
+  section{max-width:1000px;margin:0 auto;padding:40px 24px}
+  .section-title{font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* PILLAR CARDS */
+  .pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .pillar{background:var(--card);border-radius:var(--radius);padding:28px;border:2px solid transparent;cursor:pointer;transition:all .25s}
+  .pillar:hover,.pillar.active{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+  .pillar.p1{border-color:rgba(108,99,255,.35)} .pillar.p1:hover,.pillar.p1.active{border-color:var(--p1);background:rgba(108,99,255,.07)}
+  .pillar.p2{border-color:rgba(255,209,102,.35)} .pillar.p2:hover,.pillar.p2.active{border-color:var(--p2);background:rgba(255,209,102,.07)}
+  .pillar.p3{border-color:rgba(255,101,132,.35)} .pillar.p3:hover,.pillar.p3.active{border-color:var(--p3);background:rgba(255,101,132,.07)}
+  .pillar.p4{border-color:rgba(6,214,160,.35)} .pillar.p4:hover,.pillar.p4.active{border-color:var(--p4);background:rgba(6,214,160,.07)}
+  .pillar-icon{font-size:2.2rem;margin-bottom:10px}
+  .pillar-name{font-size:1.1rem;font-weight:800;margin-bottom:4px}
+  .pillar.p1 .pillar-name{color:var(--p1)} .pillar.p2 .pillar-name{color:var(--p2)}
+  .pillar.p3 .pillar-name{color:var(--p3)} .pillar.p4 .pillar-name{color:var(--p4)}
+  .pillar-tagline{font-size:.82rem;color:var(--muted);margin-bottom:14px}
+  .pillar-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+  .pillar.active .pillar-detail{display:block}
+  .pillar-detail p{font-size:.88rem;color:var(--muted);margin-bottom:10px}
+  .pillar-detail .examples{display:flex;flex-wrap:wrap;gap:6px}
+  .ex-chip{font-size:.75rem;border-radius:20px;padding:3px 10px;border:1px solid}
+  .p1 .ex-chip{background:rgba(108,99,255,.1);color:var(--p1);border-color:rgba(108,99,255,.3)}
+  .p2 .ex-chip{background:rgba(255,209,102,.1);color:var(--p2);border-color:rgba(255,209,102,.3)}
+  .p3 .ex-chip{background:rgba(255,101,132,.1);color:var(--p3);border-color:rgba(255,101,132,.3)}
+  .p4 .ex-chip{background:rgba(6,214,160,.1);color:var(--p4);border-color:rgba(6,214,160,.3)}
+
+  /* SPECTRUM: NON-AGENT vs AGENT */
+  .compare-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden}
+  .compare-table th{padding:12px 18px;font-size:.82rem;font-weight:700;text-align:left;letter-spacing:.6px;text-transform:uppercase}
+  .compare-table th:nth-child(1){background:rgba(239,71,111,.1);color:var(--wrong)}
+  .compare-table th:nth-child(2){background:rgba(0,210,255,.06);color:var(--muted);text-align:center;width:120px}
+  .compare-table th:nth-child(3){background:rgba(6,214,160,.1);color:var(--correct)}
+  .compare-table td{padding:11px 18px;font-size:.87rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+  .compare-table tr:last-child td{border-bottom:none}
+  .compare-table td:nth-child(2){text-align:center;font-size:1.1rem}
+  .compare-table td:nth-child(1){color:var(--muted)} .compare-table td:nth-child(3){color:var(--text)}
+
+  /* CLASSIFY EXERCISE */
+  .classify-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .classify-item{background:var(--card);border-radius:10px;padding:16px;border:2px solid var(--border)}
+  .classify-item .scenario{font-size:.88rem;margin-bottom:10px}
+  .classify-item select{background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.83rem;width:100%;cursor:pointer}
+  .classify-item .result{font-size:.8rem;margin-top:8px;padding:6px 10px;border-radius:6px;display:none}
+  .classify-item.correct-cl .result{display:block;background:rgba(6,214,160,.1);color:var(--correct);border-left:2px solid var(--correct)}
+  .classify-item.wrong-cl .result{display:block;background:rgba(239,71,111,.1);color:var(--wrong);border-left:2px solid var(--wrong)}
+  .classify-score{text-align:center;margin-top:16px;font-size:.9rem;color:var(--muted)}
+  .classify-score span{color:var(--accent);font-weight:700;font-size:1.1rem}
+
+  /* QUIZ */
+  .quiz-container{background:var(--card);border-radius:var(--radius);padding:32px;border:1px solid var(--border)}
+  .quiz-score{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .score-display{font-size:1rem;color:var(--muted)} .score-display span{color:var(--accent);font-weight:700;font-size:1.2rem}
+  .q-block{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .q-block:last-of-type{border-bottom:none}
+  .q-num{font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .q-text{font-size:1rem;font-weight:600;margin-bottom:14px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--card2);border:2px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;display:flex;align-items:center;gap:10px}
+  .opt:hover:not(.locked){border-color:var(--accent);background:rgba(0,210,255,.06)}
+  .opt.correct{border-color:var(--correct);background:rgba(6,214,160,.1);color:var(--correct)}
+  .opt.wrong{border-color:var(--wrong);background:rgba(239,71,111,.1);color:var(--wrong)}
+  .opt .opt-icon{font-size:1rem;flex-shrink:0;opacity:0}
+  .opt.correct .opt-icon,.opt.wrong .opt-icon{opacity:1}
+  .feedback{display:none;margin-top:12px;padding:14px 16px;border-radius:8px;font-size:.88rem;line-height:1.5}
+  .feedback.show{display:block}
+  .feedback.correct-fb{background:rgba(6,214,160,.08);border-left:3px solid var(--correct);color:#a8f0d8}
+  .feedback.wrong-fb{background:rgba(239,71,111,.08);border-left:3px solid var(--wrong);color:#f8c3ce}
+  .q-reset{display:none;margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
+  .q-reset:hover{border-color:var(--accent);color:var(--accent)} .q-reset.show{display:inline-block}
+  @media(max-width:650px){.pillars-grid,.classify-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">Agentic AI Course · <span>Session 2</span></div>
+  <div class="nav-links">
+    <a href="concept_2_1.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_2_3.html">Next →</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 2 · Concept 2.2</div>
+  <h1>The <span>4 Pillars</span> of Agent Characteristics</h1>
+  <p>What separates a true AI agent from a smart script — the four properties every real agent must possess.</p>
+</div>
+
+<section>
+  <div class="section-title">The 4 Pillars — Click to Explore</div>
+  <div class="pillars-grid">
+    <div class="pillar p1" onclick="togglePillar(this)">
+      <div class="pillar-icon">🧭</div>
+      <div class="pillar-name">Autonomy</div>
+      <div class="pillar-tagline">Acts without constant human direction</div>
+      <div class="pillar-detail">
+        <p>An autonomous agent decides its own next action based on its current state and goals — no human needs to approve each step. It can initiate actions, make sub-decisions, and self-direct within its operating context.</p>
+        <p><strong>Key test:</strong> Can the agent complete a 10-step task without a human prompt at every step?</p>
+        <div class="examples">
+          <span class="ex-chip">Self-directed task execution</span>
+          <span class="ex-chip">Goal-driven decision making</span>
+          <span class="ex-chip">No per-step approval needed</span>
+          <span class="ex-chip">Operates over extended time</span>
+        </div>
+      </div>
+    </div>
+    <div class="pillar p2" onclick="togglePillar(this)">
+      <div class="pillar-icon">⚡</div>
+      <div class="pillar-name">Reactivity</div>
+      <div class="pillar-tagline">Perceives and responds to environment changes</div>
+      <div class="pillar-detail">
+        <p>A reactive agent continuously perceives its environment and responds to changes in a timely manner. If a tool returns an error, or new data arrives, or the world state changes — the agent adapts its behaviour rather than blindly continuing.</p>
+        <p><strong>Key test:</strong> Does the agent adjust when the environment gives unexpected feedback?</p>
+        <div class="examples">
+          <span class="ex-chip">Tool error → retry or reroute</span>
+          <span class="ex-chip">New data → update plan</span>
+          <span class="ex-chip">Environment sensing</span>
+          <span class="ex-chip">Timely response to change</span>
+        </div>
+      </div>
+    </div>
+    <div class="pillar p3" onclick="togglePillar(this)">
+      <div class="pillar-icon">🎯</div>
+      <div class="pillar-name">Proactivity</div>
+      <div class="pillar-tagline">Takes initiative toward goals, doesn't just react</div>
+      <div class="pillar-detail">
+        <p>A proactive agent doesn't just respond to stimuli — it anticipates future states and takes initiative to achieve its goals. It plans ahead, spots risks before they materialise, and acts pre-emptively rather than waiting for problems.</p>
+        <p><strong>Key test:</strong> Does the agent do things the user didn't explicitly request, because they serve the goal?</p>
+        <div class="examples">
+          <span class="ex-chip">Goal-directed initiative</span>
+          <span class="ex-chip">Anticipates blockers</span>
+          <span class="ex-chip">Takes unprompted sub-steps</span>
+          <span class="ex-chip">Plans ahead in the loop</span>
+        </div>
+      </div>
+    </div>
+    <div class="pillar p4" onclick="togglePillar(this)">
+      <div class="pillar-icon">🤝</div>
+      <div class="pillar-name">Social Ability</div>
+      <div class="pillar-tagline">Communicates with other agents and humans</div>
+      <div class="pillar-detail">
+        <p>An agent with social ability can interact with other agents, systems, and humans using structured communication protocols. This enables multi-agent coordination, delegation, negotiation, and reporting — the backbone of production-grade agentic systems.</p>
+        <p><strong>Key test:</strong> Can the agent exchange structured messages with other agents and act on their outputs?</p>
+        <div class="examples">
+          <span class="ex-chip">Agent-to-agent messaging</span>
+          <span class="ex-chip">Task delegation</span>
+          <span class="ex-chip">Protocol-based communication</span>
+          <span class="ex-chip">Human-in-the-loop updates</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Chatbot vs. Agent — The Pillar Gap</div>
+  <table class="compare-table">
+    <thead>
+      <tr><th>❌ Traditional Chatbot</th><th>Pillar</th><th>✅ True Agent</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Waits for every user message</td><td>🧭</td><td>Executes multi-step tasks without prompting at each step</td></tr>
+      <tr><td>Ignores tool errors, proceeds anyway</td><td>⚡</td><td>Detects errors, retries, reroutes — adapts to environment changes</td></tr>
+      <tr><td>Only does what was explicitly asked</td><td>🎯</td><td>Anticipates next steps and takes initiative toward the goal</td></tr>
+      <tr><td>Communicates only with the end user</td><td>🤝</td><td>Delegates to sub-agents, calls APIs, coordinates across systems</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="section-title">Classify the Pillar</div>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">For each scenario, identify which of the 4 pillars is being demonstrated.</p>
+  <div class="classify-grid">
+    <div class="classify-item" id="cl1">
+      <div class="scenario">🔍 An agent discovers that a web search tool returned a 429 (rate limit) error and immediately switches to an alternative search API instead of failing.</div>
+      <select onchange="checkClassify('cl1',this.value,'reactivity')">
+        <option value="">— select pillar —</option>
+        <option value="autonomy">Autonomy</option>
+        <option value="reactivity">Reactivity</option>
+        <option value="proactivity">Proactivity</option>
+        <option value="social">Social Ability</option>
+      </select>
+      <div class="result">✓ Reactivity — the agent perceives an environmental change (error response) and adapts its behaviour in real-time.</div>
+    </div>
+    <div class="classify-item" id="cl2">
+      <div class="scenario">📋 While writing a report, an agent notices the user will likely need citations and proactively fetches academic sources without being asked.</div>
+      <select onchange="checkClassify('cl2',this.value,'proactivity')">
+        <option value="">— select pillar —</option>
+        <option value="autonomy">Autonomy</option>
+        <option value="reactivity">Reactivity</option>
+        <option value="proactivity">Proactivity</option>
+        <option value="social">Social Ability</option>
+      </select>
+      <div class="result">✓ Proactivity — anticipating a future need and taking initiative before being asked.</div>
+    </div>
+    <div class="classify-item" id="cl3">
+      <div class="scenario">🤖 A Planner agent sends a structured JSON task specification to an Executor agent and waits for its result before continuing.</div>
+      <select onchange="checkClassify('cl3',this.value,'social')">
+        <option value="">— select pillar —</option>
+        <option value="autonomy">Autonomy</option>
+        <option value="reactivity">Reactivity</option>
+        <option value="proactivity">Proactivity</option>
+        <option value="social">Social Ability</option>
+      </select>
+      <div class="result">✓ Social Ability — structured agent-to-agent communication and task delegation.</div>
+    </div>
+    <div class="classify-item" id="cl4">
+      <div class="scenario">🚀 A research agent executes a 15-step process — searching, reading, summarising, cross-referencing, and formatting — entirely without human input after the initial goal.</div>
+      <select onchange="checkClassify('cl4',this.value,'autonomy')">
+        <option value="">— select pillar —</option>
+        <option value="autonomy">Autonomy</option>
+        <option value="reactivity">Reactivity</option>
+        <option value="proactivity">Proactivity</option>
+        <option value="social">Social Ability</option>
+      </select>
+      <div class="result">✓ Autonomy — completing a long multi-step task without requiring human direction at each step.</div>
+    </div>
+  </div>
+  <div class="classify-score">Classified: <span id="clScore">0</span> / 4</div>
+</section>
+
+<section>
+  <div class="section-title">Check Your Understanding</div>
+  <div class="quiz-container">
+    <div class="quiz-score">
+      <div class="score-display">Score: <span id="scoreDisplay">0</span> / 5</div>
+      <div style="font-size:.8rem;color:var(--muted)">Click an answer to check it</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 5</div>
+      <div class="q-text">Which pillar specifically distinguishes an agent from a simple chatbot in terms of unsolicited, goal-driven action?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q1','a','c')"><span class="opt-icon">✗</span>a) Reactivity — responding to user messages</div>
+        <div class="opt" onclick="answer('q1','b','c')"><span class="opt-icon">✗</span>b) Social Ability — communicating with APIs</div>
+        <div class="opt" onclick="answer('q1','c','c')"><span class="opt-icon">✓</span>c) Proactivity — taking initiative toward goals without being asked</div>
+        <div class="opt" onclick="answer('q1','d','c')"><span class="opt-icon">✗</span>d) Autonomy — operating without human direction</div>
+      </div>
+      <div class="feedback correct-fb" id="q1-correct">✓ Proactivity is the key differentiator here. Every piece of software is reactive (responds to inputs), but only agents are proactive — they anticipate what's needed and act pre-emptively. A chatbot waits for you to ask for citations; a proactive agent fetches them because it knows you'll need them.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">✗ Reactivity and Social Ability exist in non-agent systems too. Autonomy (extended operation) is related but different. The specific "unsolicited, goal-driven" action is Proactivity — an agent taking steps the user never explicitly requested because they serve the goal. This is what separates an agent from a sophisticated chatbot.</div>
+      <button class="q-reset" onclick="resetQ('q1')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 5</div>
+      <div class="q-text">An agent is summarising 50 documents. Halfway through, a network error occurs and the agent switches to a cached version automatically. Which pillar is this?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q2','a','b')"><span class="opt-icon">✗</span>a) Autonomy</div>
+        <div class="opt" onclick="answer('q2','b','b')"><span class="opt-icon">✓</span>b) Reactivity</div>
+        <div class="opt" onclick="answer('q2','c','b')"><span class="opt-icon">✗</span>c) Proactivity</div>
+        <div class="opt" onclick="answer('q2','d','b')"><span class="opt-icon">✗</span>d) Social Ability</div>
+      </div>
+      <div class="feedback correct-fb" id="q2-correct">✓ Reactivity. The agent perceived an environmental change (network error) and responded in a timely, adaptive way (switching to cache). Reactivity is specifically about sensing environmental state changes and adjusting — not about planning ahead (proactivity) or operating independently (autonomy).</div>
+      <div class="feedback wrong-fb" id="q2-wrong">✗ The trigger here is an environmental event (network error) and the agent adapts in response. That's Reactivity. Autonomy would be operating without human prompts. Proactivity would be pre-emptively caching documents before a network error happens. Social Ability involves communicating with other agents or systems.</div>
+      <button class="q-reset" onclick="resetQ('q2')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 5</div>
+      <div class="q-text">Why is Social Ability particularly important in production multi-agent systems?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q3','a','c')"><span class="opt-icon">✗</span>a) It makes agents friendlier to end users</div>
+        <div class="opt" onclick="answer('q3','b','c')"><span class="opt-icon">✗</span>b) It allows the agent to search the web faster</div>
+        <div class="opt" onclick="answer('q3','c','c')"><span class="opt-icon">✓</span>c) It enables structured coordination, delegation, and result exchange between agents</div>
+        <div class="opt" onclick="answer('q3','d','c')"><span class="opt-icon">✗</span>d) It is required to connect to databases</div>
+      </div>
+      <div class="feedback correct-fb" id="q3-correct">✓ Exactly. In production MAS (Multi-Agent Systems), Social Ability is the glue. The Planner sends structured tasks to Executors; Executors report back structured results; the Critic communicates feedback. Without Social Ability, you have isolated single agents, not a coordinated system. Protocols like A2A and MCP are the concrete implementation of this pillar.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">✗ Social Ability is about agent-to-agent and agent-to-system communication — not user-friendliness or search speed. In production multi-agent architectures, Social Ability is what enables the Planner to delegate to Executors, the Critic to communicate quality assessments, and agents to coordinate via protocols (A2A, MCP). It's what makes MAS more than just parallel isolated agents.</div>
+      <button class="q-reset" onclick="resetQ('q3')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 5</div>
+      <div class="q-text">A system that requires a human to approve every action before it proceeds LACKS which pillar?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q4','a','a')"><span class="opt-icon">✓</span>a) Autonomy</div>
+        <div class="opt" onclick="answer('q4','b','a')"><span class="opt-icon">✗</span>b) Reactivity</div>
+        <div class="opt" onclick="answer('q4','c','a')"><span class="opt-icon">✗</span>c) Proactivity</div>
+        <div class="opt" onclick="answer('q4','d','a')"><span class="opt-icon">✗</span>d) Social Ability</div>
+      </div>
+      <div class="feedback correct-fb" id="q4-correct">✓ Autonomy. Requiring human approval at each step is the defining counter-example to Autonomy. The system may be capable of reactivity, proactivity, and social communication — but if a human must be in the decision loop for every action, it is not autonomous. Note: human-in-the-loop checkpoints are acceptable in production for high-stakes decisions, but they represent an intentional autonomy constraint, not a design flaw.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">✗ The defining characteristic of Autonomy is operating without requiring constant human direction. If the system needs human approval at every step, it literally lacks autonomy — the human IS the decision-making layer. The other three pillars could all be present (it could react to environment, have goals, and communicate) while still lacking autonomy.</div>
+      <button class="q-reset" onclick="resetQ('q4')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 5</div>
+      <div class="q-text">All four pillars are necessary for a production-grade agent. Which COMBINATION covers both the ability to handle unexpected situations AND the ability to coordinate with other systems?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q5','a','b')"><span class="opt-icon">✗</span>a) Autonomy + Proactivity</div>
+        <div class="opt" onclick="answer('q5','b','b')"><span class="opt-icon">✓</span>b) Reactivity + Social Ability</div>
+        <div class="opt" onclick="answer('q5','c','b')"><span class="opt-icon">✗</span>c) Proactivity + Autonomy</div>
+        <div class="opt" onclick="answer('q5','d','b')"><span class="opt-icon">✗</span>d) Autonomy + Social Ability</div>
+      </div>
+      <div class="feedback correct-fb" id="q5-correct">✓ Reactivity covers handling unexpected situations (environment changes, errors, new data). Social Ability covers coordination with other agents and systems. This is the pair that specifically addresses operational resilience and system integration — the two hardest problems in production agent deployment.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">✗ "Handle unexpected situations" = Reactivity (adapting to environment changes). "Coordinate with other systems" = Social Ability (structured communication and delegation). Autonomy is about independent operation; Proactivity is about anticipating needs. The pair that covers resilience + integration is Reactivity + Social Ability.</div>
+      <button class="q-reset" onclick="resetQ('q5')">↺ Try again</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  let score=0; const answered={};
+  let clScore=0; const clAnswered={};
+
+  function togglePillar(el){
+    const wasActive=el.classList.contains('active');
+    document.querySelectorAll('.pillar').forEach(p=>p.classList.remove('active'));
+    if(!wasActive) el.classList.add('active');
+  }
+
+  function checkClassify(id,val,correct){
+    if(clAnswered[id]) return;
+    if(!val) return;
+    clAnswered[id]=true;
+    const el=document.getElementById(id);
+    el.querySelector('select').disabled=true;
+    if(val===correct){el.classList.add('correct-cl'); clScore++; document.getElementById('clScore').textContent=clScore;}
+    else el.classList.add('wrong-cl');
+  }
+
+  function answer(qid,chosen,correct){
+    if(answered[qid]) return;
+    answered[qid]=true;
+    const block=document.getElementById(qid);
+    const opts=block.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.add('locked'));
+    const letters=['a','b','c','d'];
+    opts[letters.indexOf(chosen)].classList.add(chosen===correct?'correct':'wrong');
+    if(chosen!==correct) opts[letters.indexOf(correct)].classList.add('correct');
+    const ok=chosen===correct;
+    if(ok){score++; document.getElementById('scoreDisplay').textContent=score;}
+    document.getElementById(qid+'-'+(ok?'correct':'wrong')).classList.add('show');
+    block.querySelector('.q-reset').classList.add('show');
+  }
+
+  function resetQ(qid){
+    if(!answered[qid]) return;
+    delete answered[qid];
+    const block=document.getElementById(qid);
+    block.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong','locked'));
+    block.querySelectorAll('.feedback').forEach(f=>f.classList.remove('show'));
+    block.querySelector('.q-reset').classList.remove('show');
+    if(score>0){score--; document.getElementById('scoreDisplay').textContent=score;}
+  }
+</script>
+</body>
+</html>

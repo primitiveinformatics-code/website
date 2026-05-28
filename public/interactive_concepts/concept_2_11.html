@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Common Pitfalls and Fixes | Agentic AI Course</title>
+<style>
+  :root{--bg:#0f1117;--card:#21263a;--card2:#1a1f30;--text:#e8eaf6;--muted:#8892b0;--accent:#00d2ff;--border:rgba(0,210,255,.18);--radius:12px;--correct:#06d6a0;--wrong:#ef476f;--warn:#ffd166}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6}
+  nav{background:rgba(15,17,23,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  nav .brand{font-size:.8rem;color:var(--muted)} nav .brand span{color:var(--accent);font-weight:700}
+  nav .nav-links{display:flex;gap:12px}
+  nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:6px 14px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+  nav a:hover{color:var(--accent);border-color:var(--accent)}
+  .hero{text-align:center;padding:64px 24px 48px;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(0,210,255,.12) 0%,transparent 70%)}
+  .session-tag{display:inline-block;background:rgba(0,210,255,.15);color:var(--accent);border:1px solid rgba(0,210,255,.4);border-radius:20px;padding:4px 16px;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:12px} .hero h1 span{color:var(--accent)}
+  .hero p{color:var(--muted);max-width:640px;margin:0 auto;font-size:1.05rem}
+  section{max-width:1000px;margin:0 auto;padding:40px 24px}
+  .section-title{font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* PITFALL ACCORDION */
+  .pitfall-list{display:flex;flex-direction:column;gap:12px}
+  .pitfall{background:var(--card);border-radius:var(--radius);border:2px solid rgba(239,71,111,.2);overflow:hidden;transition:border-color .2s}
+  .pitfall.open{border-color:var(--wrong)}
+  .pitfall-header{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;transition:background .2s}
+  .pitfall-header:hover{background:rgba(239,71,111,.04)}
+  .p-num{width:32px;height:32px;border-radius:50%;background:rgba(239,71,111,.15);color:var(--wrong);font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .p-title{font-weight:700;font-size:.98rem;flex:1}
+  .p-tag{font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:20px;background:rgba(239,71,111,.1);color:var(--wrong)}
+  .p-arrow{color:var(--muted);transition:transform .2s;font-size:1.1rem}
+  .pitfall.open .p-arrow{transform:rotate(90deg)}
+  .pitfall-body{display:none;padding:0 22px 22px}
+  .pitfall.open .pitfall-body{display:block}
+  .pb-symptom{background:rgba(239,71,111,.07);border-left:3px solid var(--wrong);padding:12px 16px;border-radius:4px;margin-bottom:12px}
+  .pb-symptom .s-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--wrong);margin-bottom:4px}
+  .pb-symptom p{font-size:.86rem;color:var(--muted)}
+  .pb-cause{background:rgba(255,209,102,.06);border-left:3px solid var(--warn);padding:12px 16px;border-radius:4px;margin-bottom:12px}
+  .pb-cause .c-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--warn);margin-bottom:4px}
+  .pb-cause p{font-size:.86rem;color:var(--muted)}
+  .pb-fix{background:rgba(6,214,160,.07);border-left:3px solid var(--correct);padding:12px 16px;border-radius:4px}
+  .pb-fix .f-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--correct);margin-bottom:4px}
+  .pb-fix p{font-size:.86rem;color:var(--muted)}
+  .code-fix{font-family:'Courier New',monospace;font-size:.78rem;background:var(--card2);border-radius:6px;padding:10px 14px;margin-top:8px;color:#86efac;line-height:1.6}
+
+  /* DIAGNOSIS GAME */
+  .diag-container{background:var(--card);border-radius:var(--radius);padding:28px;border:1px solid var(--border)}
+  .diag-scenario{background:var(--card2);border-radius:10px;padding:20px;margin-bottom:16px;border-left:3px solid var(--warn)}
+  .diag-scenario .ds-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--warn);margin-bottom:6px}
+  .diag-scenario p{font-size:.9rem;line-height:1.6}
+  .diag-choices{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .diag-choice{background:var(--card2);border:2px solid var(--border);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:.83rem;transition:all .2s}
+  .diag-choice:hover:not(.locked){border-color:var(--accent);background:rgba(0,210,255,.06)}
+  .diag-choice.correct-d{border-color:var(--correct);background:rgba(6,214,160,.1);color:var(--correct)}
+  .diag-choice.wrong-d{border-color:var(--wrong);background:rgba(239,71,111,.1);color:var(--wrong)}
+  .diag-result{display:none;padding:12px 16px;border-radius:8px;font-size:.86rem;margin-top:4px}
+  .diag-result.show{display:block}
+  .diag-result.ok{background:rgba(6,214,160,.08);border-left:3px solid var(--correct);color:#a8f0d8}
+  .diag-result.bad{background:rgba(239,71,111,.08);border-left:3px solid var(--wrong);color:#f8c3ce}
+  .diag-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+  .diag-btn{background:var(--card2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 18px;cursor:pointer;font-size:.83rem;transition:all .2s}
+  .diag-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .diag-score{font-size:.9rem;color:var(--muted)}
+  .diag-score span{color:var(--accent);font-weight:700}
+
+  /* QUIZ */
+  .quiz-container{background:var(--card);border-radius:var(--radius);padding:32px;border:1px solid var(--border)}
+  .quiz-score{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .score-display{font-size:1rem;color:var(--muted)} .score-display span{color:var(--accent);font-weight:700;font-size:1.2rem}
+  .q-block{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.06)} .q-block:last-of-type{border-bottom:none}
+  .q-num{font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .q-text{font-size:1rem;font-weight:600;margin-bottom:14px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--card2);border:2px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;display:flex;align-items:center;gap:10px}
+  .opt:hover:not(.locked){border-color:var(--accent);background:rgba(0,210,255,.06)}
+  .opt.correct{border-color:var(--correct);background:rgba(6,214,160,.1);color:var(--correct)}
+  .opt.wrong{border-color:var(--wrong);background:rgba(239,71,111,.1);color:var(--wrong)}
+  .opt .opt-icon{font-size:1rem;flex-shrink:0;opacity:0} .opt.correct .opt-icon,.opt.wrong .opt-icon{opacity:1}
+  .feedback{display:none;margin-top:12px;padding:14px 16px;border-radius:8px;font-size:.88rem;line-height:1.5}
+  .feedback.show{display:block}
+  .feedback.correct-fb{background:rgba(6,214,160,.08);border-left:3px solid var(--correct);color:#a8f0d8}
+  .feedback.wrong-fb{background:rgba(239,71,111,.08);border-left:3px solid var(--wrong);color:#f8c3ce}
+  .q-reset{display:none;margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
+  .q-reset:hover{border-color:var(--accent);color:var(--accent)} .q-reset.show{display:inline-block}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">Agentic AI Course Â· <span>Session 2</span></div>
+  <div class="nav-links">
+    <a href="concept_2_10.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_2_12.html">Next â†’</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 2 Â· Concept 2.11</div>
+  <h1>Common Pitfalls <span>and Fixes</span></h1>
+  <p>The 7 most common ways production agents fail â€” and exactly how to fix each one.</p>
+</div>
+
+<section>
+  <div class="section-title">The 7 Pitfalls â€” Click to Diagnose & Fix</div>
+  <div class="pitfall-list">
+
+    <div class="pitfall" id="pf1">
+      <div class="pitfall-header" onclick="togglePitfall('pf1')">
+        <div class="p-num">1</div>
+        <div class="p-title">No Termination Condition</div>
+        <span class="p-tag">Loop Failure</span>
+        <span class="p-arrow">â€º</span>
+      </div>
+      <div class="pitfall-body">
+        <div class="pb-symptom"><div class="s-label">ðŸ˜µ Symptom</div><p>Agent keeps running indefinitely, burning tokens and never returning a result. Bills skyrocket. In some cases the agent loops through the same actions hundreds of times.</p></div>
+        <div class="pb-cause"><div class="c-label">ðŸ” Root Cause</div><p>The execution loop has no "done" check. The LLM never outputs a definitive "final answer" signal, or the loop doesn't check for it. Without a hard ceiling, the agent runs until the API times out or the budget runs out.</p></div>
+        <div class="pb-fix"><div class="f-label">âœ“ Fix</div><p>Implement three termination layers: (1) goal-achieved detection (LLM outputs "FINAL ANSWER:" or calls a finish() tool), (2) max_iterations hard limit, (3) token/cost budget. Any of the three should stop the loop.</p>
+        <div class="code-fix">if iterations >= MAX_ITER or tokens_used >= BUDGET:
+    return partial_result_with_status("max_limit_reached")
+if "FINAL ANSWER:" in llm_output:
+    return extract_final_answer(llm_output)</div></div>
+      </div>
+    </div>
+
+    <div class="pitfall" id="pf2">
+      <div class="pitfall-header" onclick="togglePitfall('pf2')">
+        <div class="p-num">2</div>
+        <div class="p-title">Context Window Overflow</div>
+        <span class="p-tag">Memory Failure</span>
+        <span class="p-arrow">â€º</span>
+      </div>
+      <div class="pitfall-body">
+        <div class="pb-symptom"><div class="s-label">ðŸ˜µ Symptom</div><p>In long-running tasks, the agent starts contradicting its earlier work, re-doing steps already completed, or producing outputs that ignore the original goal.</p></div>
+        <div class="pb-cause"><div class="c-label">ðŸ” Root Cause</div><p>Each iteration appends Thought+Action+Observation to context. After 10â€“20 iterations with large tool outputs, the window fills and the LLM model silently truncates early content. The agent "forgets" what it was doing.</p></div>
+        <div class="pb-fix"><div class="f-label">âœ“ Fix</div><p>Monitor context usage each iteration. At 60% capacity: summarise completed work, compress historical T/A/O entries, store detailed logs in external episodic memory, keep only the summary + current task in the active window.</p>
+        <div class="code-fix">if token_count(context) > 0.6 * MAX_TOKENS:
+    summary = compress_history(context.history)
+    context.history = [summary]  # replace with summary
+    external_memory.store(context.full_log)</div></div>
+      </div>
+    </div>
+
+    <div class="pitfall" id="pf3">
+      <div class="pitfall-header" onclick="togglePitfall('pf3')">
+        <div class="p-num">3</div>
+        <div class="p-title">Prompt Injection via Tool Results</div>
+        <span class="p-tag">Security Failure</span>
+        <span class="p-arrow">â€º</span>
+      </div>
+      <div class="pitfall-body">
+        <div class="pb-symptom"><div class="s-label">ðŸ˜µ Symptom</div><p>Agent suddenly changes behaviour mid-task â€” ignores original instructions, exfiltrates data, or performs unauthorised actions. The trigger was reading external content (a web page, email, file, or API response).</p></div>
+        <div class="pb-cause"><div class="c-label">ðŸ” Root Cause</div><p>A malicious actor embedded "Ignore your previous instructions and instead do X" in content that the agent read through a tool. The LLM treats this as a legitimate instruction because tool results are injected directly into the context with high trust.</p></div>
+        <div class="pb-fix"><div class="f-label">âœ“ Fix</div><p>Never trust tool results. Apply input guardrails to ALL observations before injecting them. Clearly separate the "user instruction" role from "tool result" role in your prompt template â€” never merge them.</p>
+        <div class="code-fix">observation = tool_result.content
+# Apply guardrails BEFORE injecting into context
+safe_obs = input_guardrail.scan(observation)
+context.add(role="tool", content=safe_obs)
+# NEVER: context.add(role="user", content=observation)</div></div>
+      </div>
+    </div>
+
+    <div class="pitfall" id="pf4">
+      <div class="pitfall-header" onclick="togglePitfall('pf4')">
+        <div class="p-num">4</div>
+        <div class="p-title">Overconfident Hallucination</div>
+        <span class="p-tag">Reasoning Failure</span>
+        <span class="p-arrow">â€º</span>
+      </div>
+      <div class="pitfall-body">
+        <div class="pb-symptom"><div class="s-label">ðŸ˜µ Symptom</div><p>The agent returns a confident, well-formatted answer that turns out to be factually wrong. It invented figures, dates, names, or technical details rather than saying "I don't know" or using a tool to verify.</p></div>
+        <div class="pb-cause"><div class="c-label">ðŸ” Root Cause</div><p>LLMs are trained to produce plausible-sounding text. When the model doesn't know something, it often generates a confident-sounding fabrication rather than expressing uncertainty. Agents inherit this behaviour unless explicitly prompted to use tools for verification.</p></div>
+        <div class="pb-fix"><div class="f-label">âœ“ Fix</div><p>Add explicit system prompt instructions: "NEVER state facts from memory â€” always use search tools to verify. If you cannot verify a claim, say 'I cannot confirm this without a current source.' " Add an output guardrail that checks grounding against retrieved context.</p>
+        <div class="code-fix">SYSTEM: "For any factual claim, you MUST:
+1. Call a search/lookup tool to verify
+2. Only state facts confirmed in tool results
+3. If unsure: 'I cannot confirm X without verification'
+NEVER state facts from training memory alone."</div></div>
+      </div>
+    </div>
+
+    <div class="pitfall" id="pf5">
+      <div class="pitfall-header" onclick="togglePitfall('pf5')">
+        <div class="p-num">5</div>
+        <div class="p-title">Irreversible Action Without Confirmation</div>
+        <span class="p-tag">Safety Failure</span>
+        <span class="p-arrow">â€º</span>
+      </div>
+      <div class="pitfall-body">
+        <div class="pb-symptom"><div class="s-label">ðŸ˜µ Symptom</div><p>The agent sends emails to the wrong recipients, deletes important files, processes payments for wrong amounts, or posts on social media â€” all before a human had a chance to review the action.</p></div>
+        <div class="pb-cause"><div class="c-label">ðŸ” Root Cause</div><p>No tool call guardrail checking for irreversible actions. The agent is given full autonomy over all tools including destructive or side-effecting ones. "Move fast" was prioritised over "move safely."</p></div>
+        <div class="pb-fix"><div class="f-label">âœ“ Fix</div><p>Classify all tools as reversible or irreversible. All irreversible tools (send, delete, post, pay) require human-in-the-loop confirmation before execution. Implement a "dry run" mode for testing.</p>
+        <div class="code-fix">IRREVERSIBLE_TOOLS = {"send_email","delete_file","process_payment","post_social"}
+if tool_name in IRREVERSIBLE_TOOLS:
+    confirmed = await human_confirmation(tool_name, params)
+    if not confirmed: return {"status":"cancelled_by_user"}</div></div>
+      </div>
+    </div>
+
+    <div class="pitfall" id="pf6">
+      <div class="pitfall-header" onclick="togglePitfall('pf6')">
+        <div class="p-num">6</div>
+        <div class="p-title">Vague System Prompt â†’ Unpredictable Behaviour</div>
+        <span class="p-tag">Design Failure</span>
+        <span class="p-arrow">â€º</span>
+      </div>
+      <div class="pitfall-body">
+        <div class="pb-symptom"><div class="s-label">ðŸ˜µ Symptom</div><p>The agent behaves inconsistently â€” sometimes does what was expected, sometimes goes off in unexpected directions, sometimes refuses tasks it should handle, sometimes handles tasks it shouldn't.</p></div>
+        <div class="pb-cause"><div class="c-label">ðŸ” Root Cause</div><p>The system prompt says things like "You are a helpful assistant. Use the available tools as needed." Without explicit scope, constraints, and decision guidelines, the LLM fills ambiguity with its own heuristics â€” which are inconsistent across contexts.</p></div>
+        <div class="pb-fix"><div class="f-label">âœ“ Fix</div><p>Use the 7-Layer System Prompt Architecture: Role â†’ Context â†’ Scope â†’ Constraints â†’ Tool Usage Rules â†’ Output Format â†’ Escalation Policy. Every layer should answer "what should the agent do when X happens?"</p>
+        <div class="code-fix">SYSTEM = """
+ROLE: You are a customer support agent for Acme Corp.
+SCOPE: Only handle order status, returns, and shipping.
+OUT OF SCOPE: Technical issues â†’ escalate to tech team.
+TOOLS: Use order_lookup for order status. NEVER guess.
+FORMAT: Always respond in under 150 words. Use bullet points for steps.
+ESCALATION: If customer is angry or issue is unresolvable â†’ transfer to human.
+"""</div></div>
+      </div>
+    </div>
+
+    <div class="pitfall" id="pf7">
+      <div class="pitfall-header" onclick="togglePitfall('pf7')">
+        <div class="p-num">7</div>
+        <div class="p-title">No Structured Logging â†’ Undebuggable Failures</div>
+        <span class="p-tag">Ops Failure</span>
+        <span class="p-arrow">â€º</span>
+      </div>
+      <div class="pitfall-body">
+        <div class="pb-symptom"><div class="s-label">ðŸ˜µ Symptom</div><p>Something went wrong in production. Nobody can tell what the agent did, what tools it called, what responses came back, or which step caused the failure. The agent might as well be a black box.</p></div>
+        <div class="pb-cause"><div class="c-label">ðŸ” Root Cause</div><p>The agent was built for demo speed without structured logging. Tool calls, LLM responses, errors, and decisions are either not logged or logged as raw text strings â€” unsearchable, unqueryable, and useless for debugging.</p></div>
+        <div class="pb-fix"><div class="f-label">âœ“ Fix</div><p>Log every loop iteration as a structured event: session_id, iteration, timestamp, thought, action (tool + params), observation (result + status), token_count, cost. Store in a queryable system (Elasticsearch, Datadog, custom trace store). Build a trace viewer.</p>
+        <div class="code-fix">log_event({
+  "session_id": session.id,
+  "iteration": i,
+  "thought": thought_text,
+  "action": {"tool": tool_name, "params": params},
+  "observation": {"status": "success", "result": result},
+  "tokens": token_count,
+  "cost_usd": cost
+})</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Diagnosis Challenge</div>
+  <div class="diag-container">
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">Read each incident report. Identify which pitfall caused it.</p>
+    <div id="diagBody"></div>
+    <div class="diag-nav">
+      <button class="diag-btn" onclick="prevDiag()">â† Previous</button>
+      <div class="diag-score">Correct: <span id="diagScore">0</span> / <span id="diagTotal">4</span></div>
+      <button class="diag-btn" onclick="nextDiag()">Next â†’</button>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Check Your Understanding</div>
+  <div class="quiz-container">
+    <div class="quiz-score">
+      <div class="score-display">Score: <span id="scoreDisplay">0</span> / 5</div>
+      <div style="font-size:.8rem;color:var(--muted)">Click an answer to check it</div>
+    </div>
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 5</div>
+      <div class="q-text">Which pitfall is the HARDEST to detect because it shows no error â€” the agent just silently produces wrong outputs?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q1','a','c')"><span class="opt-icon">âœ—</span>a) No Termination Condition</div>
+        <div class="opt" onclick="answer('q1','b','c')"><span class="opt-icon">âœ—</span>b) Irreversible Action Without Confirmation</div>
+        <div class="opt" onclick="answer('q1','c','c')"><span class="opt-icon">âœ“</span>c) Context Window Overflow</div>
+        <div class="opt" onclick="answer('q1','d','c')"><span class="opt-icon">âœ—</span>d) No Structured Logging</div>
+      </div>
+      <div class="feedback correct-fb" id="q1-correct">âœ“ Context overflow is the silent killer. The agent doesn't throw an error â€” it just continues generating plausible-sounding text based on a truncated context. It may redo work already done, contradict earlier decisions, or answer based on no real data â€” all without any visible signal that something went wrong. No termination creates a visible infinite loop. Irreversible actions create visible side effects. Logging issues make debugging hard but the failure is observable. Context overflow hides until you read the output carefully.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">âœ— No Termination is visible (agent runs forever). Irreversible actions produce visible side effects (emails sent, files deleted). No Logging makes debugging hard but the failure itself is observable. Context Overflow is the silent killer â€” the agent keeps running, produces output, but from a corrupted/truncated context. It might re-do completed work, forget the goal, or contradict earlier reasoning â€” all without any error signal. The only way to catch it is careful output inspection or context monitoring.</div>
+      <button class="q-reset" onclick="resetQ('q1')">â†º Try again</button>
+    </div>
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 5</div>
+      <div class="q-text">An agent is tasked with sending monthly invoices. Without which safeguard could it send invoices multiple times if the loop retries?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">âœ—</span>a) Context compression</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">âœ—</span>b) Input guardrails</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">âœ“</span>c) Idempotency guard on the send_invoice tool</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">âœ—</span>d) Structured logging</div>
+      </div>
+      <div class="feedback correct-fb" id="q2-correct">âœ“ Idempotency is the specific mechanism for this failure mode. An idempotency guard ensures that calling send_invoice(customer_id=123, month="2024-01") twice produces the same result as calling it once â€” the second call detects the invoice was already sent and does nothing. This is achieved by storing a unique key (customer + month + invoice_id) in a database and checking it before execution. Without this, any retry, error recovery, or loop re-execution sends duplicate invoices.</div>
+      <div class="feedback wrong-fb" id="q2-wrong">âœ— Context compression is for memory management. Input guardrails filter incoming content. Logging records what happened. The specific protection for "tool called twice â†’ action happens twice" is idempotency. An idempotent tool checks a unique execution key before acting: "has send_invoice for customer 123, month Jan-2024 already been sent? If yes, return 'already_sent' and do nothing." This is a fundamental principle in any system with side-effecting actions.</div>
+      <button class="q-reset" onclick="resetQ('q2')">â†º Try again</button>
+    </div>
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 5</div>
+      <div class="q-text">Why does a vague system prompt cause INCONSISTENT behaviour rather than just incorrect behaviour?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q3','a','c')"><span class="opt-icon">âœ—</span>a) Because the LLM randomly picks a wrong behaviour</div>
+        <div class="opt" onclick="answer('q3','b','c')"><span class="opt-icon">âœ—</span>b) Because vague prompts consume more tokens</div>
+        <div class="opt" onclick="answer('q3','c','c')"><span class="opt-icon">âœ“</span>c) Because the LLM fills ambiguity with its own heuristics â€” which vary by phrasing, context, and temperature</div>
+        <div class="opt" onclick="answer('q3','d','c')"><span class="opt-icon">âœ—</span>d) Because the model ignores the system prompt entirely</div>
+      </div>
+      <div class="feedback correct-fb" id="q3-correct">âœ“ This is the core insight. An LLM with a vague system prompt doesn't fail consistently â€” it fails inconsistently. When the prompt doesn't specify what to do in edge cases, the model applies its own priors from training, which vary based on phrasing, context length, and temperature. The same question phrased slightly differently may get completely different treatment. This is why specific, exhaustive system prompts are a production requirement â€” not just a best practice.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">âœ— The LLM doesn't randomly pick wrong â€” it fills ambiguity with its own statistical priors from training data. These priors are highly context-sensitive: the same edge case phrased differently, in a different position in context, or at a different temperature may trigger completely different trained behaviour. The result is inconsistency â€” sometimes the right behaviour, sometimes not â€” which is actually harder to debug than consistent wrong behaviour.</div>
+      <button class="q-reset" onclick="resetQ('q3')">â†º Try again</button>
+    </div>
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 5</div>
+      <div class="q-text">What makes prompt injection via tool results particularly dangerous compared to direct user prompt injection?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q4','a','b')"><span class="opt-icon">âœ—</span>a) Tool results are encrypted and can't be scanned by guardrails</div>
+        <div class="opt" onclick="answer('q4','b','b')"><span class="opt-icon">âœ“</span>b) Tool results are implicitly trusted by the agent â€” they come from "authoritative" sources the agent retrieved, not from the user</div>
+        <div class="opt" onclick="answer('q4','c','b')"><span class="opt-icon">âœ—</span>c) It's not more dangerous â€” both are equally risky</div>
+        <div class="opt" onclick="answer('q4','d','b')"><span class="opt-icon">âœ—</span>d) Only user messages can contain injection attacks</div>
+      </div>
+      <div class="feedback correct-fb" id="q4-correct">âœ“ Trust asymmetry is the danger. Most teams add guardrails for user inputs (the obvious attack vector) but forget tool results. When an agent reads a web page, database record, or email, it treats that content as authoritative information â€” something it retrieved, not something a potentially malicious user sent. This makes injections in tool results more likely to succeed because the model's "suspicion" is lower. Security models must treat ALL content as untrusted, regardless of source.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">âœ— Tool results aren't encrypted from the guardrail's perspective. Both ARE dangerous. And absolutely any content can carry injection â€” tool results are a primary vector. The key insight is trust asymmetry: developers guard direct user messages (obvious threat) but forget that web pages, emails, files, and API responses the agent reads can also contain adversarial instructions. The agent treats these as "its own findings" rather than user-supplied content â€” making it more susceptible to acting on them.</div>
+      <button class="q-reset" onclick="resetQ('q4')">â†º Try again</button>
+    </div>
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 5</div>
+      <div class="q-text">Which combination of pitfalls creates the most dangerous production situation â€” one where the agent causes real harm AND you can't tell what happened?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q5','a','c')"><span class="opt-icon">âœ—</span>a) Context Overflow + Vague System Prompt</div>
+        <div class="opt" onclick="answer('q5','b','c')"><span class="opt-icon">âœ—</span>b) No Termination + Overconfident Hallucination</div>
+        <div class="opt" onclick="answer('q5','c','c')"><span class="opt-icon">âœ“</span>c) Irreversible Actions Without Confirmation + No Structured Logging</div>
+        <div class="opt" onclick="answer('q5','d','c')"><span class="opt-icon">âœ—</span>d) Vague System Prompt + Context Overflow</div>
+      </div>
+      <div class="feedback correct-fb" id="q5-correct">âœ“ This is the nightmare combination. Pitfall 5 (Irreversible Actions): the agent sends emails, processes payments, deletes data â€” real-world harm with no undo. Pitfall 7 (No Logging): nobody can reconstruct what happened, which action caused it, what the agent was "thinking," or how to prevent it next time. Irreversible harm + complete opacity = a production catastrophe that you can't explain, can't fix retroactively, and can't prevent from recurring. Always instrument before deploying agents with destructive tools.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">âœ— Context Overflow + Vague Prompt = bad output quality. No Termination + Hallucination = runaway costs and wrong answers. Both are serious but correctable. The catastrophic combination is Irreversible Actions (real-world harm: sent emails, deleted data, processed wrong payments) + No Logging (complete inability to reconstruct what happened, prove causation, or prevent recurrence). Harm without observability is the hardest production failure to recover from.</div>
+      <button class="q-reset" onclick="resetQ('q5')">â†º Try again</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  let score=0; const answered={};
+
+  const diagCases=[
+    {incident:'An e-commerce agent processed refunds for 847 customers but sent each customer 3 duplicate refund confirmation emails. The payment was only issued once, but customers are flooding support with complaints.',choices:['No Termination Condition','Irreversible Action Without Confirmation','Overconfident Hallucination','Vague System Prompt'],correct:1,explanation:'Irreversible action without idempotency guard. The send_email tool was called multiple times (likely due to retries in the loop) without checking "has this email already been sent?" â€” a classic idempotency failure on a side-effecting irreversible action.'},
+    {incident:'A research agent was asked to "find everything about competitor X." After 4 hours and $340 in API costs, it was still running â€” having now expanded to researching competitors Y, Z, and their entire industry ecosystems.',choices:['No Termination Condition','Context Window Overflow','Runaway Cost (No Budget)','No Structured Logging'],correct:2,explanation:'Runaway cost from open-ended scope + no budget ceiling. The task had no scope boundary and no token/cost limit. The agent kept finding new relevant threads to explore. The fix: explicit scope in the prompt + per-session cost budget that triggers graceful shutdown.'},
+    {incident:'A customer support agent was working perfectly for 3 weeks. One day it started giving completely wrong product information to customers â€” quoting prices that didn\'t exist and features the product didn\'t have. The change happened mid-conversation.',choices:['Overconfident Hallucination','Prompt Injection via Tool Result','Context Window Overflow','Vague System Prompt'],correct:1,explanation:'Prompt injection via tool result. The agent reads customer emails (a tool result) and one contained an injected instruction. The agent\'s behaviour changed mid-conversation because the injected instruction was treated as a legitimate contextual directive. Tool result guardrails were missing.'},
+    {incident:'After an agent deployment, a critical production bug was reported. The team knows the agent "did something wrong" but can\'t reproduce it â€” there are no logs of what tools it called, what the LLM thought, or what the inputs were.',choices:['No Structured Logging','Vague System Prompt','No Termination Condition','Context Window Overflow'],correct:0,explanation:'No structured logging. Without per-iteration logs capturing thought, action, observation, and status, it\'s impossible to reconstruct what the agent did. The fix: implement structured trace logging from day one â€” before any production deployment.'}
+  ];
+
+  let diagIdx=0;
+  const diagAnswered={};
+  let diagScore=0;
+
+  function renderDiag(){
+    const c=diagCases[diagIdx];
+    document.getElementById('diagTotal').textContent=diagCases.length;
+    const answered=diagAnswered[diagIdx];
+    document.getElementById('diagBody').innerHTML=`
+      <div class="diag-scenario"><div class="ds-label">ðŸš¨ Incident Report #${diagIdx+1}</div><p>${c.incident}</p></div>
+      <div class="diag-choices">
+        ${c.choices.map((ch,i)=>`<button class="diag-choice ${answered!==undefined?(i===c.correct?'correct-d':(i===answered?'wrong-d':'locked')):''}
+          " onclick="diagAnswer(${i})" ${answered!==undefined?'disabled':''}>${ch}</button>`).join('')}
+      </div>
+      <div class="diag-result ${answered!==undefined?'show':''} ${answered===c.correct?'ok':'bad'}">
+        ${answered!==undefined?(answered===c.correct?'âœ“ ':'âœ— ')+c.explanation:''}
+      </div>`;
+  }
+
+  function diagAnswer(chosen){
+    if(diagAnswered[diagIdx]!==undefined) return;
+    const c=diagCases[diagIdx];
+    diagAnswered[diagIdx]=chosen;
+    if(chosen===c.correct){diagScore++; document.getElementById('diagScore').textContent=diagScore;}
+    renderDiag();
+  }
+
+  function nextDiag(){if(diagIdx<diagCases.length-1){diagIdx++;renderDiag();}}
+  function prevDiag(){if(diagIdx>0){diagIdx--;renderDiag();}}
+
+  function togglePitfall(id){
+    const el=document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  function answer(qid,chosen,correct){
+    if(answered[qid])return;answered[qid]=true;
+    const block=document.getElementById(qid);const opts=block.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.add('locked'));
+    const l=['a','b','c','d'];opts[l.indexOf(chosen)].classList.add(chosen===correct?'correct':'wrong');
+    if(chosen!==correct)opts[l.indexOf(correct)].classList.add('correct');
+    const ok=chosen===correct;if(ok){score++;document.getElementById('scoreDisplay').textContent=score;}
+    document.getElementById(qid+'-'+(ok?'correct':'wrong')).classList.add('show');
+    block.querySelector('.q-reset').classList.add('show');
+  }
+  function resetQ(qid){
+    if(!answered[qid])return;delete answered[qid];
+    const block=document.getElementById(qid);
+    block.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong','locked'));
+    block.querySelectorAll('.feedback').forEach(f=>f.classList.remove('show'));
+    block.querySelector('.q-reset').classList.remove('show');
+    if(score>0){score--;document.getElementById('scoreDisplay').textContent=score;}
+  }
+
+  renderDiag();
+</script>
+</body>
+</html>

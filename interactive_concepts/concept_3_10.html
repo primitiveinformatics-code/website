@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.10 — Tool Design: 5 Principles</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  nav .nav-links{display:flex;gap:16px;}
+  nav a{color:var(--accent);text-decoration:none;font-size:.9rem;padding:6px 14px;border:1px solid var(--accent);border-radius:20px;transition:all .2s;}
+  nav a:hover{background:var(--accent);color:#000;}
+  nav .title{font-weight:700;font-size:1rem;}
+  .hero{background:linear-gradient(135deg,#1a0a12 0%,#0d1117 60%);border-bottom:1px solid var(--border);padding:48px 32px 36px;text-align:center;}
+  .session-tag{display:inline-block;background:var(--accent);color:#000;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;margin-bottom:12px;}
+  .hero p{color:var(--muted);font-size:1.05rem;max-width:680px;margin:0 auto;}
+  .content{max-width:960px;margin:0 auto;padding:40px 24px 60px;}
+  .section{margin-bottom:48px;}
+  .section h2{font-size:1.3rem;font-weight:700;margin-bottom:20px;color:var(--accent);display:flex;align-items:center;gap:10px;}
+  .section h2::before{content:'';display:block;width:4px;height:1.3rem;background:var(--accent);border-radius:2px;}
+
+  /* PRINCIPLE TABS */
+  .ptab-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0;}
+  .ptab-btn{flex:1;min-width:100px;background:var(--surface2);border:2px solid var(--border);border-radius:10px 10px 0 0;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;border-bottom:none;}
+  .ptab-btn:hover{border-color:var(--accent);}
+  .ptab-btn.active{background:var(--surface);border-color:var(--accent);position:relative;z-index:1;}
+  .ptab-btn .p-num{font-size:1.2rem;font-weight:800;display:block;}
+  .ptab-btn .p-name{font-size:.72rem;font-weight:700;color:var(--muted);}
+  .ptab-btn.active .p-name{color:var(--accent);}
+  .ptab-panel{background:var(--surface);border:2px solid var(--accent);border-radius:0 10px 10px 10px;padding:28px;display:none;}
+  .ptab-panel.active{display:block;}
+  .principle-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+  @media(max-width:580px){.principle-layout{grid-template-columns:1fr;}}
+  .p-def{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:18px;}
+  .p-def h4{font-size:.85rem;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent5);}
+  .p-def p{font-size:.84rem;color:var(--muted);line-height:1.55;}
+  .p-def ul{list-style:none;font-size:.82rem;color:var(--muted);line-height:1.7;}
+  .p-def ul li::before{content:'• ';}
+  .code-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:580px){.code-pair{grid-template-columns:1fr;}}
+  .code-block{background:#090d12;border:1px solid var(--border);border-radius:8px;padding:14px;}
+  .code-block .cb-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .code-block.bad .cb-label{color:var(--wrong);}
+  .code-block.good .cb-label{color:var(--correct);}
+  .code-block pre{font-family:'Courier New',monospace;font-size:.75rem;line-height:1.55;white-space:pre-wrap;}
+  .code-block.bad pre{color:#ff8a9a;}
+  .code-block.good pre{color:var(--accent3);}
+  .p-why{background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.2);border-radius:8px;padding:12px 14px;font-size:.82rem;color:var(--accent2);margin-top:14px;line-height:1.5;}
+
+  /* TOOL AUDIT */
+  .audit-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+  .audit-container h3{font-size:1rem;font-weight:700;margin-bottom:16px;}
+  .audit-tool{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px;}
+  .audit-tool h4{font-size:.9rem;font-weight:700;margin-bottom:12px;font-family:'Courier New',monospace;color:var(--accent5);}
+  .audit-checks{display:flex;flex-wrap:wrap;gap:8px;}
+  .audit-check{padding:5px 12px;border-radius:20px;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid var(--border);color:var(--muted);}
+  .audit-check.pass{background:rgba(6,214,160,.15);border-color:var(--correct);color:var(--correct);}
+  .audit-check.fail{background:rgba(255,101,132,.15);border-color:var(--wrong);color:var(--wrong);}
+  .audit-score{margin-top:10px;font-size:.8rem;color:var(--muted);}
+
+  /* QUIZ */
+  .quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+  .quiz-card h3{font-size:1rem;font-weight:700;margin-bottom:16px;line-height:1.5;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:left;color:var(--text);width:100%;}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:rgba(255,101,132,.08);}
+  .opt.correct{background:rgba(6,214,160,.15);border-color:var(--correct);color:var(--correct);}
+  .opt.wrong{background:rgba(255,101,132,.15);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:12px;font-size:.85rem;padding:10px 14px;border-radius:8px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(6,214,160,.1);color:var(--correct);border:1px solid var(--correct);}
+  .feedback.wrong{background:rgba(255,101,132,.1);color:var(--wrong);border:1px solid var(--wrong);}
+  .reset-btn{margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .score-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px;}
+  .score-display{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .score-label{color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_9.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_11.html">Next →</a>
+  </div>
+  <span class="title">3.10 — Tool Design: 5 Principles</span>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
+  <h1>Tool Design: 5 Principles</h1>
+  <p>Good tools make agents reliable. Bad tools make them unpredictable. Learn the 5 principles that separate production tool design from prototype hacks.</p>
+</div>
+<div class="content">
+
+  <!-- PRINCIPLE TABS -->
+  <div class="section">
+    <h2>5 Principles — Click to Explore</h2>
+    <div class="ptab-bar">
+      <div class="ptab-btn active" onclick="showP(0,this)"><span class="p-num">1️⃣</span><span class="p-name">Atomic</span></div>
+      <div class="ptab-btn" onclick="showP(1,this)"><span class="p-num">2️⃣</span><span class="p-name">Idempotent</span></div>
+      <div class="ptab-btn" onclick="showP(2,this)"><span class="p-num">3️⃣</span><span class="p-name">Well-Described</span></div>
+      <div class="ptab-btn" onclick="showP(3,this)"><span class="p-num">4️⃣</span><span class="p-name">Fail-Safe</span></div>
+      <div class="ptab-btn" onclick="showP(4,this)"><span class="p-num">5️⃣</span><span class="p-name">Observable</span></div>
+    </div>
+    <div id="principlePanel" class="ptab-panel active"></div>
+  </div>
+
+  <!-- TOOL AUDIT -->
+  <div class="section">
+    <h2>Tool Audit Exercise — Rate These Tools</h2>
+    <div class="audit-container">
+      <h3>Click each badge to mark Pass ✓ or Fail ✗ for each principle</h3>
+      <div id="auditTools"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz — Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+    <div class="quiz-card">
+      <h3>Q1. A tool called <code>process_order</code> sends an email, charges a payment, and updates inventory — all in one call. Which principle does this violate?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','a')">A) Atomic — it does too many things; if payment succeeds but inventory fails, the state is corrupted</button>
+        <button class="opt" onclick="answer('q1','b','a')">B) Idempotent — calling it twice would double-charge</button>
+        <button class="opt" onclick="answer('q1','c','a')">C) Observable — there's no logging</button>
+        <button class="opt" onclick="answer('q1','d','a')">D) Well-Described — the name is ambiguous</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+    <div class="quiz-card">
+      <h3>Q2. Why is idempotency critical for agent tools specifically?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','c')">A) Agents call tools faster than humans — speed requires idempotency</button>
+        <button class="opt" onclick="answer('q2','b','c')">B) Idempotent tools run faster on repeated calls</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) Agents retry tools on failure — non-idempotent tools cause duplicate side effects (double emails, double charges) when retried</button>
+        <button class="opt" onclick="answer('q2','d','c')">D) It's a JSON-RPC protocol requirement</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+    <div class="quiz-card">
+      <h3>Q3. An LLM agent keeps calling <code>search(query)</code> with wrong parameters because it doesn't understand what "query" means in context. Which principle is violated?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','b')">A) Atomic — the tool does too much</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) Well-Described — the parameter description is too vague for the LLM to use correctly</button>
+        <button class="opt" onclick="answer('q3','c','b')">C) Fail-Safe — errors aren't handled</button>
+        <button class="opt" onclick="answer('q3','d','b')">D) Observable — there's no logging of calls</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+    <div class="quiz-card">
+      <h3>Q4. A tool silently returns an empty result when the external API is down, instead of raising an error. Why is this dangerous for agents?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','b')">A) Empty results cost more tokens than error messages</button>
+        <button class="opt" onclick="answer('q4','b','b')">B) The agent treats the empty result as valid data — it may confidently report "no results found" rather than detecting the API outage and retrying or escalating</button>
+        <button class="opt" onclick="answer('q4','c','b')">C) It violates the atomic principle</button>
+        <button class="opt" onclick="answer('q4','d','b')">D) Silent failures are acceptable in production — agents handle them</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+    <div class="quiz-card">
+      <h3>Q5. What should an observable tool always include in its logs to enable distributed tracing?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','c')">A) The full LLM conversation history</button>
+        <button class="opt" onclick="answer('q5','b','c')">B) The tool's source code version</button>
+        <button class="opt" onclick="answer('q5','c','c')">C) A trace_id propagated from the calling agent, plus inputs, outputs, latency, and status</button>
+        <button class="opt" onclick="answer('q5','d','c')">D) The user's IP address and browser info</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+</div>
+<script>
+const principles = [
+  {
+    name:'Atomic', color:'#6c63ff',
+    definition:'Each tool does ONE thing and does it completely. No multi-step side effects bundled together. If a step fails, the agent can retry or route around it without corrupting state.',
+    whyMatters:'Agents can\'t roll back partial operations. If a tool does steps A+B+C and B fails, state is corrupted with no clean recovery path.',
+    badLabel:'❌ Violates Atomic',
+    bad:`# Does 3 things: charges, emails, updates DB
+def process_order(order_id):
+    charge_payment(order_id)   # Step 1
+    send_confirmation(order_id) # Step 2
+    update_inventory(order_id)  # Step 3
+    return "done"
+# If step 2 fails: charged but no email!`,
+    goodLabel:'✓ Atomic — one job each',
+    good:`# Three separate tools, one job each
+def charge_payment(order_id, amount): ...
+def send_order_email(order_id, email): ...
+def update_inventory(product_id, qty): ...
+# Agent orchestrates; each step is retryable
+# Failure in one doesn't corrupt others`
+  },
+  {
+    name:'Idempotent', color:'#00d2ff',
+    definition:'Calling the tool multiple times with the same inputs produces the same result with no additional side effects. Safe to retry on failure.',
+    whyMatters:'Agents retry tools automatically on transient failures. Non-idempotent tools cause duplicate side effects: double emails, double charges, duplicate DB rows.',
+    badLabel:'❌ Violates Idempotent',
+    bad:`# Calling twice = two emails sent
+def send_email(to, subject, body):
+    mailer.send(to, subject, body)
+    return "sent"
+# Retry on timeout → user gets 2 emails`,
+    goodLabel:'✓ Idempotent with dedup key',
+    good:`# Idempotency key prevents duplicates
+def send_email(to, subject, body,
+               idempotency_key: str):
+    if already_sent(idempotency_key):
+        return {"status": "already_sent"}
+    mailer.send(to, subject, body)
+    mark_sent(idempotency_key)
+    return {"status": "sent"}`
+  },
+  {
+    name:'Well-Described', color:'#ff6584',
+    definition:'Tool name, description, and ALL parameter descriptions are precise enough for an LLM to call it correctly without additional guidance.',
+    whyMatters:'The LLM uses tool descriptions to decide when and how to call them. Vague descriptions → wrong calls, wrong parameter values, missed opportunities.',
+    badLabel:'❌ Vague descriptions',
+    bad:`{
+  "name": "search",
+  "description": "Search for stuff",
+  "parameters": {
+    "query": {
+      "type": "string",
+      "description": "The query"
+    },
+    "n": {"type": "integer"}
+  }
+}`,
+    goodLabel:'✓ Precise, LLM-friendly schema',
+    good:`{
+  "name": "search_web",
+  "description": "Search the web for current
+    information published after Jan 2024.
+    Use for news, recent events, current prices.
+    NOT for internal company data.",
+  "parameters": {
+    "query": {
+      "type": "string",
+      "description": "Specific search query.
+        Use keywords, not questions.
+        Example: 'Claude 3.5 Sonnet benchmark 2025'"
+    },
+    "max_results": {
+      "type": "integer",
+      "description": "Number of results (1-10). Default: 5"
+    }
+  }
+}`
+  },
+  {
+    name:'Fail-Safe', color:'#ffd166',
+    definition:'Tools surface errors explicitly rather than returning empty or misleading results. The agent receives actionable error information and can retry, reroute, or escalate.',
+    whyMatters:'Silent failures are the most dangerous. An agent that receives an empty list when the API is down may confidently report "no data found" — a wrong answer with high confidence.',
+    badLabel:'❌ Silent failure',
+    bad:`def get_user(user_id):
+    try:
+        return db.query(user_id)
+    except Exception:
+        return {}  # Silent failure!
+# Agent sees {} and thinks user doesn't exist
+# But the DB was actually down`,
+    goodLabel:'✓ Explicit error surfacing',
+    good:`def get_user(user_id):
+    try:
+        result = db.query(user_id)
+        return {
+          "status": "success",
+          "data": result
+        }
+    except TimeoutError:
+        return {
+          "status": "error",
+          "error_type": "timeout",
+          "message": "DB timed out. Retry in 5s.",
+          "retryable": True
+        }
+    except NotFoundError:
+        return {
+          "status": "not_found",
+          "message": "User does not exist"
+        }`
+  },
+  {
+    name:'Observable', color:'#06d6a0',
+    definition:'Every tool call emits structured logs with: trace_id, inputs, outputs, latency, status. Enables distributed tracing, debugging, cost tracking, and alerting.',
+    whyMatters:'Without observability you cannot debug, optimize, or alert on tool failures. When an agent produces wrong output, you need to trace which tool call caused it.',
+    badLabel:'❌ No observability',
+    bad:`def search_web(query, max_results=5):
+    results = brave_api.search(query)
+    return results[:max_results]
+# No logging. No latency. No trace ID.
+# Can't debug failures. Can't measure cost.`,
+    goodLabel:'✓ Fully observable',
+    good:`def search_web(query, max_results=5,
+               trace_id: str = None):
+    start = time.time()
+    try:
+        results = brave_api.search(query)
+        log.info({
+          "tool": "search_web",
+          "trace_id": trace_id,
+          "inputs": {"query": query, "n": max_results},
+          "result_count": len(results),
+          "latency_ms": int((time.time()-start)*1000),
+          "status": "success"
+        })
+        return {"status":"success","results":results}
+    except Exception as e:
+        log.error({"tool":"search_web",
+          "trace_id":trace_id, "error":str(e),
+          "latency_ms":int((time.time()-start)*1000),
+          "status":"error"})
+        raise`
+  }
+];
+
+const auditTools = [
+  {
+    name:'send_email(to, subject, body)',
+    checks:['Atomic','Idempotent','Well-Described','Fail-Safe','Observable'],
+    hints:['Yes—single action','No—retries cause duplicate emails','Partial—parameters lack examples','Depends on impl','Depends on impl']
+  },
+  {
+    name:'search_web(query, max_results=5)',
+    checks:['Atomic','Idempotent','Well-Described','Fail-Safe','Observable'],
+    hints:['Yes—single action','Yes—same query same results','Depends on description quality','Depends on error handling','Depends on logging']
+  },
+  {
+    name:'process_checkout(cart_id)',
+    checks:['Atomic','Idempotent','Well-Described','Fail-Safe','Observable'],
+    hints:['No—charge+email+inventory','No—retries = double charge','No—name is vague','Unclear','Unclear']
+  }
+];
+
+function renderAudit() {
+  const c = document.getElementById('auditTools');
+  c.innerHTML = auditTools.map((t,ti) => `
+    <div class="audit-tool">
+      <h4>${t.name}</h4>
+      <div class="audit-checks">
+        ${t.checks.map((ch,ci) => `<span class="audit-check" id="ac-${ti}-${ci}" onclick="toggleAudit(${ti},${ci})" title="${t.hints[ci]}">${ch}</span>`).join('')}
+      </div>
+      <div class="audit-score" id="as-${ti}">Click badges to evaluate — hover for hints</div>
+    </div>`).join('');
+}
+
+const auditState = {};
+function toggleAudit(ti, ci) {
+  const key = `${ti}-${ci}`;
+  const el = document.getElementById('ac-' + key);
+  if (!auditState[key]) { auditState[key] = 'pass'; el.classList.add('pass'); }
+  else if (auditState[key] === 'pass') { auditState[key] = 'fail'; el.classList.remove('pass'); el.classList.add('fail'); }
+  else { delete auditState[key]; el.classList.remove('pass','fail'); }
+  const passes = Object.entries(auditState).filter(([k,v]) => k.startsWith(ti+'-') && v==='pass').length;
+  const fails = Object.entries(auditState).filter(([k,v]) => k.startsWith(ti+'-') && v==='fail').length;
+  document.getElementById('as-'+ti).textContent = passes || fails ? `${passes} pass, ${fails} fail — ${passes===5?'✓ Well-designed tool!':fails>2?'⚠ Needs significant rework':'Review flagged principles'}` : 'Click badges to evaluate — hover for hints';
+}
+
+function showP(idx, btn) {
+  document.querySelectorAll('.ptab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const p = principles[idx];
+  document.getElementById('principlePanel').innerHTML = `
+    <div class="principle-layout">
+      <div class="p-def">
+        <h4>Definition</h4>
+        <p>${p.definition}</p>
+      </div>
+      <div class="p-def" style="border-color:rgba(255,101,132,.3);">
+        <h4 style="color:var(--wrong)">Why It Matters for Agents</h4>
+        <p>${p.whyMatters}</p>
+      </div>
+    </div>
+    <div class="code-pair">
+      <div class="code-block bad">
+        <div class="cb-label">${p.badLabel}</div>
+        <pre>${p.bad}</pre>
+      </div>
+      <div class="code-block good">
+        <div class="cb-label">${p.goodLabel}</div>
+        <pre>${p.good}</pre>
+      </div>
+    </div>`;
+}
+showP(0, document.querySelector('.ptab-btn.active'));
+renderAudit();
+
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1:'Atomic principle: a tool should do one thing. Bundling charge+email+inventory means a partial failure leaves state corrupted with no clean way to recover.',
+      q2:'Agents retry tools on transient failures. If send_email is called twice with the same params, a non-idempotent version sends two emails. Idempotency keys prevent this.',
+      q3:'Well-Described principle: the LLM decides how to call tools based entirely on their text descriptions. Vague descriptions ("The query") give the LLM no guidance on format or intent.',
+      q4:'Silent failures are the most dangerous — the agent cannot distinguish "no results" from "API down." It will report empty results as valid findings rather than triggering a retry or escalation.',
+      q5:'Observable tools must propagate trace_id from the calling agent, log inputs/outputs/latency/status. This enables distributed tracing — correlating the agent\'s decision with the specific tool call that produced a result.'
+    };
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => { o.disabled = false; o.classList.remove('correct','wrong'); });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

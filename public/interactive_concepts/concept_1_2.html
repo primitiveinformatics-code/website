@@ -1,0 +1,502 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2 Common Myths vs. Production Reality â€” Agentic AI</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --accent: #6c63ff;
+    --accent2: #00d2ff;
+    --red: #ff6584;
+    --green: #06d6a0;
+    --yellow: #ffd166;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(108,99,255,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,17,23,0.9);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .nav-home { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+  .nav-home:hover { color: var(--text); }
+  .nav-sep { color: var(--border); font-size: 14px; }
+  .nav-current { color: var(--accent); font-size: 13px; font-weight: 700; }
+  .nav-arrows { margin-left: auto; display: flex; gap: 8px; }
+  .nav-btn {
+    background: var(--card); border: 1px solid var(--border); color: var(--muted);
+    padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+  }
+  .nav-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .hero {
+    padding: 60px 40px 48px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .concept-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent); font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 20px; margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(26px, 3.5vw, 44px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .hero-lead { font-size: 17px; color: var(--muted); line-height: 1.7; max-width: 680px; }
+
+  .content { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* MYTH FLIP CARDS */
+  .myths-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .myth-row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+  .myth-row:hover { border-color: rgba(108,99,255,0.4); }
+  .myth-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    color: inherit;
+  }
+  .myth-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,101,132,0.12);
+    border: 1px solid rgba(255,101,132,0.3);
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .myth-label {
+    flex: 1;
+  }
+  .myth-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 3px;
+  }
+  .myth-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .myth-chevron {
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.3s;
+  }
+  .myth-row.open .myth-chevron { transform: rotate(180deg); }
+  .myth-body {
+    display: none;
+    padding: 0 24px 24px 72px;
+  }
+  .myth-row.open .myth-body { display: block; }
+  .reality-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .reality-text {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    background: rgba(6,214,160,0.07);
+    border-left: 3px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    line-height: 1.5;
+  }
+  .why-text {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .why-text strong { color: var(--text); }
+
+  /* THE REAL REQUIREMENTS */
+  .req-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .req-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: all 0.2s;
+  }
+  .req-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-2px); }
+  .req-icon { font-size: 22px; margin-bottom: 10px; }
+  .req-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .req-body { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+  /* DANGER ZONES */
+  .danger-box {
+    background: rgba(255,101,132,0.06);
+    border: 1px solid rgba(255,101,132,0.25);
+    border-radius: 14px;
+    padding: 24px 28px;
+  }
+  .danger-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .danger-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .danger-item {
+    display: flex;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .danger-item::before {
+    content: 'âš ';
+    color: var(--yellow);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* TAKEAWAY */
+  .takeaway {
+    background: linear-gradient(135deg, rgba(108,99,255,0.12) 0%, rgba(0,210,255,0.06) 100%);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 22px 26px;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .takeaway strong { color: var(--accent2); }
+
+  /* QUIZ */
+  .quiz-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+  .quiz-q {
+    font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 20px; line-height: 1.5;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 12px 18px; cursor: pointer;
+    font-size: 14px; color: var(--muted); transition: all 0.2s; text-align: left;
+  }
+  .quiz-option:hover { background: rgba(108,99,255,0.1); border-color: rgba(108,99,255,0.3); color: var(--text); }
+  .quiz-option.correct { background: rgba(6,214,160,0.12); border-color: #06d6a0; color: #06d6a0; }
+  .quiz-option.wrong { background: rgba(255,101,132,0.1); border-color: #ff6584; color: #ff6584; }
+  .quiz-feedback {
+    margin-top: 16px; padding: 14px 18px; border-radius: 10px;
+    font-size: 14px; line-height: 1.6; display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: #06d6a0; }
+  .quiz-feedback.wrong { background: rgba(255,101,132,0.08); border: 1px solid rgba(255,101,132,0.25); color: #ff8fa3; }
+  .quiz-reset {
+    margin-top: 14px; background: var(--accent); color: white; border: none;
+    padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: none;
+  }
+  .quiz-reset.show { display: inline-block; }
+
+  @media (max-width: 600px) {
+    .hero, .content { padding-left: 20px; padding-right: 20px; }
+    .myth-body { padding-left: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="pre-course.html" class="nav-home">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">1.2 Myths vs. Production Reality</span>
+  <div class="nav-arrows">
+    <a href="concept_1_1.html" class="nav-btn">â† Platform Shift</a>
+    <a href="concept_1_3.html" class="nav-btn">Agent Anatomy â†’</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="concept-badge">Session 1 Â· Pre-Course Â· Concept 1.2</div>
+  <h1>Common Myths vs.<br>Production Reality</h1>
+  <p class="hero-lead">Five deeply held beliefs about agentic AI that are killing production deployments. Each one sounds reasonable. Each one is dangerously wrong in the real world.</p>
+</div>
+
+<div class="content">
+
+  <!-- MYTHS -->
+  <div class="section">
+    <div class="section-title">The 5 Myths â€” Click to Reveal the Reality</div>
+    <div class="myths-list">
+
+      <div class="myth-row" id="m1">
+        <button class="myth-toggle" onclick="toggleMyth('m1')">
+          <div class="myth-num">1</div>
+          <div class="myth-label">
+            <div class="myth-tag">Myth</div>
+            <div class="myth-text">"Agents are just chatbots with search"</div>
+          </div>
+          <span class="myth-chevron">â–¾</span>
+        </button>
+        <div class="myth-body">
+          <div class="reality-label">âœ“ Reality</div>
+          <div class="reality-text">Agents are autonomous decision loops that act on the world â€” fundamentally different from chatbots</div>
+          <div class="why-text">A chatbot answers one question and stops. An agent has a <strong>goal</strong>, takes actions to achieve it, observes results, adapts its plan, and continues looping until done. It can write and run code, make API calls, manage files, and orchestrate other agents. "Chatbot with search" is like calling a car a "horse with wheels."</div>
+        </div>
+      </div>
+
+      <div class="myth-row" id="m2">
+        <button class="myth-toggle" onclick="toggleMyth('m2')">
+          <div class="myth-num">2</div>
+          <div class="myth-label">
+            <div class="myth-tag">Myth</div>
+            <div class="myth-text">"Agents are just prompt chaining"</div>
+          </div>
+          <span class="myth-chevron">â–¾</span>
+        </button>
+        <div class="myth-body">
+          <div class="reality-label">âœ“ Reality</div>
+          <div class="reality-text">Agents are stateful systems that plan, execute, and recover from errors â€” not a fixed sequence of prompts</div>
+          <div class="why-text">Prompt chaining is deterministic: you pre-define every step. Agents are <strong>adaptive</strong>: they decide their next action based on what just happened. When step 3 fails, an agent tries an alternative. A prompt chain crashes and propagates the error. This distinction is everything when you're running 50-step research workflows in production.</div>
+        </div>
+      </div>
+
+      <div class="myth-row" id="m3">
+        <button class="myth-toggle" onclick="toggleMyth('m3')">
+          <div class="myth-num">3</div>
+          <div class="myth-label">
+            <div class="myth-tag">Myth</div>
+            <div class="myth-text">"You only need Python to build agents"</div>
+          </div>
+          <span class="myth-chevron">â–¾</span>
+        </button>
+        <div class="myth-body">
+          <div class="reality-label">âœ“ Reality</div>
+          <div class="reality-text">Production agents require architectural knowledge: protocols, memory design, security, and evaluations</div>
+          <div class="why-text">Python is the implementation language. But the hard problems are architectural: <strong>how does the agent communicate with tools</strong> (MCP/A2A)? How does it manage long-term memory? How do you detect when it's stuck in a loop? How do you secure it against prompt injection? How do you evaluate whether it's getting better or worse after a system prompt change? These aren't Python problems.</div>
+        </div>
+      </div>
+
+      <div class="myth-row" id="m4">
+        <button class="myth-toggle" onclick="toggleMyth('m4')">
+          <div class="myth-num">4</div>
+          <div class="myth-label">
+            <div class="myth-tag">Myth</div>
+            <div class="myth-text">"Demo-ready = production-ready"</div>
+          </div>
+          <span class="myth-chevron">â–¾</span>
+        </button>
+        <div class="myth-body">
+          <div class="reality-label">âœ“ Reality</div>
+          <div class="reality-text">The demo-to-prod gap is where most agentic AI teams fail â€” demos hide every hard problem</div>
+          <div class="why-text">A demo works when: the input is perfectly clean, you take the happy path, there's no cost budget, the LLM doesn't hallucinate on this particular example, and you restart on failure. Production requires: <strong>circuit breakers</strong> to prevent infinite loops, <strong>retry logic</strong> for transient tool failures, <strong>token/cost budgets</strong>, <strong>structured output validation</strong>, <strong>distributed tracing</strong>, and <strong>golden test sets</strong> to detect regressions. The demo didn't need any of that.</div>
+        </div>
+      </div>
+
+      <div class="myth-row" id="m5">
+        <button class="myth-toggle" onclick="toggleMyth('m5')">
+          <div class="myth-num">5</div>
+          <div class="myth-label">
+            <div class="myth-tag">Myth</div>
+            <div class="myth-text">"The LLM does all the thinking"</div>
+          </div>
+          <span class="myth-chevron">â–¾</span>
+        </button>
+        <div class="myth-body">
+          <div class="reality-label">âœ“ Reality</div>
+          <div class="reality-text">The LLM is the brain â€” tools, memory, and orchestration do the actual work</div>
+          <div class="why-text">The LLM decides <strong>what</strong> to do. Tools actually <strong>do</strong> it. Memory ensures the LLM doesn't start from zero every loop. Orchestration coordinates multiple agents working in parallel. If you treat the LLM as the whole system, you'll try to stuff everything into the context window, run up massive token costs, hallucinate on tasks that need deterministic computation, and have no way to debug what went wrong.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- WHAT PRODUCTION ACTUALLY NEEDS -->
+  <div class="section">
+    <div class="section-title">What Production Actually Requires</div>
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-icon">ðŸ”</div>
+        <div class="req-title">Circuit Breakers</div>
+        <div class="req-body">Hard stops on runaway agents: max iterations, max cost, max identical tool calls. Without these, a stuck agent burns your entire LLM budget overnight.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">âœ…</div>
+        <div class="req-title">Golden Test Sets</div>
+        <div class="req-body">50â€“200 curated (input, expected output) pairs. Run on every system prompt change. Block deployment if task completion rate drops by 3%.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">ðŸ’¾</div>
+        <div class="req-title">Prompt Caching</div>
+        <div class="req-body">Static system prompts cached at the model layer save 60â€“80% of token costs in real deployments. Non-negotiable at scale.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">ðŸ”’</div>
+        <div class="req-title">Tool Schema Design</div>
+        <div class="req-body">Typed parameters, rich docstrings, and structured return values prevent the LLM from hallucinating tool call arguments in production.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">ðŸ”</div>
+        <div class="req-title">Distributed Tracing</div>
+        <div class="req-body">You cannot debug an agent without a full trace of every thought, tool call, and observation. LangSmith/Langfuse are not optional in production.</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">ðŸ›¡ï¸</div>
+        <div class="req-title">MAESTRO Threat Model</div>
+        <div class="req-body">Agents face unique security threats (prompt injection, confused deputy attacks, poisoned Agent Cards). Design the threat model before you deploy.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE DANGEROUS DEMO PATTERNS -->
+  <div class="section">
+    <div class="section-title">Patterns That Work in Demos, Break in Production</div>
+    <div class="danger-box">
+      <div class="danger-title">âš¡ Demo-to-Production Failure Patterns</div>
+      <div class="danger-list">
+        <div class="danger-item">Assuming clean, well-formatted inputs â€” production data is messy, ambiguous, and sometimes adversarial</div>
+        <div class="danger-item">No retry logic â€” the first transient API failure kills the entire task</div>
+        <div class="danger-item">No cost monitoring â€” agents can run 10Ã— over budget before anyone notices</div>
+        <div class="danger-item">Unstructured outputs â€” "usually returns JSON" is not the same as "always returns valid JSON" at scale</div>
+        <div class="danger-item">Single happy-path testing â€” edge cases, ambiguous inputs, and adversarial prompts only appear in production</div>
+        <div class="danger-item">No context window management â€” long conversations degrade silently until the agent forgets its core directive</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <div class="section">
+    <div class="section-title">Key Takeaway</div>
+    <div class="takeaway">
+      The demo-to-production gap is where most agentic AI projects die. Every myth on this list makes the gap look smaller than it is. <strong>Treating agents as "just chatbots" or "just prompt chains" guarantees an architecture that can't be debugged, secured, or cost-controlled in production.</strong> The second day of this course exists entirely to close this gap.
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="section-title">Quick Check</div>
+    <div class="quiz-box">
+      <div class="quiz-q">A team has a beautiful agent demo that works perfectly in a Jupyter notebook. What is the MOST important thing they need before deploying to production?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="checkAnswer(this, false)">A more powerful language model</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">A better user interface for the agent</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">Circuit breakers, golden test sets, structured output validation, cost monitoring, and distributed tracing</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">More training data for the model</button>
+      </div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <button class="quiz-reset" id="quiz-reset" onclick="resetQuiz()">Try Again</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleMyth(id) {
+  const row = document.getElementById(id);
+  row.classList.toggle('open');
+}
+
+function checkAnswer(btn, isCorrect) {
+  const options = document.querySelectorAll('.quiz-option');
+  const feedback = document.getElementById('quiz-feedback');
+  const reset = document.getElementById('quiz-reset');
+  options.forEach(o => o.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    options.forEach(o => {
+      if (o.getAttribute('onclick').includes('true')) o.classList.add('correct');
+    });
+  }
+  feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+  feedback.textContent = isCorrect
+    ? 'âœ“ Correct. The demo worked because it only showed the happy path with clean inputs and no failure modes. Production is where all the "unlikely" edge cases happen continuously. The entire production stack â€” circuit breakers, test sets, tracing, cost monitoring â€” is the gap between "works in a notebook" and "runs reliably at scale."'
+    : 'âœ— Not quite. The model and UI are rarely the problem. The Jupyter demo already proved the model is capable enough. The gap is all the operational infrastructure the demo never needed: error handling, cost control, regression testing, and observability.';
+  reset.className = 'quiz-reset show';
+}
+
+function resetQuiz() {
+  const options = document.querySelectorAll('.quiz-option');
+  const feedback = document.getElementById('quiz-feedback');
+  const reset = document.getElementById('quiz-reset');
+  options.forEach(o => { o.disabled = false; o.className = 'quiz-option'; });
+  feedback.className = 'quiz-feedback';
+  reset.className = 'quiz-reset';
+}
+</script>
+
+</body>
+</html>

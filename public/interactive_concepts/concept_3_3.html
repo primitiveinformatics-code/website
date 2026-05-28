@@ -1,0 +1,644 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.3 â€” MCP in Production</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --accent2: #ffd166; --accent3: #06d6a0;
+    --accent4: #6c63ff; --accent5: #00d2ff;
+    --correct: #06d6a0; --wrong: #ff6584; --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  nav .nav-links { display: flex; gap: 16px; align-items: center; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.9rem; padding: 6px 14px; border: 1px solid var(--accent); border-radius: 20px; transition: all .2s; }
+  nav a:hover { background: var(--accent); color: #000; }
+  nav .title { font-weight: 700; font-size: 1rem; color: var(--text); }
+
+  .hero { background: linear-gradient(135deg, #1a0a12 0%, #0d1117 60%); border-bottom: 1px solid var(--border); padding: 48px 32px 36px; text-align: center; }
+  .session-tag { display: inline-block; background: var(--accent); color: #000; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 1.05rem; max-width: 680px; margin: 0 auto; }
+
+  .content { max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
+  .section { margin-bottom: 48px; }
+  .section h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+  .section h2::before { content: ''; display: block; width: 4px; height: 1.3rem; background: var(--accent); border-radius: 2px; }
+
+  /* TAB SYSTEM */
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 18px; color: var(--muted); font-size: 0.85rem; cursor: pointer; transition: all .2s; }
+  .tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ACCORDION */
+  .accordion { margin-bottom: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .accordion-header { padding: 18px 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: background .2s; }
+  .accordion-header:hover { background: var(--surface2); }
+  .accordion-header .acc-title { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 0.95rem; }
+  .accordion-header .acc-icon { font-size: 1.4rem; }
+  .accordion-header .acc-tag { font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 600; }
+  .accordion-header .chevron { color: var(--muted); transition: transform .3s; font-size: 0.9rem; }
+  .accordion-header.open .chevron { transform: rotate(180deg); }
+  .accordion-body { display: none; padding: 0 20px 20px; }
+  .accordion-body.open { display: block; }
+
+  /* CARDS INSIDE ACCORDION */
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+  @media (max-width: 560px) { .detail-grid { grid-template-columns: 1fr; } }
+  .detail-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .detail-card h5 { font-size: 0.82rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+  .detail-card.danger h5 { color: var(--wrong); }
+  .detail-card.solution h5 { color: var(--correct); }
+  .detail-card.info h5 { color: var(--accent5); }
+  .detail-card.warn h5 { color: var(--accent2); }
+  .detail-card p, .detail-card li { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+  .detail-card ul { padding-left: 16px; }
+  .detail-card pre { font-family: 'Courier New', monospace; font-size: 0.76rem; color: var(--accent2); line-height: 1.5; white-space: pre-wrap; }
+
+  /* CHECKLIST */
+  .checklist-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
+  .checklist-section { margin-bottom: 24px; }
+  .checklist-section h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .checklist-section h4.sec-auth { color: var(--accent4); }
+  .checklist-section h4.sec-perf { color: var(--accent2); }
+  .checklist-section h4.sec-err { color: var(--wrong); }
+  .checklist-section h4.sec-obs { color: var(--accent3); }
+  .checklist-section h4.sec-sec { color: var(--accent5); }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; padding: 10px 14px; background: var(--surface2); border-radius: 8px; cursor: pointer; transition: border .2s; border: 1px solid transparent; }
+  .check-item:hover { border-color: var(--border); }
+  .check-item.checked { border-color: var(--correct); background: rgba(6,214,160,.05); }
+  .check-item .checkbox { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; transition: all .2s; }
+  .check-item.checked .checkbox { background: var(--correct); border-color: var(--correct); color: #000; }
+  .check-item .check-text { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+  .check-item.checked .check-text { color: var(--text); }
+  .checklist-progress { background: var(--surface2); border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
+  .progress-bar { flex: 1; height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--correct); border-radius: 4px; transition: width .3s; }
+  .progress-label { font-size: 0.85rem; color: var(--muted); white-space: nowrap; }
+  .progress-count { font-size: 1.1rem; font-weight: 700; color: var(--correct); }
+
+  /* SCENARIO CARDS */
+  .scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .scenario-header { background: var(--surface2); padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .scenario-header h4 { font-size: 0.9rem; font-weight: 700; }
+  .scenario-header .scenario-tag { font-size: 0.72rem; color: var(--wrong); font-weight: 600; margin-top: 2px; }
+  .scenario-body { padding: 16px 18px; }
+  .scenario-body p { font-size: 0.83rem; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+  .scenario-body .fix-label { font-size: 0.75rem; font-weight: 700; color: var(--accent3); text-transform: uppercase; margin-bottom: 6px; }
+  .scenario-body .fix-text { font-size: 0.82rem; color: var(--text); line-height: 1.5; }
+
+  /* QUIZ */
+  .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+  .quiz-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; cursor: pointer; font-size: 0.9rem; transition: all .2s; text-align: left; color: var(--text); width: 100%; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(255,101,132,.08); }
+  .opt.correct { background: rgba(6,214,160,.15); border-color: var(--correct); color: var(--correct); }
+  .opt.wrong { background: rgba(255,101,132,.15); border-color: var(--wrong); color: var(--wrong); }
+  .feedback { margin-top: 12px; font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,.1); color: var(--correct); border: 1px solid var(--correct); }
+  .feedback.wrong { background: rgba(255,101,132,.1); color: var(--wrong); border: 1px solid var(--wrong); }
+  .reset-btn { margin-top: 10px; background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .score-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 24px; margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+  .score-display { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+  .score-label { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_2.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_3_4.html">Next â†’</a>
+  </div>
+  <span class="title">3.3 â€” MCP in Production</span>
+</nav>
+
+<div class="hero">
+  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <h1>MCP in Production</h1>
+  <p>Auth, versioning, error handling, rate limits, and observability â€” everything you need before shipping an MCP-powered agent to real users.</p>
+</div>
+
+<div class="content">
+
+  <!-- PRODUCTION CONCERNS ACCORDION -->
+  <div class="section">
+    <h2>Production Concerns Deep Dive</h2>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc('auth')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸ”</span>
+          Authentication & Authorization
+          <span class="acc-tag" style="background:rgba(108,99,255,.15);color:var(--accent4);">Critical</span>
+        </div>
+        <span class="chevron">â–¼</span>
+      </div>
+      <div class="accordion-body" id="acc-auth">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">MCP servers must verify WHO is calling them and WHAT they're allowed to do. Two separate concerns.</p>
+        <div class="detail-grid">
+          <div class="detail-card info">
+            <h5>Authentication (Who Are You?)</h5>
+            <ul>
+              <li>OAuth 2.0 Bearer tokens in Authorization header</li>
+              <li>API keys passed as custom headers or query params</li>
+              <li>mTLS for server-to-server (hub â†’ downstream server)</li>
+              <li>JWT validation with expiry checks</li>
+            </ul>
+          </div>
+          <div class="detail-card info">
+            <h5>Authorization (What Can You Do?)</h5>
+            <ul>
+              <li>Scope-based: token must include required scopes</li>
+              <li>Tool-level ACLs: agent X can call db.query but not db.write</li>
+              <li>Resource-level: only access files in /workspace/</li>
+              <li>Agent identity propagated in X-Agent-ID header</li>
+            </ul>
+          </div>
+          <div class="detail-card danger">
+            <h5>Pitfalls</h5>
+            <ul>
+              <li>Hardcoded API keys in server config (use secrets manager)</li>
+              <li>No token expiry validation â†’ stale creds stay valid</li>
+              <li>Trusting agent-provided identity without server verification</li>
+            </ul>
+          </div>
+          <div class="detail-card solution">
+            <h5>Production Pattern</h5>
+            <pre>Authorization: Bearer {oauth_token}
+X-Agent-ID: agent-research-001
+X-Request-ID: req-{uuid}
+X-Scope: tools.read, fs.read</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc('version')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸ“¦</span>
+          Versioning & Compatibility
+          <span class="acc-tag" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
+        </div>
+        <span class="chevron">â–¼</span>
+      </div>
+      <div class="accordion-body" id="acc-version">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Protocol and tool schema versions can drift. Handle this gracefully.</p>
+        <div class="detail-grid">
+          <div class="detail-card info">
+            <h5>Protocol Version Negotiation</h5>
+            <ul>
+              <li>Client sends <code>protocolVersion</code> in initialize</li>
+              <li>Server responds with its supported version</li>
+              <li>If incompatible, server returns error code -32600</li>
+              <li>Always support N-1 protocol version for rollout safety</li>
+            </ul>
+          </div>
+          <div class="detail-card info">
+            <h5>Tool Schema Versioning</h5>
+            <ul>
+              <li>Add new optional params â€” always backward compatible</li>
+              <li>Rename/remove params â†’ breaking change â†’ bump version</li>
+              <li>Use tool name versioning: <code>search_v2</code> alongside <code>search</code></li>
+              <li>Deprecate old tools with <code>deprecated: true</code> in schema</li>
+            </ul>
+          </div>
+          <div class="detail-card warn">
+            <h5>Breaking vs Non-Breaking</h5>
+            <p><strong style="color:var(--correct)">Safe:</strong> Add optional param, add new tool, widen return type</p>
+            <p style="margin-top:6px;"><strong style="color:var(--wrong)">Breaking:</strong> Remove param, rename tool, change required fields, narrow return type</p>
+          </div>
+          <div class="detail-card solution">
+            <h5>Canary Deployment Strategy</h5>
+            <ul>
+              <li>Deploy new server version to 5% of traffic</li>
+              <li>Monitor error rates via observability (see below)</li>
+              <li>Roll back if errors > baseline</li>
+              <li>Promote to 100% after 30-min soak time</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc('errors')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸš¨</span>
+          Error Handling & Retries
+          <span class="acc-tag" style="background:rgba(255,101,132,.1);color:var(--wrong);">Critical</span>
+        </div>
+        <span class="chevron">â–¼</span>
+      </div>
+      <div class="accordion-body" id="acc-errors">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">MCP errors come in two flavors: protocol errors and tool execution errors. Handle them differently.</p>
+        <div class="detail-grid">
+          <div class="detail-card danger">
+            <h5>Protocol Errors (JSON-RPC)</h5>
+            <pre>{ "error": {
+  "code": -32601,
+  "message": "Method not found"
+}}
+Codes: -32700 Parse Error
+       -32600 Invalid Request
+       -32601 Method Not Found
+       -32602 Invalid Params
+       -32603 Internal Error</pre>
+          </div>
+          <div class="detail-card danger">
+            <h5>Tool Execution Errors</h5>
+            <pre>{ "result": {
+  "isError": true,
+  "content": [{
+    "type": "text",
+    "text": "File not found: /tmp/x"
+  }]
+}}
+Note: isError:true still returns
+HTTP 200 â€” it's app-level error</pre>
+          </div>
+          <div class="detail-card solution">
+            <h5>Retry Strategy</h5>
+            <ul>
+              <li>Retry on: network timeout, 503, -32603 (transient)</li>
+              <li>Do NOT retry: -32601, -32602 (logic errors)</li>
+              <li>Exponential backoff: 1s â†’ 2s â†’ 4s â†’ 8s â†’ give up</li>
+              <li>Max 3 retries. Log each attempt with request ID.</li>
+            </ul>
+          </div>
+          <div class="detail-card solution">
+            <h5>Graceful Degradation</h5>
+            <ul>
+              <li>Tool timeout â†’ return error to LLM context, let it decide</li>
+              <li>Server down â†’ agent falls back to cached data or skip step</li>
+              <li>Never silently swallow errors â€” always put them in context</li>
+              <li>Circuit breaker: stop calling after 5 consecutive failures</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc('ratelimits')">
+        <div class="acc-title">
+          <span class="acc-icon">âš¡</span>
+          Rate Limiting & Cost Control
+          <span class="acc-tag" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
+        </div>
+        <span class="chevron">â–¼</span>
+      </div>
+      <div class="accordion-body" id="acc-ratelimits">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Agents can exhaust APIs and budgets quickly. Rate limiting is a first-class production concern.</p>
+        <div class="detail-grid">
+          <div class="detail-card info">
+            <h5>Rate Limiting Strategies</h5>
+            <ul>
+              <li>Per-agent limits: agent-A max 100 req/min to web.*</li>
+              <li>Per-tool limits: code.run_python max 20 exec/min</li>
+              <li>Global limits: all agents share 1000 req/min total</li>
+              <li>Token bucket algorithm â€” allows short bursts</li>
+            </ul>
+          </div>
+          <div class="detail-card warn">
+            <h5>When Rate Limit Hit</h5>
+            <pre>HTTP 429 Too Many Requests
+Retry-After: 12
+{ "error": {
+  "code": -32000,
+  "message": "Rate limit exceeded",
+  "data": { "retryAfter": 12 }
+}}</pre>
+          </div>
+          <div class="detail-card solution">
+            <h5>Cost Control</h5>
+            <ul>
+              <li>Track cost-per-tool-call (API costs vary widely)</li>
+              <li>Set hard budget limits per agent per hour</li>
+              <li>Alert when 80% of budget consumed</li>
+              <li>Expensive tools (e.g., GPT-4 Vision) â†’ require explicit unlock</li>
+            </ul>
+          </div>
+          <div class="detail-card danger">
+            <h5>Runaway Cost Pattern</h5>
+            <ul>
+              <li>Agent loops calling expensive tool repeatedly</li>
+              <li>No loop detection â†’ tool budget exhausted in minutes</li>
+              <li>Fix: max_tool_calls_per_run limit + cost alerting</li>
+              <li>Circuit breaker on cost threshold breach</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc('obs')">
+        <div class="acc-title">
+          <span class="acc-icon">ðŸ“Š</span>
+          Observability & Monitoring
+          <span class="acc-tag" style="background:rgba(6,214,160,.1);color:var(--accent3);">Required</span>
+        </div>
+        <span class="chevron">â–¼</span>
+      </div>
+      <div class="accordion-body" id="acc-obs">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">You can't debug what you can't see. Every MCP call should be traced end-to-end.</p>
+        <div class="detail-grid">
+          <div class="detail-card info">
+            <h5>What to Instrument</h5>
+            <ul>
+              <li>Tool call latency (p50, p95, p99)</li>
+              <li>Tool call success/error rates per tool</li>
+              <li>Agent run duration and step count</li>
+              <li>Token usage per run (LLM + tool context)</li>
+              <li>Rate limit hit frequency</li>
+            </ul>
+          </div>
+          <div class="detail-card info">
+            <h5>Structured Log Fields</h5>
+            <pre>{
+  "trace_id": "trace-abc123",
+  "agent_id": "research-001",
+  "tool": "web.search",
+  "latency_ms": 234,
+  "status": "success",
+  "tokens_used": 180,
+  "request_id": "req-xyz"
+}</pre>
+          </div>
+          <div class="detail-card solution">
+            <h5>Distributed Tracing</h5>
+            <ul>
+              <li>Propagate <code>trace_id</code> from agent â†’ hub â†’ server</li>
+              <li>Each hop adds a span with timing + metadata</li>
+              <li>Use OpenTelemetry for vendor-neutral tracing</li>
+              <li>Visualize in Jaeger or Grafana Tempo</li>
+            </ul>
+          </div>
+          <div class="detail-card warn">
+            <h5>Alerting Rules</h5>
+            <ul>
+              <li>Error rate > 5% on any tool â†’ page on-call</li>
+              <li>p99 latency > 10s â†’ investigate server</li>
+              <li>Agent run > 50 steps â†’ possible loop â†’ alert</li>
+              <li>Cost > $50/hour per agent â†’ hard stop</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTION CHECKLIST -->
+  <div class="section">
+    <h2>Production Readiness Checklist</h2>
+    <div class="checklist-container">
+      <div class="checklist-progress">
+        <span class="progress-count" id="checkCount">0</span>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <span class="progress-label" id="progressLabel">0 of 20 completed</span>
+      </div>
+
+      <div class="checklist-section">
+        <h4 class="sec-auth">ðŸ” Authentication & Authorization</h4>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">OAuth 2.0 or API key auth enabled on all remote MCP servers</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Tool-level ACLs defined â€” agents only access tools they need</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Secrets stored in a secrets manager (not hardcoded in config)</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Token expiry validation implemented with refresh flow</span></div>
+      </div>
+
+      <div class="checklist-section">
+        <h4 class="sec-err">ðŸš¨ Error Handling</h4>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Exponential backoff with max 3 retries on transient errors</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Circuit breaker pattern on each downstream server</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">isError:true responses handled â€” passed to LLM context, not silently dropped</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Timeout set on all tool calls (recommended: 30s max)</span></div>
+      </div>
+
+      <div class="checklist-section">
+        <h4 class="sec-perf">âš¡ Rate Limits & Cost</h4>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Per-agent and per-tool rate limits configured</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Hard budget cap per agent per hour â€” auto-stop on breach</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">max_tool_calls_per_run limit prevents infinite loops</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">429 responses handled with Retry-After respected</span></div>
+      </div>
+
+      <div class="checklist-section">
+        <h4 class="sec-obs">ðŸ“Š Observability</h4>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Structured logging with trace_id, agent_id, tool, latency, status</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Distributed tracing (OpenTelemetry) propagating across hub â†’ servers</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Error rate and latency dashboards set up</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Alerts configured for error rate > 5% and p99 > 10s</span></div>
+      </div>
+
+      <div class="checklist-section">
+        <h4 class="sec-sec">ðŸ”’ Security & Versioning</h4>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Tool input schema validation before execution (prevent injection)</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Sandboxed execution for code/shell tools (Docker or equivalent)</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Backward-compatible versioning policy â€” no silent breaking changes</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Canary deployment strategy before full rollout of server changes</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAILURE SCENARIOS -->
+  <div class="section">
+    <h2>Real-World Failure Scenarios & Fixes</h2>
+    <div class="scenario-grid">
+      <div class="scenario-card">
+        <div class="scenario-header">
+          <h4>Stale Auth Token</h4>
+          <div class="scenario-tag">âš ï¸ Auth Failure</div>
+        </div>
+        <div class="scenario-body">
+          <p>Agent starts a long multi-step task. 45 minutes in, the OAuth token expires. Tool calls start returning 401. Agent has no recovery path â€” the run fails silently after retries exhaust.</p>
+          <div class="fix-label">Fix</div>
+          <div class="fix-text">Implement token refresh before expiry. Check <code>exp</code> claim before each tool call. Use short-lived tokens (15m) + refresh tokens so the MCP client can renew without user interaction.</div>
+        </div>
+      </div>
+      <div class="scenario-card">
+        <div class="scenario-header">
+          <h4>Cascading Tool Failures</h4>
+          <div class="scenario-tag">âš ï¸ Error Propagation</div>
+        </div>
+        <div class="scenario-body">
+          <p>The database MCP server goes down. The agent retries 3x, exhausting its retry budget, then tries alternative tools. Without a circuit breaker, subsequent tool calls still route to the down server, stalling all agents.</p>
+          <div class="fix-label">Fix</div>
+          <div class="fix-text">Implement circuit breaker per server. After 5 failures in 60s, mark server as "open circuit" â€” immediately fail calls for 30s before trying again. Let agents degrade gracefully to cached data.</div>
+        </div>
+      </div>
+      <div class="scenario-card">
+        <div class="scenario-header">
+          <h4>Runaway Cost Incident</h4>
+          <div class="scenario-tag">âš ï¸ Budget Breach</div>
+        </div>
+        <div class="scenario-body">
+          <p>An agent enters a loop calling a paid web search API 400 times in 3 minutes. No rate limit or cost cap was set for this agent type. $800 in API costs in one hour before a human noticed.</p>
+          <div class="fix-label">Fix</div>
+          <div class="fix-text">Set hard per-agent hourly cost budgets. Wire up cost tracking into the hub (each tool call has an estimated cost). When budget is 80% consumed, log warning. At 100%, hard-stop the agent run.</div>
+        </div>
+      </div>
+      <div class="scenario-card">
+        <div class="scenario-header">
+          <h4>Silent Schema Breakage</h4>
+          <div class="scenario-tag">âš ï¸ Versioning Failure</div>
+        </div>
+        <div class="scenario-body">
+          <p>A developer renames a required parameter in the <code>db.query</code> tool from <code>sql</code> to <code>query_string</code>. Existing agents still send <code>sql</code>. Server rejects with -32602 Invalid Params. Agents fail silently â€” no alert fires.</p>
+          <div class="fix-label">Fix</div>
+          <div class="fix-text">Never rename required fields without a version bump. Run a contract test suite before any server deploy. Alert on any increase in -32602 errors. Support both old and new param names during a deprecation window.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz â€” Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. An MCP tool call returns <code>"isError": true</code> with an error message. What is the correct production response?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','c')">A) Immediately stop the agent run and alert the user</button>
+        <button class="opt" onclick="answer('q1','b','c')">B) Retry the same call up to 3 times before escalating</button>
+        <button class="opt" onclick="answer('q1','c','c')">C) Pass the error message into the LLM context so the agent can decide how to handle it</button>
+        <button class="opt" onclick="answer('q1','d','c')">D) Return HTTP 500 to the client since an error occurred</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. What makes renaming a required parameter in an MCP tool schema a "breaking change"?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','b')">A) MCP doesn't support renaming â€” it requires deleting the old tool</button>
+        <button class="opt" onclick="answer('q2','b','b')">B) Existing clients still send the old name and the server returns -32602 Invalid Params â€” silently breaking all callers</button>
+        <button class="opt" onclick="answer('q2','c','b')">C) It resets the protocol version negotiation</button>
+        <button class="opt" onclick="answer('q2','d','b')">D) It's not a breaking change â€” MCP ignores unknown fields</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. Which errors should NOT trigger an automatic retry in an MCP client?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','c')">A) Network timeouts and 503 Service Unavailable</button>
+        <button class="opt" onclick="answer('q3','b','c')">B) Internal server errors (-32603)</button>
+        <button class="opt" onclick="answer('q3','c','c')">C) Method not found (-32601) and invalid params (-32602)</button>
+        <button class="opt" onclick="answer('q3','d','c')">D) Rate limit errors (429)</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. What is the purpose of a circuit breaker in the context of MCP server connections?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','b')">A) It physically disconnects the server when CPU usage is too high</button>
+        <button class="opt" onclick="answer('q4','b','b')">B) After a threshold of failures, it stops routing calls to a down server immediately â€” preventing cascading delays across all agents</button>
+        <button class="opt" onclick="answer('q4','c','b')">C) It limits how many tool calls the LLM can make per token</button>
+        <button class="opt" onclick="answer('q4','d','b')">D) It encrypts traffic when a server's cert is expired</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. Which field in structured MCP logs is most critical for correlating an agent's decisions with the tool calls it triggered?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','c')">A) <code>latency_ms</code></button>
+        <button class="opt" onclick="answer('q5','b','c')">B) <code>tokens_used</code></button>
+        <button class="opt" onclick="answer('q5','c','c')">C) <code>trace_id</code></button>
+        <button class="opt" onclick="answer('q5','d','c')">D) <code>status</code></button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// â”€â”€ ACCORDION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function toggleAcc(id) {
+  const body = document.getElementById('acc-' + id);
+  const header = body.previousElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+
+// â”€â”€ CHECKLIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const TOTAL = 20;
+let checked = 0;
+function toggleCheck(el) {
+  const wasChecked = el.classList.contains('checked');
+  el.classList.toggle('checked');
+  el.querySelector('.checkbox').textContent = wasChecked ? '' : 'âœ“';
+  checked += wasChecked ? -1 : 1;
+  document.getElementById('checkCount').textContent = checked;
+  document.getElementById('progressFill').style.width = (checked / TOTAL * 100) + '%';
+  document.getElementById('progressLabel').textContent = `${checked} of ${TOTAL} completed`;
+}
+
+// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1: 'isError:true is an application-level error â€” the JSON-RPC call itself succeeded. Pass the error to the LLM so it can decide to retry, use a different tool, or ask for clarification.',
+      q2: 'Old clients still send the old parameter name. The server rejects with -32602. All callers break silently â€” that\'s why it\'s a breaking change requiring a version bump.',
+      q3: '-32601 (Method Not Found) and -32602 (Invalid Params) are logic errors in the client â€” retrying the same call will always fail. Only retry transient errors like timeouts and 503s.',
+      q4: 'A circuit breaker stops routing calls to a failing server immediately after a threshold â€” preventing agents from waiting on timeouts and cascading slowdowns across the system.',
+      q5: 'trace_id is propagated through every hop (agent â†’ hub â†’ server) and lets you reconstruct the full causal chain of what the agent decided and what tools were called as a result.'
+    };
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

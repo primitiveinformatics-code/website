@@ -1,0 +1,693 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.6 LangGraph â€” Agents as State Machines | Agentic AI</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+  --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+  --accent: #ffd166; --accent2: #06d6a0; --blue: #58a6ff; --purple: #c678dd;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: .6rem 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+nav a { color: var(--muted); font-size: .85rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+.hero { padding: 2.5rem 1.5rem 1.5rem; max-width: 900px; margin: 0 auto; }
+.tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+.tag { background: var(--surface2); border: 1px solid var(--border); padding: .2rem .7rem;
+  border-radius: 999px; font-size: .75rem; color: var(--muted); }
+.tag.accent { background: rgba(255,209,102,.12); border-color: var(--accent); color: var(--accent); }
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: .5rem; }
+.subtitle { color: var(--muted); font-size: 1rem; }
+main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { margin-top: 2.5rem; }
+h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: .4rem;
+  border-bottom: 1px solid var(--border); }
+h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accent); }
+.code-block { background: #010409; border: 1px solid var(--border); border-radius: 6px; padding: 1rem;
+  font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .8rem; overflow-x: auto;
+  white-space: pre; color: #c9d1d9; margin-top: .7rem; }
+
+/* CONCEPT GRID */
+.concept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: .8rem; }
+.concept-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem; cursor: pointer; transition: border-color .2s, transform .15s; }
+.concept-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.concept-card.active { border-color: var(--accent); background: rgba(255,209,102,.07); }
+.concept-icon { font-size: 1.4rem; margin-bottom: .4rem; }
+.concept-card h3 { font-size: .9rem; margin-bottom: .3rem; }
+.concept-card p { font-size: .8rem; color: var(--muted); }
+.concept-detail { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1.2rem; margin-top: 1rem; display: none; }
+.concept-detail.show { display: block; }
+.concept-detail p { color: var(--muted); font-size: .88rem; margin-bottom: .5rem; }
+
+/* STATE MACHINE VISUALISER */
+.sm-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.sm-nodes { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.sm-node { border-radius: 8px; padding: .5rem 1rem; font-size: .82rem; font-weight: 600;
+  cursor: pointer; border: 2px solid transparent; transition: all .2s; }
+.sm-node.idle { background: var(--surface2); border-color: var(--border); color: var(--muted); }
+.sm-node.active { background: rgba(255,209,102,.15); border-color: var(--accent); color: var(--accent); }
+.sm-node.done { background: rgba(6,214,160,.12); border-color: var(--accent2); color: var(--accent2); }
+.sm-node.start { background: rgba(88,166,255,.12); border-color: var(--blue); color: var(--blue); }
+.sm-node.end { background: rgba(198,120,221,.15); border-color: var(--purple); color: var(--purple); }
+.sm-state-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem; font-family: 'Cascadia Code', monospace; font-size: .8rem; color: #c9d1d9;
+  min-height: 80px; white-space: pre; }
+.sm-btns { display: flex; gap: .5rem; margin-bottom: .7rem; flex-wrap: wrap; }
+.btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  padding: .4rem .9rem; border-radius: 6px; cursor: pointer; font-size: .82rem; transition: border-color .2s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.active { border-color: var(--accent); color: var(--accent); background: rgba(255,209,102,.1); }
+.btn.primary { border-color: var(--accent); color: var(--accent); }
+.btn.primary:hover { background: rgba(255,209,102,.12); }
+
+/* TRACE */
+.trace-box { background: #010409; border: 1px solid var(--border); border-radius: 8px;
+  font-family: 'Cascadia Code', monospace; font-size: .8rem; padding: 1rem;
+  min-height: 120px; max-height: 280px; overflow-y: auto; }
+.trace-line { padding: .1rem 0; opacity: 0; animation: fadein .3s forwards; }
+@keyframes fadein { to { opacity: 1; } }
+.trace-line.node { color: var(--accent); }
+.trace-line.state { color: var(--blue); }
+.trace-line.edge { color: var(--accent2); }
+.trace-line.cycle { color: var(--purple); }
+.trace-line.system { color: var(--muted); font-style: italic; }
+
+/* CHECKPOINTS */
+.checkpoint-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: .8rem; }
+.cp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+.cp-icon { font-size: 1.2rem; margin-bottom: .4rem; }
+.cp-card h3 { font-size: .88rem; color: var(--text); margin-bottom: .3rem; }
+.cp-card p { font-size: .82rem; color: var(--muted); }
+
+/* COMPARISON TABLE */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th, td { padding: .65rem .9rem; border: 1px solid var(--border); text-align: left; }
+th { background: var(--surface2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+/* QUIZ */
+.quiz-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 2.5rem; }
+.score-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+.score-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: .35rem .9rem; font-size: .85rem; }
+.score-num { color: var(--accent); font-weight: 700; }
+.q-block { margin-bottom: 1.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
+.q-block:last-of-type { border-bottom: none; }
+.q-text { font-size: .95rem; margin-bottom: .7rem; }
+.opts { display: flex; flex-direction: column; gap: .4rem; }
+.opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: .5rem .9rem; cursor: pointer; font-size: .87rem; text-align: left;
+  transition: border-color .2s; color: var(--text); }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.correct { border-color: var(--accent2); background: rgba(6,214,160,.12); color: var(--accent2); }
+.opt.wrong { border-color: #ff7eb6; background: rgba(255,126,182,.1); color: #ff7eb6; }
+.opt:disabled { cursor: default; }
+.feedback { font-size: .82rem; margin-top: .4rem; display: none; }
+.feedback.show { display: block; }
+.feedback.correct { color: var(--accent2); }
+.feedback.wrong { color: #ff7eb6; }
+.reset-btn { background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: .25rem .6rem; border-radius: 5px; cursor: pointer; font-size: .75rem; margin-top: .4rem; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+@media(max-width:600px){ h1{font-size:1.5rem;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_4_5.html">â† Choreography Pattern</a>
+  <a href="main-course.html">â˜° All Concepts</a>
+  <a href="concept_4_7.html">Durable Execution â†’</a>
+</nav>
+
+<div class="hero">
+  <div class="tags">
+    <span class="tag accent">Session 4</span>
+    <span class="tag">Day 2 Forenoon Â· Orchestration</span>
+    <span class="tag">Concept 4.6</span>
+  </div>
+  <h1>LangGraph â€” Agents as State Machines</h1>
+  <p class="subtitle">Model agent logic as a directed graph of nodes, edges, and shared state â€” with cycles, checkpointing, and human-in-the-loop</p>
+</div>
+
+<main>
+
+  <!-- WHY LANGGRAPH -->
+  <section>
+    <h2>Why LangGraph?</h2>
+    <blockquote style="border-left:3px solid var(--accent);padding:.8rem 1.2rem;background:var(--surface);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin-bottom:1rem;">
+      "LangChain sequences are linear â€” they break when agents need to loop, branch conditionally, or pause
+      for human input. LangGraph models agent flow as a graph, enabling cycles, conditional routing, and
+      persistent state checkpointing."
+    </blockquote>
+    <div class="concept-grid" id="whyGrid">
+      <div class="concept-card" onclick="showConcept('nodes')">
+        <div class="concept-icon">ðŸ”µ</div>
+        <h3>Nodes</h3>
+        <p>Python functions â€” each is one agent action step</p>
+      </div>
+      <div class="concept-card" onclick="showConcept('edges')">
+        <div class="concept-icon">âž¡ï¸</div>
+        <h3>Edges</h3>
+        <p>Connections between nodes â€” can be conditional</p>
+      </div>
+      <div class="concept-card" onclick="showConcept('state')">
+        <div class="concept-icon">ðŸ“¦</div>
+        <h3>State</h3>
+        <p>TypedDict shared across all nodes â€” the memory</p>
+      </div>
+      <div class="concept-card" onclick="showConcept('cycles')">
+        <div class="concept-icon">ðŸ”„</div>
+        <h3>Cycles</h3>
+        <p>Unlike chains â€” graphs can loop back and retry</p>
+      </div>
+      <div class="concept-card" onclick="showConcept('checkpoints')">
+        <div class="concept-icon">ðŸ’¾</div>
+        <h3>Checkpoints</h3>
+        <p>Persist state to resume after failure or pause</p>
+      </div>
+      <div class="concept-card" onclick="showConcept('hitl')">
+        <div class="concept-icon">ðŸ§‘â€ðŸ’»</div>
+        <h3>Human-in-Loop</h3>
+        <p>Pause at any node, await human approval, resume</p>
+      </div>
+    </div>
+    <div id="conceptDetail" class="concept-detail"></div>
+  </section>
+
+  <!-- STATE MACHINE WALKTHROUGH -->
+  <section>
+    <h2>ReAct Agent as a State Machine</h2>
+    <div class="sm-wrap">
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:.8rem;">
+        Classic ReAct loop (Reason â†’ Act â†’ Observe) implemented as a LangGraph state machine. Click Run to animate.
+      </p>
+      <div class="sm-nodes" id="smNodes">
+        <div class="sm-node start" id="sn_start">â–¶ START</div>
+        <div class="sm-node idle" id="sn_reason">ðŸ§  Reason</div>
+        <div class="sm-node idle" id="sn_act">âš™ï¸ Act</div>
+        <div class="sm-node idle" id="sn_observe">ðŸ‘ Observe</div>
+        <div class="sm-node end" id="sn_end">âœ… END</div>
+      </div>
+      <div style="color:var(--muted);font-size:.78rem;margin-bottom:.5rem;">Current State:</div>
+      <div class="sm-state-box" id="smStateBox">{
+  "messages": [],
+  "next_action": null,
+  "tool_results": [],
+  "iterations": 0
+}</div>
+      <div style="margin-top:.8rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn primary" onclick="runSM()">â–¶ Run ReAct Loop</button>
+        <button class="btn" onclick="resetSM()">â†º Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CODE WALKTHROUGH -->
+  <section>
+    <h2>LangGraph Code Pattern</h2>
+    <div class="sm-btns" id="codeTabBtns">
+      <button class="btn active" onclick="showCodeTab(0, this)">State Definition</button>
+      <button class="btn" onclick="showCodeTab(1, this)">Nodes</button>
+      <button class="btn" onclick="showCodeTab(2, this)">Edges &amp; Routing</button>
+      <button class="btn" onclick="showCodeTab(3, this)">Compile &amp; Run</button>
+    </div>
+    <div id="codeDisplayArea"></div>
+  </section>
+
+  <!-- TRACE SIMULATOR -->
+  <section>
+    <h2>Graph Execution Traces</h2>
+    <div class="sm-btns">
+      <button class="btn" onclick="runTrace(0)">ðŸ” Research + Write (2 loops)</button>
+      <button class="btn" onclick="runTrace(1)">âœ… Code Review (Human Approval)</button>
+      <button class="btn" onclick="runTrace(2)">ðŸ”„ Self-Correcting Agent</button>
+    </div>
+    <div class="trace-box" id="traceBox"><span style="color:var(--muted);">Select a trace above...</span></div>
+  </section>
+
+  <!-- CHECKPOINTING -->
+  <section>
+    <h2>Checkpointing â€” Durable Agent Memory</h2>
+    <div class="checkpoint-grid">
+      <div class="cp-card">
+        <div class="cp-icon">ðŸ’¾</div>
+        <h3>In-Memory Saver</h3>
+        <p>Default. Fast but lost on process restart. Good for development and short tasks.</p>
+      </div>
+      <div class="cp-card">
+        <div class="cp-icon">ðŸ—„ï¸</div>
+        <h3>SQLite Saver</h3>
+        <p>Persists to local SQLite file. Survives process restarts. Good for single-server deployments.</p>
+      </div>
+      <div class="cp-card">
+        <div class="cp-icon">ðŸŒ</div>
+        <h3>PostgreSQL Saver</h3>
+        <p>Production-grade. Distributed, concurrent, durable. Used in LangGraph Cloud.</p>
+      </div>
+      <div class="cp-card">
+        <div class="cp-icon">â¸ï¸</div>
+        <h3>Human-in-the-Loop</h3>
+        <p>Graph pauses at `interrupt_before=["approve"]`. Human reviews state, resumes with `graph.invoke(None, config)` â€” continues from exact pause point.</p>
+      </div>
+    </div>
+    <div class="code-block" style="margin-top:1rem;">from langgraph.checkpoint.sqlite import SqliteSaver
+
+# Create graph with persistent checkpointing
+with SqliteSaver.from_conn_string("checkpoints.db") as memory:
+    graph = builder.compile(
+        checkpointer=memory,
+        interrupt_before=["submit_code"]  # pause for human review
+    )
+
+    config = {"configurable": {"thread_id": "task_001"}}
+
+    # Run until interrupt
+    state = graph.invoke({"messages": [HumanMessage("Fix the auth bug")]}, config)
+    print("Paused at:", state["next_node"])  # "submit_code"
+
+    # Human reviews... then resume
+    final = graph.invoke(None, config)  # resumes from checkpoint</div>
+  </section>
+
+  <!-- VS TABLE -->
+  <section>
+    <h2>LangChain vs LangGraph vs Raw Code</h2>
+    <table>
+      <thead>
+        <tr><th>Capability</th><th>LangChain</th><th>LangGraph</th><th>Raw Python</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Linear pipelines</td><td>âœ“ Native (LCEL)</td><td>âœ“ Supported</td><td>âœ“ Easy</td></tr>
+        <tr><td>Conditional branching</td><td>Limited</td><td>âœ“ Native (conditional edges)</td><td>âœ“ Easy (if/else)</td></tr>
+        <tr><td>Cycles / loops</td><td>âœ— Not supported</td><td>âœ“ Native (graph cycles)</td><td>âœ“ Easy (while loops)</td></tr>
+        <tr><td>Shared state</td><td>Partial (context vars)</td><td>âœ“ TypedDict state</td><td>âœ“ Manual</td></tr>
+        <tr><td>Checkpointing</td><td>âœ— Manual</td><td>âœ“ Built-in savers</td><td>âœ— Build yourself</td></tr>
+        <tr><td>Human-in-loop</td><td>âœ—</td><td>âœ“ interrupt_before/after</td><td>Manual input()</td></tr>
+        <tr><td>Streaming steps</td><td>âœ“ LCEL streaming</td><td>âœ“ astream_events</td><td>Manual generators</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- QUIZ -->
+  <div class="quiz-section">
+    <div class="score-bar">
+      <h2 style="border:none;margin:0;padding:0;">ðŸ§  Knowledge Check</h2>
+      <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <p class="q-text">1. What is a LangGraph "node"?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q1','a','b')">a) A vector in the embedding space</button>
+        <button class="opt" onclick="answer('q1','b','b')">b) A Python function that reads and updates the shared state</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) A checkpoint saved to disk</button>
+        <button class="opt" onclick="answer('q1','d','b')">d) A supervisor agent that routes tasks</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <p class="q-text">2. What does a conditional edge in LangGraph do?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q2','a','c')">a) Runs two nodes in parallel</button>
+        <button class="opt" onclick="answer('q2','b','c')">b) Persists the current state to the database</button>
+        <button class="opt" onclick="answer('q2','c','c')">c) Routes to different next nodes based on state values â€” enables branching</button>
+        <button class="opt" onclick="answer('q2','d','c')">d) Stops the graph when the task is complete</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <p class="q-text">3. Why does LangGraph support cycles while LangChain does not?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q3','a','d')">a) LangGraph uses a faster LLM API</button>
+        <button class="opt" onclick="answer('q3','b','d')">b) LangGraph agents use more memory</button>
+        <button class="opt" onclick="answer('q3','c','d')">c) LangChain is deprecated</td></button>
+        <button class="opt" onclick="answer('q3','d','d')">d) LangChain LCEL is DAG-only; LangGraph represents flow as a general directed graph that allows back edges</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <p class="q-text">4. When you call `graph.invoke(None, config)` after an interrupt, what happens?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q4','a','b')">a) The graph restarts from the beginning</button>
+        <button class="opt" onclick="answer('q4','b','b')">b) The graph resumes from the exact checkpoint where it was paused</button>
+        <button class="opt" onclick="answer('q4','c','b')">c) A new graph instance is created</button>
+        <button class="opt" onclick="answer('q4','d','b')">d) The state is cleared and re-initialized</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <p class="q-text">5. In LangGraph, how is state shared between nodes?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q5','a','c')">a) Each node has its own private state object</button>
+        <button class="opt" onclick="answer('q5','b','c')">b) State is passed as function arguments and never mutated</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) All nodes read from and write to a shared TypedDict state object</button>
+        <button class="opt" onclick="answer('q5','d','c')">d) State is stored in a global variable accessed via LangChain's memory module</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* â”€â”€ QUIZ â”€â”€ */
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'A LangGraph node is a Python function that receives the shared state, does work, and returns state updates.',
+  q2: 'A conditional edge calls a routing function on the current state to decide which next node to go to.',
+  q3: 'LangChain LCEL is DAG-based (no cycles); LangGraph uses a general directed graph that allows back edges.',
+  q4: 'invoke(None, config) resumes from the saved checkpoint â€” all prior state is restored automatically.',
+  q5: 'All nodes share one TypedDict state; each node returns a dict of keys to update (merge semantics).'
+};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+
+/* â”€â”€ CONCEPT DETAIL â”€â”€ */
+const conceptData = {
+  nodes: {
+    title: 'ðŸ”µ Nodes â€” Agent Action Steps',
+    desc: 'Every step in your agent is a node â€” a Python function. It receives the current state, does work (calls LLM, runs a tool, etc.) and returns a partial state update.',
+    code: `def reason_node(state: AgentState) -> AgentState:
+    """Node: ask the LLM what to do next."""
+    response = llm.invoke(state["messages"])
+    return {"messages": [response], "iterations": state["iterations"] + 1}`
+  },
+  edges: {
+    title: 'âž¡ï¸ Edges â€” Flow Control',
+    desc: 'Normal edges always go to the same next node. Conditional edges call a routing function that inspects state and returns the name of the next node â€” enabling branching.',
+    code: `# Normal edge
+builder.add_edge("reason", "act")
+
+# Conditional edge
+def route_after_act(state: AgentState) -> str:
+    if state["tool_results"][-1].get("done"):
+        return END  # task complete
+    return "reason"  # loop back
+
+builder.add_conditional_edges("act", route_after_act)`
+  },
+  state: {
+    title: 'ðŸ“¦ State â€” Shared Memory',
+    desc: 'State is a TypedDict that all nodes can read and update. LangGraph merges partial updates using reducer functions â€” e.g., lists use add_messages to append rather than replace.',
+    code: `from typing import TypedDict, Annotated
+from langgraph.graph.message import add_messages
+
+class AgentState(TypedDict):
+    messages: Annotated[list, add_messages]  # append-only
+    tool_results: list
+    iterations: int
+    next_action: str | None`
+  },
+  cycles: {
+    title: 'ðŸ”„ Cycles â€” Loops and Retries',
+    desc: 'LangGraph\'s biggest advantage over LangChain. A conditional edge can route BACK to an earlier node â€” enabling ReAct loops, retry-on-error, refinement loops, and self-correction.',
+    code: `# Conditional edge that loops back
+def should_continue(state: AgentState) -> str:
+    last_msg = state["messages"][-1]
+    if hasattr(last_msg, "tool_calls") and last_msg.tool_calls:
+        return "tools"   # call tools â†’ back to reason
+    return END           # no tool calls â†’ done
+
+builder.add_conditional_edges("reason", should_continue,
+    {"tools": "act", END: END})`
+  },
+  checkpoints: {
+    title: 'ðŸ’¾ Checkpointing â€” Durable State',
+    desc: 'Every node execution can save state to a checkpointer. If the process crashes or you need to pause, the graph resumes from the exact last saved state â€” no work is lost.',
+    code: `from langgraph.checkpoint.sqlite import SqliteSaver
+
+with SqliteSaver.from_conn_string(":memory:") as mem:
+    graph = builder.compile(checkpointer=mem)
+    config = {"configurable": {"thread_id": "run_42"}}
+
+    # Run â€” state saved after each node
+    result = graph.invoke({"messages": [...]}, config)
+
+    # Retrieve any past state
+    snapshot = graph.get_state(config)
+    print(snapshot.values["iterations"])`
+  },
+  hitl: {
+    title: 'ðŸ§‘â€ðŸ’» Human-in-the-Loop',
+    desc: 'Specify interrupt_before=["node_name"] to pause execution and await human input. The human can inspect state, modify it, or just approve â€” then resume the graph.',
+    code: `graph = builder.compile(
+    checkpointer=memory,
+    interrupt_before=["submit_pr"]  # pause before submitting
+)
+
+# Run until interrupt
+state = graph.invoke(input_state, config)
+# â†’ Graph pauses, state saved
+
+# Developer reviews the PR diff...
+print(state["pr_diff"])
+
+# Approve and continue
+graph.update_state(config, {"approved": True})
+result = graph.invoke(None, config)  # resumes from checkpoint`
+  }
+};
+function showConcept(key) {
+  document.querySelectorAll('.concept-card').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const d = conceptData[key];
+  const panel = document.getElementById('conceptDetail');
+  panel.innerHTML = `<h3 style="margin-bottom:.5rem;">${d.title}</h3>
+    <p>${d.desc}</p>
+    <div class="code-block">${d.code}</div>`;
+  panel.classList.add('show');
+}
+
+/* â”€â”€ STATE MACHINE ANIMATION â”€â”€ */
+const smStates = [
+  { node: 'sn_reason', label: 'Reason',
+    state: `{\n  "messages": ["User: Find the capital of France"],\n  "next_action": null,\n  "iterations": 1\n}` },
+  { node: 'sn_act', label: 'Act',
+    state: `{\n  "messages": ["LLM: I'll use search_tool to find this"],\n  "next_action": "search_tool(query='capital France')",\n  "iterations": 1\n}` },
+  { node: 'sn_observe', label: 'Observe',
+    state: `{\n  "messages": ["Tool result: Paris is the capital of France"],\n  "tool_results": [{"query":"capital France","result":"Paris"}],\n  "iterations": 1\n}` },
+  { node: 'sn_reason', label: 'Reason (loop)',
+    state: `{\n  "messages": ["I have the answer â€” no more tools needed"],\n  "next_action": null,\n  "iterations": 2\n}`,
+    cycle: true },
+  { node: 'sn_end', label: 'END',
+    state: `{\n  "messages": ["Final: The capital of France is Paris."],\n  "tool_results": [...],\n  "iterations": 2\n}` }
+];
+
+let smTimer = null;
+function runSM() {
+  if (smTimer) return;
+  resetSM();
+  smStates.forEach((step, i) => {
+    smTimer = setTimeout(() => {
+      document.querySelectorAll('.sm-node').forEach(n => n.className = 'sm-node idle');
+      document.getElementById('sn_start').className = 'sm-node start';
+      document.getElementById('sn_end').className = 'sm-node end';
+      document.getElementById(step.node).className = `sm-node active`;
+      document.getElementById('smStateBox').textContent = step.state;
+      if (i === smStates.length - 1) {
+        document.getElementById(step.node).className = 'sm-node end';
+        smTimer = null;
+      }
+    }, i * 1000);
+  });
+}
+function resetSM() {
+  if (smTimer) { clearTimeout(smTimer); smTimer = null; }
+  document.querySelectorAll('.sm-node').forEach(n => n.classList.remove('active','done'));
+  document.getElementById('sn_start').className = 'sm-node start';
+  document.getElementById('sn_reason').className = 'sm-node idle';
+  document.getElementById('sn_act').className = 'sm-node idle';
+  document.getElementById('sn_observe').className = 'sm-node idle';
+  document.getElementById('sn_end').className = 'sm-node end';
+  document.getElementById('smStateBox').textContent = `{\n  "messages": [],\n  "next_action": null,\n  "tool_results": [],\n  "iterations": 0\n}`;
+}
+
+/* â”€â”€ CODE TABS â”€â”€ */
+const codeTabs = [
+`from typing import TypedDict, Annotated
+from langgraph.graph.message import add_messages
+
+class AgentState(TypedDict):
+    # Annotated with add_messages reducer â€” appends, not replaces
+    messages: Annotated[list, add_messages]
+    tool_results: list
+    iterations: int
+    final_answer: str | None`,
+
+`def reason_node(state: AgentState) -> dict:
+    """LLM decides: answer or call a tool."""
+    response = llm_with_tools.invoke(state["messages"])
+    return {"messages": [response], "iterations": state["iterations"] + 1}
+
+def tools_node(state: AgentState) -> dict:
+    """Execute the tool calls the LLM requested."""
+    results = tool_executor.batch(state["messages"][-1].tool_calls)
+    return {"messages": results, "tool_results": results}
+
+def final_node(state: AgentState) -> dict:
+    """Extract final answer from messages."""
+    return {"final_answer": state["messages"][-1].content}`,
+
+`from langgraph.graph import StateGraph, END
+
+builder = StateGraph(AgentState)
+builder.add_node("reason", reason_node)
+builder.add_node("tools", tools_node)
+builder.add_node("final", final_node)
+
+builder.set_entry_point("reason")
+
+# Conditional routing â€” loop or end
+def route(state: AgentState) -> str:
+    last = state["messages"][-1]
+    if hasattr(last, "tool_calls") and last.tool_calls:
+        return "tools"   # agent wants to call tools â†’ loop
+    return "final"       # agent has answer â†’ done
+
+builder.add_conditional_edges("reason", route)
+builder.add_edge("tools", "reason")   # â† cycle back
+builder.add_edge("final", END)`,
+
+`from langgraph.checkpoint.sqlite import SqliteSaver
+
+with SqliteSaver.from_conn_string(":memory:") as mem:
+    graph = builder.compile(
+        checkpointer=mem,
+        interrupt_before=["final"]  # optional: pause before answer
+    )
+
+config = {"configurable": {"thread_id": "session_001"}}
+init_state = {"messages": [HumanMessage("Research quantum computing trends")],
+              "tool_results": [], "iterations": 0, "final_answer": None}
+
+result = graph.invoke(init_state, config)
+print("Answer:", result["final_answer"])
+print("Iterations:", result["iterations"])`
+];
+
+function showCodeTab(idx, btn) {
+  document.querySelectorAll('#codeTabBtns .btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('codeDisplayArea').innerHTML = `<div class="code-block">${codeTabs[idx]}</div>`;
+}
+// Init
+showCodeTab(0, document.querySelector('#codeTabBtns .btn'));
+
+/* â”€â”€ TRACES â”€â”€ */
+const traces = [
+  [
+    {cls:'system', t:0,    txt:'â”€â”€ Research + Write agent (2 tool loops) â”€â”€'},
+    {cls:'node',   t:200,  txt:'[reason]  LLM: I need to search for quantum computing trends'},
+    {cls:'edge',   t:500,  txt:'[edge]    route() â†’ "tools" (tool_calls detected)'},
+    {cls:'node',   t:700,  txt:'[tools]   Executing: web_search("quantum computing 2024 trends")'},
+    {cls:'state',  t:1000, txt:'[state]   tool_results = [{"source":"Nature","snippet":"..."}]'},
+    {cls:'edge',   t:1200, txt:'[edge]    tools â†’ reason (cycle back)'},
+    {cls:'node',   t:1400, txt:'[reason]  LLM: Good data found. Also need to search for market size'},
+    {cls:'edge',   t:1700, txt:'[edge]    route() â†’ "tools" (second tool call)'},
+    {cls:'node',   t:1900, txt:'[tools]   Executing: web_search("quantum computing market 2024")'},
+    {cls:'state',  t:2200, txt:'[state]   tool_results = [..., {"source":"McKinsey","snippet":"..."}]'},
+    {cls:'edge',   t:2400, txt:'[edge]    tools â†’ reason (cycle back)'},
+    {cls:'node',   t:2600, txt:'[reason]  LLM: Sufficient data. Writing final answer.'},
+    {cls:'edge',   t:2900, txt:'[edge]    route() â†’ "final" (no tool calls)'},
+    {cls:'node',   t:3100, txt:'[final]   Generating structured report...'},
+    {cls:'system', t:3400, txt:'â”€â”€ Complete. 2 tool loop cycles, 3 LLM calls â”€â”€'},
+  ],
+  [
+    {cls:'system', t:0,    txt:'â”€â”€ Code Review with Human Approval (interrupt_before=["submit_pr"]) â”€â”€'},
+    {cls:'node',   t:200,  txt:'[analyse] Reading diff: 147 lines changed in auth module'},
+    {cls:'node',   t:600,  txt:'[analyse] Issues found: 2 potential SQL injections, 1 missing null check'},
+    {cls:'node',   t:1000, txt:'[suggest] Generating fix suggestions...'},
+    {cls:'state',  t:1300, txt:'[state]   pr_diff = "...", issues = [...], suggestions = [...]'},
+    {cls:'edge',   t:1500, txt:'[checkpoint] â¸ INTERRUPT before "submit_pr" â€” state saved'},
+    {cls:'system', t:1700, txt:'â”€â”€ Graph paused. Awaiting human review... â”€â”€'},
+    {cls:'cycle',  t:2500, txt:'[human]   Reviewed: approved 2/3 suggestions, rejected SQL injection fix'},
+    {cls:'state',  t:2700, txt:'[update_state] approved = True, final_suggestions = [2 of 3]'},
+    {cls:'edge',   t:2900, txt:'[resume]  graph.invoke(None, config) â†’ resuming from checkpoint'},
+    {cls:'node',   t:3100, txt:'[submit_pr] Creating PR with approved suggestions...'},
+    {cls:'system', t:3400, txt:'â”€â”€ PR submitted. Human approved 2 of 3 changes â”€â”€'},
+  ],
+  [
+    {cls:'system', t:0,    txt:'â”€â”€ Self-Correcting Agent (cycle on validation failure) â”€â”€'},
+    {cls:'node',   t:200,  txt:'[generate] LLM: Generating Python function for task...'},
+    {cls:'node',   t:600,  txt:'[validate] Running tests... âœ— 2 tests failed (edge cases)'},
+    {cls:'state',  t:900,  txt:'[state]   test_failures = ["test_empty_input", "test_max_int"], attempts = 1'},
+    {cls:'edge',   t:1100, txt:'[edge]    route() â†’ "generate" (failures > 0, attempts < 3)'},
+    {cls:'cycle',  t:1300, txt:'[cycle]   â†© Looping back to generation with failure context'},
+    {cls:'node',   t:1600, txt:'[generate] LLM: Fixing edge cases from test failures...'},
+    {cls:'node',   t:2000, txt:'[validate] Running tests... âœ— 1 test still failing'},
+    {cls:'state',  t:2300, txt:'[state]   test_failures = ["test_max_int"], attempts = 2'},
+    {cls:'edge',   t:2500, txt:'[edge]    route() â†’ "generate" (still failing, attempt 2 of 3)'},
+    {cls:'cycle',  t:2700, txt:'[cycle]   â†© Looping back again'},
+    {cls:'node',   t:3000, txt:'[generate] LLM: Adding int overflow guard...'},
+    {cls:'node',   t:3400, txt:'[validate] Running tests... âœ“ All 5 tests passing!'},
+    {cls:'edge',   t:3700, txt:'[edge]    route() â†’ END (all tests pass)'},
+    {cls:'system', t:4000, txt:'â”€â”€ Code correct after 3 self-correction cycles â”€â”€'},
+  ]
+];
+
+let traceTimer = null;
+function runTrace(idx) {
+  document.querySelectorAll('.sm-btns .btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  if (traceTimer) clearTimeout(traceTimer);
+  const box = document.getElementById('traceBox');
+  box.innerHTML = '';
+  traces[idx].forEach(line => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'trace-line ' + line.cls;
+      div.textContent = line.txt;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }, line.t);
+  });
+}
+</script>
+</body>
+</html>

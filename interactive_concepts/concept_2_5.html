@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Anatomy Deep Dive | Agentic AI Course</title>
+<style>
+  :root{--bg:#0f1117;--card:#21263a;--card2:#1a1f30;--text:#e8eaf6;--muted:#8892b0;--accent:#00d2ff;--border:rgba(0,210,255,.18);--radius:12px;--brain:#b57bee;--tools:#ffd166;--memory:#06d6a0;--loop:#00d2ff;--guard:#ff6584;--correct:#06d6a0;--wrong:#ef476f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6}
+  nav{background:rgba(15,17,23,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  nav .brand{font-size:.8rem;color:var(--muted)} nav .brand span{color:var(--accent);font-weight:700}
+  nav .nav-links{display:flex;gap:12px}
+  nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:6px 14px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+  nav a:hover{color:var(--accent);border-color:var(--accent)}
+  .hero{text-align:center;padding:64px 24px 48px;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(0,210,255,.12) 0%,transparent 70%)}
+  .session-tag{display:inline-block;background:rgba(0,210,255,.15);color:var(--accent);border:1px solid rgba(0,210,255,.4);border-radius:20px;padding:4px 16px;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:12px} .hero h1 span{color:var(--accent)}
+  .hero p{color:var(--muted);max-width:600px;margin:0 auto;font-size:1.05rem}
+  section{max-width:1000px;margin:0 auto;padding:40px 24px}
+  .section-title{font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* COMPONENT SELECTOR */
+  .component-layout{display:grid;grid-template-columns:220px 1fr;gap:20px}
+  .component-list{display:flex;flex-direction:column;gap:10px}
+  .comp-btn{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;gap:12px}
+  .comp-btn:hover{transform:translateX(4px)}
+  .comp-btn.brain.active{border-color:var(--brain);background:rgba(181,123,238,.1)} .comp-btn.tools.active{border-color:var(--tools);background:rgba(255,209,102,.1)}
+  .comp-btn.memory.active{border-color:var(--memory);background:rgba(6,214,160,.1)} .comp-btn.loop.active{border-color:var(--loop);background:rgba(0,210,255,.1)}
+  .comp-btn.guard.active{border-color:var(--guard);background:rgba(255,101,132,.1)}
+  .comp-btn .cb-icon{font-size:1.4rem} .comp-btn .cb-name{font-weight:700;font-size:.9rem} .comp-btn .cb-brief{font-size:.75rem;color:var(--muted)}
+  .comp-btn.brain .cb-name{color:var(--brain)} .comp-btn.tools .cb-name{color:var(--tools)} .comp-btn.memory .cb-name{color:var(--memory)} .comp-btn.loop .cb-name{color:var(--loop)} .comp-btn.guard .cb-name{color:var(--guard)}
+  .component-detail{background:var(--card);border-radius:var(--radius);padding:28px;border:2px solid var(--border);min-height:400px}
+  .detail-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .detail-icon{font-size:2.2rem} .detail-title{font-size:1.3rem;font-weight:800} .detail-subtitle{font-size:.85rem;color:var(--muted);margin-top:2px}
+  .detail-desc{font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:20px}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .detail-box{background:var(--card2);border-radius:8px;padding:14px}
+  .detail-box h4{font-size:.77rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;color:var(--muted)}
+  .detail-box ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+  .detail-box ul li{font-size:.83rem;padding-left:14px;position:relative} .detail-box ul li::before{content:'·';position:absolute;left:0}
+  .failure-box{background:rgba(239,71,111,.07);border:1px solid rgba(239,71,111,.2);border-radius:8px;padding:12px 16px;font-size:.83rem}
+  .failure-box .fl{font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--wrong);margin-bottom:6px;letter-spacing:.8px}
+  .failure-box p{color:var(--muted)}
+
+  /* FLOW DIAGRAM */
+  .flow-diagram{background:var(--card);border-radius:var(--radius);padding:28px;border:1px solid var(--border);overflow-x:auto}
+  .flow{display:flex;align-items:center;gap:0;flex-wrap:nowrap;min-width:600px}
+  .flow-node{background:var(--card2);border-radius:8px;padding:12px 16px;text-align:center;min-width:100px;font-size:.82rem;font-weight:600;border:2px solid}
+  .flow-node.brain{border-color:var(--brain);color:var(--brain)} .flow-node.tools{border-color:var(--tools);color:var(--tools)}
+  .flow-node.memory{border-color:var(--memory);color:var(--memory)} .flow-node.loop{border-color:var(--loop);color:var(--loop)}
+  .flow-node.guard{border-color:var(--guard);color:var(--guard)} .flow-node.user{border-color:var(--muted);color:var(--muted)}
+  .flow-arrow{color:var(--muted);font-size:1.2rem;padding:0 6px;flex-shrink:0}
+  .flow-label{font-size:.7rem;color:var(--muted);text-align:center;margin-top:4px}
+  .flow-col{display:flex;flex-direction:column;align-items:center}
+
+  /* QUIZ */
+  .quiz-container{background:var(--card);border-radius:var(--radius);padding:32px;border:1px solid var(--border)}
+  .quiz-score{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .score-display{font-size:1rem;color:var(--muted)} .score-display span{color:var(--accent);font-weight:700;font-size:1.2rem}
+  .q-block{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.06)} .q-block:last-of-type{border-bottom:none}
+  .q-num{font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .q-text{font-size:1rem;font-weight:600;margin-bottom:14px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--card2);border:2px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;display:flex;align-items:center;gap:10px}
+  .opt:hover:not(.locked){border-color:var(--accent);background:rgba(0,210,255,.06)}
+  .opt.correct{border-color:var(--correct);background:rgba(6,214,160,.1);color:var(--correct)}
+  .opt.wrong{border-color:var(--wrong);background:rgba(239,71,111,.1);color:var(--wrong)}
+  .opt .opt-icon{font-size:1rem;flex-shrink:0;opacity:0} .opt.correct .opt-icon,.opt.wrong .opt-icon{opacity:1}
+  .feedback{display:none;margin-top:12px;padding:14px 16px;border-radius:8px;font-size:.88rem;line-height:1.5}
+  .feedback.show{display:block}
+  .feedback.correct-fb{background:rgba(6,214,160,.08);border-left:3px solid var(--correct);color:#a8f0d8}
+  .feedback.wrong-fb{background:rgba(239,71,111,.08);border-left:3px solid var(--wrong);color:#f8c3ce}
+  .q-reset{display:none;margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
+  .q-reset:hover{border-color:var(--accent);color:var(--accent)} .q-reset.show{display:inline-block}
+  @media(max-width:700px){.component-layout{grid-template-columns:1fr} .component-list{flex-direction:row;flex-wrap:wrap} .detail-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">Agentic AI Course · <span>Session 2</span></div>
+  <div class="nav-links">
+    <a href="concept_2_4.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_2_6.html">Next →</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 2 · Concept 2.5</div>
+  <h1>Agent Anatomy — <span>Deep Dive</span></h1>
+  <p>Inside the 5 components of every production agent — what each one does, how they interact, and where they fail.</p>
+</div>
+
+<section>
+  <div class="section-title">Explore Each Component</div>
+  <div class="component-layout">
+    <div class="component-list">
+      <button class="comp-btn brain active" onclick="showComp('brain',this)">
+        <span class="cb-icon">🧠</span>
+        <div><div class="cb-name">Brain (LLM)</div><div class="cb-brief">Reasoning core</div></div>
+      </button>
+      <button class="comp-btn tools" onclick="showComp('tools',this)">
+        <span class="cb-icon">🔧</span>
+        <div><div class="cb-name">Tools</div><div class="cb-brief">Action layer</div></div>
+      </button>
+      <button class="comp-btn memory" onclick="showComp('memory',this)">
+        <span class="cb-icon">💾</span>
+        <div><div class="cb-name">Memory</div><div class="cb-brief">State persistence</div></div>
+      </button>
+      <button class="comp-btn loop" onclick="showComp('loop',this)">
+        <span class="cb-icon">🔄</span>
+        <div><div class="cb-name">Execution Loop</div><div class="cb-brief">ReAct cycle</div></div>
+      </button>
+      <button class="comp-btn guard" onclick="showComp('guard',this)">
+        <span class="cb-icon">🛡️</span>
+        <div><div class="cb-name">Guardrails</div><div class="cb-brief">Safety boundaries</div></div>
+      </button>
+    </div>
+    <div class="component-detail" id="componentDetail"></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">How the Components Connect</div>
+  <div class="flow-diagram">
+    <div class="flow">
+      <div class="flow-col"><div class="flow-node user">👤 User</div><div class="flow-label">Input</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-col"><div class="flow-node guard">🛡️ Input Guard</div><div class="flow-label">Validate</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-col"><div class="flow-node loop">🔄 Loop</div><div class="flow-label">Orchestrate</div></div>
+      <div class="flow-arrow">⇄</div>
+      <div class="flow-col"><div class="flow-node brain">🧠 Brain</div><div class="flow-label">Reason</div></div>
+      <div class="flow-arrow">⇄</div>
+      <div class="flow-col"><div class="flow-node memory">💾 Memory</div><div class="flow-label">Store/Recall</div></div>
+      <div class="flow-arrow">↕</div>
+      <div class="flow-col"><div class="flow-node tools">🔧 Tools</div><div class="flow-label">Act</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-col"><div class="flow-node guard">🛡️ Output Guard</div><div class="flow-label">Validate</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-col"><div class="flow-node user">👤 User</div><div class="flow-label">Output</div></div>
+    </div>
+    <p style="color:var(--muted);font-size:.82rem;margin-top:16px;text-align:center">Guardrails wrap both input and output. The Brain-Loop-Memory-Tools quadrant is the core execution engine.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Check Your Understanding</div>
+  <div class="quiz-container">
+    <div class="quiz-score">
+      <div class="score-display">Score: <span id="scoreDisplay">0</span> / 5</div>
+      <div style="font-size:.8rem;color:var(--muted)">Click an answer to check it</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 5</div>
+      <div class="q-text">What is the primary purpose of the Execution Loop in the agent anatomy?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q1','a','c')"><span class="opt-icon">✗</span>a) To store the agent's long-term knowledge</div>
+        <div class="opt" onclick="answer('q1','b','c')"><span class="opt-icon">✗</span>b) To validate inputs before they reach the LLM</div>
+        <div class="opt" onclick="answer('q1','c','c')"><span class="opt-icon">✓</span>c) To orchestrate the repeated Think → Act → Observe cycle until the goal is achieved</div>
+        <div class="opt" onclick="answer('q1','d','c')"><span class="opt-icon">✗</span>d) To connect the agent to external APIs</div>
+      </div>
+      <div class="feedback correct-fb" id="q1-correct">✓ The Execution Loop is the agent's heartbeat — it's the controller that keeps the Think→Act→Observe cycle running. Without the loop, you'd have a single LLM call, not an agent. The loop decides when to call the LLM, when to call tools, when to read/write memory, and when to stop (termination condition). Memory stores knowledge, Guardrails validate, Tools connect to APIs.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">✗ Long-term knowledge = Memory. Input validation = Guardrails. API connections = Tools. The Execution Loop is the orchestrator — it's the code that keeps running the Think→Act→Observe cycle, routing results between components, and deciding when the goal is achieved and the loop should terminate. It's the control flow, not any individual component's content.</div>
+      <button class="q-reset" onclick="resetQ('q1')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 5</div>
+      <div class="q-text">Why do production agents need BOTH input AND output guardrails?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">✗</span>a) Input guardrails are sufficient — if input is safe, output will be safe</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">✗</span>b) Only output guardrails matter — we can't control what users send</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">✓</span>c) Input guardrails prevent harmful instructions; output guardrails catch harmful content the model might generate even from safe inputs</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">✗</span>d) Guardrails are only needed for multi-agent systems</div>
+      </div>
+      <div class="feedback correct-fb" id="q2-correct">✓ Exactly. They guard different attack surfaces. Input guardrails catch prompt injection, jailbreak attempts, and policy violations before the LLM sees them. Output guardrails catch hallucinated PII, inappropriate content, policy violations, or confidential data that the model might produce even from benign inputs — because LLM behaviour is probabilistic, not deterministic. Guardrails are needed for any production agent regardless of architecture.</div>
+      <div class="feedback wrong-fb" id="q2-wrong">✗ Safe inputs don't guarantee safe outputs — an LLM can hallucinate PII, generate inappropriate content, or reveal confidential information even from a normal-looking query. And we absolutely can and should validate inputs — input guardrails catch prompt injection attacks and policy violations before they reach the model. Both layers are essential because the attack surfaces are different.</div>
+      <button class="q-reset" onclick="resetQ('q2')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 5</div>
+      <div class="q-text">An agent is asked to look up a customer's order history. The agent has access to: (1) working memory (context window), (2) semantic memory (vector DB), (3) episodic memory (action logs), and (4) procedural memory (tool definitions). Which type does it use to EXECUTE the lookup?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q3','a','d')"><span class="opt-icon">✗</span>a) Working memory — load the orders into context</div>
+        <div class="opt" onclick="answer('q3','b','d')"><span class="opt-icon">✗</span>b) Semantic memory — search for similar past orders</div>
+        <div class="opt" onclick="answer('q3','c','d')"><span class="opt-icon">✗</span>c) Episodic memory — check what it did before</div>
+        <div class="opt" onclick="answer('q3','d','d')"><span class="opt-icon">✓</span>d) Procedural memory — knows HOW to call the order lookup tool (the procedure)</div>
+      </div>
+      <div class="feedback correct-fb" id="q3-correct">✓ Procedural memory stores the agent's "know-how" — the tool definitions, schemas, and usage patterns that tell it how to perform actions. To look up orders, the agent needs to know which tool to call and with what parameters — that's procedural. The result of the lookup would then go into working memory. Semantic memory is for fuzzy knowledge retrieval; episodic is for past event recall.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">✗ To EXECUTE a lookup, the agent needs to know HOW to call the order lookup tool — the procedure, schema, and parameters. That's Procedural memory. Working memory (context window) would hold the results after lookup. Semantic memory (vector DB) handles fuzzy similarity searches, not precise API calls. Episodic memory logs what the agent has done — it doesn't tell it how to do new things.</div>
+      <button class="q-reset" onclick="resetQ('q3')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 5</div>
+      <div class="q-text">What is the most critical failure mode when the Brain (LLM) component hallucinates a tool call?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">✗</span>a) The LLM becomes slower on subsequent calls</div>
+        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">✗</span>b) Memory is cleared automatically</div>
+        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">✓</span>c) The agent may call a nonexistent tool or pass wrong parameters, causing silent failures that cascade through the loop</div>
+        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">✗</span>d) Guardrails automatically correct hallucinated tool calls</div>
+      </div>
+      <div class="feedback correct-fb" id="q4-correct">✓ This is the "silent failure cascade" pattern. The LLM hallucinates a tool name (e.g., "search_db" instead of "query_database") → the loop gets a "tool not found" error → without proper error handling, the LLM may reason from the error as if it were a valid result → subsequent reasoning is corrupted → the final output appears plausible but is based on no real data. Guardrails don't catch hallucinated tool names — that's error handling in the loop.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">✗ LLM speed isn't affected. Memory isn't cleared. Guardrails validate content, not tool call correctness. When the Brain hallucinates a tool name or wrong parameters, the Execution Loop receives an error — and if error handling is inadequate, the LLM might try to reason FROM the error as if it were data, creating a silent failure cascade where the agent continues confidently with no real information. This is why tool call validation is critical in production loops.</div>
+      <button class="q-reset" onclick="resetQ('q4')">↺ Try again</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 5</div>
+      <div class="q-text">Which component is responsible for deciding WHEN the agent has achieved its goal and should stop looping?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q5','a','b')"><span class="opt-icon">✗</span>a) The Brain (LLM) — it generates the final answer</div>
+        <div class="opt" onclick="answer('q5','b','b')"><span class="opt-icon">✓</span>b) The Execution Loop — it evaluates termination conditions</div>
+        <div class="opt" onclick="answer('q5','c','b')"><span class="opt-icon">✗</span>c) The Guardrails — they detect task completion</div>
+        <div class="opt" onclick="answer('q5','d','b')"><span class="opt-icon">✗</span>d) Memory — it signals when all information is stored</div>
+      </div>
+      <div class="feedback correct-fb" id="q5-correct">✓ The Execution Loop contains the termination logic. It checks: Has the LLM indicated a final answer? Has the max iteration count been exceeded? Has a "DONE" signal been produced? Did the LLM call a "finish" tool? The LLM can signal completion, but the loop is what actually stops. Without a loop termination condition, agents run forever — which is exactly the "infinite loop" production failure mode.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">✗ The LLM can signal that it's done, but it's the Execution Loop that enforces termination. Guardrails validate content safety, not task completion. Memory doesn't decide when to stop. The loop contains the termination logic: max iterations guard, completion signal detection, goal verification checks. An Execution Loop without proper termination conditions is one of the top causes of runaway agent costs in production.</div>
+      <button class="q-reset" onclick="resetQ('q5')">↺ Try again</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  let score=0; const answered={};
+  const components={
+    brain:{color:'var(--brain)',icon:'🧠',title:'Brain (LLM)',subtitle:'The reasoning and decision-making core',desc:'The LLM is the agent\'s cognitive center — it reads the current context (including task, tool results, memory, and history), reasons about what to do next, and generates the next action or final response. Everything else in the agent architecture serves the brain or acts on its outputs.',internals:['Processes the full context window','Generates structured tool calls','Produces chain-of-thought reasoning','Decides when goal is achieved','Writes tool call parameters'],failures:['Hallucinated tool names or parameters','Reasoning errors on complex tasks','Context confusion in long conversations','Confident wrong answers (calibration failures)'],warning:'When context fills up, the LLM loses access to earlier conversation. This causes "forgetting" — the agent may repeat work or contradict earlier decisions. Context management is a Brain-adjacent design problem.'},
+    tools:{color:'var(--tools)',icon:'🔧',title:'Tools',subtitle:'The agent\'s hands — actions in the world',desc:'Tools are the functions an agent can call to affect the world or retrieve information. They bridge the LLM\'s text-based reasoning to real-world actions: querying databases, calling APIs, reading/writing files, executing code, browsing the web.',internals:['Defined by JSON schema (name, parameters, description)','Called by the LLM via structured tool_call tokens','Results returned as tool_result in context','Can be synchronous or asynchronous','Isolated from the LLM — run in separate execution'],failures:['Tool returns unexpected schema → LLM misreads result','Rate limits or timeouts not handled → silent failure','Side-effect tools (writes, sends) called twice due to retry','No error messages → LLM reasons from empty result'],warning:'Destructive tools (send email, delete file, process payment) must have idempotency guards and explicit confirmation in the loop. The agent cannot un-send an email.'},
+    memory:{color:'var(--memory)',icon:'💾',title:'Memory',subtitle:'State persistence across context and time',desc:'Memory allows agents to maintain state beyond a single context window. It spans four types: Working (active context), Episodic (event logs), Semantic (knowledge vectors), and Procedural (how-to / tool knowledge). Each serves a different retention and retrieval pattern.',internals:['Working: current context window (finite, fast)','Episodic: logged events, action history, audit trail','Semantic: vector DB — fuzzy similarity search','Procedural: tool schemas, system prompts, skill definitions','Memory reads inject content into the context window'],failures:['Working memory overflow → context truncation → hallucination','Stale episodic memory → agent repeats past mistakes','Wrong semantic retrieval → wrong knowledge injected','Procedural memory out of date → tool call with old schema'],warning:'Memory retrieval is not perfect. Semantic search returns nearest neighbours, not guaranteed relevant results. Always design retrieval with a relevance threshold — don\'t inject everything the vector DB returns.'},
+    loop:{color:'var(--loop)',icon:'🔄',title:'Execution Loop',subtitle:'The orchestration engine',desc:'The Execution Loop is the control flow that runs the ReAct (Reason+Act) cycle. It orchestrates the Brain, Tools, and Memory — calling the LLM, routing tool calls to executors, injecting results back into context, and enforcing termination conditions. Without the loop, you have a one-shot LLM call, not an agent.',internals:['Calls LLM with current context','Routes tool_call outputs to tool executors','Injects tool results back into context','Checks termination conditions each iteration','Enforces max iteration / cost limits','Handles errors (retry logic, fallback paths)'],failures:['Missing termination condition → infinite loop','No max iteration guard → unbounded cost','Poor error handling → silent failure cascade','No step logging → undebuggable failures in production'],warning:'Loops without a max-iteration hard stop WILL run forever in edge cases. Every production loop needs: (1) goal-achieved detection, (2) max iteration limit, (3) cost/token budget, and (4) structured error handling with logging.'},
+    guard:{color:'var(--guard)',icon:'🛡️',title:'Guardrails',subtitle:'Safety and policy enforcement layer',desc:'Guardrails are the agent\'s safety boundaries — policy enforcement layers that sit at both the input and output of the agent. They prevent harmful, inappropriate, or policy-violating content from entering the reasoning loop or exiting it. In production, guardrails are non-negotiable.',internals:['Input guardrails: filter user prompts before LLM','Output guardrails: validate LLM responses before delivery','Can be LLM-based (classifier models) or rule-based','May block, redact, or reroute based on policy','Applied to tool outputs too — not just user text'],failures:['Input-only guardrails miss LLM-generated harmful content','Guardrail false positives block legitimate requests','LLM-based guardrails can themselves be jailbroken','Missing guardrails on tool outputs → data exfiltration via tools'],warning:'Guardrails add latency and cost — every check is an extra LLM call or rule evaluation. Design guardrails to be proportionate to risk. A coding assistant needs different guardrails than a financial advice agent.'}
+  };
+
+  function showComp(name,btn){
+    document.querySelectorAll('.comp-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const c=components[name];
+    const d=document.getElementById('componentDetail');
+    d.style.borderColor=c.color;
+    d.innerHTML=`<div class="detail-header">
+        <div class="detail-icon">${c.icon}</div>
+        <div><div class="detail-title" style="color:${c.color}">${c.title}</div><div class="detail-subtitle">${c.subtitle}</div></div>
+      </div>
+      <p class="detail-desc">${c.desc}</p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>Internal Mechanics</h4>
+          <ul>${c.internals.map(i=>`<li style="color:var(--text)">${i}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-box">
+          <h4>Common Failure Modes</h4>
+          <ul>${c.failures.map(f=>`<li style="color:var(--muted)">${f}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="failure-box"><div class="fl">⚠ Production Warning</div><p>${c.warning}</p></div>`;
+  }
+
+  function answer(qid,chosen,correct){
+    if(answered[qid]) return;
+    answered[qid]=true;
+    const block=document.getElementById(qid);
+    const opts=block.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.add('locked'));
+    const letters=['a','b','c','d'];
+    opts[letters.indexOf(chosen)].classList.add(chosen===correct?'correct':'wrong');
+    if(chosen!==correct) opts[letters.indexOf(correct)].classList.add('correct');
+    const ok=chosen===correct;
+    if(ok){score++; document.getElementById('scoreDisplay').textContent=score;}
+    document.getElementById(qid+'-'+(ok?'correct':'wrong')).classList.add('show');
+    block.querySelector('.q-reset').classList.add('show');
+  }
+
+  function resetQ(qid){
+    if(!answered[qid]) return;
+    delete answered[qid];
+    const block=document.getElementById(qid);
+    block.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong','locked'));
+    block.querySelectorAll('.feedback').forEach(f=>f.classList.remove('show'));
+    block.querySelector('.q-reset').classList.remove('show');
+    if(score>0){score--; document.getElementById('scoreDisplay').textContent=score;}
+  }
+
+  showComp('brain', document.querySelector('.comp-btn.brain'));
+</script>
+</body>
+</html>

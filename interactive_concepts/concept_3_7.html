@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 3.7 — Transport Layers</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  nav .nav-links{display:flex;gap:16px;}
+  nav a{color:var(--accent);text-decoration:none;font-size:.9rem;padding:6px 14px;border:1px solid var(--accent);border-radius:20px;transition:all .2s;}
+  nav a:hover{background:var(--accent);color:#000;}
+  nav .title{font-weight:700;font-size:1rem;}
+  .hero{background:linear-gradient(135deg,#1a0a12 0%,#0d1117 60%);border-bottom:1px solid var(--border);padding:48px 32px 36px;text-align:center;}
+  .session-tag{display:inline-block;background:var(--accent);color:#000;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  .hero h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;margin-bottom:12px;}
+  .hero p{color:var(--muted);font-size:1.05rem;max-width:680px;margin:0 auto;}
+  .content{max-width:960px;margin:0 auto;padding:40px 24px 60px;}
+  .section{margin-bottom:48px;}
+  .section h2{font-size:1.3rem;font-weight:700;margin-bottom:20px;color:var(--accent);display:flex;align-items:center;gap:10px;}
+  .section h2::before{content:'';display:block;width:4px;height:1.3rem;background:var(--accent);border-radius:2px;}
+
+  /* TRANSPORT CARDS */
+  .transport-tabs{display:flex;gap:10px;margin-bottom:0;flex-wrap:wrap;}
+  .t-tab{flex:1;min-width:140px;background:var(--surface2);border:2px solid var(--border);border-radius:12px 12px 0 0;padding:16px;text-align:center;cursor:pointer;transition:all .2s;border-bottom:none;}
+  .t-tab:hover{border-color:var(--accent);}
+  .t-tab.active{background:var(--surface);border-color:var(--accent);position:relative;z-index:1;}
+  .t-tab .t-icon{font-size:1.8rem;margin-bottom:6px;}
+  .t-tab h3{font-size:.9rem;font-weight:700;}
+  .t-tab.active h3{color:var(--accent);}
+  .t-tab p{font-size:.72rem;color:var(--muted);margin-top:3px;}
+  .transport-panel{background:var(--surface);border:2px solid var(--accent);border-radius:0 12px 12px 12px;padding:28px;display:none;}
+  .transport-panel.active{display:block;}
+  .tp-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:580px){.tp-grid{grid-template-columns:1fr;}}
+  .tp-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;}
+  .tp-box h4{font-size:.85rem;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em;}
+  .tp-box.props h4{color:var(--accent5);}
+  .tp-box.pros h4{color:var(--accent3);}
+  .tp-box.cons h4{color:var(--wrong);}
+  .tp-box.uses h4{color:var(--accent2);}
+  .tp-box ul{list-style:none;font-size:.82rem;color:var(--muted);line-height:1.7;}
+  .tp-box ul li::before{content:'• ';}
+  .tp-box pre{font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent2);line-height:1.5;white-space:pre-wrap;}
+
+  /* COMPARISON TABLE */
+  .cmp-table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  .cmp-table th{background:var(--surface2);padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);font-weight:700;}
+  .cmp-table th.h1{color:var(--accent5);}
+  .cmp-table th.h2{color:var(--accent3);}
+  .cmp-table th.h3{color:var(--accent4);}
+  .cmp-table td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);font-size:.82rem;}
+  .cmp-table td:first-child{font-weight:600;color:var(--text);}
+  .hi{color:var(--accent3);font-weight:600;}
+  .mid{color:var(--accent2);}
+  .lo{color:var(--wrong);}
+
+  /* DECISION TREE */
+  .dt-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;}
+  .dt-q{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center;margin-bottom:20px;}
+  .dt-q h4{font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--text);}
+  .dt-opts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .dt-opt{background:var(--surface);border:1px solid var(--accent);color:var(--accent);padding:10px 20px;border-radius:8px;cursor:pointer;font-size:.84rem;font-weight:600;transition:all .2s;}
+  .dt-opt:hover{background:var(--accent);color:#000;}
+  .dt-result{background:var(--surface2);border:2px solid var(--accent3);border-radius:10px;padding:20px;text-align:center;display:none;}
+  .dt-result.show{display:block;}
+  .dt-result h4{font-size:1.1rem;font-weight:800;color:var(--accent3);margin-bottom:8px;}
+  .dt-result p{font-size:.85rem;color:var(--muted);line-height:1.6;}
+  .dt-reset{margin-top:14px;background:none;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:.82rem;}
+  .dt-reset:hover{border-color:var(--accent);color:var(--accent);}
+  .breadcrumb{font-size:.78rem;color:var(--muted);margin-bottom:12px;min-height:20px;}
+  .breadcrumb span{color:var(--accent2);}
+
+  /* QUIZ */
+  .quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+  .quiz-card h3{font-size:1rem;font-weight:700;margin-bottom:16px;line-height:1.5;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:left;color:var(--text);width:100%;}
+  .opt:hover:not(:disabled){border-color:var(--accent);background:rgba(255,101,132,.08);}
+  .opt.correct{background:rgba(6,214,160,.15);border-color:var(--correct);color:var(--correct);}
+  .opt.wrong{background:rgba(255,101,132,.15);border-color:var(--wrong);color:var(--wrong);}
+  .feedback{margin-top:12px;font-size:.85rem;padding:10px 14px;border-radius:8px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(6,214,160,.1);color:var(--correct);border:1px solid var(--correct);}
+  .feedback.wrong{background:rgba(255,101,132,.1);color:var(--wrong);border:1px solid var(--wrong);}
+  .reset-btn{margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .score-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px;}
+  .score-display{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .score-label{color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-links">
+    <a href="concept_3_6.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_8.html">Next →</a>
+  </div>
+  <span class="title">3.7 — Transport Layers</span>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
+  <h1>Transport Layers</h1>
+  <p>HTTP+SSE, WebSockets, and stdio — the three transports that carry MCP and A2A messages, and exactly when to use each one.</p>
+</div>
+<div class="content">
+
+  <!-- TRANSPORT DEEP DIVES -->
+  <div class="section">
+    <h2>Transport Deep Dives — Click to Explore</h2>
+    <div class="transport-tabs">
+      <div class="t-tab active" onclick="showTransport('sse',this)">
+        <div class="t-icon">🌊</div>
+        <h3>HTTP + SSE</h3>
+        <p>Remote / Cloud</p>
+      </div>
+      <div class="t-tab" onclick="showTransport('ws',this)">
+        <div class="t-icon">⚡</div>
+        <h3>WebSockets</h3>
+        <p>Bidirectional</p>
+      </div>
+      <div class="t-tab" onclick="showTransport('stdio',this)">
+        <div class="t-icon">💻</div>
+        <h3>stdio</h3>
+        <p>Local Process</p>
+      </div>
+    </div>
+
+    <div id="panel-sse" class="transport-panel active">
+      <div class="tp-grid">
+        <div class="tp-box props">
+          <h4>How It Works</h4>
+          <ul>
+            <li>Client POSTs requests to <code>/message</code> endpoint</li>
+            <li>Client GETs <code>/sse</code> endpoint — server keeps connection open</li>
+            <li>Server pushes events as <code>data: {...}\n\n</code> lines</li>
+            <li>Standard HTTP — works through proxies, CDNs, firewalls</li>
+            <li>Each request is independent HTTP round-trip</li>
+          </ul>
+        </div>
+        <div class="tp-box pros">
+          <h4>Strengths</h4>
+          <ul>
+            <li>Works everywhere — no special firewall rules needed</li>
+            <li>Horizontally scalable with load balancers</li>
+            <li>Built-in HTTP auth (Bearer, API keys)</li>
+            <li>Reconnects automatically on disconnect</li>
+            <li>Compatible with all HTTP frameworks</li>
+          </ul>
+        </div>
+        <div class="tp-box cons">
+          <h4>Limitations</h4>
+          <ul>
+            <li>Half-duplex — server pushes, client polls via POST</li>
+            <li>Higher overhead per message (HTTP headers)</li>
+            <li>Some proxies buffer SSE — tune Nginx/Caddy timeouts</li>
+            <li>Not ideal for very high-frequency messages (&gt;100/sec)</li>
+          </ul>
+        </div>
+        <div class="tp-box uses">
+          <h4>Best For</h4>
+          <ul>
+            <li>Remote MCP servers (cloud-hosted tools)</li>
+            <li>A2A agent communication across organizations</li>
+            <li>Shared team tool servers behind HTTP auth</li>
+            <li>Production deployments with existing CDN/proxy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-ws" class="transport-panel">
+      <div class="tp-grid">
+        <div class="tp-box props">
+          <h4>How It Works</h4>
+          <ul>
+            <li>Single TCP connection upgraded from HTTP via <code>Upgrade: websocket</code></li>
+            <li>Full-duplex — both sides send at any time</li>
+            <li>Framed binary or text messages, low overhead</li>
+            <li>Connection persists until explicitly closed</li>
+            <li>Subprotocols can layer MCP/A2A JSON on top</li>
+          </ul>
+        </div>
+        <div class="tp-box pros">
+          <h4>Strengths</h4>
+          <ul>
+            <li>True bidirectional — server can push without a pending GET</li>
+            <li>Lower per-message overhead than HTTP+SSE</li>
+            <li>Better for real-time, high-frequency interactions</li>
+            <li>Single connection = lower connection overhead</li>
+          </ul>
+        </div>
+        <div class="tp-box cons">
+          <h4>Limitations</h4>
+          <ul>
+            <li>Some corporate proxies and firewalls block WebSockets</li>
+            <li>Harder to load-balance (sticky sessions needed)</li>
+            <li>Reconnection logic must be implemented manually</li>
+            <li>Not yet the primary MCP/A2A standard transport</li>
+          </ul>
+        </div>
+        <div class="tp-box uses">
+          <h4>Best For</h4>
+          <ul>
+            <li>High-frequency streaming (chat UIs, real-time agents)</li>
+            <li>Controlled internal deployments (not crossing firewalls)</li>
+            <li>Agent-to-agent communication on same internal network</li>
+            <li>Low-latency interactive applications</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-stdio" class="transport-panel">
+      <div class="tp-grid">
+        <div class="tp-box props">
+          <h4>How It Works</h4>
+          <ul>
+            <li>Client spawns the MCP server as a child process</li>
+            <li>JSON messages written to server's <code>stdin</code></li>
+            <li>Responses read from server's <code>stdout</code></li>
+            <li>Errors routed to <code>stderr</code></li>
+            <li>Newline-delimited JSON — one JSON object per line</li>
+          </ul>
+        </div>
+        <div class="tp-box pros">
+          <h4>Strengths</h4>
+          <ul>
+            <li>Zero network stack — maximum speed for local tools</li>
+            <li>No ports, no firewall rules, no auth overhead</li>
+            <li>Process lifecycle managed by OS — auto-cleanup</li>
+            <li>Simple to implement — just read/write streams</li>
+            <li>Perfect for CLI tools, IDE plugins, desktop agents</li>
+          </ul>
+        </div>
+        <div class="tp-box cons">
+          <h4>Limitations</h4>
+          <ul>
+            <li>Local only — cannot be accessed over a network</li>
+            <li>One client per server process</li>
+            <li>Server restarts when client disconnects</li>
+            <li>No built-in auth (process-level trust assumed)</li>
+          </ul>
+        </div>
+        <div class="tp-box uses">
+          <h4>Best For</h4>
+          <ul>
+            <li>Local MCP servers (filesystem, git, shell, DB)</li>
+            <li>IDE integrations (Cursor, VS Code, Windsurf)</li>
+            <li>Developer machines — local agent tooling</li>
+            <li>Single-user desktop AI applications</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="section">
+    <h2>Side-by-Side Comparison</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <table class="cmp-table">
+        <thead>
+          <tr><th>Property</th><th class="h1">HTTP + SSE</th><th class="h2">WebSockets</th><th class="h3">stdio</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Direction</td><td class="mid">Server → Client push</td><td class="hi">Full-duplex</td><td class="mid">Client ↔ Server (local)</td></tr>
+          <tr><td>Overhead per msg</td><td class="mid">Medium (HTTP headers)</td><td class="hi">Low (frames)</td><td class="hi">Minimal (pipe)</td></tr>
+          <tr><td>Firewall-friendly</td><td class="hi">Yes — standard HTTP</td><td class="lo">Sometimes blocked</td><td class="hi">Yes — local only</td></tr>
+          <tr><td>Load balancing</td><td class="hi">Easy</td><td class="mid">Sticky sessions needed</td><td class="lo">N/A (single process)</td></tr>
+          <tr><td>Network access</td><td class="hi">Remote ✓</td><td class="hi">Remote ✓</td><td class="lo">Local only</td></tr>
+          <tr><td>Auth support</td><td class="hi">Built-in HTTP auth</td><td class="mid">Custom headers</td><td class="lo">Process trust</td></tr>
+          <tr><td>MCP support</td><td class="hi">Primary remote transport</td><td class="mid">Emerging</td><td class="hi">Primary local transport</td></tr>
+          <tr><td>A2A support</td><td class="hi">Primary transport</td><td class="mid">Alternative</td><td class="lo">Not applicable</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DECISION TREE -->
+  <div class="section">
+    <h2>Transport Selection Guide</h2>
+    <div class="dt-container">
+      <div class="breadcrumb" id="dt-breadcrumb"></div>
+      <div id="dt-content"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <h2>Quiz — Test Your Understanding</h2>
+    <div class="score-bar">
+      <span class="score-display" id="scoreDisplay">0 / 5</span>
+      <span class="score-label">questions answered correctly</span>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q1. You're building an MCP server that runs on a developer's laptop as a local tool. Which transport should you use?</h3>
+      <div class="options" id="q1">
+        <button class="opt" onclick="answer('q1','a','c')">A) HTTP + SSE — most compatible</button>
+        <button class="opt" onclick="answer('q1','b','c')">B) WebSockets — lowest latency</button>
+        <button class="opt" onclick="answer('q1','c','c')">C) stdio — zero network overhead, perfect for local subprocess tools</button>
+        <button class="opt" onclick="answer('q1','d','c')">D) gRPC — most performant</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q2. Why does HTTP+SSE work better than WebSockets in enterprise environments?</h3>
+      <div class="options" id="q2">
+        <button class="opt" onclick="answer('q2','a','b')">A) SSE has lower message overhead than WebSocket frames</button>
+        <button class="opt" onclick="answer('q2','b','b')">B) Corporate proxies and firewalls commonly block WebSocket upgrades, while standard HTTP traffic passes through</button>
+        <button class="opt" onclick="answer('q2','c','b')">C) WebSockets require a dedicated server while SSE runs on shared infrastructure</button>
+        <button class="opt" onclick="answer('q2','d','b')">D) The A2A spec prohibits WebSockets in enterprise contexts</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q3. In HTTP+SSE transport, how does the client send a request to the server?</h3>
+      <div class="options" id="q3">
+        <button class="opt" onclick="answer('q3','a','c')">A) By writing JSON to the open SSE stream</button>
+        <button class="opt" onclick="answer('q3','b','c')">B) By triggering a server-side event via a GET parameter</button>
+        <button class="opt" onclick="answer('q3','c','c')">C) Via HTTP POST to the <code>/message</code> endpoint while the SSE GET connection stays open for responses</button>
+        <button class="opt" onclick="answer('q3','d','c')">D) By closing and reopening the SSE connection with new headers</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q4. Which transport requires "sticky session" configuration when used with a load balancer?</h3>
+      <div class="options" id="q4">
+        <button class="opt" onclick="answer('q4','a','b')">A) stdio</button>
+        <button class="opt" onclick="answer('q4','b','b')">B) WebSockets — persistent connections must route to the same backend</button>
+        <button class="opt" onclick="answer('q4','c','b')">C) HTTP + SSE</button>
+        <button class="opt" onclick="answer('q4','d','b')">D) All three require sticky sessions</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
+    </div>
+
+    <div class="quiz-card">
+      <h3>Q5. A remote MCP server receives 500 tool calls per second with sub-50ms latency requirements. Which transport is most appropriate?</h3>
+      <div class="options" id="q5">
+        <button class="opt" onclick="answer('q5','a','b')">A) stdio — lowest overhead</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) WebSockets — full-duplex, low per-message overhead suits high-frequency remote traffic</button>
+        <button class="opt" onclick="answer('q5','c','b')">C) HTTP+SSE — standard and firewall-friendly</button>
+        <button class="opt" onclick="answer('q5','d','b')">D) HTTP polling every 100ms</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
+    </div>
+  </div>
+
+</div>
+<script>
+// ── TRANSPORT TABS ────────────────────────────────────────────────
+function showTransport(id, btn) {
+  document.querySelectorAll('.t-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.transport-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+// ── DECISION TREE ─────────────────────────────────────────────────
+const dtTree = [
+  {
+    id: 0,
+    q: 'Is the MCP/A2A server running on the <strong>same machine</strong> as the agent?',
+    opts: [
+      { label: 'Yes — local process', next: 'result-stdio' },
+      { label: 'No — remote / network', next: 1 }
+    ]
+  },
+  {
+    id: 1,
+    q: 'Does the deployment need to cross <strong>corporate firewalls or CDN proxies</strong>?',
+    opts: [
+      { label: 'Yes — enterprise / cloud', next: 'result-sse' },
+      { label: 'No — internal controlled network', next: 2 }
+    ]
+  },
+  {
+    id: 2,
+    q: 'Is message frequency <strong>very high</strong> (100+ msgs/sec) or do you need truly bidirectional push?',
+    opts: [
+      { label: 'Yes — high-frequency / bidirectional', next: 'result-ws' },
+      { label: 'No — normal throughput', next: 'result-sse' }
+    ]
+  }
+];
+const dtResults = {
+  'result-stdio': { title: '→ Use stdio', body: 'Local subprocess transport. Zero network overhead. Client spawns the server process and communicates via stdin/stdout. Perfect for IDE plugins, desktop agents, and developer machine tools.' },
+  'result-sse': { title: '→ Use HTTP + SSE', body: 'The standard remote transport. Works through all HTTP-compatible proxies and firewalls. HTTP POST for client requests, SSE GET stream for server events. Horizontally scalable with standard load balancers.' },
+  'result-ws': { title: '→ Use WebSockets', body: 'Full-duplex persistent connection. Best for high-frequency messaging (&gt;100/sec) on internal or controlled networks. Requires sticky-session load balancing. Not yet the primary MCP/A2A standard but emerging.' }
+};
+
+let dtPath = [];
+let dtCurrent = 0;
+
+function renderDT() {
+  const node = dtTree.find(n => n.id === dtCurrent);
+  const bc = document.getElementById('dt-breadcrumb');
+  bc.innerHTML = dtPath.length ? 'Path: ' + dtPath.map(p => `<span>${p}</span>`).join(' → ') : '';
+  if (!node) return;
+  document.getElementById('dt-content').innerHTML = `
+    <div class="dt-q">
+      <h4>${node.q}</h4>
+      <div class="dt-opts">
+        ${node.opts.map((o,i) => `<button class="dt-opt" onclick="dtChoose('${o.next}','${o.label.replace(/'/g,"\\'")}',${i})">${o.label}</button>`).join('')}
+      </div>
+    </div>
+    <div class="dt-result" id="dt-result"></div>`;
+}
+
+function dtChoose(next, label) {
+  dtPath.push(label);
+  if (next.startsWith('result-')) {
+    const r = dtResults[next];
+    const bc = document.getElementById('dt-breadcrumb');
+    bc.innerHTML = 'Path: ' + dtPath.map(p => `<span>${p}</span>`).join(' → ');
+    document.getElementById('dt-content').innerHTML = `
+      <div class="dt-result show">
+        <h4>${r.title}</h4>
+        <p>${r.body}</p>
+        <button class="dt-reset" onclick="dtReset()">Start over</button>
+      </div>`;
+  } else {
+    dtCurrent = parseInt(next);
+    renderDT();
+  }
+}
+
+function dtReset() {
+  dtPath = [];
+  dtCurrent = 0;
+  renderDT();
+}
+
+renderDT();
+
+// ── QUIZ ─────────────────────────────────────────────────────────
+let score = 0;
+const answered = {};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    const msgs = {
+      q1: 'stdio is the correct choice for local MCP servers. The client spawns the server as a subprocess and communicates via stdin/stdout — zero network overhead, ideal for developer tools.',
+      q2: 'WebSocket connections require an HTTP Upgrade handshake that many enterprise proxies block. Standard HTTP+SSE uses only normal HTTP, which passes through without issues.',
+      q3: 'In HTTP+SSE, the client sends requests via HTTP POST to /message. The SSE stream (opened via GET /sse) is one-directional server→client only — the client cannot write to it.',
+      q4: 'WebSockets establish persistent TCP connections. When load balancing, subsequent messages on the same connection must route to the same backend server — requiring sticky sessions.',
+      q5: 'For high-frequency remote traffic with strict latency requirements, WebSockets\' full-duplex low-overhead frames outperform the HTTP round-trip overhead of SSE.'
+    };
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => { o.disabled = false; o.classList.remove('correct','wrong'); });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

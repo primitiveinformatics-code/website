@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.5 The 4 Types of Memory — Agentic AI</title>
+<style>
+  :root {
+    --bg:#0f1117;--surface:#1a1d27;--card:#21263a;
+    --accent:#6c63ff;--accent2:#00d2ff;
+    --green:#06d6a0;--yellow:#ffd166;--red:#ff6584;--orange:#ff9f43;
+    --text:#e8eaf6;--muted:#8892b0;--border:rgba(108,99,255,0.2);
+    --wm:#6c63ff;--ep:#00d2ff;--sm:#ffd166;--pm:#06d6a0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding-bottom:80px;}
+
+  nav{display:flex;align-items:center;gap:10px;padding:16px 32px;border-bottom:1px solid var(--border);background:rgba(15,17,23,.9);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);}
+  .nav-home{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;transition:color .2s;}
+  .nav-home:hover{color:var(--text);}
+  .nav-sep{color:var(--border);}
+  .nav-current{color:var(--accent);font-size:13px;font-weight:700;}
+  .nav-arrows{margin-left:auto;display:flex;gap:8px;}
+  .nav-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;}
+  .nav-btn:hover{background:var(--accent);color:white;border-color:var(--accent);}
+
+  .hero{padding:56px 40px 44px;max-width:960px;margin:0 auto;}
+  .concept-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:20px;}
+  h1{font-size:clamp(26px,3.5vw,44px);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:16px;}
+  .hero-lead{font-size:17px;color:var(--muted);line-height:1.7;max-width:680px;}
+
+  .content{max-width:960px;margin:0 auto;padding:0 40px;}
+  .section{margin-bottom:52px;}
+  .section-title{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* ── MEMORY CARDS ── */
+  .mem-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .mem-tab{padding:10px 20px;border-radius:10px;border:2px solid transparent;font-size:13px;font-weight:700;cursor:pointer;transition:all .25s;background:var(--card);}
+  .mem-tab[data-mem="wm"]{color:var(--wm);}
+  .mem-tab[data-mem="ep"]{color:var(--ep);}
+  .mem-tab[data-mem="sm"]{color:var(--sm);}
+  .mem-tab[data-mem="pm"]{color:var(--pm);}
+  .mem-tab.active[data-mem="wm"]{border-color:var(--wm);background:rgba(108,99,255,.1);}
+  .mem-tab.active[data-mem="ep"]{border-color:var(--ep);background:rgba(0,210,255,.08);}
+  .mem-tab.active[data-mem="sm"]{border-color:var(--sm);background:rgba(255,209,102,.08);}
+  .mem-tab.active[data-mem="pm"]{border-color:var(--pm);background:rgba(6,214,160,.08);}
+
+  .mem-panel{display:none;}
+  .mem-panel.active{display:block;}
+  .mem-card-big{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .mem-card-big.wm{border-top:3px solid var(--wm);}
+  .mem-card-big.ep{border-top:3px solid var(--ep);}
+  .mem-card-big.sm{border-top:3px solid var(--sm);}
+  .mem-card-big.pm{border-top:3px solid var(--pm);}
+  .mem-main h3{font-size:22px;font-weight:800;margin-bottom:4px;}
+  .mem-main .subtitle{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+  .mem-main p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:14px;}
+  .mem-analogy{background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.6;}
+  .mem-analogy strong{color:var(--text);}
+  .mem-specs{display:flex;flex-direction:column;gap:12px;}
+  .spec-row{display:flex;flex-direction:column;gap:3px;}
+  .spec-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+  .spec-val{font-size:14px;font-weight:600;color:var(--text);}
+  .spec-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:4px;}
+  .spec-fill{height:100%;border-radius:3px;transition:width .8s ease;}
+  .mem-points{margin-top:20px;display:flex;flex-direction:column;gap:8px;}
+  .mem-point{font-size:13px;color:var(--muted);line-height:1.55;display:flex;gap:8px;}
+
+  /* ── COMPARISON TABLE ── */
+  .cmp-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .cmp-table th{padding:12px 14px;background:rgba(255,255,255,.04);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);text-align:left;}
+  .cmp-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.55;color:var(--text);}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .cmp-table td:first-child{font-weight:700;white-space:nowrap;}
+  .badge-wm{background:rgba(108,99,255,.15);color:var(--wm);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-ep{background:rgba(0,210,255,.1);color:var(--ep);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-sm{background:rgba(255,209,102,.1);color:var(--sm);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-pm{background:rgba(6,214,160,.1);color:var(--pm);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+
+  /* ── DRAG-AND-DROP SORTER ── */
+  .sorter-instruction{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+  .sorter-container{display:flex;gap:16px;flex-wrap:wrap;}
+  .sorter-col{flex:1;min-width:200px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;min-height:200px;}
+  .sorter-col-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center;}
+  .sorter-items{display:flex;flex-direction:column;gap:8px;}
+  .draggable-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .drag-item{background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);color:var(--accent);padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:grab;user-select:none;transition:all .2s;}
+  .drag-item:hover{background:rgba(108,99,255,.22);transform:translateY(-1px);}
+  .drag-item.dragging{opacity:.4;cursor:grabbing;}
+  .drop-zone{min-height:60px;border:2px dashed rgba(255,255,255,.1);border-radius:10px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;transition:border-color .2s;}
+  .drop-zone.over{border-color:var(--accent);}
+  .drop-zone .drag-item{background:rgba(108,99,255,.18);border-color:rgba(108,99,255,.4);}
+  .check-btn{background:var(--accent);color:white;border:none;padding:10px 24px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
+  .check-btn:hover{background:#5a52e0;transform:scale(1.02);}
+  .sort-result{margin-top:14px;padding:14px 18px;border-radius:10px;font-size:13.5px;line-height:1.6;display:none;}
+  .sort-result.show{display:block;}
+  .sort-result.good{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);color:var(--green);}
+  .sort-result.bad{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.25);color:#ff8fa3;}
+  .reset-sort{margin-top:10px;background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border);padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}
+
+  /* ── QUIZ ── */
+  .quiz-set{display:flex;flex-direction:column;gap:24px;}
+  .quiz-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;}
+  .quiz-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .quiz-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:18px;line-height:1.55;}
+  .quiz-options{display:flex;flex-direction:column;gap:9px;}
+  .quiz-option{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:13.5px;color:var(--muted);transition:all .2s;text-align:left;}
+  .quiz-option:hover:not(:disabled){background:rgba(108,99,255,.1);border-color:rgba(108,99,255,.3);color:var(--text);}
+  .quiz-option.correct{background:rgba(6,214,160,.12);border-color:#06d6a0;color:#06d6a0;}
+  .quiz-option.wrong{background:rgba(255,101,132,.1);border-color:#ff6584;color:#ff6584;}
+  .quiz-feedback{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:13.5px;line-height:1.6;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);color:#06d6a0;}
+  .quiz-feedback.wrong{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.25);color:#ff8fa3;}
+  .quiz-reset{margin-top:12px;background:var(--accent);color:white;border:none;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:none;}
+  .quiz-reset.show{display:inline-block;}
+  .score-box{background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(0,210,255,.08));border:1px solid rgba(108,99,255,.3);border-radius:14px;padding:20px 26px;text-align:center;margin-top:24px;display:none;}
+  .score-box.show{display:block;}
+  .score-num{font-size:42px;font-weight:900;color:var(--accent);}
+  .score-label{font-size:13px;color:var(--muted);margin-top:4px;}
+
+  .takeaway{background:linear-gradient(135deg,rgba(108,99,255,.12) 0%,rgba(0,210,255,.06) 100%);border:1px solid rgba(108,99,255,.3);border-left:4px solid var(--accent);border-radius:12px;padding:22px 26px;font-size:15px;color:var(--text);line-height:1.7;}
+  .takeaway strong{color:var(--accent2);}
+
+  @media(max-width:700px){.hero,.content{padding-left:20px;padding-right:20px;}.mem-card-big{grid-template-columns:1fr;}.sorter-container{flex-direction:column;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-home">← All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">1.5 The 4 Types of Memory</span>
+  <div class="nav-arrows">
+    <a href="concept_1_4.html" class="nav-btn">← ReAct Loop</a>
+    <a href="concept_1_6.html" class="nav-btn">Prototype Gap →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="concept-badge">Session 1 · Pre-Course · Concept 1.5</div>
+  <h1>The 4 Types of Memory</h1>
+  <p class="hero-lead">Without memory, every agent loop iteration starts from scratch. Memory is what makes agents coherent, efficient, and capable over long multi-step tasks. Each of the 4 types serves a distinct role — knowing which to use, and when, is the difference between a functional agent and an expensive one.</p>
+</div>
+
+<div class="content">
+
+  <!-- INTERACTIVE MEMORY EXPLORER -->
+  <div class="section">
+    <div class="section-title">Explore Each Memory Type</div>
+    <div class="mem-tabs">
+      <button class="mem-tab active" data-mem="wm" onclick="showMem('wm',this)">🧠 Working Memory</button>
+      <button class="mem-tab" data-mem="ep" onclick="showMem('ep',this)">📓 Episodic Memory</button>
+      <button class="mem-tab" data-mem="sm" onclick="showMem('sm',this)">📚 Semantic Memory</button>
+      <button class="mem-tab" data-mem="pm" onclick="showMem('pm',this)">⚙️ Procedural Memory</button>
+    </div>
+
+    <!-- Working Memory -->
+    <div class="mem-panel active" id="mp-wm">
+      <div class="mem-card-big wm">
+        <div class="mem-main">
+          <h3 style="color:var(--wm)">Working Memory</h3>
+          <div class="subtitle" style="color:var(--wm)">≈ RAM · Context Window</div>
+          <p>Working memory is everything the agent can "see" right now — the system prompt, the current task, conversation history, and the results of recent tool calls. It lives inside the context window and is rebuilt fresh for every LLM call.</p>
+          <div class="mem-analogy"><strong>Computer analogy:</strong> RAM. Fast, immediately accessible, but completely lost when the process ends. You can't fit your entire hard drive into RAM — same as you can't fit all knowledge into the context window.</div>
+          <div class="mem-points">
+            <div class="mem-point"><span style="color:var(--wm);flex-shrink:0">▸</span>Finite capacity: 8K–200K tokens depending on model</div>
+            <div class="mem-point"><span style="color:var(--wm);flex-shrink:0">▸</span>Volatile: cleared at end of session or when context is reset</div>
+            <div class="mem-point"><span style="color:var(--wm);flex-shrink:0">▸</span>When full: use context compression — summarise old turns</div>
+            <div class="mem-point"><span style="color:var(--wm);flex-shrink:0">▸</span>Failure mode: "Context Drift" — system prompt gets pushed back, agent forgets its directive</div>
+          </div>
+        </div>
+        <div class="mem-specs">
+          <div class="spec-row"><div class="spec-label">Speed</div><div class="spec-val">Instant</div><div class="spec-bar"><div class="spec-fill" style="width:100%;background:var(--wm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Capacity</div><div class="spec-val">8K – 200K tokens</div><div class="spec-bar"><div class="spec-fill" style="width:35%;background:var(--wm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Persistence</div><div class="spec-val">None (volatile)</div><div class="spec-bar"><div class="spec-fill" style="width:5%;background:var(--wm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Use in agents</div><div class="spec-val" style="font-size:13px">Immediate reasoning, scratchpad, tool results, history</div></div>
+          <div class="spec-row"><div class="spec-label">Implementation</div><div class="spec-val" style="font-size:13px">System prompt + messages array passed to LLM API</div></div>
+          <div class="spec-row"><div class="spec-label">Human brain equiv.</div><div class="spec-val" style="font-size:13px">Short-term working memory (7±2 items)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Episodic Memory -->
+    <div class="mem-panel" id="mp-ep">
+      <div class="mem-card-big ep">
+        <div class="mem-main">
+          <h3 style="color:var(--ep)">Episodic Memory</h3>
+          <div class="subtitle" style="color:var(--ep)">≈ Activity Log · Past Episodes</div>
+          <p>Episodic memory is a structured log of what the agent did in past sessions — sequences of actions, what worked, what failed, and why. It's the backbone of the Reflexion pattern, where agents review failed attempts and plan better on the next try.</p>
+          <div class="mem-analogy"><strong>Computer analogy:</strong> Application logs or an audit trail. You can query it to understand what happened, replay specific sequences, and identify recurring failure patterns.</div>
+          <div class="mem-points">
+            <div class="mem-point"><span style="color:var(--ep);flex-shrink:0">▸</span>Stores sequences of (action, observation, outcome) tuples</div>
+            <div class="mem-point"><span style="color:var(--ep);flex-shrink:0">▸</span>Enables Reflexion: agent reviews why attempt N failed, retries smarter</div>
+            <div class="mem-point"><span style="color:var(--ep);flex-shrink:0">▸</span>Persistent across sessions — survives context resets</div>
+            <div class="mem-point"><span style="color:var(--ep);flex-shrink:0">▸</span>Implementation: SQLite/PostgreSQL log, retrieved via timestamps or episode IDs</div>
+          </div>
+        </div>
+        <div class="mem-specs">
+          <div class="spec-row"><div class="spec-label">Speed</div><div class="spec-val">Medium (DB query)</div><div class="spec-bar"><div class="spec-fill" style="width:55%;background:var(--ep)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Capacity</div><div class="spec-val">Effectively unlimited</div><div class="spec-bar"><div class="spec-fill" style="width:90%;background:var(--ep)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Persistence</div><div class="spec-val">High (database)</div><div class="spec-bar"><div class="spec-fill" style="width:85%;background:var(--ep)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Use in agents</div><div class="spec-val" style="font-size:13px">Reflexion loop, failure analysis, task replay</div></div>
+          <div class="spec-row"><div class="spec-label">Implementation</div><div class="spec-val" style="font-size:13px">Structured log (SQL), retrieved by session ID or time range</div></div>
+          <div class="spec-row"><div class="spec-label">Human brain equiv.</div><div class="spec-val" style="font-size:13px">Autobiographical memory ("what I did last Tuesday")</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Semantic Memory -->
+    <div class="mem-panel" id="mp-sm">
+      <div class="mem-card-big sm">
+        <div class="mem-main">
+          <h3 style="color:var(--sm)">Semantic Memory</h3>
+          <div class="subtitle" style="color:var(--sm)">≈ Hard Drive · Knowledge Base</div>
+          <p>Semantic memory is the agent's long-term factual knowledge store — documents, policies, product manuals, code repositories, customer data. Stored as vector embeddings, retrieved by semantic similarity (RAG). This is what gives agents access to private company knowledge.</p>
+          <div class="mem-analogy"><strong>Computer analogy:</strong> Your hard drive — vast, persistent, but you must explicitly look things up. The key technology is the vector database, which retrieves by meaning rather than exact keyword match.</div>
+          <div class="mem-points">
+            <div class="mem-point"><span style="color:var(--sm);flex-shrink:0">▸</span>Stored as vector embeddings (1,536 floats per chunk)</div>
+            <div class="mem-point"><span style="color:var(--sm);flex-shrink:0">▸</span>Retrieved via cosine similarity search (RAG pipeline)</div>
+            <div class="mem-point"><span style="color:var(--sm);flex-shrink:0">▸</span>Powers access to private data LLMs were never trained on</div>
+            <div class="mem-point"><span style="color:var(--sm);flex-shrink:0">▸</span>Tools: Pinecone, Weaviate, ChromaDB, pgvector</div>
+          </div>
+        </div>
+        <div class="mem-specs">
+          <div class="spec-row"><div class="spec-label">Speed</div><div class="spec-val">Fast (ANN search)</div><div class="spec-bar"><div class="spec-fill" style="width:75%;background:var(--sm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Capacity</div><div class="spec-val">Millions of chunks</div><div class="spec-bar"><div class="spec-fill" style="width:100%;background:var(--sm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Persistence</div><div class="spec-val">High (vector DB)</div><div class="spec-bar"><div class="spec-fill" style="width:95%;background:var(--sm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Use in agents</div><div class="spec-val" style="font-size:13px">RAG, knowledge lookup, document Q&amp;A, policy retrieval</div></div>
+          <div class="spec-row"><div class="spec-label">Implementation</div><div class="spec-val" style="font-size:13px">Embed → store → similarity search → inject into context</div></div>
+          <div class="spec-row"><div class="spec-label">Human brain equiv.</div><div class="spec-val" style="font-size:13px">General world knowledge ("Paris is the capital of France")</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Procedural Memory -->
+    <div class="mem-panel" id="mp-pm">
+      <div class="mem-card-big pm">
+        <div class="mem-main">
+          <h3 style="color:var(--pm)">Procedural Memory</h3>
+          <div class="subtitle" style="color:var(--pm)">≈ Muscle Memory · Skills</div>
+          <p>Procedural memory is the agent's library of HOW to do things — reusable prompt templates, workflow patterns, few-shot examples that teach the agent how to approach recurring task types. It's implicit knowledge baked into the system prompt or retrieved as-needed.</p>
+          <div class="mem-analogy"><strong>Computer analogy:</strong> Saved scripts, macros, or function libraries. Rather than re-solving how to format a report from scratch each time, the agent has a template that captures best practice.</div>
+          <div class="mem-points">
+            <div class="mem-point"><span style="color:var(--pm);flex-shrink:0">▸</span>Stored as prompt templates and few-shot example libraries</div>
+            <div class="mem-point"><span style="color:var(--pm);flex-shrink:0">▸</span>Injected into the system prompt or working memory on demand</div>
+            <div class="mem-point"><span style="color:var(--pm);flex-shrink:0">▸</span>Reduces token cost and reasoning overhead for routine tasks</div>
+            <div class="mem-point"><span style="color:var(--pm);flex-shrink:0">▸</span>Learned over time via Reflexion — successful strategies become templates</div>
+          </div>
+        </div>
+        <div class="mem-specs">
+          <div class="spec-row"><div class="spec-label">Speed</div><div class="spec-val">Instant (pre-loaded)</div><div class="spec-bar"><div class="spec-fill" style="width:100%;background:var(--pm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Capacity</div><div class="spec-val">Limited by design</div><div class="spec-bar"><div class="spec-fill" style="width:40%;background:var(--pm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Persistence</div><div class="spec-val">High (file-based)</div><div class="spec-bar"><div class="spec-fill" style="width:90%;background:var(--pm)"></div></div></div>
+          <div class="spec-row"><div class="spec-label">Use in agents</div><div class="spec-val" style="font-size:13px">Task templates, few-shot examples, workflow scripts</div></div>
+          <div class="spec-row"><div class="spec-label">Implementation</div><div class="spec-val" style="font-size:13px">YAML/JSON prompt library, versioned in Git</div></div>
+          <div class="spec-row"><div class="spec-label">Human brain equiv.</div><div class="spec-val" style="font-size:13px">Riding a bike, typing — automatic, no conscious effort</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="section">
+    <div class="section-title">Side-by-Side Comparison</div>
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:14px;">
+      <table class="cmp-table">
+        <thead><tr>
+          <th>Memory Type</th><th>Analogy</th><th>Persistence</th><th>Access Pattern</th><th>Primary Use</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><span class="badge-wm">Working</span></td><td>RAM</td><td>None (volatile)</td><td>Always visible to LLM</td><td>Immediate reasoning, tool results, scratchpad</td></tr>
+          <tr><td><span class="badge-ep">Episodic</span></td><td>Activity Log</td><td>Database</td><td>Query by session/time</td><td>Reflexion, failure review, past task replay</td></tr>
+          <tr><td><span class="badge-sm">Semantic</span></td><td>Hard Drive</td><td>Vector DB</td><td>Similarity search (RAG)</td><td>Private knowledge, documents, policies</td></tr>
+          <tr><td><span class="badge-pm">Procedural</span></td><td>Muscle Memory</td><td>Files / Git</td><td>Injected via system prompt</td><td>Task templates, few-shot examples, workflows</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CLASSIFY EXERCISE -->
+  <div class="section">
+    <div class="section-title">Interactive Exercise — Classify Each Memory Use Case</div>
+    <p class="sorter-instruction">Drag each scenario into the correct memory type column. Or click the "Check Answers" button after selecting from the dropdowns below.</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;" id="classify-form">
+    </div>
+    <button class="check-btn" onclick="checkClassify()">Check Answers</button>
+    <div class="sort-result" id="sort-result"></div>
+    <button class="reset-sort" id="reset-classify" onclick="resetClassify()" style="display:none">Reset Exercise</button>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <div class="section">
+    <div class="section-title">Key Takeaway</div>
+    <div class="takeaway">Memory architecture is one of the most important design decisions in agentic AI. <strong>Working memory is finite — once it fills up, the agent degrades.</strong> Long-running tasks need Semantic memory (RAG) for knowledge and Episodic memory for continuity. Production agents combine all four types, each serving its specific role.</div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="section-title">Knowledge Check — 5 Questions</div>
+    <div class="quiz-set">
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 1 of 5</div>
+        <div class="quiz-q">An agent needs to access your company's internal policy documents during a task. Which memory type is the correct architectural choice?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Working Memory — put the documents in the system prompt</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Episodic Memory — log the documents as past episodes</button>
+          <button class="quiz-option" onclick="qa(this,true,'q1')">Semantic Memory — embed the documents in a vector database, retrieve relevant chunks via RAG when needed</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Procedural Memory — store them as prompt templates</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q1"></div>
+        <button class="quiz-reset" id="rst-q1" onclick="resetQ('q1')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 2 of 5</div>
+        <div class="quiz-q">An agent keeps making the same mistake across sessions — it always misformats its JSON output. Which memory type and pattern would fix this?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Working Memory — add more examples to the context each time</button>
+          <button class="quiz-option" onclick="qa(this,true,'q2')">Procedural Memory + Episodic Memory — log the failure in Episodic, extract a corrective template into Procedural, inject it going forward</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Semantic Memory — store the correct format in a vector database</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Switch to a better LLM model</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q2"></div>
+        <button class="quiz-reset" id="rst-q2" onclick="resetQ('q2')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 3 of 5</div>
+        <div class="quiz-q">An agent is running a 100-turn research session. At turn 80, its responses start drifting — it seems to forget its core objective. What is the most likely cause?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,true,'q3')">Working Memory (context window) has filled up, pushing the system prompt out — this is "Context Drift"</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">The Semantic Memory vector database is returning irrelevant chunks</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">The LLM model has a 100-turn limit built in</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">Episodic Memory is overwriting the agent's current goal</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q3"></div>
+        <button class="quiz-reset" id="rst-q3" onclick="resetQ('q3')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 4 of 5</div>
+        <div class="quiz-q">What is the key difference between Semantic Memory (RAG) and simply putting all your knowledge in the system prompt (Working Memory)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Semantic Memory is faster than Working Memory</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Working Memory can't store text documents</button>
+          <button class="quiz-option" onclick="qa(this,true,'q4')">Working Memory is finite (8K–200K tokens) — Semantic Memory scales to millions of documents and only injects what's relevant per query</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Semantic Memory uses GPT-4; Working Memory uses cheaper models</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q4"></div>
+        <button class="quiz-reset" id="rst-q4" onclick="resetQ('q4')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 5 of 5</div>
+        <div class="quiz-q">Which memory type is described as "the agent's muscle memory" — and why is that analogy accurate?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Working Memory — it's always active and automatic</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Semantic Memory — it stores deeply embedded knowledge</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Episodic Memory — it remembers past experiences automatically</button>
+          <button class="quiz-option" onclick="qa(this,true,'q5')">Procedural Memory — it encodes HOW to do tasks (templates, workflows) so the agent executes them without needing to re-derive the approach each time</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q5"></div>
+        <button class="quiz-reset" id="rst-q5" onclick="resetQ('q5')">Try Again</button>
+      </div>
+
+    </div>
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">0/5</div>
+      <div class="score-label">questions answered correctly</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Memory tabs
+function showMem(type, btn) {
+  document.querySelectorAll('.mem-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.mem-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mp-'+type).classList.add('active');
+}
+
+// Classify exercise
+const scenarios = [
+  { text: "The agent retrieves the last 3 failed attempts at a task to plan a better approach this time", answer: "Episodic", hint: "This is reviewing past session logs to improve — classic Episodic Memory / Reflexion pattern." },
+  { text: "The agent searches the company's 500-page HR manual to answer an employee's leave question", answer: "Semantic", hint: "Retrieving from a large document store via similarity search is exactly what Semantic Memory (RAG) does." },
+  { text: "The agent holds the current tool call result and uses it in its next reasoning step", answer: "Working", hint: "Anything in the current context window — including recent tool results — is Working Memory." },
+  { text: "The agent uses a pre-written template to format a weekly status report every Monday", answer: "Procedural", hint: "Reusable task templates and patterns are Procedural Memory — the 'how to do it' knowledge." },
+  { text: "The agent remembers that in last week's session, the user preferred bullet-point summaries", answer: "Episodic", hint: "User preference learned from a past session is an episodic event — stored in the activity log." },
+  { text: "The agent looks up the current product pricing from the internal product database", answer: "Semantic", hint: "Structured factual data retrieved from persistent storage via search = Semantic Memory." },
+];
+
+const types = ["Working", "Episodic", "Semantic", "Procedural"];
+function buildClassify() {
+  const form = document.getElementById('classify-form');
+  form.innerHTML = '';
+  scenarios.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;';
+    row.innerHTML = `
+      <div style="flex:1;font-size:13.5px;color:var(--muted);line-height:1.55;padding-top:4px">${s.text}</div>
+      <select id="sel-${i}" style="background:#11141f;border:1px solid rgba(108,99,255,.3);color:var(--text);padding:7px 12px;border-radius:8px;font-size:13px;cursor:pointer;min-width:130px;">
+        <option value="">— Select —</option>
+        ${types.map(t=>`<option value="${t}">${t}</option>`).join('')}
+      </select>
+    `;
+    form.appendChild(row);
+  });
+}
+buildClassify();
+
+function checkClassify() {
+  let correct = 0;
+  const msgs = [];
+  scenarios.forEach((s, i) => {
+    const sel = document.getElementById('sel-'+i);
+    const val = sel.value;
+    if(val === s.answer) { correct++; sel.style.borderColor='var(--green)'; sel.style.color='var(--green)'; }
+    else { sel.style.borderColor='var(--red)'; sel.style.color='var(--red)'; msgs.push(`Scenario ${i+1}: ${s.hint}`); }
+  });
+  const res = document.getElementById('sort-result');
+  res.className = 'sort-result show ' + (correct === scenarios.length ? 'good' : 'bad');
+  res.innerHTML = correct === scenarios.length
+    ? `✓ Perfect! All ${scenarios.length} scenarios correctly classified. You understand the distinct roles of each memory type.`
+    : `✗ ${correct}/${scenarios.length} correct. Here's what to review:<br><br>` + msgs.map(m=>`• ${m}`).join('<br>');
+  document.getElementById('reset-classify').style.display = 'inline-block';
+}
+
+function resetClassify() {
+  scenarios.forEach((_,i) => {
+    const sel = document.getElementById('sel-'+i);
+    sel.value=''; sel.style.borderColor=''; sel.style.color='';
+  });
+  document.getElementById('sort-result').className = 'sort-result';
+  document.getElementById('reset-classify').style.display = 'none';
+}
+
+// Quiz
+const answers = {};
+const correctFb = {
+  q1:"✓ Correct. Semantic Memory (RAG) is the right pattern. Putting all policy docs in the system prompt (Working Memory) would exhaust the context window immediately and cost a fortune in tokens. RAG embeds the documents and only retrieves the relevant 3–5 chunks per query.",
+  q2:"✓ Exactly right. This is the Reflexion pattern: (1) Episodic Memory records the failure, (2) a review step extracts the lesson, (3) Procedural Memory stores a corrective template that gets injected going forward. This is how agents learn from their mistakes across sessions.",
+  q3:"✓ Correct. This is 'Context Drift' — one of the most common production failures. As tool call results and reasoning fill up the context window, the system prompt (which contains the agent's objective) gets pushed further back and eventually truncated. The fix: periodic context compression or re-injecting the system prompt every N turns.",
+  q4:"✓ Exactly. Working Memory is the bottleneck — even the largest models top out at ~200K tokens (~150,000 words). Semantic Memory scales to millions of documents and retrieves only the 3–8 most relevant chunks per query. The agent gets precision without context overload.",
+  q5:"✓ Right. Procedural Memory encodes SKILLS — how to format a report, how to structure a tool call sequence, how to handle edge cases. Like muscle memory in humans, the agent doesn't 'think through' the procedure from scratch every time. It loads the template and executes."
+};
+const wrongFb = {
+  q1:"✗ Not quite. Working Memory (system prompt) has a finite token limit — stuffing 500+ pages of documents there would exceed any model's context window. The right pattern is Semantic Memory: embed the documents as vectors, retrieve only the relevant paragraphs per query via RAG.",
+  q2:"✗ Not quite. Adding more context each time (Working Memory) is a band-aid — it doesn't prevent the mistake in future sessions. The right pattern is to capture the failure in Episodic Memory (persistent log), extract the lesson, and bake a corrective template into Procedural Memory so every future session benefits.",
+  q3:"✗ Context Drift is the answer here. The Semantic Memory vector database operates independently of the context window. What fills up is the Working Memory (context window) itself. When it fills, the LLM starts truncating the oldest content — typically the system prompt — causing the agent to lose track of its goal.",
+  q4:"✗ Working Memory can store text, and Semantic Memory doesn't require a specific model. The key constraint is scale: Working Memory is capped (even at 200K tokens, that's ~150K words). Semantic Memory stores millions of chunks and retrieves only what's needed per query, keeping the context focused.",
+  q5:"✗ Working Memory is always active but not 'automatic' — it's explicitly constructed each LLM call. Episodic is autobiographical. Semantic is factual knowledge. Procedural Memory is the skill layer — pre-encoded workflows and templates that the agent runs without needing to reason about the approach from scratch."
+};
+
+function qa(btn, isCorrect, qid) {
+  if(answers[qid]!==undefined) return;
+  answers[qid]=isCorrect;
+  const opts=btn.closest('.quiz-box').querySelectorAll('.quiz-option');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect) opts.forEach(o=>{if(o.getAttribute('onclick').includes('true')) o.classList.add('correct');});
+  const fb=document.getElementById('fb-'+qid);
+  fb.className='quiz-feedback show '+(isCorrect?'correct':'wrong');
+  fb.textContent=isCorrect?correctFb[qid]:wrongFb[qid];
+  document.getElementById('rst-'+qid).className='quiz-reset show';
+  updateScore();
+}
+function resetQ(qid) {
+  delete answers[qid];
+  const box=document.getElementById('fb-'+qid).closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(o=>{o.disabled=false;o.className='quiz-option';});
+  document.getElementById('fb-'+qid).className='quiz-feedback';
+  document.getElementById('rst-'+qid).className='quiz-reset';
+  updateScore();
+}
+function updateScore() {
+  const correct=Object.values(answers).filter(Boolean).length;
+  const total=Object.keys(answers).length;
+  if(total>0){
+    document.getElementById('score-box').classList.add('show');
+    document.getElementById('score-num').textContent=correct+'/5 correct';
+  }
+}
+</script>
+</body>
+</html>

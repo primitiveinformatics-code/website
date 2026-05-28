@@ -1,0 +1,555 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.12 RAG Foundations: Why RAG? | Agentic AI</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --green: #06d6a0; --yellow: #ffd166;
+    --blue: #00d2ff; --purple: #c678dd; --orange: #e5c07b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px;
+        display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.85rem; padding: 6px 12px;
+           border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+  nav a:hover { background: var(--surface2); border-color: var(--accent); }
+  nav span { color: var(--muted); font-size: 0.8rem; }
+
+  .hero { background: linear-gradient(135deg, #0a1020 0%, #0a1a10 100%);
+          border-bottom: 1px solid var(--border); padding: 48px 24px 36px; text-align: center; }
+  .hero .tag { display: inline-block; background: rgba(6,214,160,0.12); color: var(--green);
+               border: 1px solid rgba(6,214,160,0.3); border-radius: 20px; padding: 4px 14px;
+               font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+  .hero h1 span { color: var(--green); }
+  .hero p { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1rem; }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 40px 24px; }
+  .section { margin-bottom: 48px; }
+  .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* PROBLEM CARDS â€” interactive */
+  .problem-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 640px) { .problem-row { grid-template-columns: 1fr; } }
+  .prob-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.2s; }
+  .prob-card:hover, .prob-card.active { border-color: var(--green); }
+  .prob-card.active { background: rgba(6,214,160,0.05); }
+  .prob-card .prob-icon { font-size: 2rem; margin-bottom: 10px; }
+  .prob-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--green); }
+  .prob-card p { font-size: 0.83rem; color: var(--muted); }
+  .prob-card .prob-tag { display: inline-block; margin-top: 10px; font-size: 0.75rem; padding: 2px 10px; border-radius: 10px; background: rgba(255,101,132,0.1); color: var(--accent); border: 1px solid rgba(255,101,132,0.25); }
+
+  .solution-panel { background: var(--surface); border: 1px solid var(--green); border-radius: 10px; padding: 24px; display: none; margin-bottom: 24px; }
+  .solution-panel.show { display: block; }
+  .solution-panel h4 { color: var(--green); margin-bottom: 12px; font-size: 1.05rem; }
+  .solution-panel .sol-body { color: var(--text); font-size: 0.9rem; line-height: 1.7; }
+  .solution-panel .sol-body code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--blue); }
+
+  /* COMPARISON TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .comp-table th { background: var(--surface2); padding: 12px 14px; text-align: left; border: 1px solid var(--border); color: var(--muted); font-weight: 600; }
+  .comp-table td { padding: 11px 14px; border: 1px solid var(--border); vertical-align: top; }
+  .comp-table tr:hover td { background: var(--surface); }
+  .comp-table .col-rag th { color: var(--green); }
+  .tag-good { color: var(--green); font-weight: 600; }
+  .tag-bad { color: #f85149; font-weight: 600; }
+  .tag-med { color: var(--yellow); font-weight: 600; }
+
+  /* DECISION MATCHER */
+  .matcher-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media (max-width: 700px) { .matcher-grid { grid-template-columns: 1fr; } }
+  .matcher-left { padding: 20px; border-right: 1px solid var(--border); }
+  .matcher-right { padding: 20px; }
+  .scenario-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .scenario-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; cursor: pointer; font-size: 0.87rem; transition: all 0.2s; }
+  .scenario-item:hover, .scenario-item.active { border-color: var(--green); background: rgba(6,214,160,0.05); }
+  .scenario-item .s-label { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .scenario-item .s-desc { font-size: 0.8rem; color: var(--muted); }
+  .answer-box { background: var(--surface2); border-radius: 10px; padding: 20px; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .answer-box .method-badge { font-size: 1.1rem; font-weight: 700; padding: 8px 20px; border-radius: 20px; margin-bottom: 12px; }
+  .badge-rag { background: rgba(6,214,160,0.15); color: var(--green); border: 1px solid rgba(6,214,160,0.3); }
+  .badge-ft { background: rgba(255,209,102,0.15); color: var(--yellow); border: 1px solid rgba(255,209,102,0.3); }
+  .badge-ic { background: rgba(0,210,255,0.15); color: var(--blue); border: 1px solid rgba(0,210,255,0.3); }
+  .answer-box p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .answer-box .caveats { margin-top: 12px; font-size: 0.8rem; color: var(--orange); }
+  .matcher-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .matcher-header { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .matcher-header div { padding: 10px 20px; background: var(--surface2); border-bottom: 1px solid var(--border); }
+
+  /* RAG ANATOMY */
+  .anatomy-row { display: flex; flex-direction: column; gap: 16px; }
+  .anatomy-step { display: flex; gap: 16px; align-items: flex-start; }
+  .anatomy-step .step-num { width: 36px; height: 36px; border-radius: 50%; background: rgba(6,214,160,0.15); border: 2px solid var(--green); color: var(--green); font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.9rem; }
+  .anatomy-step .step-body h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .anatomy-step .step-body p { font-size: 0.83rem; color: var(--muted); }
+  .connector { width: 2px; height: 20px; background: var(--border); margin: 4px 0 4px 17px; }
+
+  /* INFO BOX */
+  .info-box { background: rgba(6,214,160,0.06); border: 1px solid rgba(6,214,160,0.2); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+  .info-box strong { color: var(--green); }
+
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+        font-family: 'Consolas','Monaco',monospace; font-size: 0.82rem; overflow-x: auto; line-height: 1.6; }
+  .kw { color: #ff7b72; } .str { color: #a5d6ff; } .cm { color: var(--muted); }
+  .fn { color: #d2a8ff; } .cls { color: #ffa657; } .num { color: #79c0ff; }
+
+  /* QUIZ */
+  .quiz-header { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+                 display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .quiz-header h3 { font-size: 1rem; }
+  .score-display { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3);
+                   color: var(--green); padding: 4px 16px; border-radius: 20px; font-weight: 700; font-size: 1rem; }
+  .question { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .question p { font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+         color: var(--text); cursor: pointer; text-align: left; font-size: 0.88rem; transition: all 0.2s; }
+  .opt:hover:not(:disabled) { border-color: var(--green); background: rgba(6,214,160,0.08); }
+  .opt.correct { background: rgba(6,214,160,0.15); border-color: var(--green); color: var(--green); }
+  .opt.wrong { background: rgba(248,81,73,0.15); border-color: #f85149; color: #f85149; }
+  .opt:disabled { cursor: default; }
+  .feedback { margin-top: 10px; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.3); }
+  .feedback.wrong { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+  .reset-btn { margin-top: 8px; background: none; border: 1px solid var(--border); color: var(--muted);
+               padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--green); color: var(--green); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_3_11.html">â† Structured Outputs</a>
+  <span>Session 3 Â· Concept 3.12</span>
+  <a href="concept_3_13.html">RAG Architecture â†’</a>
+</nav>
+<nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
+  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+</nav>
+
+<div class="hero">
+  <div class="tag">Session 3 Â· Concept 3.12</div>
+  <h1>RAG Foundations: <span>Why RAG?</span></h1>
+  <p>The four knowledge problems that LLMs cannot solve alone â€” and why Retrieval-Augmented Generation is the standard answer.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHAT IS RAG -->
+  <div class="section">
+    <div class="section-title">The Core Idea</div>
+    <div class="info-box">
+      <strong>RAG in one sentence:</strong> Instead of asking the model to know everything, give it a search engine â€” retrieve relevant documents at query time, inject them into the context window, then generate a response grounded in those documents.<br><br>
+      <strong>The formula:</strong> RAG = Retrieval (find relevant docs) + Augmentation (add to prompt) + Generation (LLM answers from them)
+    </div>
+    <pre><span class="cm"># The RAG pattern â€” simplified</span>
+<span class="kw">def</span> <span class="fn">rag_query</span>(user_question: str) -> str:
+    <span class="cm"># 1. RETRIEVE â€” find relevant chunks from your knowledge base</span>
+    relevant_docs = vector_db.<span class="fn">search</span>(
+        query=user_question, top_k=<span class="num">5</span>
+    )
+
+    <span class="cm"># 2. AUGMENT â€” inject retrieved docs into the prompt</span>
+    augmented_prompt = f<span class="str">"""
+    Context from knowledge base:
+    {chr(10).join(doc.text for doc in relevant_docs)}
+
+    User question: {user_question}
+    Answer based only on the above context.
+    """</span>
+
+    <span class="cm"># 3. GENERATE â€” LLM answers from retrieved context</span>
+    <span class="kw">return</span> llm.<span class="fn">call</span>(augmented_prompt)</pre>
+  </div>
+
+  <!-- 4 PROBLEMS -->
+  <div class="section">
+    <div class="section-title">4 Knowledge Problems RAG Solves</div>
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:20px;">Click each problem to see how RAG addresses it.</p>
+    <div class="problem-row">
+      <div class="prob-card" onclick="showSolution(0, this)">
+        <div class="prob-icon">ðŸ“…</div>
+        <h4>1. Knowledge Cutoff</h4>
+        <p>LLMs have a training cutoff date. They cannot answer questions about events after their last training run â€” no matter how you ask.</p>
+        <div class="prob-tag">temporal staleness</div>
+      </div>
+      <div class="prob-card" onclick="showSolution(1, this)">
+        <div class="prob-icon">ðŸ¢</div>
+        <h4>2. Private / Proprietary Data</h4>
+        <p>Your company's internal docs, Confluence pages, Jira tickets, and product specs were never in the training set. The model simply doesn't know them.</p>
+        <div class="prob-tag">domain gap</div>
+      </div>
+      <div class="prob-card" onclick="showSolution(2, this)">
+        <div class="prob-icon">ðŸ”</div>
+        <h4>3. Grounding & Citations</h4>
+        <p>Without source documents, the model cannot cite where an answer came from. You can't audit hallucinations or verify accuracy.</p>
+        <div class="prob-tag">traceability</div>
+      </div>
+      <div class="prob-card" onclick="showSolution(3, this)">
+        <div class="prob-icon">ðŸ’¾</div>
+        <h4>4. Context Window Limits</h4>
+        <p>You can't stuff an entire knowledge base into the context window. A 100k-document corpus at 500 tokens each = 50M tokens â€” far beyond any model's limit.</p>
+        <div class="prob-tag">scale</div>
+      </div>
+    </div>
+    <div class="solution-panel" id="solution-panel">
+      <h4 id="sol-title"></h4>
+      <div class="sol-body" id="sol-body"></div>
+    </div>
+  </div>
+
+  <!-- COMPARISON -->
+  <div class="section">
+    <div class="section-title">RAG vs Fine-Tuning vs In-Context Learning</div>
+    <div style="overflow-x:auto;">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th style="color:var(--green);">RAG</th>
+            <th style="color:var(--yellow);">Fine-Tuning</th>
+            <th style="color:var(--blue);">In-Context Learning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Knowledge update</strong></td>
+            <td><span class="tag-good">Real-time</span> â€” update the vector DB, not the model</td>
+            <td><span class="tag-bad">Hoursâ€“days</span> to retrain and redeploy</td>
+            <td><span class="tag-good">Instant</span> â€” just change the prompt</td>
+          </tr>
+          <tr>
+            <td><strong>Knowledge scale</strong></td>
+            <td><span class="tag-good">Unlimited</span> â€” billions of docs in vector DB</td>
+            <td><span class="tag-med">Limited</span> by training data size / cost</td>
+            <td><span class="tag-bad">Context window only</span> (e.g., ~200K tokens)</td>
+          </tr>
+          <tr>
+            <td><strong>Traceability</strong></td>
+            <td><span class="tag-good">High</span> â€” can return source chunks with answer</td>
+            <td><span class="tag-bad">None</span> â€” knowledge baked into weights opaquely</td>
+            <td><span class="tag-good">Full</span> â€” you put the docs there yourself</td>
+          </tr>
+          <tr>
+            <td><strong>Cost</strong></td>
+            <td><span class="tag-med">Medium</span> â€” embedding + vector DB + inference</td>
+            <td><span class="tag-bad">High</span> â€” GPU hours for each training run</td>
+            <td><span class="tag-good">Low</span> â€” just inference (but bigger context = more tokens)</td>
+          </tr>
+          <tr>
+            <td><strong>Best for</strong></td>
+            <td>Dynamic knowledge bases, internal docs, product search</td>
+            <td>Teaching new skills or style, domain-specific tasks requiring deep adaptation</td>
+            <td>A small known set of examples, few-shot prompting, fixed reference docs</td>
+          </tr>
+          <tr>
+            <td><strong>Hallucination risk</strong></td>
+            <td><span class="tag-good">Lower</span> â€” answer is grounded in retrieved text</td>
+            <td><span class="tag-med">Medium</span> â€” model generalizes from training</td>
+            <td><span class="tag-med">Medium</span> â€” depends on quality of in-context docs</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DECISION MATCHER -->
+  <div class="section">
+    <div class="section-title">Interactive: Choose the Right Approach</div>
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:20px;">Select a scenario to see which knowledge approach fits best.</p>
+    <div class="matcher-wrapper">
+      <div class="matcher-header">
+        <div>ðŸ“‹ Scenario</div>
+        <div>âœ… Recommended Approach</div>
+      </div>
+      <div class="matcher-grid">
+        <div class="matcher-left">
+          <ul class="scenario-list">
+            <li class="scenario-item" onclick="pickScenario(0, this)">
+              <div class="s-label">Company Q&A Bot</div>
+              <div class="s-desc">Answer questions about HR policies, product docs, and internal guides that update monthly.</div>
+            </li>
+            <li class="scenario-item" onclick="pickScenario(1, this)">
+              <div class="s-label">Legal Document Summarizer</div>
+              <div class="s-desc">Model must understand specialized legal tone and output in a strict firm-specific format consistently.</div>
+            </li>
+            <li class="scenario-item" onclick="pickScenario(2, this)">
+              <div class="s-label">Classify 5 Customer Emails</div>
+              <div class="s-desc">Quick one-off task. You have the 5 emails and a rubric. No need to store anything permanently.</div>
+            </li>
+            <li class="scenario-item" onclick="pickScenario(3, this)">
+              <div class="s-label">Live News Analysis</div>
+              <div class="s-desc">Summarize and contextualize breaking news articles published in the last hour.</div>
+            </li>
+            <li class="scenario-item" onclick="pickScenario(4, this)">
+              <div class="s-label">Medical Coding Assistant</div>
+              <div class="s-desc">Suggest ICD-10 codes from free-text clinical notes. Requires mastery of specialized terminology across all codes.</div>
+            </li>
+          </ul>
+        </div>
+        <div class="matcher-right">
+          <div class="answer-box" id="answer-box">
+            <div style="color:var(--muted); font-size:0.9rem;">â† Select a scenario to see the recommendation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RAG ANATOMY OVERVIEW -->
+  <div class="section">
+    <div class="section-title">How RAG Works: The 5 Steps</div>
+    <div class="info-box">This is the high-level flow. The next concept (3.13) dives deep into each of the two pipelines â€” Indexing and Retrieval.</div>
+    <div class="anatomy-row">
+      <div class="anatomy-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Ingest &amp; Chunk</h4>
+          <p>Source documents (PDFs, wikis, Confluence, code) are split into overlapping chunks â€” typically 256â€“512 tokens each. Overlap ensures context isn't lost at chunk boundaries.</p>
+        </div>
+      </div>
+      <div class="connector"></div>
+      <div class="anatomy-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Embed</h4>
+          <p>Each chunk is passed through an embedding model (e.g., <code>text-embedding-3-small</code>, <code>nomic-embed</code>) to produce a dense vector that captures semantic meaning.</p>
+        </div>
+      </div>
+      <div class="connector"></div>
+      <div class="anatomy-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Store in Vector DB</h4>
+          <p>Vectors are stored in a vector database (Pinecone, Weaviate, pgvector, Chroma). The original text is stored as metadata alongside each vector.</p>
+        </div>
+      </div>
+      <div class="connector"></div>
+      <div class="anatomy-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Query-Time Retrieval</h4>
+          <p>The user's question is embedded with the same model, then compared against all stored vectors using cosine similarity (or ANN search). The top-k most similar chunks are returned.</p>
+        </div>
+      </div>
+      <div class="connector"></div>
+      <div class="anatomy-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Augmented Generation</h4>
+          <p>Retrieved chunks are injected into the LLM prompt as context. The model generates an answer grounded in those specific passages, with citations available for traceability.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="quiz-header">
+      <h3>ðŸ§  Knowledge Check</h3>
+      <div class="score-display" id="scoreDisplay">0 / 5</div>
+    </div>
+
+    <div class="question" id="q1">
+      <p>1. What is the primary reason a base LLM cannot answer questions about your company's internal Confluence documentation?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q1','a','b')">a) The context window is too small for large documents</button>
+        <button class="opt" onclick="answer('q1','b','b')">b) The internal docs were never part of the model's training data</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) LLMs can only process text from the internet</button>
+        <button class="opt" onclick="answer('q1','d','b')">d) Fine-tuning is required before any document can be used</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q2">
+      <p>2. You need to build a chatbot over a 500,000-document product catalog that updates daily. Which approach is most appropriate?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q2','a','b')">a) Fine-tune the model daily on the new catalog</button>
+        <button class="opt" onclick="answer('q2','b','b')">b) RAG â€” index the catalog in a vector DB and retrieve relevant products at query time</button>
+        <button class="opt" onclick="answer('q2','c','b')">c) In-context learning â€” paste the full catalog into each prompt</button>
+        <button class="opt" onclick="answer('q2','d','b')">d) Use a larger context window model and load the full catalog once</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q3">
+      <p>3. RAG improves answer grounding primarily because:</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q3','a','c')">a) It uses a larger model with more parameters</button>
+        <button class="opt" onclick="answer('q3','b','c')">b) It runs the query through multiple models and averages the outputs</button>
+        <button class="opt" onclick="answer('q3','c','c')">c) The model generates its answer from specific retrieved passages that can be cited and verified</button>
+        <button class="opt" onclick="answer('q3','d','c')">d) It eliminates the need for embedding models entirely</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q4">
+      <p>4. Why is fine-tuning <em>not</em> a good solution for keeping an LLM up to date with rapidly changing information?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q4','a','b')">a) Fine-tuned models cannot use external tools</button>
+        <button class="opt" onclick="answer('q4','b','b')">b) Retraining takes hours to days and is expensive â€” you can't do it every time data changes</button>
+        <button class="opt" onclick="answer('q4','c','b')">c) Fine-tuning only works on classification tasks</button>
+        <button class="opt" onclick="answer('q4','d','b')">d) Fine-tuned models have smaller context windows</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+    </div>
+
+    <div class="question" id="q5">
+      <p>5. In the RAG pipeline, what is the purpose of the embedding model?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q5','a','c')">a) To generate the final answer based on retrieved documents</button>
+        <button class="opt" onclick="answer('q5','b','c')">b) To split documents into smaller chunks before indexing</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) To convert text into dense vectors that capture semantic meaning for similarity search</button>
+        <button class="opt" onclick="answer('q5','d','c')">d) To compress documents to fit within the context window</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// 4 PROBLEMS
+const solutions = [
+  {
+    title: 'âœ“ RAG Solution: Real-Time Retrieval from Updated Index',
+    body: 'RAG completely sidesteps the training cutoff by retrieving from a live index. When new articles or events are published, you simply <code>embed</code> and <code>upsert</code> them into the vector DB. The model never needs to be retrained â€” its knowledge is as fresh as your indexing pipeline. Pair with a web search tool for true real-time access.'
+  },
+  {
+    title: 'âœ“ RAG Solution: Private Document Indexing',
+    body: 'Index your internal documents â€” Confluence, Notion, SharePoint, Jira, Slack threads, PDF manuals â€” in a private vector DB. The model retrieves only the relevant passages when asked. No proprietary data leaves your infrastructure, and no data is exposed via training. Access control can be enforced at retrieval time using namespace filtering or metadata filters.'
+  },
+  {
+    title: 'âœ“ RAG Solution: Source Chunks as Citations',
+    body: 'When the LLM answers, you can return the retrieved <code>source_chunks</code> alongside the generated text. The answer is literally constructed from specific passages, so you can show the user: "This answer is based on: [Document X, Section 3]." This dramatically reduces hallucination risk and makes the system auditable â€” if an answer is wrong, you can trace exactly which document chunk led to it.'
+  },
+  {
+    title: 'âœ“ RAG Solution: Selective Retrieval = Efficient Context Use',
+    body: 'Instead of loading all 100k documents, RAG retrieves only the top 3â€“10 most relevant chunks (~1,500â€“5,000 tokens) at query time. The vector DB does the heavy lifting with approximate nearest-neighbor (ANN) search across millions of vectors in milliseconds. You get the benefit of a massive knowledge base with the efficiency of a small context window call.'
+  }
+];
+
+let activeProb = null;
+function showSolution(idx, el) {
+  if (activeProb === el && document.getElementById('solution-panel').classList.contains('show')) {
+    document.getElementById('solution-panel').classList.remove('show');
+    el.classList.remove('active');
+    activeProb = null;
+    return;
+  }
+  document.querySelectorAll('.prob-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeProb = el;
+  document.getElementById('sol-title').textContent = solutions[idx].title;
+  document.getElementById('sol-body').innerHTML = solutions[idx].body;
+  document.getElementById('solution-panel').classList.add('show');
+}
+
+// SCENARIOS
+const scenarios = [
+  {
+    method: 'RAG',
+    badge: 'badge-rag',
+    title: 'RAG is the right choice',
+    reason: 'The knowledge base (HR policies, product docs) updates frequently and is private. RAG lets you index new documents without retraining. The model can cite exact policy sections in its answers, giving employees a reliable, auditable source.',
+    caveat: 'âš  Use metadata filters to enforce access control â€” employees shouldn\'t see each other\'s performance docs.'
+  },
+  {
+    method: 'Fine-Tuning',
+    badge: 'badge-ft',
+    title: 'Fine-Tuning is likely better here',
+    reason: 'When the requirement is about behavioral style and output format consistency (not just knowledge), fine-tuning is stronger. Legal tone and firm-specific formatting are best encoded into the model weights. RAG can supplement with current case law, but the style adherence needs fine-tuning.',
+    caveat: 'âš  Consider RAG + Fine-Tuning together: fine-tune for style, RAG for current precedents.'
+  },
+  {
+    method: 'In-Context',
+    badge: 'badge-ic',
+    title: 'In-Context Learning is simplest here',
+    reason: 'You have a fixed, small dataset (5 emails) and a rubric. Just paste them into the prompt with a few-shot classification example. No vector DB or training required. This is the fastest and cheapest option for one-off tasks.',
+    caveat: 'âš  If the volume grows to hundreds of emails regularly, migrate to RAG for scalable semantic routing.'
+  },
+  {
+    method: 'RAG',
+    badge: 'badge-rag',
+    title: 'RAG is the right choice',
+    reason: 'Breaking news changes by the minute â€” fine-tuning is impossible to keep current. In-context learning can\'t fit hours of news. RAG with a live ingestion pipeline (news API â†’ chunk â†’ embed â†’ upsert) enables the model to answer about articles published minutes ago.',
+    caveat: 'âš  Set chunk TTL (time-to-live) to expire old news from the index to avoid stale context.'
+  },
+  {
+    method: 'Fine-Tuning',
+    badge: 'badge-ft',
+    title: 'Fine-Tuning is likely better here',
+    reason: 'ICD-10 has 72,000+ codes with complex hierarchical rules. The model needs deep, internalized knowledge of the coding system â€” not just retrieval. Fine-tuning on annotated clinical coding examples teaches the model the pattern recognition needed for accurate code suggestion.',
+    caveat: 'âš  RAG can still help â€” use it to retrieve code descriptions as context when the model is uncertain.'
+  }
+];
+
+function pickScenario(idx, el) {
+  document.querySelectorAll('.scenario-item').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  const s = scenarios[idx];
+  document.getElementById('answer-box').innerHTML = `
+    <div class="method-badge ${s.badge}">${s.method}</div>
+    <strong style="margin-bottom:8px;">${s.title}</strong>
+    <p>${s.reason}</p>
+    <div class="caveats">${s.caveat}</div>
+  `;
+}
+
+// QUIZ
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'Private internal docs were never in the training set â€” this is the "private/proprietary data" knowledge gap that RAG solves.',
+  q2: 'RAG is designed for exactly this: large, dynamic catalogs where daily updates make fine-tuning impractical and in-context impossible.',
+  q3: 'Grounding comes from generating answers based on specific retrieved source passages â€” which can be cited and audited.',
+  q4: 'Fine-tuning requires expensive GPU training runs taking hours to days â€” it cannot keep up with rapidly changing information.',
+  q5: 'Embedding models convert text to dense vectors for semantic similarity search â€” the foundation of the retrieval step in RAG.'
+};
+
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.8 â€” ReWOO: Reasoning Without Observation</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #ffd166; --accent2: #ff6584; --accent3: #06d6a0; --accent4: #6c63ff;
+    --text: #e8eaf6; --muted: #8892b0; --border: rgba(255,209,102,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  .nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  .nav a:hover { color: var(--text); }
+  .nav-sep { color: var(--border); }
+  .nav-cur { color: var(--accent); font-weight: 700; font-size: 13px; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #0f1117 0%, #1a1422 50%, #1a1d27 100%); padding: 56px 40px 44px; text-align: center; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+  .hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(255,209,102,0.1) 0%, transparent 70%); pointer-events: none; }
+  .hero-badge { display: inline-block; background: rgba(255,209,102,0.12); border: 1px solid rgba(255,209,102,0.35); color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(26px, 4vw, 42px); font-weight: 800; background: linear-gradient(90deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 600px; margin: 0 auto 28px; line-height: 1.6; }
+  .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+  .hstat { text-align: center; }
+  .hstat-n { font-size: 26px; font-weight: 800; color: var(--accent); }
+  .hstat-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* SECTION TITLE */
+  .sec-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* REACT vs REWOO COMPARISON */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 48px; }
+  @media(max-width:700px){ .compare-grid { grid-template-columns: 1fr; } }
+  .cmp-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+  .cmp-box.rewoo { border-color: rgba(255,209,102,0.35); }
+  .cmp-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .cmp-label.react { color: #8892b0; }
+  .cmp-label.rewoo { color: var(--accent); }
+  .step-chain { display: flex; flex-direction: column; gap: 8px; }
+  .step { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.4; }
+  .step.think { background: rgba(108,99,255,0.12); border-left: 3px solid #6c63ff; }
+  .step.act   { background: rgba(255,209,102,0.08); border-left: 3px solid #ffd166; }
+  .step.obs   { background: rgba(0,210,255,0.08); border-left: 3px solid #00d2ff; }
+  .step.plan  { background: rgba(255,209,102,0.12); border-left: 3px solid #ffd166; }
+  .step.work  { background: rgba(6,214,160,0.08); border-left: 3px solid #06d6a0; }
+  .step.solve { background: rgba(255,101,132,0.08); border-left: 3px solid #ff6584; }
+  .step-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .step-label { font-weight: 700; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .step-desc { color: var(--muted); font-size: 12px; }
+  .penalty-badge { display: inline-block; background: rgba(255,101,132,0.15); color: #ff6584; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+  .gain-badge { display: inline-block; background: rgba(6,214,160,0.15); color: #06d6a0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+
+  /* THREE MODULES */
+  .modules-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 48px; }
+  @media(max-width:720px){ .modules-row { grid-template-columns: 1fr; } }
+  .mod-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; text-align: center; }
+  .mod-icon { font-size: 36px; margin-bottom: 10px; }
+  .mod-name { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+  .mod-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .mod-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 10px; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .planner-c { border-color: rgba(108,99,255,0.4); } .planner-c .mod-name { color: #6c63ff; } .planner-c .mod-badge { background: rgba(108,99,255,0.15); color: #6c63ff; }
+  .worker-c  { border-color: rgba(6,214,160,0.4); }  .worker-c .mod-name  { color: #06d6a0; } .worker-c .mod-badge  { background: rgba(6,214,160,0.15);  color: #06d6a0; }
+  .solver-c  { border-color: rgba(255,101,132,0.4); } .solver-c .mod-name  { color: #ff6584; } .solver-c .mod-badge  { background: rgba(255,101,132,0.15); color: #ff6584; }
+
+  /* INTERACTIVE SIMULATOR */
+  .sim-box { background: var(--card); border: 1px solid rgba(255,209,102,0.3); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .sim-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  .sim-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .query-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .qbtn { background: rgba(255,209,102,0.08); border: 1px solid rgba(255,209,102,0.25); color: var(--text); font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+  .qbtn:hover, .qbtn.active { background: rgba(255,209,102,0.2); border-color: var(--accent); color: var(--accent); }
+  .sim-output { display: none; }
+  .sim-output.visible { display: block; }
+  .phases { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media(max-width:680px){ .phases { grid-template-columns: 1fr; } }
+  .phase { border-radius: 12px; padding: 18px; }
+  .phase.ph1 { background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.3); }
+  .phase.ph2 { background: rgba(6,214,160,0.08); border: 1px solid rgba(6,214,160,0.25); }
+  .phase.ph3 { background: rgba(255,101,132,0.08); border: 1px solid rgba(255,101,132,0.25); }
+  .phase-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .ph1 .phase-label { color: #6c63ff; }
+  .ph2 .phase-label { color: #06d6a0; }
+  .ph3 .phase-label { color: #ff6584; }
+  .phase-content { font-size: 12px; line-height: 1.6; color: var(--text); }
+  .phase-content code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; color: var(--accent); }
+  .dep-arrow { color: var(--muted); font-size: 11px; margin: 4px 0; }
+  .savings-bar { margin-top: 16px; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; height: 22px; }
+  .savings-fill { height: 100%; background: linear-gradient(90deg, #06d6a0, #ffd166); border-radius: 8px; display: flex; align-items: center; padding: 0 10px; font-size: 11px; font-weight: 700; color: #000; transition: width 1s ease; }
+
+  /* TRADEOFF TABLE */
+  .tradeoff-table { width: 100%; border-collapse: collapse; margin-bottom: 48px; font-size: 13px; }
+  .tradeoff-table th { background: rgba(255,209,102,0.08); color: var(--accent); font-weight: 700; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .tradeoff-table td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text); vertical-align: top; }
+  .tradeoff-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tag.good { background: rgba(6,214,160,0.15); color: #06d6a0; }
+  .tag.bad  { background: rgba(255,101,132,0.15); color: #ff6584; }
+  .tag.mid  { background: rgba(255,209,102,0.15); color: #ffd166; }
+
+  /* WHEN TO USE */
+  .when-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 48px; }
+  @media(max-width:600px){ .when-grid { grid-template-columns: 1fr; } }
+  .when-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+  .when-box.use { border-color: rgba(6,214,160,0.35); }
+  .when-box.skip { border-color: rgba(255,101,132,0.3); }
+  .when-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .when-box.use .when-title { color: #06d6a0; }
+  .when-box.skip .when-title { color: #ff6584; }
+  .when-item { font-size: 13px; color: var(--muted); padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.5; }
+  .when-item:last-child { border-bottom: none; }
+  .when-item::before { content: 'â€¢ '; color: var(--accent); }
+
+  /* BACK LINK */
+  .back-row { text-align: center; margin-top: 40px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.3); color: var(--accent); padding: 10px 24px; border-radius: 30px; text-decoration: none; font-size: 13px; font-weight: 700; transition: all 0.2s; }
+  .back-btn:hover { background: rgba(255,209,102,0.2); }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="main-course.html">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-cur">4.8 â€” ReWOO: Reasoning Without Observation</span>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
+  <h1>ReWOO â€” Reasoning Without Observation</h1>
+  <p>Plan everything upfront, execute in parallel â€” eliminating the expensive think-act-observe cycle</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">3Ã—</div><div class="hstat-l">Fewer LLM Calls</div></div>
+    <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">Modules</div></div>
+    <div class="hstat"><div class="hstat-n">~60%</div><div class="hstat-l">Token Savings</div></div>
+    <div class="hstat"><div class="hstat-n">âš¡</div><div class="hstat-l">Parallel Workers</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- REACT vs REWOO -->
+  <div class="sec-title">ReAct vs ReWOO â€” The Core Difference</div>
+  <div class="compare-grid">
+    <div class="cmp-box">
+      <div class="cmp-label react">âš  ReAct â€” Sequential, Observation-Dependent</div>
+      <div class="step-chain">
+        <div class="step think"><span class="step-icon">ðŸ§ </span><div><div class="step-label">Think</div><div class="step-desc">What tool should I call?</div></div></div>
+        <div class="step act"><span class="step-icon">ðŸ”§</span><div><div class="step-label">Act<span class="penalty-badge">LLM Call #1</span></div><div class="step-desc">search("CEO of OpenAI")</div></div></div>
+        <div class="step obs"><span class="step-icon">ðŸ‘</span><div><div class="step-label">Observe</div><div class="step-desc">Wait for result â†’ re-enter LLM context</div></div></div>
+        <div class="step think"><span class="step-icon">ðŸ§ </span><div><div class="step-label">Think<span class="penalty-badge">LLM Call #2</span></div><div class="step-desc">Now what? Feed result back inâ€¦</div></div></div>
+        <div class="step act"><span class="step-icon">ðŸ”§</span><div><div class="step-label">Act<span class="penalty-badge">LLM Call #3</span></div><div class="step-desc">search("Sam Altman net worth")</div></div></div>
+        <div class="step obs"><span class="step-icon">ðŸ‘</span><div><div class="step-label">Observe</div><div class="step-desc">Result appended â€” growing context!</div></div></div>
+        <div class="step think"><span class="step-icon">ðŸ§ </span><div><div class="step-label">Answer<span class="penalty-badge">LLM Call #4</span></div><div class="step-desc">Synthesize final answer with bloated context</div></div></div>
+      </div>
+    </div>
+    <div class="cmp-box rewoo">
+      <div class="cmp-label rewoo">âœ… ReWOO â€” Plan Once, Execute in Parallel</div>
+      <div class="step-chain">
+        <div class="step plan"><span class="step-icon">ðŸ“‹</span><div><div class="step-label">Plan<span class="gain-badge">LLM Call #1</span></div><div class="step-desc">Generate all tool calls + dependency graph upfront</div></div></div>
+        <div class="step work"><span class="step-icon">âš¡</span><div><div class="step-label">Worker: Tool 1</div><div class="step-desc">search("CEO of OpenAI") â€” runs in parallel</div></div></div>
+        <div class="step work"><span class="step-icon">âš¡</span><div><div class="step-label">Worker: Tool 2</div><div class="step-desc">search("$[1] net worth") â€” waits for dep</div></div></div>
+        <div class="step solve"><span class="step-icon">ðŸŽ¯</span><div><div class="step-label">Solve<span class="gain-badge">LLM Call #2</span></div><div class="step-desc">Compact evidence dict â†’ final answer. No bloat!</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE MODULES -->
+  <div class="sec-title">The Three ReWOO Modules</div>
+  <div class="modules-row">
+    <div class="mod-card planner-c">
+      <div class="mod-icon">ðŸ§ </div>
+      <div class="mod-name">Planner</div>
+      <div class="mod-desc">Uses the LLM to analyze the query and produce a structured plan â€” a DAG of tool calls with variable references (#E1, #E2â€¦). Called <strong>once</strong> at the start.</div>
+      <span class="mod-badge">LLM-Powered</span>
+    </div>
+    <div class="mod-card worker-c">
+      <div class="mod-icon">âš™ï¸</div>
+      <div class="mod-name">Worker</div>
+      <div class="mod-desc">Pure execution layer â€” no LLM needed. Runs each tool call from the plan, respects dependencies, can execute independent steps in parallel.</div>
+      <span class="mod-badge">Tool-Execution Only</span>
+    </div>
+    <div class="mod-card solver-c">
+      <div class="mod-icon">ðŸŽ¯</div>
+      <div class="mod-name">Solver</div>
+      <div class="mod-desc">Receives a compact evidence bundle (just the results, no tool-call history). Uses LLM to synthesize the final answer â€” clean, minimal context.</div>
+      <span class="mod-badge">LLM-Powered</span>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE SIMULATOR -->
+  <div class="sec-title">Live Trace Simulator</div>
+  <div class="sim-box">
+    <div class="sim-title">Pick a Query â€” See ReWOO in Action</div>
+    <div class="sim-sub">Choose a sample query to see the Planner's dependency graph, Worker execution, and Solver output</div>
+    <div class="query-btns">
+      <button class="qbtn" onclick="showQuery(0,this)">ðŸ“Š Compare Claude vs GPT-4 pricing</button>
+      <button class="qbtn" onclick="showQuery(1,this)">ðŸ¢ Who funds Anthropic & their valuation?</button>
+      <button class="qbtn" onclick="showQuery(2,this)">ðŸ”¬ Latest LangGraph release notes + use case</button>
+    </div>
+
+    <div id="sim0" class="sim-output">
+      <div class="phases">
+        <div class="phase ph1">
+          <div class="phase-label">ðŸ§  Planner Output</div>
+          <div class="phase-content">
+            <code>#E1</code> = search("Claude API pricing 2024")<br>
+            <div class="dep-arrow">â†“</div>
+            <code>#E2</code> = search("GPT-4 API pricing 2024")<br>
+            <div class="dep-arrow">â†“ (independent)</div>
+            <code>#E3</code> = compare(#E1, #E2)<br>
+            <br>
+            <strong style="color:#ffd166">DAG:</strong> E1 âˆ¥ E2 â†’ E3
+          </div>
+          <div class="savings-bar"><div class="savings-fill" style="width:60%">60% token savings vs ReAct</div></div>
+        </div>
+        <div class="phase ph2">
+          <div class="phase-label">âš¡ Worker Execution</div>
+          <div class="phase-content">
+            <strong>Parallel:</strong><br>
+            ðŸ” E1: "Claude 3 Haiku $0.25/MTok in, Sonnet $3/MTok inâ€¦"<br>
+            ðŸ” E2: "GPT-4o $2.50/MTok in, GPT-4 Turbo $10/MTokâ€¦"<br>
+            <br>
+            <strong>Sequential:</strong><br>
+            ðŸ“Š E3: Structured comparison table generated<br>
+            <br>
+            <span style="color:#06d6a0">âœ“ 0 LLM calls in Worker phase</span>
+          </div>
+        </div>
+        <div class="phase ph3">
+          <div class="phase-label">ðŸŽ¯ Solver</div>
+          <div class="phase-content">
+            <strong>Input:</strong> Compact evidence dict {E1, E2, E3}<br><br>
+            <strong>Output:</strong> "Claude Haiku is ~10Ã— cheaper than GPT-4 Turbo for input tokens. For output-heavy workloads, Claude Sonnet and GPT-4o are comparable at ~$3â€“4/MTokâ€¦"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sim1" class="sim-output">
+      <div class="phases">
+        <div class="phase ph1">
+          <div class="phase-label">ðŸ§  Planner Output</div>
+          <div class="phase-content">
+            <code>#E1</code> = search("Anthropic investors funding rounds")<br>
+            <div class="dep-arrow">â†“</div>
+            <code>#E2</code> = search("Anthropic valuation 2024")<br>
+            <div class="dep-arrow">â†“</div>
+            <code>#E3</code> = extract_investors(#E1)<br>
+            <br>
+            <strong style="color:#ffd166">DAG:</strong> E1 âˆ¥ E2 â†’ E3
+          </div>
+          <div class="savings-bar"><div class="savings-fill" style="width:65%">65% token savings vs ReAct</div></div>
+        </div>
+        <div class="phase ph2">
+          <div class="phase-label">âš¡ Worker Execution</div>
+          <div class="phase-content">
+            <strong>Parallel:</strong><br>
+            ðŸ” E1: Google, Amazon, Spark Capital, $7.3B raisedâ€¦<br>
+            ðŸ” E2: ~$18.4B valuation (2024)â€¦<br>
+            <br>
+            <strong>Sequential:</strong><br>
+            ðŸ“‹ E3: [Google, Amazon, Spark, Salesforce Ventures]<br>
+            <br>
+            <span style="color:#06d6a0">âœ“ 0 LLM calls in Worker phase</span>
+          </div>
+        </div>
+        <div class="phase ph3">
+          <div class="phase-label">ðŸŽ¯ Solver</div>
+          <div class="phase-content">
+            <strong>Input:</strong> Compact {E1, E2, E3}<br><br>
+            <strong>Output:</strong> "Anthropic has raised ~$7.3B across rounds. Key investors include Google (~$2B), Amazon (~$4B), Spark Capital and Salesforce Ventures. Current valuation is approximately $18.4Bâ€¦"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sim2" class="sim-output">
+      <div class="phases">
+        <div class="phase ph1">
+          <div class="phase-label">ðŸ§  Planner Output</div>
+          <div class="phase-content">
+            <code>#E1</code> = search("LangGraph latest release changelog")<br>
+            <div class="dep-arrow">â†“</div>
+            <code>#E2</code> = extract_version(#E1)<br>
+            <div class="dep-arrow">â†“</div>
+            <code>#E3</code> = search("LangGraph #E2 use cases")<br>
+            <br>
+            <strong style="color:#ffd166">DAG:</strong> E1 â†’ E2 â†’ E3
+          </div>
+          <div class="savings-bar"><div class="savings-fill" style="width:55%">55% token savings vs ReAct</div></div>
+        </div>
+        <div class="phase ph2">
+          <div class="phase-label">âš¡ Worker Execution</div>
+          <div class="phase-content">
+            <strong>Sequential (dependent chain):</strong><br>
+            ðŸ” E1: "LangGraph 0.2.x â€” streaming, subgraphsâ€¦"<br>
+            ðŸ“‹ E2: version = "0.2.28"<br>
+            ðŸ” E3: "Human-in-loop workflows, multi-agentâ€¦"<br>
+            <br>
+            <span style="color:#06d6a0">âœ“ 0 LLM calls in Worker phase</span>
+          </div>
+        </div>
+        <div class="phase ph3">
+          <div class="phase-label">ðŸŽ¯ Solver</div>
+          <div class="phase-content">
+            <strong>Input:</strong> Compact {E1, E2, E3}<br><br>
+            <strong>Output:</strong> "LangGraph 0.2.28 introduced enhanced streaming and subgraph support. Key use cases include human-in-the-loop approval flows, multi-agent orchestration, and stateful long-running workflowsâ€¦"
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADEOFF TABLE -->
+  <div class="sec-title">ReWOO vs ReAct â€” Detailed Comparison</div>
+  <table class="tradeoff-table">
+    <thead>
+      <tr><th>Dimension</th><th>ReAct</th><th>ReWOO</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>LLM calls per task</strong></td><td>N calls (one per thought+action)</td><td>2 calls (Planner + Solver)</td></tr>
+      <tr><td><strong>Token usage</strong></td><td>Grows with each step â€” all history in context</td><td>Compact â€” evidence dict only in Solver</td></tr>
+      <tr><td><strong>Parallelism</strong></td><td>âŒ Sequential by design</td><td>âœ… Worker steps can run in parallel</td></tr>
+      <tr><td><strong>Adaptability</strong></td><td><span class="tag good">High</span> â€” reacts to observations in real-time</td><td><span class="tag bad">Low</span> â€” plan is fixed upfront</td></tr>
+      <tr><td><strong>Best for</strong></td><td>Dynamic tasks, uncertain tool results</td><td>Structured research, data aggregation</td></tr>
+      <tr><td><strong>Cost</strong></td><td><span class="tag bad">High</span> â€” repeated LLM calls with growing context</td><td><span class="tag good">Low</span> â€” ~60% cheaper on average</td></tr>
+      <tr><td><strong>Latency</strong></td><td>Sequential bottleneck</td><td><span class="tag good">Lower</span> â€” parallel worker execution</td></tr>
+      <tr><td><strong>Failure recovery</strong></td><td><span class="tag good">Good</span> â€” can observe errors and retry</td><td><span class="tag bad">Poor</span> â€” plan must be re-generated</td></tr>
+    </tbody>
+  </table>
+
+  <!-- WHEN TO USE -->
+  <div class="sec-title">When to Use ReWOO</div>
+  <div class="when-grid">
+    <div class="when-box use">
+      <div class="when-title">âœ… Use ReWOO Whenâ€¦</div>
+      <div class="when-item">Task requires multiple searches / tool calls that you can enumerate upfront</div>
+      <div class="when-item">Tool results are predictable (e.g., web search, DB queries)</div>
+      <div class="when-item">Cost and latency are primary concerns</div>
+      <div class="when-item">Steps are mostly independent (parallelizable)</div>
+      <div class="when-item">Research, data aggregation, report generation tasks</div>
+    </div>
+    <div class="when-box skip">
+      <div class="when-title">âŒ Avoid ReWOO Whenâ€¦</div>
+      <div class="when-item">Task outcome depends on intermediate results (deep conditional logic)</div>
+      <div class="when-item">Tools can fail and require dynamic recovery</div>
+      <div class="when-item">Plan cannot be determined without observing early steps</div>
+      <div class="when-item">Creative/generative tasks with unknown shape</div>
+      <div class="when-item">Tools have unpredictable output formats</div>
+    </div>
+  </div>
+
+  <div class="back-row">
+    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+  </div>
+</div>
+
+<script>
+function showQuery(idx, btn) {
+  document.querySelectorAll('.qbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sim-output').forEach(s => s.classList.remove('visible'));
+  btn.classList.add('active');
+  document.getElementById('sim' + idx).classList.add('visible');
+}
+</script>
+</body>
+</html>

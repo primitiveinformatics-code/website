@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Pattern Decision Tree | Agentic AI Course</title>
+<style>
+  :root{--bg:#0f1117;--card:#21263a;--card2:#1a1f30;--text:#e8eaf6;--muted:#8892b0;--accent:#00d2ff;--border:rgba(0,210,255,.18);--radius:12px;--p1:#6c63ff;--p2:#ffd166;--p3:#ff6584;--p4:#06d6a0;--p5:#b57bee;--correct:#06d6a0;--wrong:#ef476f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6}
+  nav{background:rgba(15,17,23,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  nav .brand{font-size:.8rem;color:var(--muted)} nav .brand span{color:var(--accent);font-weight:700}
+  nav .nav-links{display:flex;gap:12px}
+  nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:6px 14px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+  nav a:hover{color:var(--accent);border-color:var(--accent)}
+  .hero{text-align:center;padding:64px 24px 48px;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(0,210,255,.12) 0%,transparent 70%)}
+  .session-tag{display:inline-block;background:rgba(0,210,255,.15);color:var(--accent);border:1px solid rgba(0,210,255,.4);border-radius:20px;padding:4px 16px;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:12px} .hero h1 span{color:var(--accent)}
+  .hero p{color:var(--muted);max-width:640px;margin:0 auto;font-size:1.05rem}
+  section{max-width:1000px;margin:0 auto;padding:40px 24px}
+  .section-title{font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* DECISION TREE */
+  .tree-container{background:var(--card);border-radius:var(--radius);padding:32px;border:1px solid var(--border)}
+  .tree-node{background:var(--card2);border-radius:10px;padding:20px 24px;border:2px solid var(--border);margin-bottom:16px}
+  .tree-node .q{font-size:.95rem;font-weight:700;margin-bottom:14px;color:var(--text)}
+  .tree-choices{display:flex;flex-direction:column;gap:8px}
+  .tree-choice{background:var(--card);border:2px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.88rem;transition:all .2s;display:flex;justify-content:space-between;align-items:center}
+  .tree-choice:hover{border-color:var(--accent);background:rgba(0,210,255,.06);transform:translateX(4px)}
+  .tree-choice.selected{border-color:var(--accent);background:rgba(0,210,255,.1);color:var(--accent)}
+  .tree-choice .ch-arrow{color:var(--muted);font-size:1.1rem}
+  .tree-result{display:none;background:var(--card2);border-radius:10px;padding:24px;border-left:4px solid var(--accent);margin-top:4px}
+  .tree-result.show{display:block}
+  .result-pattern{font-size:1.1rem;font-weight:800;margin-bottom:6px}
+  .result-why{font-size:.88rem;color:var(--muted);margin-bottom:14px;line-height:1.6}
+  .result-props{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .rp{background:var(--card);border-radius:8px;padding:10px 14px}
+  .rp-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:3px}
+  .rp-val{font-size:.83rem;color:var(--text)}
+  .tree-reset-btn{margin-top:16px;background:none;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:.83rem;transition:all .2s}
+  .tree-reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .tree-path{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;min-height:28px}
+  .path-crumb{background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.25);color:var(--accent);border-radius:20px;padding:2px 10px;font-size:.75rem}
+
+  /* PATTERN CARDS */
+  .pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .pat-card{background:var(--card);border-radius:var(--radius);padding:22px;border:2px solid transparent;cursor:pointer;transition:all .25s}
+  .pat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .pat-card.pc1{border-color:rgba(108,99,255,.35)} .pat-card.pc1:hover{border-color:var(--p1)}
+  .pat-card.pc2{border-color:rgba(255,209,102,.35)} .pat-card.pc2:hover{border-color:var(--p2)}
+  .pat-card.pc3{border-color:rgba(255,101,132,.35)} .pat-card.pc3:hover{border-color:var(--p3)}
+  .pat-card.pc4{border-color:rgba(6,214,160,.35)} .pat-card.pc4:hover{border-color:var(--p4)}
+  .pat-card.pc5{border-color:rgba(181,123,238,.35)} .pat-card.pc5:hover{border-color:var(--p5)}
+  .pat-icon{font-size:1.8rem;margin-bottom:8px}
+  .pat-name{font-size:1rem;font-weight:800;margin-bottom:4px}
+  .pc1 .pat-name{color:var(--p1)} .pc2 .pat-name{color:var(--p2)} .pc3 .pat-name{color:var(--p3)} .pc4 .pat-name{color:var(--p4)} .pc5 .pat-name{color:var(--p5)}
+  .pat-tagline{font-size:.8rem;color:var(--muted);margin-bottom:12px}
+  .pat-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+  .pat-card.open .pat-detail{display:block}
+  .pat-detail p{font-size:.85rem;color:var(--muted);margin-bottom:10px;line-height:1.6}
+  .pat-use{display:flex;flex-direction:column;gap:5px}
+  .pat-use li{font-size:.82rem;list-style:none;padding-left:14px;position:relative;color:var(--muted)}
+  .pat-use li::before{content:'✓';position:absolute;left:0;color:var(--correct)}
+
+  /* QUIZ */
+  .quiz-container{background:var(--card);border-radius:var(--radius);padding:32px;border:1px solid var(--border)}
+  .quiz-score{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .score-display{font-size:1rem;color:var(--muted)} .score-display span{color:var(--accent);font-weight:700;font-size:1.2rem}
+  .q-block{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.06)} .q-block:last-of-type{border-bottom:none}
+  .q-num{font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .q-text{font-size:1rem;font-weight:600;margin-bottom:14px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--card2);border:2px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;display:flex;align-items:center;gap:10px}
+  .opt:hover:not(.locked){border-color:var(--accent);background:rgba(0,210,255,.06)}
+  .opt.correct{border-color:var(--correct);background:rgba(6,214,160,.1);color:var(--correct)}
+  .opt.wrong{border-color:var(--wrong);background:rgba(239,71,111,.1);color:var(--wrong)}
+  .opt .opt-icon{font-size:1rem;flex-shrink:0;opacity:0} .opt.correct .opt-icon,.opt.wrong .opt-icon{opacity:1}
+  .feedback{display:none;margin-top:12px;padding:14px 16px;border-radius:8px;font-size:.88rem;line-height:1.5}
+  .feedback.show{display:block}
+  .feedback.correct-fb{background:rgba(6,214,160,.08);border-left:3px solid var(--correct);color:#a8f0d8}
+  .feedback.wrong-fb{background:rgba(239,71,111,.08);border-left:3px solid var(--wrong);color:#f8c3ce}
+  .q-reset{display:none;margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
+  .q-reset:hover{border-color:var(--accent);color:var(--accent)} .q-reset.show{display:inline-block}
+  @media(max-width:650px){.result-props{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">Agentic AI Course · <span>Session 2</span></div>
+  <div class="nav-links">
+    <a href="concept_2_9.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_2_11.html">Next →</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 2 · Concept 2.10</div>
+  <h1>Design Pattern <span>Decision Tree</span></h1>
+  <p>Answer 3 questions about your task — get the right agentic design pattern every time.</p>
+</div>
+
+<section>
+  <div class="section-title">Interactive Pattern Selector</div>
+  <div class="tree-container">
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">Answer each question about your use case. The tree will guide you to the optimal agentic design pattern.</p>
+    <div class="tree-path" id="treePath"></div>
+    <div id="treeBody"></div>
+    <button class="tree-reset-btn" onclick="resetTree()">↺ Start Over</button>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">All 5 Patterns — Click to Explore</div>
+  <div class="pattern-grid">
+    <div class="pat-card pc1" onclick="this.classList.toggle('open')">
+      <div class="pat-icon">🔄</div>
+      <div class="pat-name">Single ReAct Agent</div>
+      <div class="pat-tagline">One model, one loop, one context</div>
+      <div class="pat-detail">
+        <p>The simplest and most common pattern. One LLM runs a Think→Act→Observe loop with a set of tools. Best for focused tasks that fit within a single context window.</p>
+        <ul class="pat-use">
+          <li>Task complexity is moderate and well-defined</li>
+          <li>Expected to complete in 5–15 iterations</li>
+          <li>No need for specialised sub-agents</li>
+          <li>Debugging simplicity is a priority</li>
+          <li>Examples: research Q&A, email drafting, data lookup</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pat-card pc2" onclick="this.classList.toggle('open')">
+      <div class="pat-icon">🗂️</div>
+      <div class="pat-name">Planner–Executor</div>
+      <div class="pat-tagline">Separate planning from execution</div>
+      <div class="pat-detail">
+        <p>A Planner LLM decomposes the task into a structured plan; one or more Executor agents carry out individual sub-tasks. The Planner monitors progress and adapts as results come in.</p>
+        <ul class="pat-use">
+          <li>Task has multiple discrete, sequential sub-tasks</li>
+          <li>Different sub-tasks need different tool sets</li>
+          <li>Plan may need to adapt based on intermediate results</li>
+          <li>Examples: software project planning, market research reports</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pat-card pc3" onclick="this.classList.toggle('open')">
+      <div class="pat-icon">⚡</div>
+      <div class="pat-name">Parallel Fan-Out</div>
+      <div class="pat-tagline">Multiple agents working simultaneously</div>
+      <div class="pat-detail">
+        <p>A coordinator spawns multiple identical or specialised agents that work in parallel on independent sub-tasks. Results are aggregated when all agents complete. Dramatically reduces wall-clock time.</p>
+        <ul class="pat-use">
+          <li>Task decomposes into truly independent sub-tasks</li>
+          <li>Latency reduction is a key requirement</li>
+          <li>Sub-tasks don't share state or depend on each other</li>
+          <li>Examples: crawling 20 competitors simultaneously, parallel data processing</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pat-card pc4" onclick="this.classList.toggle('open')">
+      <div class="pat-icon">🔍</div>
+      <div class="pat-name">Critic (Evaluator–Optimizer)</div>
+      <div class="pat-tagline">Generator + Critic in a quality loop</div>
+      <div class="pat-detail">
+        <p>A Generator agent produces candidate outputs; a Critic agent evaluates them against criteria and provides structured feedback. The loop runs until quality criteria are met or max iterations reached.</p>
+        <ul class="pat-use">
+          <li>Output quality is highly variable and hard to predict</li>
+          <li>Clear quality criteria can be defined</li>
+          <li>Iterative refinement is acceptable</li>
+          <li>Examples: code generation + test runner, essay writing + fact-checker, translation + backtranslation</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pat-card pc5" onclick="this.classList.toggle('open')">
+      <div class="pat-icon">🌐</div>
+      <div class="pat-name">Hierarchical Multi-Agent</div>
+      <div class="pat-tagline">Orchestrator → Specialised sub-agents</div>
+      <div class="pat-detail">
+        <p>An Orchestrator manages a network of specialised agents, each expert in a domain. The Orchestrator delegates tasks, aggregates results, resolves conflicts, and maintains global state across the system.</p>
+        <ul class="pat-use">
+          <li>Task spans multiple domains requiring specialised expertise</li>
+          <li>Scale requires distributed execution</li>
+          <li>Sub-agents may themselves use tools or spawn sub-agents</li>
+          <li>Examples: enterprise automation, full-stack dev agent, multi-domain research platform</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Check Your Understanding</div>
+  <div class="quiz-container">
+    <div class="quiz-score">
+      <div class="score-display">Score: <span id="scoreDisplay">0</span> / 5</div>
+      <div style="font-size:.8rem;color:var(--muted)">Click an answer to check it</div>
+    </div>
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 5</div>
+      <div class="q-text">You need to write and test a Python function. The LLM generates code and your test suite validates it. Which pattern fits?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q1','a','c')"><span class="opt-icon">✗</span>a) Parallel Fan-Out</div>
+        <div class="opt" onclick="answer('q1','b','c')"><span class="opt-icon">✗</span>b) Hierarchical Multi-Agent</div>
+        <div class="opt" onclick="answer('q1','c','c')"><span class="opt-icon">✓</span>c) Critic (Evaluator–Optimizer)</div>
+        <div class="opt" onclick="answer('q1','d','c')"><span class="opt-icon">✗</span>d) Single ReAct Agent</div>
+      </div>
+      <div class="feedback correct-fb" id="q1-correct">✓ The Critic/Evaluator-Optimizer pattern is a perfect fit. Generator (LLM) produces code → Critic (test suite) evaluates it and returns structured failure messages → Generator revises → loop continues. The test suite IS the symbolic verifier in a neuro-symbolic hybrid. This is exactly how AlphaCode and GitHub Copilot's test-driven generation works.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">✗ This is a Generate → Evaluate → Refine loop with clear quality criteria (tests pass/fail). That's the Critic pattern. Parallel Fan-Out is for independent parallel tasks. Hierarchical MAS is for multi-domain complexity. Single ReAct could work for simple code but lacks the structured quality-feedback loop. The test suite acting as a critic is what makes this Evaluator-Optimizer.</div>
+      <button class="q-reset" onclick="resetQ('q1')">↺ Try again</button>
+    </div>
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 5</div>
+      <div class="q-text">You need to analyse 50 competitor websites simultaneously to build a market map. Which pattern minimises wall-clock time?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">✗</span>a) Single ReAct Agent — one agent visits all 50 sequentially</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">✗</span>b) Planner–Executor — plan then execute one site at a time</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">✓</span>c) Parallel Fan-Out — spawn 50 agents simultaneously, aggregate results</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">✗</span>d) Critic pattern — generate summaries and evaluate them</div>
+      </div>
+      <div class="feedback correct-fb" id="q2-correct">✓ Parallel Fan-Out cuts the wall-clock time from 50× to ~1× (bounded by the slowest agent). Since each competitor analysis is independent — no competitor's data affects another's — there are no ordering dependencies. A coordinator spawns 50 agents, each analyses one site, all results stream back in parallel, coordinator aggregates. This is the canonical fan-out use case.</div>
+      <div class="feedback wrong-fb" id="q2-wrong">✗ Sequential patterns (Single ReAct, Planner-Executor) take 50× as long. The Critic pattern is for iterative quality refinement. When tasks are fully independent (no cross-dependencies), Parallel Fan-Out is the pattern. Spawn 50 concurrent agents → each handles one competitor → aggregate when all complete. Wall-clock time drops to the latency of the SLOWEST single agent, not the sum of all 50.</div>
+      <button class="q-reset" onclick="resetQ('q2')">↺ Try again</button>
+    </div>
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 5</div>
+      <div class="q-text">What is the MAIN risk of using Hierarchical Multi-Agent for a simple task that could be done by one agent?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q3','a','b')"><span class="opt-icon">✗</span>a) The task will fail because multi-agent systems can't handle simple tasks</div>
+        <div class="opt" onclick="answer('q3','b','b')"><span class="opt-icon">✓</span>b) Unnecessary orchestration overhead: higher cost, latency, and debugging complexity with no quality benefit</div>
+        <div class="opt" onclick="answer('q3','c','b')"><span class="opt-icon">✗</span>c) Hierarchical systems have a maximum of 3 sub-agents</div>
+        <div class="opt" onclick="answer('q3','d','b')"><span class="opt-icon">✗</span>d) The Orchestrator will always produce incorrect results for simple tasks</div>
+      </div>
+      <div class="feedback correct-fb" id="q3-correct">✓ Over-engineering is a real and expensive problem. For a task like "summarise this document," using a hierarchical MAS means: Orchestrator → Planner sub-agent → Executor sub-agent → Critic sub-agent → result. Each hop burns tokens and adds latency. The same result comes from one ReAct loop in 1 iteration. Architectural complexity should always be proportionate to task complexity.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">✗ Hierarchical MAS can handle simple tasks just fine — it will just do it expensively. The risk is unnecessary overhead: 4–6 LLM calls instead of 1, orchestration messages, coordination latency, and 3 times the debugging surface. The right pattern for a simple task is a Single ReAct Agent. Pattern selection should always match the task's actual complexity — not default to the most sophisticated architecture.</div>
+      <button class="q-reset" onclick="resetQ('q3')">↺ Try again</button>
+    </div>
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 5</div>
+      <div class="q-text">In the Planner–Executor pattern, why does the Planner need to monitor intermediate results (not just plan once upfront)?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">✗</span>a) To log each step for audit purposes</div>
+        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">✗</span>b) Because the Executor cannot be trusted to work independently</div>
+        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">✓</span>c) Because intermediate results may reveal that the original plan is unachievable or needs replanning</div>
+        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">✗</span>d) To count the number of tokens used</div>
+      </div>
+      <div class="feedback correct-fb" id="q4-correct">✓ This is the BDI principle applied to multi-agent systems: Beliefs must be updated as the world changes. A plan made at T=0 may be obsolete at T=5 if an Executor discovers that a data source is unavailable, an API returned unexpected results, or a sub-task took 10x longer than expected. Adaptive planning — where the Planner revises the remaining plan based on what Executors actually found — is what separates robust production systems from brittle sequential pipelines.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">✗ Audit logging and token counting don't require the Planner to monitor results. Executor independence isn't the issue. The core reason is adaptive planning: the world doesn't behave as expected. If sub-task 3 discovers that the data source assumed in steps 4–7 doesn't exist, the Planner needs to replan steps 4–7. A Planner that only plans once upfront is just a sequential script — it's the adaptive replanning that makes it an agent system.</div>
+      <button class="q-reset" onclick="resetQ('q4')">↺ Try again</button>
+    </div>
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 5</div>
+      <div class="q-text">Which two patterns are BEST combined when you need both parallel execution AND quality verification of the aggregated result?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q5','a','b')"><span class="opt-icon">✗</span>a) Single ReAct + Planner–Executor</div>
+        <div class="opt" onclick="answer('q5','b','b')"><span class="opt-icon">✓</span>b) Parallel Fan-Out + Critic</div>
+        <div class="opt" onclick="answer('q5','c','b')"><span class="opt-icon">✗</span>c) Hierarchical + Single ReAct</div>
+        <div class="opt" onclick="answer('q5','d','b')"><span class="opt-icon">✗</span>d) Planner–Executor + Parallel Fan-Out</div>
+      </div>
+      <div class="feedback correct-fb" id="q5-correct">✓ The Fan-Out + Critic combination is a powerful production pattern. Phase 1: Fan-Out spawns N parallel agents to gather/process data quickly. Phase 2: Aggregator combines the parallel results. Phase 3: Critic evaluates the aggregate for consistency, factual accuracy, and completeness — triggering regeneration of specific sections if needed. This is used in production research systems, competitive intelligence pipelines, and multi-source news synthesis agents.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">✗ Think about what each phase needs. "Parallel execution" = Fan-Out (spawn N concurrent agents). "Quality verification of aggregated result" = Critic (evaluate + refine). These two combine naturally: Fan-Out collects data fast → Aggregator merges → Critic validates the synthesis → Generator revises weak sections. This two-phase pattern (gather fast, verify carefully) is a cornerstone of production research and intelligence pipelines.</div>
+      <button class="q-reset" onclick="resetQ('q5')">↺ Try again</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  let score=0; const answered={};
+
+  const tree=[
+    {id:'q0',q:'Does your task decompose into INDEPENDENT sub-tasks that could run simultaneously?',choices:[
+      {label:'Yes — sub-tasks are independent and parallelisable',next:'q1a'},
+      {label:'No — sub-tasks are sequential or interdependent',next:'q1b'}
+    ]},
+    {id:'q1a',q:'How important is quality verification of the output?',choices:[
+      {label:'Critical — output must meet clear quality criteria',result:'fan-critic'},
+      {label:'Not critical — raw parallel aggregation is fine',result:'fanout'}
+    ]},
+    {id:'q1b',q:'Does your task span multiple specialised domains (code + legal + finance, etc.)?',choices:[
+      {label:'Yes — multiple expertise domains required',next:'q2b'},
+      {label:'No — single domain, one type of expertise',next:'q2a'}
+    ]},
+    {id:'q2a',q:'Is the output quality highly variable and hard to get right first try?',choices:[
+      {label:'Yes — needs iterative refinement with feedback',result:'critic'},
+      {label:'No — a well-prompted single agent can do this',result:'single'}
+    ]},
+    {id:'q2b',q:'Is the task scope very large (many sub-agents, long execution, enterprise scale)?',choices:[
+      {label:'Yes — enterprise-scale, many moving parts',result:'hierarchical'},
+      {label:'No — moderate complexity, a few sub-tasks',result:'planner'}
+    ]}
+  ];
+
+  const results={
+    'single':{name:'🔄 Single ReAct Agent',color:'var(--p1)',why:'Your task is focused, single-domain, and doesn\'t require specialisation or parallelism. A well-prompted single agent with the right tools is the simplest and most debuggable solution.',props:[['Complexity','Low–Moderate'],['Latency','Low'],['Cost','Low'],['Debugging','Easy']]},
+    'critic':{name:'🔍 Critic (Evaluator–Optimizer)',color:'var(--p4)',why:'Your task requires iterative quality improvement. The Generator produces candidate outputs; the Critic evaluates them against criteria and gives structured feedback until quality is achieved.',props:[['Complexity','Moderate'],['Latency','Medium (loops)'],['Cost','Medium'],['Best for','Variable-quality outputs']]},
+    'fanout':{name:'⚡ Parallel Fan-Out',color:'var(--p3)',why:'Your task has independent parallel sub-tasks and speed matters. Spawn multiple agents simultaneously and aggregate results — wall-clock time drops dramatically.',props:[['Complexity','Moderate'],['Latency','Very Low (parallel)'],['Cost','Medium–High'],['Best for','Independent parallel work']]},
+    'fan-critic':{name:'⚡🔍 Fan-Out + Critic',color:'var(--p5)',why:'Best of both worlds: Fan-Out gathers data fast in parallel; Critic validates the aggregated synthesis. The production pattern for research pipelines and intelligence systems.',props:[['Complexity','High'],['Latency','Medium'],['Cost','High'],['Best for','Large-scale research & synthesis']]},
+    'planner':{name:'🗂️ Planner–Executor',color:'var(--p2)',why:'Your task has multiple sequential sub-tasks requiring different tools. A Planner decomposes the goal and adapts based on intermediate results while Executors handle individual steps.',props:[['Complexity','Moderate–High'],['Latency','Medium'],['Cost','Medium'],['Best for','Multi-step pipelines']]},
+    'hierarchical':{name:'🌐 Hierarchical Multi-Agent',color:'var(--p5)',why:'Your task spans multiple expert domains at scale. An Orchestrator manages specialised sub-agents, each expert in their domain. Reserved for enterprise-scale complexity.',props:[['Complexity','Very High'],['Latency','High'],['Cost','Very High'],['Best for','Enterprise automation']]}
+  };
+
+  let currentNode='q0';
+  let pathLabels=[];
+
+  function renderTree(){
+    const node=tree.find(n=>n.id===currentNode);
+    const body=document.getElementById('treeBody');
+    const path=document.getElementById('treePath');
+    path.innerHTML=pathLabels.map(l=>`<span class="path-crumb">${l}</span>`).join('');
+    if(!node) return;
+    body.innerHTML=`<div class="tree-node">
+      <div class="q">${node.q}</div>
+      <div class="tree-choices">
+        ${node.choices.map((c,i)=>`<div class="tree-choice" onclick="chooseOption(${i})">${c.label}<span class="ch-arrow">→</span></div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  function chooseOption(idx){
+    const node=tree.find(n=>n.id===currentNode);
+    const choice=node.choices[idx];
+    pathLabels.push(choice.label.length>40?choice.label.substring(0,40)+'…':choice.label);
+    if(choice.result){
+      const r=results[choice.result];
+      const body=document.getElementById('treeBody');
+      const path=document.getElementById('treePath');
+      path.innerHTML=pathLabels.map(l=>`<span class="path-crumb">${l}</span>`).join('');
+      body.innerHTML=`<div class="tree-result show" style="border-left-color:${r.color}">
+        <div class="result-pattern" style="color:${r.color}">${r.name}</div>
+        <div class="result-why">${r.why}</div>
+        <div class="result-props">${r.props.map(p=>`<div class="rp"><div class="rp-label">${p[0]}</div><div class="rp-val">${p[1]}</div></div>`).join('')}</div>
+      </div>`;
+    } else {
+      currentNode=choice.next;
+      renderTree();
+    }
+  }
+
+  function resetTree(){
+    currentNode='q0';
+    pathLabels=[];
+    renderTree();
+  }
+
+  function answer(qid,chosen,correct){
+    if(answered[qid])return;answered[qid]=true;
+    const block=document.getElementById(qid);const opts=block.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.add('locked'));
+    const l=['a','b','c','d'];opts[l.indexOf(chosen)].classList.add(chosen===correct?'correct':'wrong');
+    if(chosen!==correct)opts[l.indexOf(correct)].classList.add('correct');
+    const ok=chosen===correct;if(ok){score++;document.getElementById('scoreDisplay').textContent=score;}
+    document.getElementById(qid+'-'+(ok?'correct':'wrong')).classList.add('show');
+    block.querySelector('.q-reset').classList.add('show');
+  }
+  function resetQ(qid){
+    if(!answered[qid])return;delete answered[qid];
+    const block=document.getElementById(qid);
+    block.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong','locked'));
+    block.querySelectorAll('.feedback').forEach(f=>f.classList.remove('show'));
+    block.querySelector('.q-reset').classList.remove('show');
+    if(score>0){score--;document.getElementById('scoreDisplay').textContent=score;}
+  }
+
+  renderTree();
+</script>
+</body>
+</html>

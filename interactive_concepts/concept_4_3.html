@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.3 Network/Swarm Pattern | Agentic AI</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+  --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+  --accent: #ffd166; --accent2: #06d6a0; --blue: #58a6ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* NAV */
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: .6rem 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+nav a { color: var(--muted); font-size: .85rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+
+/* HERO */
+.hero { padding: 2.5rem 1.5rem 1.5rem; max-width: 900px; margin: 0 auto; }
+.tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+.tag { background: var(--surface2); border: 1px solid var(--border); padding: .2rem .7rem;
+  border-radius: 999px; font-size: .75rem; color: var(--muted); }
+.tag.accent { background: rgba(255,209,102,.12); border-color: var(--accent); color: var(--accent); }
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: .5rem; }
+.subtitle { color: var(--muted); font-size: 1rem; }
+
+/* MAIN */
+main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { margin-top: 2.5rem; }
+h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: .4rem;
+  border-bottom: 1px solid var(--border); }
+h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accent); }
+
+/* CARDS */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.card.clickable { cursor: pointer; transition: border-color .2s, transform .15s; }
+.card.clickable:hover { border-color: var(--accent); transform: translateY(-2px); }
+.card.active { border-color: var(--accent); background: rgba(255,209,102,.07); }
+
+/* NETWORK DIAGRAM */
+.network-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem; display: flex; flex-direction: column; align-items: center; }
+#networkCanvas { max-width: 100%; }
+
+/* DETAIL PANEL */
+.detail-panel { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1.2rem; margin-top: 1rem; display: none; }
+.detail-panel.show { display: block; }
+.detail-panel p { color: var(--muted); font-size: .9rem; margin-bottom: .5rem; }
+.code-block { background: #010409; border: 1px solid var(--border); border-radius: 6px; padding: 1rem;
+  font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .8rem; overflow-x: auto;
+  white-space: pre; color: #c9d1d9; margin-top: .8rem; }
+
+/* PROS CONS */
+.pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.pros-cons .side { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+.pros-cons .side h3 { color: var(--accent2); }
+.pros-cons .side.cons h3 { color: #ff7eb6; }
+.pros-cons ul { list-style: none; padding: 0; }
+.pros-cons li { padding: .3rem 0; font-size: .88rem; color: var(--muted); }
+.pros-cons li::before { content: '• '; color: var(--accent); }
+.side.cons li::before { color: #ff7eb6; }
+
+/* COMPARE TABLE */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th, td { padding: .65rem .9rem; border: 1px solid var(--border); text-align: left; }
+th { background: var(--surface2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+td.check { text-align: center; }
+.yes { color: var(--accent2); }
+.no { color: #ff7eb6; }
+.partial { color: var(--accent); }
+
+/* TRACE */
+.trace-box { background: #010409; border: 1px solid var(--border); border-radius: 8px;
+  font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .8rem; padding: 1rem;
+  min-height: 160px; overflow-y: auto; max-height: 340px; }
+.trace-line { padding: .1rem 0; opacity: 0; animation: fadein .3s forwards; }
+@keyframes fadein { to { opacity: 1; } }
+.trace-line.supervisor { color: var(--accent); }
+.trace-line.worker { color: #58a6ff; }
+.trace-line.broadcast { color: var(--accent2); }
+.trace-line.peer { color: #c678dd; }
+.trace-line.system { color: var(--muted); font-style: italic; }
+.trace-btns { display: flex; gap: .5rem; margin-bottom: .6rem; flex-wrap: wrap; }
+.btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  padding: .4rem .9rem; border-radius: 6px; cursor: pointer; font-size: .82rem; transition: border-color .2s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.active { border-color: var(--accent); color: var(--accent); background: rgba(255,209,102,.1); }
+
+/* USE CASES */
+.usecase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 1rem; }
+.usecase-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.usecase-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+.usecase-card h3 { color: var(--text); font-size: .95rem; margin-bottom: .4rem; }
+.usecase-card p { color: var(--muted); font-size: .84rem; }
+
+/* QUIZ */
+.quiz-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 2.5rem; }
+.score-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+.score-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: .35rem .9rem; font-size: .85rem; }
+.score-num { color: var(--accent); font-weight: 700; }
+.q-block { margin-bottom: 1.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
+.q-block:last-of-type { border-bottom: none; }
+.q-text { font-size: .95rem; margin-bottom: .7rem; }
+.opts { display: flex; flex-direction: column; gap: .4rem; }
+.opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: .5rem .9rem; cursor: pointer; font-size: .87rem; text-align: left;
+  transition: border-color .2s; color: var(--text); }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.correct { border-color: var(--accent2); background: rgba(6,214,160,.12); color: var(--accent2); }
+.opt.wrong { border-color: #ff7eb6; background: rgba(255,126,182,.1); color: #ff7eb6; }
+.opt:disabled { cursor: default; }
+.feedback { font-size: .82rem; margin-top: .4rem; display: none; }
+.feedback.show { display: block; }
+.feedback.correct { color: var(--accent2); }
+.feedback.wrong { color: #ff7eb6; }
+.reset-btn { background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: .25rem .6rem; border-radius: 5px; cursor: pointer; font-size: .75rem; margin-top: .4rem; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Responsive */
+@media(max-width:600px) {
+  .pros-cons { grid-template-columns: 1fr; }
+  h1 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_4_2.html">← Hierarchical Pattern</a>
+  <a href="index.html">☰ All Concepts</a>
+  <a href="concept_4_4.html">Map-Reduce Pattern →</a>
+</nav>
+
+<div class="hero">
+  <div class="tags">
+    <span class="tag accent">Session 4</span>
+    <span class="tag">Day 2 Forenoon · Orchestration</span>
+    <span class="tag">Concept 4.3</span>
+  </div>
+  <h1>Network / Swarm Pattern</h1>
+  <p class="subtitle">Peer-to-peer agent collaboration — no central controller, emergent coordination through direct messaging</p>
+</div>
+
+<main>
+
+  <!-- WHAT IS IT -->
+  <section>
+    <h2>What is the Swarm Pattern?</h2>
+    <blockquote style="border-left:3px solid var(--accent);padding:.8rem 1.2rem;background:var(--surface);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin-bottom:1rem;">
+      "A collection of autonomous agents that communicate directly with each other,
+      make local decisions, and produce global intelligence without any central orchestrator."
+    </blockquote>
+    <div class="card-grid">
+      <div class="card">
+        <h3>🕸️ Peer-to-Peer</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Agents send messages directly to other agents. No supervisor routes or approves communication.</p>
+      </div>
+      <div class="card">
+        <h3>📡 Broadcast &amp; Subscribe</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Agents publish findings to a shared bus. Other agents subscribe to relevant topics and react.</p>
+      </div>
+      <div class="card">
+        <h3>🌱 Emergent Behavior</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Complex outcomes arise from simple local rules — no agent has the full picture, yet the system solves hard problems.</p>
+      </div>
+      <div class="card">
+        <h3>🔄 Dynamic Membership</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Agents can join or leave the swarm mid-task. The system self-heals around failures.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DIAGRAM -->
+  <section>
+    <h2>Interactive Swarm Diagram</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">Click any agent node to see its role and communication links.</p>
+    <div class="network-wrap">
+      <canvas id="networkCanvas" width="780" height="340"></canvas>
+    </div>
+    <div id="agentDetail" class="detail-panel"></div>
+  </section>
+
+  <!-- COMMUNICATION MODES -->
+  <section>
+    <h2>Communication Modes</h2>
+    <div class="card-grid" id="commCards">
+      <div class="card clickable" onclick="showComm('direct')">
+        <h3>📨 Direct Message</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Agent A sends a task or result directly to Agent B by ID. Point-to-point, low latency.</p>
+      </div>
+      <div class="card clickable" onclick="showComm('broadcast')">
+        <h3>📢 Broadcast</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Agent publishes a message to all peers. Useful for sharing discoveries or requesting help.</p>
+      </div>
+      <div class="card clickable" onclick="showComm('topic')">
+        <h3>📌 Topic/Channel</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Agents subscribe to named channels (e.g., "vulnerabilities", "market-data"). Decoupled pub-sub.</p>
+      </div>
+      <div class="card clickable" onclick="showComm('blackboard')">
+        <h3>🗒️ Blackboard</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Shared memory store. Agents write findings; others read and act on them asynchronously.</p>
+      </div>
+    </div>
+    <div id="commDetail" class="detail-panel"></div>
+  </section>
+
+  <!-- TRACE SIMULATOR -->
+  <section>
+    <h2>Swarm Trace Simulator</h2>
+    <div class="trace-btns">
+      <button class="btn" onclick="runTrace(0)">🔍 Threat Intelligence Swarm</button>
+      <button class="btn" onclick="runTrace(1)">📊 Market Research Swarm</button>
+      <button class="btn" onclick="runTrace(2)">🐛 Bug Triage Swarm</button>
+    </div>
+    <div class="trace-box" id="traceBox"><span style="color:var(--muted);">Select a scenario above...</span></div>
+  </section>
+
+  <!-- VS HIERARCHICAL -->
+  <section>
+    <h2>Swarm vs Hierarchical: When to Use Which</h2>
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>Swarm / Network</th><th>Hierarchical</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Control structure</td><td>Decentralized peers</td><td>Supervisor + workers</td></tr>
+        <tr><td>Coordination overhead</td><td>Low (direct comms)</td><td>Medium (routing via supervisor)</td></tr>
+        <tr><td>Predictability</td><td class="no">Lower — emergent</td><td class="yes">Higher — deterministic</td></tr>
+        <tr><td>Fault tolerance</td><td class="yes">High — no single point</td><td class="partial">Medium — supervisor is SPOF</td></tr>
+        <tr><td>Task decomposition</td><td>Implicit / self-organized</td><td>Explicit by supervisor</td></tr>
+        <tr><td>Best for</td><td>Exploration, security scans, creative tasks</td><td>Structured pipelines, known workflows</td></tr>
+        <tr><td>Debugging difficulty</td><td class="no">Hard — emergent paths</td><td class="yes">Easier — clear audit trail</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- USE CASES -->
+  <section>
+    <h2>Real-World Use Cases</h2>
+    <div class="usecase-grid">
+      <div class="usecase-card">
+        <div class="usecase-icon">🛡️</div>
+        <h3>Cybersecurity Threat Hunt</h3>
+        <p>Scanner agents, analyst agents, and remediation agents communicate directly — scanners broadcast IOCs, analysts correlate, remediators patch in parallel.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">💹</div>
+        <h3>Algorithmic Trading</h3>
+        <p>Sentiment agents, technical analysis agents, and risk agents share signals via topic channels. No single agent has authority — consensus drives trades.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🎨</div>
+        <h3>Creative Content Generation</h3>
+        <p>Idea agents, writer agents, critic agents, and editor agents iterate with direct peer feedback. Emergent quality through local critique loops.</p>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">🔬</div>
+        <h3>Scientific Literature Review</h3>
+        <p>Domain specialist agents broadcast relevant findings to a shared blackboard. Synthesis agents monitor and build the final report incrementally.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROS/CONS -->
+  <section>
+    <h2>Strengths &amp; Limitations</h2>
+    <div class="pros-cons">
+      <div class="side">
+        <h3>✅ Strengths</h3>
+        <ul>
+          <li>No single point of failure</li>
+          <li>Scales horizontally — add agents freely</li>
+          <li>Low coordination latency</li>
+          <li>Emergent problem-solving for fuzzy tasks</li>
+          <li>Dynamic task rebalancing</li>
+          <li>Resilient to agent dropout</li>
+        </ul>
+      </div>
+      <div class="side cons">
+        <h3>⚠️ Limitations</h3>
+        <ul>
+          <li>Hard to debug — non-deterministic paths</li>
+          <li>Potential message storms / loops</li>
+          <li>Consensus is expensive to guarantee</li>
+          <li>Result quality depends on emergent dynamics</li>
+          <li>Harder to audit for compliance</li>
+          <li>Requires careful loop detection</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPLEMENTATION SNIPPET -->
+  <section>
+    <h2>Implementation Pattern (OpenAI Swarm SDK)</h2>
+    <div class="code-block">from swarm import Swarm, Agent
+
+client = Swarm()
+
+# Each agent can hand off to another agent
+research_agent = Agent(
+    name="Researcher",
+    instructions="Search for information. When done, hand off to Analyst.",
+    functions=[search_web, handoff_to_analyst]
+)
+
+analyst_agent = Agent(
+    name="Analyst",
+    instructions="Analyse findings. If gaps found, hand back to Researcher.",
+    functions=[analyze_data, handoff_to_researcher, handoff_to_writer]
+)
+
+writer_agent = Agent(
+    name="Writer",
+    instructions="Write the final report from analysed data.",
+    functions=[format_report]
+)
+
+# Swarm routes based on handoff functions — no supervisor needed
+response = client.run(
+    agent=research_agent,
+    messages=[{"role": "user", "content": "Research LLM security vulnerabilities in 2024"}]
+)</div>
+  </section>
+
+  <!-- QUIZ -->
+  <div class="quiz-section">
+    <div class="score-bar">
+      <h2 style="border:none;margin:0;padding:0;">🧠 Knowledge Check</h2>
+      <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <p class="q-text">1. In the swarm pattern, which component is responsible for routing tasks between agents?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q1','a','d')">a) A dedicated supervisor agent</button>
+        <button class="opt" onclick="answer('q1','b','d')">b) A load balancer</button>
+        <button class="opt" onclick="answer('q1','c','d')">c) A shared queue manager</button>
+        <button class="opt" onclick="answer('q1','d','d')">d) No central router — agents self-route</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <p class="q-text">2. "Emergent behavior" in a swarm means:</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q2','a','b')">a) A supervisor schedules emergence explicitly</button>
+        <button class="opt" onclick="answer('q2','b','b')">b) Complex global outcomes arise from simple local agent rules</button>
+        <button class="opt" onclick="answer('q2','c','b')">c) Agents randomly produce results</button>
+        <button class="opt" onclick="answer('q2','d','b')">d) Behavior is pre-programmed in a workflow config</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <p class="q-text">3. A blackboard in a swarm architecture is best described as:</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q3','a','c')">a) A supervisor's instruction set</button>
+        <button class="opt" onclick="answer('q3','b','c')">b) A private memory for each agent</button>
+        <button class="opt" onclick="answer('q3','c','c')">c) A shared memory store agents read/write to asynchronously</button>
+        <button class="opt" onclick="answer('q3','d','c')">d) A logging system for debugging</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <p class="q-text">4. Which scenario is BEST suited for the swarm pattern over hierarchical?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q4','a','d')">a) Generating a structured financial report with fixed steps</button>
+        <button class="opt" onclick="answer('q4','b','d')">b) Running a CI/CD pipeline with defined stages</button>
+        <button class="opt" onclick="answer('q4','c','d')">c) Processing customer orders in a fixed workflow</button>
+        <button class="opt" onclick="answer('q4','d','d')">d) Exploratory cybersecurity threat hunting across unknown attack surface</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <p class="q-text">5. The biggest trade-off of the swarm pattern compared to hierarchical is:</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q5','a','b')">a) Higher cost per LLM call</button>
+        <button class="opt" onclick="answer('q5','b','b')">b) Non-deterministic paths make debugging and auditing harder</button>
+        <button class="opt" onclick="answer('q5','c','b')">c) Requires more memory per agent</button>
+        <button class="opt" onclick="answer('q5','d','b')">d) Only works with OpenAI models</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ── QUIZ ── */
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'In the swarm pattern agents self-route via handoff functions — there is no central router.',
+  q2: 'Emergent behavior means complex global outcomes arise purely from simple local rules.',
+  q3: 'A blackboard is a shared memory store all agents can read from and write to asynchronously.',
+  q4: 'Open-ended exploration like threat hunting benefits from swarm autonomy; structured workflows suit hierarchical.',
+  q5: 'Non-deterministic message paths make swarms harder to debug and audit than hierarchical systems.'
+};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+
+/* ── NETWORK CANVAS ── */
+const agents = [
+  { id: 0, x: 390, y: 170, label: 'Coordinator', color: '#ffd166',
+    role: 'Optional soft-coordinator — nudges agents but does not command.',
+    code: 'coordinator.broadcast("Start threat scan on target: 10.0.0.0/24")' },
+  { id: 1, x: 160, y:  80, label: 'Scanner A', color: '#58a6ff',
+    role: 'Port and service scanner. Broadcasts open ports to the blackboard.',
+    code: 'blackboard.write("open_ports", scan_result)' },
+  { id: 2, x: 620, y:  80, label: 'Scanner B', color: '#58a6ff',
+    role: 'Vulnerability scanner. Reads open ports, writes CVEs found.',
+    code: 'vulns = blackboard.read("open_ports"); blackboard.write("cves", vulns)' },
+  { id: 3, x: 100, y: 240, label: 'Analyst', color: '#06d6a0',
+    role: 'Correlates CVEs from blackboard with threat intel feeds.',
+    code: 'findings = blackboard.read("cves"); send_to(writer_agent, findings)' },
+  { id: 4, x: 680, y: 240, label: 'Remediate', color: '#ff7eb6',
+    role: 'Reads confirmed threats and applies patches or firewall rules.',
+    code: 'if threat.severity > 7: apply_patch(threat.cve)' },
+  { id: 5, x: 390, y: 300, label: 'Reporter', color: '#c678dd',
+    role: 'Aggregates all blackboard entries into a final security report.',
+    code: 'report = blackboard.read_all(); generate_pdf(report)' },
+];
+const edges = [
+  [0,1],[0,2],[1,3],[2,4],[3,5],[4,5],[1,2],[3,4]
+];
+
+const canvas = document.getElementById('networkCanvas');
+const ctx = canvas.getContext('2d');
+let selectedAgent = null;
+
+function drawNetwork(highlight = null) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // edges
+  edges.forEach(([a,b]) => {
+    const A = agents[a], B = agents[b];
+    const isHL = highlight !== null && (a === highlight || b === highlight);
+    ctx.beginPath();
+    ctx.moveTo(A.x, A.y);
+    ctx.lineTo(B.x, B.y);
+    ctx.strokeStyle = isHL ? '#ffd16680' : '#30363d';
+    ctx.lineWidth = isHL ? 2.5 : 1.5;
+    ctx.setLineDash(isHL ? [] : [4,4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // arrow head
+    const angle = Math.atan2(B.y-A.y, B.x-A.x);
+    const mx = (A.x+B.x)/2, my = (A.y+B.y)/2;
+    ctx.beginPath();
+    ctx.moveTo(mx, my);
+    ctx.lineTo(mx - 8*Math.cos(angle-0.4), my - 8*Math.sin(angle-0.4));
+    ctx.lineTo(mx - 8*Math.cos(angle+0.4), my - 8*Math.sin(angle+0.4));
+    ctx.closePath();
+    ctx.fillStyle = isHL ? '#ffd166' : '#30363d';
+    ctx.fill();
+  });
+  // nodes
+  agents.forEach(ag => {
+    const isHL = highlight === ag.id;
+    ctx.beginPath();
+    ctx.arc(ag.x, ag.y, isHL ? 30 : 26, 0, Math.PI*2);
+    ctx.fillStyle = isHL ? ag.color : ag.color + '33';
+    ctx.fill();
+    ctx.strokeStyle = ag.color;
+    ctx.lineWidth = isHL ? 3 : 1.5;
+    ctx.stroke();
+    ctx.fillStyle = isHL ? '#0d1117' : ag.color;
+    ctx.font = `${isHL ? 600 : 400} ${isHL ? '11px' : '10px'} Segoe UI, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ag.label, ag.x, ag.y);
+  });
+}
+drawNetwork();
+
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  let hit = null;
+  agents.forEach(ag => {
+    const dx = mx - ag.x, dy = my - ag.y;
+    if (Math.sqrt(dx*dx+dy*dy) < 30) hit = ag;
+  });
+  const panel = document.getElementById('agentDetail');
+  if (hit) {
+    selectedAgent = hit.id;
+    drawNetwork(hit.id);
+    panel.innerHTML = `<h3 style="color:${hit.color};margin-bottom:.5rem;">🤖 ${hit.label}</h3>
+      <p>${hit.role}</p>
+      <div class="code-block">${hit.code}</div>`;
+    panel.classList.add('show');
+  } else {
+    selectedAgent = null;
+    drawNetwork();
+    panel.classList.remove('show');
+  }
+});
+
+/* ── COMMUNICATION MODES ── */
+const commData = {
+  direct: {
+    title: '📨 Direct Message',
+    desc: 'Agent A explicitly addresses Agent B by name or ID. Best for targeted task handoffs where the sender knows who should handle next. Low latency, high coupling.',
+    code: `# Direct handoff in OpenAI Swarm
+def handoff_to_analyst():
+    """Transfer to the Analyst agent."""
+    return analyst_agent
+
+scanner_agent = Agent(
+    name="Scanner",
+    functions=[scan_ports, handoff_to_analyst]
+)`
+  },
+  broadcast: {
+    title: '📢 Broadcast',
+    desc: 'An agent publishes a message to ALL peers simultaneously. Useful for broadcasting discovered facts, requesting help, or announcing completion. Can cause message storms if not rate-limited.',
+    code: `# Broadcasting to all agents
+async def broadcast_discovery(finding: str):
+    for agent in active_agents:
+        await agent.inbox.put({
+            "from": self.name,
+            "type": "broadcast",
+            "content": finding
+        })`
+  },
+  topic: {
+    title: '📌 Topic / Channel',
+    desc: 'Agents subscribe to named topics. Publishers send to a topic; only subscribed agents receive it. Loosely coupled — publishers don\'t know who listens. Ideal for event-driven swarms.',
+    code: `# Topic-based pub-sub
+bus = MessageBus()
+
+# Scanner publishes
+bus.publish("vulnerabilities", {"cve": "CVE-2024-1234", "severity": 9.1})
+
+# Analyst subscribes
+@bus.subscribe("vulnerabilities")
+async def on_vulnerability(msg):
+    await correlate_with_threat_intel(msg)`
+  },
+  blackboard: {
+    title: '🗒️ Blackboard (Shared Memory)',
+    desc: 'A central shared state store all agents can read and write. Agents don\'t message each other — they react to changes in shared state. Classic AI pattern from expert systems era.',
+    code: `# Blackboard pattern
+blackboard = SharedState()
+
+# Agent A writes
+blackboard["open_ports"] = [22, 80, 443, 8080]
+
+# Agent B reads and reacts
+ports = blackboard.get("open_ports")
+if 8080 in ports:
+    blackboard["findings"].append("Non-standard HTTP port detected")`
+  }
+};
+function showComm(key) {
+  document.querySelectorAll('#commCards .card').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const d = commData[key];
+  const panel = document.getElementById('commDetail');
+  panel.innerHTML = `<h3 style="margin-bottom:.5rem;">${d.title}</h3>
+    <p>${d.desc}</p>
+    <div class="code-block">${d.code}</div>`;
+  panel.classList.add('show');
+}
+
+/* ── TRACE SIMULATOR ── */
+const traces = [
+  [ // Threat Intelligence Swarm
+    {cls:'system', t:0,   txt:'── Threat Intelligence Swarm starting ──'},
+    {cls:'broadcast', t:200, txt:'[Coordinator] → BROADCAST: "Scan target 10.0.0.0/24 for vulnerabilities"'},
+    {cls:'worker',    t:500, txt:'[Scanner-A]   → Blackboard.write("open_ports", [22,80,443,8080])'},
+    {cls:'worker',    t:800, txt:'[Scanner-B]   → Blackboard.read("open_ports") → scanning for CVEs...'},
+    {cls:'worker',    t:1100,txt:'[Scanner-B]   → Blackboard.write("cves", [CVE-2024-1234 (9.1), CVE-2024-5678 (7.3)])'},
+    {cls:'peer',      t:1400,txt:'[Analyst]     → Blackboard.read("cves") → correlating with threat feeds...'},
+    {cls:'peer',      t:1700,txt:'[Analyst]     → Direct.send(Remediate, {cve:"CVE-2024-1234", action:"patch"})'},
+    {cls:'worker',    t:2000,txt:'[Remediate]   → Applying patch for CVE-2024-1234... success'},
+    {cls:'peer',      t:2300,txt:'[Analyst]     → Direct.send(Reporter, {confirmed_threats: 2, mitigated: 1})'},
+    {cls:'broadcast', t:2600,txt:'[Reporter]    → BROADCAST: "Threat report ready: 2 critical, 1 patched"'},
+    {cls:'system',    t:2900,txt:'── Swarm task complete ──'},
+  ],
+  [ // Market Research Swarm
+    {cls:'system',    t:0,   txt:'── Market Research Swarm starting ──'},
+    {cls:'broadcast', t:200, txt:'[Initiator]   → BROADCAST: "Research topic: AI chip market Q4 2024"'},
+    {cls:'worker',    t:500, txt:'[NewsAgent]   → Blackboard.write("news", [Reuters: NVIDIA Q4 revenue +94%...])'},
+    {cls:'worker',    t:800, txt:'[FinAgent]    → Blackboard.write("financials", [NVDA: $35B rev, AMD: $6.8B...])'},
+    {cls:'peer',      t:1100,txt:'[SentAgent]   → Blackboard.read("news") → sentiment score: +0.82 (bullish)'},
+    {cls:'peer',      t:1400,txt:'[SentAgent]   → Blackboard.write("sentiment", {score:0.82, drivers:["AI demand"]})'},
+    {cls:'worker',    t:1700,txt:'[TrendAgent]  → Blackboard.read_all() → synthesising market thesis...'},
+    {cls:'broadcast', t:2000,txt:'[TrendAgent]  → BROADCAST: "Thesis ready — AI chip supercycle confirmed"'},
+    {cls:'peer',      t:2300,txt:'[Reporter]    → Aggregating all blackboard entries → generating report'},
+    {cls:'system',    t:2600,txt:'── Research complete: 4 agents, 0 supervisor calls ──'},
+  ],
+  [ // Bug Triage Swarm
+    {cls:'system',    t:0,   txt:'── Bug Triage Swarm starting ──'},
+    {cls:'broadcast', t:200, txt:'[Ingest]      → BROADCAST: "New critical bug: NPE in AuthService.login()"'},
+    {cls:'worker',    t:500, txt:'[Reproducer]  → Running test suite... reproduced on JDK 17+ ✓'},
+    {cls:'worker',    t:800, txt:'[Reproducer]  → Blackboard.write("repro", {jdk:"17+", rate:"100%"})'},
+    {cls:'peer',      t:1100,txt:'[Bisector]    → Git bisect running... narrowed to commit abc123f'},
+    {cls:'peer',      t:1400,txt:'[Bisector]    → Direct.send(Fixer, {commit:"abc123f", file:"AuthService.java:142"})'},
+    {cls:'worker',    t:1700,txt:'[Fixer]       → Generating patch... null-check added at AuthService.java:142'},
+    {cls:'peer',      t:2000,txt:'[Fixer]       → Direct.send(Reviewer, {patch: diff_content})'},
+    {cls:'peer',      t:2300,txt:'[Reviewer]    → Patch approved. Direct.send(Deployer, {patch, env:"staging"})'},
+    {cls:'worker',    t:2600,txt:'[Deployer]    → Deployed to staging. All tests passing ✓'},
+    {cls:'broadcast', t:2900,txt:'[Deployer]    → BROADCAST: "Bug fixed and deployed — incident resolved"'},
+    {cls:'system',    t:3200,txt:'── Bug resolved in 32s with 5 peer agents, 0 supervisor ──'},
+  ]
+];
+
+let traceTimer = null;
+function runTrace(idx) {
+  document.querySelectorAll('.trace-btns .btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  if (traceTimer) clearTimeout(traceTimer);
+  const box = document.getElementById('traceBox');
+  box.innerHTML = '';
+  const lines = traces[idx];
+  lines.forEach(line => {
+    traceTimer = setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'trace-line ' + line.cls;
+      div.textContent = line.txt;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }, line.t);
+  });
+}
+</script>
+</body>
+</html>

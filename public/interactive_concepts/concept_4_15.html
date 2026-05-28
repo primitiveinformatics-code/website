@@ -1,0 +1,485 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.15 â€” RAG Evaluation: RAGAS Framework</title>
+<style>
+  :root {
+    --bg:#0f1117; --surface:#1a1d27; --card:#21263a; --accent:#ffd166;
+    --text:#e8eaf6; --muted:#8892b0; --border:rgba(255,209,102,0.2);
+    --c1:#6c63ff; --c2:#00d2ff; --c3:#06d6a0; --c4:#ffd166; --c5:#ff6584;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; }
+
+  .nav { display:flex; align-items:center; gap:12px; padding:16px 32px; border-bottom:1px solid var(--border); }
+  .nav a { color:var(--muted); text-decoration:none; font-size:13px; } .nav a:hover { color:var(--text); }
+  .nav-sep { color:rgba(255,255,255,0.15); }
+  .nav-cur { color:var(--accent); font-weight:700; font-size:13px; }
+
+  .hero { background:linear-gradient(135deg,#0f1117,#1a1607,#1a1d27); padding:56px 40px 44px; text-align:center; position:relative; overflow:hidden; border-bottom:1px solid var(--border); }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(255,209,102,0.1),transparent 70%); pointer-events:none; }
+  .hero-badge { display:inline-block; background:rgba(255,209,102,0.12); border:1px solid rgba(255,209,102,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:16px; }
+  .hero h1 { font-size:clamp(24px,4vw,42px); font-weight:800; background:linear-gradient(90deg,#fff,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:12px; }
+  .hero p { color:var(--muted); font-size:15px; max-width:640px; margin:0 auto 28px; line-height:1.6; }
+  .hero-stats { display:flex; justify-content:center; gap:40px; flex-wrap:wrap; }
+  .hstat { text-align:center; } .hstat-n { font-size:26px; font-weight:800; color:var(--accent); } .hstat-l { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+  .main { max-width:1100px; margin:0 auto; padding:40px 24px 80px; }
+  .sec-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+  .sec-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* METRIC CARDS */
+  .metric-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; margin-bottom:40px; }
+  .metric-card { background:var(--card); border:2px solid transparent; border-radius:16px; padding:22px; cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden; }
+  .metric-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; opacity:0; transition:opacity 0.2s; }
+  .metric-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,0.4); }
+  .metric-card:hover::before, .metric-card.active::before { opacity:1; }
+  .metric-card.active { border-color:var(--mc,#ffd166); background:rgba(255,255,255,0.03); }
+  .mc-icon { font-size:30px; margin-bottom:10px; }
+  .mc-name { font-size:15px; font-weight:800; margin-bottom:6px; }
+  .mc-score { font-size:28px; font-weight:900; margin-bottom:4px; }
+  .mc-tagline { font-size:12px; color:var(--muted); line-height:1.5; }
+  .mc-detail { display:none; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.07); }
+  .metric-card.active .mc-detail { display:block; }
+  .mc-detail p { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:8px; }
+  .mc-formula { background:rgba(0,0,0,0.3); border-radius:8px; padding:10px 14px; font-family:monospace; font-size:12px; color:var(--accent); margin-top:8px; }
+
+  /* LIVE SCORER */
+  .scorer-box { background:var(--card); border:1px solid rgba(255,209,102,0.3); border-radius:16px; padding:28px; margin-bottom:40px; }
+  .scorer-box h3 { font-size:15px; font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .scorer-box p { font-size:12px; color:var(--muted); margin-bottom:20px; }
+  .scenario-selector { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+  .ss-btn { padding:8px 18px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:var(--muted); transition:all 0.2s; }
+  .ss-btn.active { border-color:var(--accent); background:rgba(255,209,102,0.1); color:var(--accent); }
+  .scenario-display { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+  @media(max-width:650px){ .scenario-display { grid-template-columns:1fr; } }
+  .sdisp-box { background:rgba(0,0,0,0.3); border-radius:10px; padding:14px; }
+  .sdisp-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:6px; }
+  .sdisp-text { font-size:13px; line-height:1.6; }
+  .score-bars { display:flex; flex-direction:column; gap:12px; }
+  .score-row { display:flex; align-items:center; gap:12px; }
+  .score-label { font-size:12px; font-weight:700; width:180px; flex-shrink:0; }
+  .score-track { flex:1; background:rgba(255,255,255,0.05); border-radius:20px; height:20px; overflow:hidden; position:relative; }
+  .score-fill { height:100%; border-radius:20px; display:flex; align-items:center; justify-content:flex-end; padding-right:10px; font-size:11px; font-weight:700; color:#000; transition:width 1s ease; }
+  .score-val { font-size:14px; font-weight:800; width:44px; text-align:right; }
+
+  /* PIPELINE */
+  .pipeline-vis { background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:28px; margin-bottom:40px; }
+  .pipeline-vis h3 { font-size:14px; font-weight:700; color:var(--accent); margin-bottom:20px; }
+  .pipe-flow { display:flex; flex-wrap:wrap; align-items:center; gap:0; margin-bottom:20px; }
+  .pipe-box { padding:14px 18px; border-radius:10px; font-size:13px; font-weight:700; text-align:center; min-width:110px; position:relative; }
+  .pipe-arrow { color:var(--muted); font-size:18px; padding:0 8px; }
+  .pipe-note { font-size:11px; font-weight:400; color:var(--muted); margin-top:4px; }
+
+  /* FAILURE MODES */
+  .failure-list { display:flex; flex-direction:column; gap:12px; margin-bottom:40px; }
+  .failure-item { background:var(--card); border:1px solid rgba(255,101,132,0.2); border-radius:12px; overflow:hidden; }
+  .failure-header { display:flex; align-items:center; gap:14px; padding:16px 20px; cursor:pointer; transition:background 0.2s; }
+  .failure-header:hover { background:rgba(255,255,255,0.02); }
+  .fail-icon { font-size:20px; }
+  .fail-name { font-size:14px; font-weight:700; flex:1; }
+  .fail-metric { font-size:11px; font-weight:700; padding:3px 10px; border-radius:6px; background:rgba(255,101,132,0.15); color:#ff6584; }
+  .fail-arrow { color:var(--muted); transition:transform 0.2s; }
+  .failure-item.open .fail-arrow { transform:rotate(90deg); }
+  .failure-body { display:none; padding:0 20px 16px; }
+  .failure-item.open .failure-body { display:block; }
+  .fail-cols { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px; }
+  @media(max-width:500px){ .fail-cols { grid-template-columns:1fr; } }
+  .fail-col-box { background:rgba(0,0,0,0.25); border-radius:8px; padding:12px; }
+  .fcb-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:6px; }
+  .fcb-text { font-size:12px; line-height:1.5; }
+
+  /* QUIZ */
+  .quiz-box { background:var(--card); border:1px solid rgba(255,209,102,0.3); border-radius:16px; padding:28px; margin-bottom:32px; }
+  .quiz-q { font-size:15px; font-weight:700; color:var(--text); margin-bottom:16px; background:rgba(255,255,255,0.04); border-radius:10px; padding:14px; border-left:4px solid var(--accent); }
+  .quiz-opts { display:flex; flex-direction:column; gap:10px; }
+  .qopt { padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.03); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; text-align:left; }
+  .qopt:hover { border-color:rgba(255,209,102,0.4); background:rgba(255,209,102,0.05); }
+  .qopt.correct { border-color:#06d6a0; background:rgba(6,214,160,0.1); color:#06d6a0; }
+  .qopt.wrong { border-color:#ff6584; background:rgba(255,101,132,0.1); color:#ff6584; }
+  .quiz-fb { margin-top:12px; padding:12px; border-radius:8px; font-size:13px; display:none; }
+  .quiz-fb.show { display:block; }
+  .quiz-fb.ok { background:rgba(6,214,160,0.1); color:#06d6a0; border:1px solid rgba(6,214,160,0.3); }
+  .quiz-fb.bad { background:rgba(255,101,132,0.1); color:#ff6584; border:1px solid rgba(255,101,132,0.3); }
+
+  .back-row { text-align:center; margin-top:40px; }
+  .back-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(255,209,102,0.1); border:1px solid rgba(255,209,102,0.3); color:var(--accent); padding:10px 24px; border-radius:30px; text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s; }
+  .back-btn:hover { background:rgba(255,209,102,0.2); }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="main-course.html">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-cur">4.15 â€” RAG Evaluation: RAGAS Framework</span>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
+  <h1>RAG Evaluation â€” RAGAS Framework</h1>
+  <p>Measure RAG pipeline quality without ground-truth labels â€” four metrics that cover every failure mode</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">Core Metrics</div></div>
+    <div class="hstat"><div class="hstat-n">0â€“1</div><div class="hstat-l">Score Range</div></div>
+    <div class="hstat"><div class="hstat-n">LLM-Free</div><div class="hstat-l">Reference Option</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="sec-title">The 4 RAGAS Metrics â€” Click to Explore</div>
+  <div class="metric-grid">
+    <div class="metric-card active" style="--mc:#6c63ff;" onclick="toggleMetric(this)" data-idx="0">
+      <div class="mc-icon">ðŸŽ¯</div>
+      <div class="mc-name" style="color:#6c63ff;">Faithfulness</div>
+      <div class="mc-score" style="color:#6c63ff;">0.0â€“1.0</div>
+      <div class="mc-tagline">Is the answer grounded in the retrieved context?</div>
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#6c63ff;"></div>
+      <div class="mc-detail">
+        <p>Measures: What fraction of statements in the generated answer can be inferred from the retrieved context.</p>
+        <p><strong>Catches:</strong> Hallucinations â€” answers that add facts not in the context.</p>
+        <div class="mc-formula">score = |verified claims| / |total claims in answer|</div>
+      </div>
+    </div>
+    <div class="metric-card" style="--mc:#00d2ff;" onclick="toggleMetric(this)" data-idx="1">
+      <div class="mc-icon">ðŸ”</div>
+      <div class="mc-name" style="color:#00d2ff;">Answer Relevancy</div>
+      <div class="mc-score" style="color:#00d2ff;">0.0â€“1.0</div>
+      <div class="mc-tagline">Does the answer actually address the question?</div>
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#00d2ff;opacity:0;transition:opacity 0.2s;"></div>
+      <div class="mc-detail">
+        <p>Measures: Semantic similarity between the question and answer. Uses reverse-generation â€” the LLM generates N questions from the answer, then computes similarity to the original.</p>
+        <p><strong>Catches:</strong> Tangential or off-topic answers that are technically grounded but don't answer the actual question.</p>
+        <div class="mc-formula">score = mean(cosine_sim(q, generated_qs))</div>
+      </div>
+    </div>
+    <div class="metric-card" style="--mc:#06d6a0;" onclick="toggleMetric(this)" data-idx="2">
+      <div class="mc-icon">ðŸ“š</div>
+      <div class="mc-name" style="color:#06d6a0;">Context Precision</div>
+      <div class="mc-score" style="color:#06d6a0;">0.0â€“1.0</div>
+      <div class="mc-tagline">Are the top retrieved chunks actually relevant?</div>
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#06d6a0;opacity:0;transition:opacity 0.2s;"></div>
+      <div class="mc-detail">
+        <p>Measures: Ranking quality of retrieval. Are the relevant chunks retrieved at the top positions, or buried below irrelevant ones?</p>
+        <p><strong>Catches:</strong> Noisy retrieval â€” when the right chunk exists in the DB but gets ranked below irrelevant chunks.</p>
+        <div class="mc-formula">Weighted Precision@k over retrieved contexts</div>
+      </div>
+    </div>
+    <div class="metric-card" style="--mc:#ff6584;" onclick="toggleMetric(this)" data-idx="3">
+      <div class="mc-icon">ðŸ•¸ï¸</div>
+      <div class="mc-name" style="color:#ff6584;">Context Recall</div>
+      <div class="mc-score" style="color:#ff6584;">0.0â€“1.0</div>
+      <div class="mc-tagline">Did retrieval find all necessary information?</div>
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#ff6584;opacity:0;transition:opacity 0.2s;"></div>
+      <div class="mc-detail">
+        <p>Measures: What fraction of the ground-truth answer's content can be attributed to the retrieved context. Requires reference answer.</p>
+        <p><strong>Catches:</strong> Missing retrieval â€” when the retriever returns chunks that don't cover all the facts needed to answer.</p>
+        <div class="mc-formula">score = |ground truth sentences supported| / |total ground truth sentences|</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">Live RAGAS Scorer â€” Compare 3 RAG Pipelines</div>
+  <div class="scorer-box">
+    <h3>ðŸ§ª Pipeline Comparison</h3>
+    <p>Select a pipeline to see its RAGAS scores and understand which failure mode it hits</p>
+    <div class="scenario-selector">
+      <button class="ss-btn active" onclick="selectPipeline(0)">Pipeline A â€” Naive RAG</button>
+      <button class="ss-btn" onclick="selectPipeline(1)">Pipeline B â€” Advanced RAG</button>
+      <button class="ss-btn" onclick="selectPipeline(2)">Pipeline C â€” Over-Compressed</button>
+    </div>
+    <div class="scenario-display">
+      <div class="sdisp-box">
+        <div class="sdisp-label">Setup</div>
+        <div class="sdisp-text" id="pipe-setup">Simple top-5 chunk retrieval, chunk size=512, no re-ranking, direct GPT-4 generation</div>
+      </div>
+      <div class="sdisp-box">
+        <div class="sdisp-label">Known Weakness</div>
+        <div class="sdisp-text" id="pipe-weakness">Retrieves irrelevant chunks; model hallucinates when context is noisy</div>
+      </div>
+    </div>
+    <div class="score-bars" id="score-bars"></div>
+  </div>
+
+  <div class="sec-title">RAGAS Evaluation Pipeline</div>
+  <div class="pipeline-vis">
+    <h3>How RAGAS Computes Scores</h3>
+    <div class="pipe-flow">
+      <div class="pipe-box" style="background:rgba(108,99,255,0.15);color:#6c63ff;">
+        Question<br><div class="pipe-note">User query</div>
+      </div>
+      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-box" style="background:rgba(0,210,255,0.15);color:#00d2ff;">
+        RAG Pipeline<br><div class="pipe-note">Retrieve + Generate</div>
+      </div>
+      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-box" style="background:rgba(255,209,102,0.15);color:#ffd166;">
+        [Q, Context,<br>Answer, GT?]<br><div class="pipe-note">Evaluation inputs</div>
+      </div>
+      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-box" style="background:rgba(6,214,160,0.15);color:#06d6a0;">
+        RAGAS Scorer<br><div class="pipe-note">LLM-as-judge</div>
+      </div>
+      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-box" style="background:rgba(255,101,132,0.15);color:#ff6584;">
+        4 Scores<br><div class="pipe-note">F, AR, CP, CR</div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:16px;font-size:13px;line-height:1.7;">
+      <strong style="color:var(--accent);">Key insight:</strong> Faithfulness & Answer Relevancy require <em>no ground truth</em> â€” RAGAS uses an LLM as evaluator. Context Precision & Recall optionally use ground truth for more accurate measurement. This makes RAGAS practical for production evaluation where labelled data is scarce.
+    </div>
+  </div>
+
+  <div class="sec-title">What Each Score Tells You â€” Failure Mode Map</div>
+  <div class="failure-list">
+    <div class="failure-item" onclick="toggleFailure(this)">
+      <div class="failure-header">
+        <div class="fail-icon">ðŸ”´</div>
+        <div class="fail-name">Low Faithfulness â†’ Hallucination</div>
+        <div class="fail-metric">Faithfulness &lt; 0.5</div>
+        <div class="fail-arrow">â€º</div>
+      </div>
+      <div class="failure-body">
+        <div class="fail-cols">
+          <div class="fail-col-box">
+            <div class="fcb-label">Symptom</div>
+            <div class="fcb-text">Answer contains facts that don't appear in any retrieved chunk. Model is "free-associating" beyond the context.</div>
+          </div>
+          <div class="fail-col-box">
+            <div class="fcb-label">Fix</div>
+            <div class="fcb-text">Stronger system prompt ("Only answer using the provided context"). Use smaller, more focused models. Add citation enforcement.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="failure-item" onclick="toggleFailure(this)">
+      <div class="failure-header">
+        <div class="fail-icon">ðŸŸ¡</div>
+        <div class="fail-name">Low Answer Relevancy â†’ Off-Topic Answer</div>
+        <div class="fail-metric">AR &lt; 0.6</div>
+        <div class="fail-arrow">â€º</div>
+      </div>
+      <div class="failure-body">
+        <div class="fail-cols">
+          <div class="fail-col-box">
+            <div class="fcb-label">Symptom</div>
+            <div class="fcb-text">Model returns a factually correct, grounded answer but doesn't actually answer the question asked.</div>
+          </div>
+          <div class="fail-col-box">
+            <div class="fcb-label">Fix</div>
+            <div class="fcb-text">Improve question understanding in prompt. Add answer format constraints. Use query rewriting to clarify intent before retrieval.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="failure-item" onclick="toggleFailure(this)">
+      <div class="failure-header">
+        <div class="fail-icon">ðŸŸ </div>
+        <div class="fail-name">Low Context Precision â†’ Noisy Retrieval</div>
+        <div class="fail-metric">CP &lt; 0.6</div>
+        <div class="fail-arrow">â€º</div>
+      </div>
+      <div class="failure-body">
+        <div class="fail-cols">
+          <div class="fail-col-box">
+            <div class="fcb-label">Symptom</div>
+            <div class="fcb-text">Top retrieved chunks are mostly irrelevant. The relevant chunk exists but is ranked position 4 or 5, diluting context quality.</div>
+          </div>
+          <div class="fail-col-box">
+            <div class="fcb-label">Fix</div>
+            <div class="fcb-text">Add cross-encoder re-ranking layer. Use hybrid retrieval (dense + sparse). Tune chunk size to reduce noise.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="failure-item" onclick="toggleFailure(this)">
+      <div class="failure-header">
+        <div class="fail-icon">ðŸ”µ</div>
+        <div class="fail-name">Low Context Recall â†’ Missing Information</div>
+        <div class="fail-metric">CR &lt; 0.6</div>
+        <div class="fail-arrow">â€º</div>
+      </div>
+      <div class="failure-body">
+        <div class="fail-cols">
+          <div class="fail-col-box">
+            <div class="fcb-label">Symptom</div>
+            <div class="fcb-text">Key facts needed to answer the question are not present in the retrieved chunks. Retriever misses relevant documents entirely.</div>
+          </div>
+          <div class="fail-col-box">
+            <div class="fcb-label">Fix</div>
+            <div class="fcb-text">Increase top-k. Use multi-query retrieval (generate 3â€“5 query variants). Improve chunking strategy to avoid splitting related content.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">Quick Quiz</div>
+  <div class="quiz-box">
+    <div class="quiz-q" id="quiz-q">Loading...</div>
+    <div class="quiz-opts" id="quiz-opts"></div>
+    <div class="quiz-fb" id="quiz-fb"></div>
+    <button onclick="nextQuiz()" style="margin-top:14px;padding:9px 20px;border-radius:8px;border:1px solid var(--accent);background:rgba(255,209,102,0.1);color:var(--accent);font-weight:700;cursor:pointer;font-size:13px;">Next â†’</button>
+  </div>
+
+  <div class="back-row">
+    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+  </div>
+</div>
+
+<script>
+// â”€â”€â”€ METRIC CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function toggleMetric(el) {
+  const wasActive = el.classList.contains('active');
+  document.querySelectorAll('.metric-card').forEach(c => {
+    c.classList.remove('active');
+    const bar = c.querySelector('[style*="height:3px"]');
+    if(bar) bar.style.opacity = '0';
+  });
+  if(!wasActive) {
+    el.classList.add('active');
+    const bar = el.querySelector('[style*="height:3px"]');
+    if(bar) bar.style.opacity = '1';
+  }
+}
+// init first card bar
+document.querySelector('.metric-card [style*="height:3px"]').style.opacity = '1';
+
+// â”€â”€â”€ PIPELINE SCORER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const pipelines = [
+  {
+    name: "Pipeline A â€” Naive RAG",
+    setup: "Simple top-5 chunk retrieval, chunk size=512, no re-ranking, direct GPT-4 generation",
+    weakness: "Retrieves irrelevant chunks; model sometimes adds facts not in context",
+    scores: [
+      { name:"Faithfulness", val:0.61, color:"#6c63ff" },
+      { name:"Answer Relevancy", val:0.74, color:"#00d2ff" },
+      { name:"Context Precision", val:0.52, color:"#06d6a0" },
+      { name:"Context Recall", val:0.68, color:"#ff6584" },
+    ]
+  },
+  {
+    name: "Pipeline B â€” Advanced RAG",
+    setup: "Hybrid retrieval (dense+sparse), cross-encoder re-ranker, HyDE query expansion, chunk size=256",
+    weakness: "Slightly higher latency; strong across all dimensions",
+    scores: [
+      { name:"Faithfulness", val:0.91, color:"#6c63ff" },
+      { name:"Answer Relevancy", val:0.87, color:"#00d2ff" },
+      { name:"Context Precision", val:0.89, color:"#06d6a0" },
+      { name:"Context Recall", val:0.84, color:"#ff6584" },
+    ]
+  },
+  {
+    name: "Pipeline C â€” Over-Compressed",
+    setup: "Aggressive summarization before storage, top-2 retrieval only, minimal context window",
+    weakness: "Lost information during summarization â€” high precision but low recall",
+    scores: [
+      { name:"Faithfulness", val:0.88, color:"#6c63ff" },
+      { name:"Answer Relevancy", val:0.82, color:"#00d2ff" },
+      { name:"Context Precision", val:0.91, color:"#06d6a0" },
+      { name:"Context Recall", val:0.41, color:"#ff6584" },
+    ]
+  }
+];
+
+let activePipeline = 0;
+function selectPipeline(i) {
+  activePipeline = i;
+  document.querySelectorAll('.ss-btn').forEach((b,idx) => b.classList.toggle('active', idx===i));
+  const p = pipelines[i];
+  document.getElementById('pipe-setup').textContent = p.setup;
+  document.getElementById('pipe-weakness').textContent = p.weakness;
+  renderScores(p.scores);
+}
+
+function renderScores(scores) {
+  const container = document.getElementById('score-bars');
+  container.innerHTML = scores.map(s => {
+    const pct = Math.round(s.val * 100);
+    const grade = s.val >= 0.8 ? 'ðŸŸ¢' : s.val >= 0.6 ? 'ðŸŸ¡' : 'ðŸ”´';
+    return `
+      <div class="score-row">
+        <div class="score-label">${grade} ${s.name}</div>
+        <div class="score-track">
+          <div class="score-fill" style="width:${pct}%;background:${s.color};">${pct}%</div>
+        </div>
+        <div class="score-val" style="color:${s.color};">${s.val.toFixed(2)}</div>
+      </div>
+    `;
+  }).join('');
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.score-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(() => bar.style.width = w, 50);
+    });
+  }, 10);
+}
+
+// â”€â”€â”€ FAILURE MODES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function toggleFailure(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.failure-item').forEach(i => i.classList.remove('open'));
+  if(!open) el.classList.add('open');
+}
+
+// â”€â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const quizzes = [
+  {
+    q: "Your RAG system gives factually correct answers, but they don't address what the user actually asked. Which RAGAS metric is low?",
+    opts: ["Faithfulness","Answer Relevancy","Context Precision","Context Recall"],
+    correct: 1,
+    explain: "âœ… Answer Relevancy â€” measures whether the answer addresses the question. The answer can be faithful (grounded) yet still miss the point."
+  },
+  {
+    q: "Your retriever finds 5 chunks, but only 1 is actually relevant and it's ranked #4. Which metric catches this?",
+    opts: ["Faithfulness","Answer Relevancy","Context Precision","Context Recall"],
+    correct: 2,
+    explain: "âœ… Context Precision â€” measures ranking quality. Relevant chunk at position 4 means poor precision even if it's eventually found."
+  },
+  {
+    q: "Which two RAGAS metrics do NOT require a ground-truth reference answer?",
+    opts: ["Faithfulness & Context Recall","Faithfulness & Answer Relevancy","Context Precision & Context Recall","Answer Relevancy & Context Recall"],
+    correct: 1,
+    explain: "âœ… Faithfulness & Answer Relevancy â€” both use LLM-as-judge without needing labelled data, making them ideal for production use."
+  },
+  {
+    q: "A RAG pipeline adds information to the answer that doesn't appear in any retrieved chunk. Which metric detects this?",
+    opts: ["Answer Relevancy","Context Precision","Context Recall","Faithfulness"],
+    correct: 3,
+    explain: "âœ… Faithfulness â€” verifies that every claim in the answer can be traced back to the retrieved context. Extra facts = hallucination = low faithfulness."
+  }
+];
+let qIdx = 0, qAnswered = false;
+function loadQuiz() {
+  const q = quizzes[qIdx % quizzes.length];
+  document.getElementById('quiz-q').textContent = q.q;
+  document.getElementById('quiz-fb').className = 'quiz-fb';
+  qAnswered = false;
+  document.getElementById('quiz-opts').innerHTML = q.opts.map((o,i) =>
+    `<button class="qopt" onclick="answerQuiz(${i})">${o}</button>`
+  ).join('');
+}
+function answerQuiz(i) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizzes[qIdx % quizzes.length];
+  const btns = document.querySelectorAll('.qopt');
+  btns[i].classList.add(i===q.correct ? 'correct' : 'wrong');
+  btns[q.correct].classList.add('correct');
+  const fb = document.getElementById('quiz-fb');
+  fb.textContent = i===q.correct ? q.explain : 'âŒ ' + q.explain;
+  fb.className = 'quiz-fb show ' + (i===q.correct ? 'ok' : 'bad');
+}
+function nextQuiz() { qIdx++; loadQuiz(); }
+
+// â”€â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+selectPipeline(0);
+loadQuiz();
+</script>
+</body>
+</html>

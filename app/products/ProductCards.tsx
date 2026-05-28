@@ -1,4 +1,4 @@
-import { ExternalLink, Check, FolderOpen, Lock, CalendarDays, Sparkles, ArrowRight } from "lucide-react";
+import { ExternalLink, Check, FolderOpen, Lock, CalendarDays, Sparkles, ArrowRight, BookOpen } from "lucide-react";
 
 function YoutubeIcon({ size = 20 }: { size?: number }) {
   return (
@@ -122,7 +122,7 @@ export default async function ProductCards() {
 
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
+                  href="mailto:primitiveinformatics@gmail.com?subject=Register%20for%20Free%20Agentic%20AI%20Intro%20Session"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all hover:scale-105"
                   style={{ background: "linear-gradient(135deg, #06B6D4, #8B5CF6)", color: "#fff", boxShadow: "0 0 30px rgba(6,182,212,0.25)" }}
                 >
@@ -130,7 +130,7 @@ export default async function ProductCards() {
                   Join Free Intro Session
                 </a>
                 <a
-                  href="mailto:admin@primitiveinformatics.in?subject=Register%20for%20Agentic%20AI%202-Day%20Workshop"
+                  href="mailto:primitiveinformatics@gmail.com?subject=Register%20for%20Agentic%20AI%202-Day%20Workshop"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all hover:scale-105"
                   style={{ backgroundColor: "transparent", color: "#06B6D4", border: "1px solid rgba(6,182,212,0.4)" }}
                 >
@@ -171,7 +171,103 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 2: AI Mock Interview Platform */}
+        {/* Card 2: Interactive Learning Guide */}
+        <div
+          id="interactive-learning"
+          className="rounded-2xl overflow-hidden"
+          style={{
+            backgroundColor: "rgba(17,24,39,0.8)",
+            border: "1px solid rgba(108,99,255,0.2)",
+            backdropFilter: "blur(12px)",
+            boxShadow: "0 0 60px rgba(108,99,255,0.06)",
+          }}
+        >
+          <div className="p-10 lg:p-14">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: "rgba(108,99,255,0.1)", color: "#6c63ff", border: "1px solid rgba(108,99,255,0.2)" }}>
+                Pre-course free · Main course login required
+              </div>
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#00d2ff" }}>Interactive Learning</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4" style={{ color: "#F1F5F9" }}>Interactive Learning Guide</h2>
+            <p className="mb-8 leading-relaxed max-w-2xl" style={{ color: "#94A3B8" }}>
+              Concept-by-concept interactive HTML pages — each built with live simulators, visual explorers, quizzes, and exercises. 6 free pre-course foundations plus 53 gated main-course concepts across 4 deep-dive modules.
+            </p>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Pre-Course box */}
+              <div className="rounded-xl p-6" style={{ backgroundColor: "rgba(108,99,255,0.05)", border: "1px solid rgba(108,99,255,0.2)" }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(108,99,255,0.12)" }}>
+                    <BookOpen size={17} style={{ color: "#6c63ff" }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: "#F1F5F9" }}>Pre-Course Sample</p>
+                    <p className="text-xs" style={{ color: "#64748B" }}>6 concepts · Free access</p>
+                  </div>
+                  <span className="ml-auto px-2 py-0.5 text-xs font-bold rounded-full shrink-0"
+                    style={{ backgroundColor: "rgba(16,185,129,0.1)", color: "#10B981", border: "1px solid rgba(16,185,129,0.2)" }}>
+                    Free
+                  </span>
+                </div>
+                <p className="text-sm mb-5" style={{ color: "#94A3B8" }}>
+                  Agentic AI foundations — the platform shift, agent anatomy, ReAct loop, 4 memory types, and prototype-to-production gap.
+                </p>
+                <a
+                  href="/interactive_concepts/pre-course.html"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, #6c63ff, #5a52e0)", color: "#fff", boxShadow: "0 0 20px rgba(108,99,255,0.2)" }}
+                >
+                  <BookOpen size={14} />
+                  Open Pre-Course
+                  <ArrowRight size={14} />
+                </a>
+              </div>
+
+              {/* Main Course box */}
+              <div className="rounded-xl p-6" style={{ backgroundColor: "rgba(0,210,255,0.04)", border: "1px solid rgba(0,210,255,0.2)" }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "rgba(0,210,255,0.1)" }}>
+                    <Lock size={17} style={{ color: "#00d2ff" }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: "#F1F5F9" }}>Main Course</p>
+                    <p className="text-xs" style={{ color: "#64748B" }}>4 modules · 53 concepts · Full reference</p>
+                  </div>
+                  <span className="ml-auto px-2 py-0.5 text-xs font-bold rounded-full shrink-0"
+                    style={{ backgroundColor: "rgba(0,210,255,0.1)", color: "#00d2ff", border: "1px solid rgba(0,210,255,0.2)" }}>
+                    Login
+                  </span>
+                </div>
+                <p className="text-sm mb-5" style={{ color: "#94A3B8" }}>
+                  Agent Foundations, MCP & A2A Protocols, RAG Pipelines, Orchestration, LangGraph, Observability & Security — plus 53 interactive concept pages.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <a
+                    href="/interactive_concepts/main-course.html"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-105"
+                    style={{ background: "linear-gradient(135deg, #00d2ff, #0099cc)", color: "#fff", boxShadow: "0 0 20px rgba(0,210,255,0.15)" }}
+                  >
+                    <Lock size={14} />
+                    Access Main Course
+                    <ArrowRight size={14} />
+                  </a>
+                  <a
+                    href={`mailto:primitiveinformatics@gmail.com?subject=Request%20Access%20to%20Interactive%20Learning%20Guide`}
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-sm transition-all"
+                    style={{ color: "#6c63ff", border: "1px solid rgba(108,99,255,0.3)", backgroundColor: "transparent" }}
+                  >
+                    Request Access
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: AI Mock Interview Platform */}
         <div
           className="rounded-2xl overflow-hidden"
           style={{
@@ -241,7 +337,7 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 3: YouTube Channel — Free Expert Content */}
+        {/* Card 4: YouTube Channel — Free Expert Content */}
         <div
           className="rounded-2xl overflow-hidden"
           style={{ backgroundColor: "rgba(17,24,39,0.8)", border: "1px solid rgba(239,68,68,0.15)", backdropFilter: "blur(12px)" }}
@@ -286,7 +382,7 @@ export default async function ProductCards() {
           </div>
         </div>
 
-        {/* Card 4: Audio & Video Resources — Google Drive */}
+        {/* Card 5: Audio & Video Resources — Google Drive */}
         <div
           className="rounded-2xl overflow-hidden"
           style={{ backgroundColor: "rgba(17,24,39,0.8)", border: "1px solid rgba(139,92,246,0.15)", backdropFilter: "blur(12px)" }}

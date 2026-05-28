@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.16 Vector Databases | Agentic AI</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --green: #06d6a0; --yellow: #ffd166;
+    --blue: #00d2ff; --purple: #c678dd; --orange: #e5c07b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px;
+        display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.85rem; padding: 6px 12px;
+          border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+  nav a:hover { background: var(--surface2); border-color: var(--accent); }
+  nav span { color: var(--muted); font-size: 0.8rem; }
+
+  .hero { background: linear-gradient(135deg, #0a1510 0%, #0a1020 100%);
+          border-bottom: 1px solid var(--border); padding: 48px 24px 36px; text-align: center; }
+  .hero .tag { display: inline-block; background: rgba(229,192,123,0.12); color: var(--orange);
+               border: 1px solid rgba(229,192,123,0.3); border-radius: 20px; padding: 4px 14px;
+               font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+  .hero h1 span { color: var(--orange); }
+  .hero p { color: var(--muted); max-width: 640px; margin: 0 auto; font-size: 1rem; }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 40px 24px; }
+  .section { margin-bottom: 52px; }
+  .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ANN INDEX EXPLORER */
+  .alg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .alg-grid { grid-template-columns: 1fr; } }
+  .alg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.2s; }
+  .alg-card:hover, .alg-card.active { border-color: var(--orange); background: rgba(229,192,123,0.05); }
+  .alg-card h4 { color: var(--orange); font-size: 1rem; margin-bottom: 6px; }
+  .alg-card .alg-name { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; }
+  .alg-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .alg-stat { background: var(--surface2); border-radius: 6px; padding: 6px 8px; text-align: center; }
+  .alg-stat .s-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; }
+  .alg-stat .s-val { font-size: 0.82rem; font-weight: 600; }
+  .alg-detail { background: var(--surface); border: 1px solid var(--orange); border-radius: 10px; padding: 20px; margin-top: 16px; display: none; }
+  .alg-detail.show { display: block; }
+
+  /* DB COMPARISON */
+  .db-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .db-tab { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+  .db-tab.active { border-color: var(--orange); color: var(--orange); background: rgba(229,192,123,0.08); }
+  .db-panel { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .db-panel.active { display: block; }
+  .db-header { background: var(--surface2); padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; }
+  .db-header h3 { font-size: 1.05rem; font-weight: 700; }
+  .db-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .db-badge { font-size: 0.72rem; padding: 2px 10px; border-radius: 10px; font-weight: 600; }
+  .badge-managed { background: rgba(0,210,255,0.12); color: var(--blue); border: 1px solid rgba(0,210,255,0.25); }
+  .badge-self { background: rgba(6,214,160,0.12); color: var(--green); border: 1px solid rgba(6,214,160,0.25); }
+  .badge-hybrid { background: rgba(255,209,102,0.12); color: var(--yellow); border: 1px solid rgba(255,209,102,0.25); }
+  .badge-ext { background: rgba(198,120,221,0.12); color: var(--purple); border: 1px solid rgba(198,120,221,0.25); }
+  .db-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media (max-width: 600px) { .db-body { grid-template-columns: 1fr; } }
+  .db-col { padding: 20px; }
+  .db-col:first-child { border-right: 1px solid var(--border); }
+  .db-col h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 10px; }
+  .db-col ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .db-col ul li { font-size: 0.85rem; color: var(--text); padding-left: 16px; position: relative; }
+  .str-li::before { content: '✓'; color: var(--green); position: absolute; left: 0; }
+  .lim-li::before { content: '✗'; color: var(--accent); position: absolute; left: 0; }
+  .db-code { padding: 16px 20px; border-top: 1px solid var(--border); background: #0d1117; font-family: monospace; font-size: 0.8rem; overflow-x: auto; }
+
+  /* FEATURE MATRIX */
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .matrix-table th { background: var(--surface2); padding: 10px 12px; text-align: center; border: 1px solid var(--border); color: var(--muted); font-weight: 600; }
+  .matrix-table th:first-child { text-align: left; }
+  .matrix-table td { padding: 10px 12px; border: 1px solid var(--border); text-align: center; }
+  .matrix-table td:first-child { text-align: left; font-size: 0.85rem; font-weight: 500; }
+  .matrix-table tr:hover td { background: var(--surface); }
+  .yes { color: var(--green); font-size: 1.1rem; } .no { color: var(--accent); font-size: 1.1rem; }
+  .partial { color: var(--yellow); font-size: 0.8rem; font-weight: 600; }
+
+  /* DECISION TREE */
+  .dtree { display: flex; flex-direction: column; gap: 16px; }
+  .dq { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .dq p { font-weight: 600; margin-bottom: 12px; color: var(--orange); }
+  .dq .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dq .choice { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+  .dq .choice:hover { border-color: var(--orange); color: var(--orange); }
+  .dq .choice.chosen { border-color: var(--orange); background: rgba(229,192,123,0.1); color: var(--orange); }
+  .dt-result { background: rgba(229,192,123,0.08); border: 2px solid var(--orange); border-radius: 10px; padding: 20px; display: none; }
+  .dt-result.show { display: block; }
+  .dt-result h4 { color: var(--orange); font-size: 1.1rem; margin-bottom: 8px; }
+  .dt-result p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+  /* CODE */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+        font-family: 'Consolas','Monaco',monospace; font-size: 0.8rem; overflow-x: auto; line-height: 1.6; }
+  .kw { color: #ff7b72; } .str { color: #a5d6ff; } .cm { color: var(--muted); }
+  .fn { color: #d2a8ff; } .cls { color: #ffa657; } .num { color: #79c0ff; }
+  .info-box { background: rgba(229,192,123,0.06); border: 1px solid rgba(229,192,123,0.2); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+  .info-box strong { color: var(--orange); }
+
+  /* QUIZ */
+  .quiz-header { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+                 display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .score-display { background: rgba(229,192,123,0.1); border: 1px solid rgba(229,192,123,0.3);
+                   color: var(--orange); padding: 4px 16px; border-radius: 20px; font-weight: 700; }
+  .question { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .question p { font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+         color: var(--text); cursor: pointer; text-align: left; font-size: 0.88rem; transition: all 0.2s; }
+  .opt:hover:not(:disabled) { border-color: var(--orange); background: rgba(229,192,123,0.08); }
+  .opt.correct { background: rgba(6,214,160,0.15); border-color: var(--green); color: var(--green); }
+  .opt.wrong { background: rgba(248,81,73,0.15); border-color: #f85149; color: #f85149; }
+  .opt:disabled { cursor: default; }
+  .feedback { margin-top: 10px; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.3); }
+  .feedback.wrong { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+  .reset-btn { margin-top: 8px; background: none; border: 1px solid var(--border); color: var(--muted);
+               padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--orange); color: var(--orange); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_3_15.html">← Embeddings</a>
+  <span>Session 3 · Concept 3.16</span>
+  <a href="concept_4_1.html">Why Orchestration? →</a>
+</nav>
+<nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
+</nav>
+
+<div class="hero">
+  <div class="tag">Session 3 · Concept 3.16</div>
+  <h1>Vector <span>Databases</span></h1>
+  <p>The storage and search layer behind every RAG system. How ANN indexing works, which DB to pick, and when pgvector is enough.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHY NOT JUST USE A REGULAR DB -->
+  <div class="section">
+    <div class="section-title">Why Regular Databases Can't Do This</div>
+    <div class="info-box">
+      <strong>The problem:</strong> A regular SQL query like <code>WHERE text LIKE '%password reset%'</code> is keyword matching — it misses "how do I recover my account" entirely. A vector DB finds documents whose <em>meaning</em> is close to the query, regardless of exact word overlap. This requires a fundamentally different data structure: an <strong>Approximate Nearest Neighbor (ANN) index</strong>.
+    </div>
+    <pre><span class="cm"># SQL: keyword match — misses semantic variants</span>
+SELECT * FROM docs WHERE text LIKE <span class="str">'%password reset%'</span>
+<span class="cm"># MISSES: "recover account", "forgot credentials", "change login"</span>
+
+<span class="cm"># Vector DB: semantic similarity — finds all related passages</span>
+results = vector_db.<span class="fn">query</span>(
+    vector=<span class="fn">embed</span>(<span class="str">"how do I reset my password"</span>),
+    top_k=<span class="num">5</span>
+)
+<span class="cm"># FINDS: "change password", "recover account", "forgot credentials"</span></pre>
+  </div>
+
+  <!-- ANN ALGORITHMS -->
+  <div class="section">
+    <div class="section-title">ANN Index Algorithms</div>
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:16px;">Click an algorithm to learn how it works.</p>
+    <div class="alg-grid">
+      <div class="alg-card" onclick="showAlg(0, this)">
+        <h4>HNSW</h4>
+        <div class="alg-name">Hierarchical Navigable Small World</div>
+        <div class="alg-stats">
+          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--green);">⚡ Fast</div></div>
+          <div class="alg-stat"><div class="s-label">Accuracy</div><div class="s-val" style="color:var(--green);">High</div></div>
+          <div class="alg-stat"><div class="s-label">Memory</div><div class="s-val" style="color:var(--yellow);">High</div></div>
+        </div>
+      </div>
+      <div class="alg-card" onclick="showAlg(1, this)">
+        <h4>IVF</h4>
+        <div class="alg-name">Inverted File Index</div>
+        <div class="alg-stats">
+          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--green);">⚡ Fast</div></div>
+          <div class="alg-stat"><div class="s-label">Accuracy</div><div class="s-val" style="color:var(--yellow);">Good</div></div>
+          <div class="alg-stat"><div class="s-label">Memory</div><div class="s-val" style="color:var(--green);">Low</div></div>
+        </div>
+      </div>
+      <div class="alg-card" onclick="showAlg(2, this)">
+        <h4>PQ</h4>
+        <div class="alg-name">Product Quantization</div>
+        <div class="alg-stats">
+          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--green);">Fast</div></div>
+          <div class="alg-stat"><div class="s-label">Accuracy</div><div class="s-val" style="color:var(--accent);">Lower</div></div>
+          <div class="alg-stat"><div class="s-label">Memory</div><div class="s-val" style="color:var(--green);">Very Low</div></div>
+        </div>
+      </div>
+      <div class="alg-card" onclick="showAlg(3, this)">
+        <h4>Flat / Exact</h4>
+        <div class="alg-name">Brute-Force Exact Search</div>
+        <div class="alg-stats">
+          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--accent);">Slow</div></div>
+          <div class="alg-stat"><div class="s-label">Accuracy</div><div class="s-val" style="color:var(--green);">Perfect</div></div>
+          <div class="alg-stat"><div class="s-label">Memory</div><div class="s-val" style="color:var(--yellow);">High</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="alg-detail" id="alg-detail">
+      <h4 id="alg-title" style="color:var(--orange); margin-bottom:8px;"></h4>
+      <p id="alg-body" style="color:var(--muted); font-size:0.88rem; line-height:1.7;"></p>
+    </div>
+  </div>
+
+  <!-- DB PROFILES -->
+  <div class="section">
+    <div class="section-title">Major Vector Databases</div>
+    <div class="db-tabs">
+      <button class="db-tab active" onclick="switchDB('pinecone')">Pinecone</button>
+      <button class="db-tab" onclick="switchDB('qdrant')">Qdrant</button>
+      <button class="db-tab" onclick="switchDB('weaviate')">Weaviate</button>
+      <button class="db-tab" onclick="switchDB('pgvector')">pgvector</button>
+      <button class="db-tab" onclick="switchDB('chroma')">Chroma</button>
+    </div>
+
+    <div id="db-pinecone" class="db-panel active">
+      <div class="db-header"><h3>Pinecone</h3><div class="db-badges"><span class="db-badge badge-managed">Fully Managed</span><span class="db-badge badge-hybrid">Hybrid Search</span></div></div>
+      <div class="db-body">
+        <div class="db-col"><h4>Strengths</h4><ul>
+          <li class="str-li">Zero infrastructure to manage</li><li class="str-li">Auto-scaling, always available</li>
+          <li class="str-li">Namespaces for multi-tenant isolation</li><li class="str-li">Hybrid dense+sparse search (serverless)</li>
+          <li class="str-li">Metadata filtering with full query API</li>
+        </ul></div>
+        <div class="db-col"><h4>Limitations</h4><ul>
+          <li class="lim-li">Vendor lock-in</li><li class="lim-li">Higher cost at scale vs self-hosted</li>
+          <li class="lim-li">Data leaves your infrastructure</li><li class="lim-li">Less control over index tuning</li>
+        </ul></div>
+      </div>
+      <div class="db-code"><span style="color:var(--muted);"># Upsert + query with metadata filter</span><br>
+index.upsert(vectors=[(<span style="color:#a5d6ff;">"id1"</span>, embedding, {<span style="color:#a5d6ff;">"doc_type"</span>: <span style="color:#a5d6ff;">"policy"</span>, <span style="color:#a5d6ff;">"date"</span>: <span style="color:#a5d6ff;">"2024-03"</span>})])<br>
+results = index.query(vector=q_vec, top_k=<span style="color:#79c0ff;">10</span>, filter={<span style="color:#a5d6ff;">"doc_type"</span>: <span style="color:#a5d6ff;">"policy"</span>})</div>
+    </div>
+
+    <div id="db-qdrant" class="db-panel">
+      <div class="db-header"><h3>Qdrant</h3><div class="db-badges"><span class="db-badge badge-self">Self-Hosted</span><span class="db-badge badge-managed">Cloud Available</span></div></div>
+      <div class="db-body">
+        <div class="db-col"><h4>Strengths</h4><ul>
+          <li class="str-li">Best-in-class hybrid search (dense+sparse)</li><li class="str-li">Rich payload filtering</li>
+          <li class="str-li">HNSW with full configurability</li><li class="str-li">Open-source, data stays on-prem</li>
+          <li class="str-li">Built-in quantization for memory savings</li>
+        </ul></div>
+        <div class="db-col"><h4>Limitations</h4><ul>
+          <li class="lim-li">Requires self-hosting expertise</li><li class="lim-li">Scaling requires ops knowledge</li>
+          <li class="lim-li">Smaller ecosystem than Pinecone</li>
+        </ul></div>
+      </div>
+      <div class="db-code"><span style="color:var(--muted);"># Hybrid search: dense + BM25 sparse</span><br>
+from qdrant_client.models import Query, Prefetch, FusionQuery<br>
+results = client.query_points(collection_name=<span style="color:#a5d6ff;">"docs"</span>, prefetch=[<br>
+  &nbsp;&nbsp;Prefetch(query=dense_vec, using=<span style="color:#a5d6ff;">"dense"</span>, limit=<span style="color:#79c0ff;">20</span>),<br>
+  &nbsp;&nbsp;Prefetch(query=sparse_vec, using=<span style="color:#a5d6ff;">"sparse"</span>, limit=<span style="color:#79c0ff;">20</span>),<br>
+], query=FusionQuery(fusion=<span style="color:#a5d6ff;">"rrf"</span>), limit=<span style="color:#79c0ff;">5</span>)</div>
+    </div>
+
+    <div id="db-weaviate" class="db-panel">
+      <div class="db-header"><h3>Weaviate</h3><div class="db-badges"><span class="db-badge badge-self">Self-Hosted</span><span class="db-badge badge-managed">Cloud Available</span></div></div>
+      <div class="db-body">
+        <div class="db-col"><h4>Strengths</h4><ul>
+          <li class="str-li">GraphQL + REST API — powerful querying</li><li class="str-li">Built-in hybrid BM25+dense</li>
+          <li class="str-li">Schema with relationships between objects</li><li class="str-li">Native multimodal (text + image)</li>
+        </ul></div>
+        <div class="db-col"><h4>Limitations</h4><ul>
+          <li class="lim-li">Schema definition required upfront</li><li class="lim-li">Higher memory usage vs alternatives</li>
+          <li class="lim-li">Steeper learning curve</li>
+        </ul></div>
+      </div>
+      <div class="db-code"><span style="color:var(--muted);"># Hybrid search via Python client</span><br>
+results = client.collections.get(<span style="color:#a5d6ff;">"Documents"</span>).query.hybrid(<br>
+  &nbsp;&nbsp;query=<span style="color:#a5d6ff;">"password reset"</span>, alpha=<span style="color:#79c0ff;">0.75</span>,  <span style="color:var(--muted);"># 0=BM25, 1=dense</span><br>
+  &nbsp;&nbsp;limit=<span style="color:#79c0ff;">5</span><br>
+)</div>
+    </div>
+
+    <div id="db-pgvector" class="db-panel">
+      <div class="db-header"><h3>pgvector</h3><div class="db-badges"><span class="db-badge badge-ext">PostgreSQL Extension</span></div></div>
+      <div class="db-body">
+        <div class="db-col"><h4>Strengths</h4><ul>
+          <li class="str-li">Runs inside existing PostgreSQL DB</li><li class="str-li">Full SQL: JOINs, transactions, ACID</li>
+          <li class="str-li">No new infra if you already use Postgres</li><li class="str-li">HNSW index available (v0.5+)</li>
+        </ul></div>
+        <div class="db-col"><h4>Limitations</h4><ul>
+          <li class="lim-li">Slower than dedicated vector DBs at scale</li><li class="lim-li">10M+ vectors needs careful tuning</li>
+          <li class="lim-li">No built-in hybrid search</li>
+        </ul></div>
+      </div>
+      <div class="db-code"><span style="color:var(--muted);"># pgvector: vector similarity inside SQL</span><br>
+CREATE TABLE docs (id bigserial PRIMARY KEY, content text, embedding vector(<span style="color:#79c0ff;">1536</span>));<br>
+CREATE INDEX ON docs USING hnsw (embedding vector_cosine_ops);<br>
+<span style="color:#ff7b72;">SELECT</span> content, embedding &lt;=&gt; $1 AS distance<br>
+<span style="color:#ff7b72;">FROM</span> docs <span style="color:#ff7b72;">ORDER BY</span> distance <span style="color:#ff7b72;">LIMIT</span> <span style="color:#79c0ff;">5</span>;</div>
+    </div>
+
+    <div id="db-chroma" class="db-panel">
+      <div class="db-header"><h3>Chroma</h3><div class="db-badges"><span class="db-badge badge-self">Open Source</span><span class="db-badge badge-self">Local-First</span></div></div>
+      <div class="db-body">
+        <div class="db-col"><h4>Strengths</h4><ul>
+          <li class="str-li">Dead simple Python API</li><li class="str-li">Zero config for local development</li>
+          <li class="str-li">In-memory or persistent modes</li><li class="str-li">Great for prototyping and notebooks</li>
+        </ul></div>
+        <div class="db-col"><h4>Limitations</h4><ul>
+          <li class="lim-li">Not designed for production scale</li><li class="lim-li">No hybrid search</li>
+          <li class="lim-li">Limited filtering capabilities</li>
+          <li class="lim-li">Performance degrades past ~100K docs</li>
+        </ul></div>
+      </div>
+      <div class="db-code"><span style="color:var(--muted);"># Chroma: prototype in 5 lines</span><br>
+import chromadb; client = chromadb.Client()<br>
+col = client.create_collection(<span style="color:#a5d6ff;">"docs"</span>)<br>
+col.add(documents=[<span style="color:#a5d6ff;">"..."</span>], ids=[<span style="color:#a5d6ff;">"doc1"</span>])<br>
+results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</span>], n_results=<span style="color:#79c0ff;">5</span>)</div>
+    </div>
+  </div>
+
+  <!-- FEATURE MATRIX -->
+  <div class="section">
+    <div class="section-title">Feature Matrix</div>
+    <div style="overflow-x:auto;">
+      <table class="matrix-table">
+        <thead>
+          <tr><th>Feature</th><th>Pinecone</th><th>Qdrant</th><th>Weaviate</th><th>pgvector</th><th>Chroma</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hybrid Search (dense+sparse)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
+          <tr><td>Metadata Filtering</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">Limited</td></tr>
+          <tr><td>Multi-tenant Namespaces</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">Via schema</td><td class="no">✗</td></tr>
+          <tr><td>Fully Managed / Serverless</td><td class="yes">✓</td><td class="partial">Cloud tier</td><td class="partial">Cloud tier</td><td class="no">✗</td><td class="no">✗</td></tr>
+          <tr><td>SQL + Transactions</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="no">✗</td></tr>
+          <tr><td>Production Scale (&gt;10M)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">With tuning</td><td class="no">✗</td></tr>
+          <tr><td>Good for prototyping</td><td class="partial">Paid</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DECISION TREE -->
+  <div class="section">
+    <div class="section-title">Which Vector DB Should You Use?</div>
+    <div class="dtree">
+      <div class="dq" id="dq1">
+        <p>Q1: Are you prototyping / still in development?</p>
+        <div class="choices">
+          <div class="choice" onclick="dtree(1, 'yes')">Yes — still exploring</div>
+          <div class="choice" onclick="dtree(1, 'no')">No — building production</div>
+        </div>
+      </div>
+      <div class="dq" id="dq2" style="display:none;">
+        <p id="dq2-text"></p>
+        <div class="choices" id="dq2-choices"></div>
+      </div>
+    </div>
+    <div class="dt-result" id="dt-result">
+      <h4 id="dt-title"></h4>
+      <p id="dt-body"></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="quiz-header">
+      <h3>🧠 Knowledge Check</h3>
+      <div class="score-display" id="scoreDisplay">0 / 5</div>
+    </div>
+
+    <div class="question" id="q1">
+      <p>1. Why can't a traditional SQL database replace a vector database for semantic search?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q1','a','b')">a) SQL databases cannot store text longer than 255 characters</button>
+        <button class="opt" onclick="answer('q1','b','b')">b) SQL LIKE matching is keyword-based and misses semantically equivalent passages with different wording</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) SQL databases don't support indexing</button>
+        <button class="opt" onclick="answer('q1','d','b')">d) Vector databases are faster for all types of queries</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q2">
+      <p>2. HNSW uses more memory than IVF but is generally preferred for production. Why?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q2','a','c')">a) HNSW supports metadata filtering while IVF does not</button>
+        <button class="opt" onclick="answer('q2','b','c')">b) IVF requires more GPU compute for inference</button>
+        <button class="opt" onclick="answer('q2','c','c')">c) HNSW delivers higher recall (accuracy) and faster query times at the cost of more RAM</button>
+        <button class="opt" onclick="answer('q2','d','c')">d) HNSW is an exact search algorithm while IVF is approximate</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q3">
+      <p>3. Your startup already uses PostgreSQL and has a corpus of ~200,000 documents. Which vector store is the most pragmatic starting point?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q3','a','b')">a) Pinecone — it's fully managed</button>
+        <button class="opt" onclick="answer('q3','b','b')">b) pgvector — add the extension to your existing Postgres, no new infra needed</button>
+        <button class="opt" onclick="answer('q3','c','b')">c) Chroma — simplest Python API</button>
+        <button class="opt" onclick="answer('q3','d','b')">d) Weaviate — best hybrid search</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q4">
+      <p>4. Hybrid search (dense + sparse/BM25) outperforms pure dense search for queries that contain:</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q4','a','d')">a) Long philosophical questions about abstract concepts</button>
+        <button class="opt" onclick="answer('q4','b','d')">b) Simple conversational queries like "what time is it"</button>
+        <button class="opt" onclick="answer('q4','c','d')">c) Queries in multiple languages simultaneously</button>
+        <button class="opt" onclick="answer('q4','d','d')">d) Specific keywords, product names, error codes, or proper nouns that must match exactly</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q5">
+      <p>5. Product Quantization (PQ) is best used when:</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q5','a','c')">a) You need the highest possible retrieval accuracy</button>
+        <button class="opt" onclick="answer('q5','b','c')">b) You want to add SQL join capabilities to your vector search</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) You have billions of vectors and memory is the primary constraint — you're willing to trade some accuracy for it</button>
+        <button class="opt" onclick="answer('q5','d','c')">d) You're building a real-time chat application that needs sub-10ms latency</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ANN ALGORITHMS
+const algData = [
+  { title: 'HNSW — Hierarchical Navigable Small World', body: 'Builds a multi-layer graph where each layer is a subgraph of the one below. The top layer has few long-range connections; lower layers have dense short-range connections. Search starts at the top and greedily navigates down — like zooming in on a map. Result: O(log n) search time with very high recall (typically >95%). Supported natively by Qdrant, Weaviate, Milvus, and as an add-on in pgvector. Default choice for most production systems.' },
+  { title: 'IVF — Inverted File Index', body: 'K-means clusters the vector space into Voronoi cells. At index time, each vector is assigned to its nearest cluster centroid. At query time, only the nearest nlist clusters are searched, not the full index. Dramatically reduces search space. Requires training a quantizer on your data first. Uses far less memory than HNSW. Accuracy depends on nprobe (how many clusters to scan). Default algorithm in FAISS.' },
+  { title: 'PQ — Product Quantization', body: 'Compresses each vector by splitting it into M subvectors and replacing each with a codebook code. A 1536-dim float32 vector (6KB) becomes a sequence of M bytes — 100-300x compression. Enables billion-vector search on a single server. The accuracy tradeoff is significant — suitable only when memory is the hard constraint. Usually combined with IVF (IVF+PQ) for both speed and compression.' },
+  { title: 'Flat / Exact Brute-Force Search', body: 'No index structure — every query scans every vector and computes exact cosine similarity. Guarantees 100% recall (perfect results) because nothing is approximated. Completely impractical above ~100K vectors. Useful only for: (1) validation benchmarks to measure ANN recall against ground truth, (2) very small corpora where the overhead of building an index exceeds the search time savings.' }
+];
+
+function showAlg(idx, el) {
+  document.querySelectorAll('.alg-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('alg-title').textContent = algData[idx].title;
+  document.getElementById('alg-body').textContent = algData[idx].body;
+  document.getElementById('alg-detail').classList.add('show');
+}
+
+// DB TABS
+function switchDB(id) {
+  document.querySelectorAll('.db-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.db-panel').forEach(p => p.classList.remove('active'));
+  const ids = ['pinecone','qdrant','weaviate','pgvector','chroma'];
+  document.querySelectorAll('.db-tab')[ids.indexOf(id)].classList.add('active');
+  document.getElementById('db-' + id).classList.add('active');
+}
+
+// DECISION TREE
+const results = {
+  'proto': { title: 'Use Chroma (local) or pgvector (if you have Postgres)', body: 'For prototyping, simplicity wins. Chroma gives you a working vector store in 5 lines of Python with no server setup. If you already have PostgreSQL, pgvector is even better — zero new infrastructure, full SQL available. Both handle hundreds of thousands of documents comfortably for development and demos.' },
+  'prod-managed': { title: 'Use Pinecone', body: 'If you want zero ops overhead in production, Pinecone is the gold standard. Fully managed, auto-scaling, excellent SDKs, and supports hybrid search on serverless. Higher cost than self-hosted at scale, but for most teams the engineering time saved pays for itself.' },
+  'prod-self-hybrid': { title: 'Use Qdrant', body: 'For self-hosted production with hybrid search requirements, Qdrant is the best choice. Best-in-class hybrid dense+sparse search with RRF fusion, rich payload filtering, open-source with a cloud option if you later want managed. Written in Rust — excellent performance.' },
+  'prod-self-simple': { title: 'Use pgvector (if &lt;10M docs) or Qdrant', body: 'If your corpus is under ~10M documents and you already run Postgres, pgvector with the HNSW index is a pragmatic choice that avoids adding a new service. Beyond that scale, migrate to Qdrant for better performance. Weaviate is excellent if you need relational object modeling alongside vectors.' }
+};
+
+function dtree(q, choice) {
+  if (q === 1) {
+    if (choice === 'yes') {
+      showResult('proto');
+    } else {
+      document.getElementById('dq2').style.display = 'block';
+      document.getElementById('dq2-text').textContent = 'Q2: Do you want fully managed (no server to run)?';
+      document.getElementById('dq2-choices').innerHTML = `
+        <div class="choice" onclick="dtree(2,'managed')">Yes — managed, no ops</div>
+        <div class="choice" onclick="dtree(2,'self')">No — self-hosted / on-premises</div>
+      `;
+    }
+  } else if (q === 2) {
+    if (choice === 'managed') {
+      showResult('prod-managed');
+    } else {
+      document.getElementById('dq2-text').textContent = 'Q3: Do you need hybrid search (dense + keyword/BM25)?';
+      document.getElementById('dq2-choices').innerHTML = `
+        <div class="choice" onclick="dtree(3,'yes')">Yes — need exact keyword + semantic</div>
+        <div class="choice" onclick="dtree(3,'no')">No — semantic search is enough</div>
+      `;
+    }
+  } else if (q === 3) {
+    showResult(choice === 'yes' ? 'prod-self-hybrid' : 'prod-self-simple');
+  }
+}
+
+function showResult(key) {
+  const r = results[key];
+  document.getElementById('dt-title').textContent = r.title;
+  document.getElementById('dt-body').innerHTML = r.body;
+  document.getElementById('dt-result').classList.add('show');
+}
+
+// QUIZ
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'SQL LIKE is keyword matching — it only finds exact word overlap. Semantic search via vectors finds meaning-equivalent passages regardless of wording.',
+  q2: 'HNSW builds a navigable graph structure that enables fast, high-recall approximate search — at the cost of more RAM to store the graph.',
+  q3: 'pgvector is the pragmatic choice for existing Postgres users under ~10M vectors — no new service, full SQL support, and HNSW is now available.',
+  q4: 'Sparse/BM25 excels at exact keyword matching. Hybrid combines it with dense vectors to handle both specific terms and semantic similarity.',
+  q5: 'PQ compresses vectors 100-300x for memory-constrained environments — the tradeoff is reduced recall accuracy.'
+};
+
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

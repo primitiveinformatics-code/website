@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI Foundations — Pre-Course</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --accent1: #6c63ff;
+    --accent2: #00d2ff;
+    --accent3: #ff6584;
+    --accent4: #ffd166;
+    --accent5: #06d6a0;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(108,99,255,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 72px 0 60px;
+  }
+  header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #1f1535 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(108,99,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.4);
+    color: var(--accent1);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    background: linear-gradient(90deg, #fff 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent1);
+    display: block;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 0;
+  }
+  .session-block { margin-bottom: 48px; }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .card:hover {
+    border-color: rgba(108,99,255,0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+  .card:hover::before { opacity: 1; }
+  .card-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-preview {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .card-arrow {
+    position: absolute;
+    bottom: 18px; right: 18px;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    transform: translateX(-4px);
+  }
+  .card:hover .card-arrow { opacity: 0.6; transform: translateX(0); }
+  .s1 .card-num { color: #6c63ff; }
+  .s1 .card::before { background: #6c63ff; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* ── Site Navbar ─────────────────────────── */
+  .site-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+  }
+  .site-nav.scrolled {
+    background: rgba(10,15,28,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-color: rgba(30,41,59,0.5);
+  }
+  .site-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3B82F6, #6366F1);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .nav-logo-text { font-size: 17px; font-weight: 700; color: #F1F5F9; letter-spacing: -0.3px; }
+  .nav-logo-dot { color: #3B82F6; }
+  .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .nav-links a {
+    padding: 7px 14px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    color: #94A3B8; text-decoration: none; transition: color 0.2s, background 0.2s;
+  }
+  .nav-links a:hover { color: #F1F5F9; background: rgba(255,255,255,0.04); }
+  .nav-hamburger {
+    display: none; background: none; border: none; cursor: pointer;
+    padding: 6px; color: #94A3B8; border-radius: 8px; transition: background 0.2s;
+  }
+  .nav-hamburger:hover { background: rgba(255,255,255,0.06); }
+  .mobile-overlay {
+    display: none; position: fixed; inset: 0; z-index: 105;
+    background: rgba(10,15,28,0.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  }
+  .mobile-overlay.open { display: block; }
+  .mobile-menu {
+    display: none; position: fixed; top: 0; right: 0; bottom: 0; width: 260px; z-index: 110;
+    background: #111827; border-left: 1px solid rgba(30,41,59,0.8);
+    padding: 72px 16px 20px; flex-direction: column; gap: 4px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    display: block; padding: 11px 16px; border-radius: 8px; font-size: 15px; font-weight: 500;
+    color: #F1F5F9; text-decoration: none; transition: background 0.2s, color 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(59,130,246,0.1); color: #3B82F6; }
+  .mobile-close {
+    position: absolute; top: 16px; right: 16px; background: none; border: none;
+    cursor: pointer; color: #94A3B8; padding: 6px; border-radius: 6px; transition: background 0.2s;
+  }
+  .mobile-close:hover { background: rgba(255,255,255,0.06); }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-hamburger { display: block; }
+  }
+</style>
+</head>
+<body>
+<nav class="site-nav" id="site-nav">
+  <div class="site-nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">PI</div>
+      <span class="nav-logo-text">Primitive<span class="nav-logo-dot">.</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Open menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+<div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-close" onclick="toggleMobileMenu()">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+  <a href="/">Home</a>
+  <a href="/products">Products</a>
+  <a href="/blog">Blog</a>
+  <a href="/contact">Contact</a>
+</div>
+
+<header>
+  <div class="header-badge">Agentic AI Architect · Pre-Course</div>
+  <h1>Agentic AI Foundations</h1>
+  <p>Core concepts to get you ready — the platform shift, agent anatomy, memory types, and the prototype-to-production gap</p>
+  <div class="stats">
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Concepts</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Live Now</span></div>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="session-block s1">
+    <div class="cards">
+      <a href="concept_1_1.html" class="card">
+        <div class="card-num">1.1</div>
+        <div class="card-title">The Platform Shift</div>
+        <div class="card-preview">Software evolution from Client/Server to Agentic AI — why now and what it means</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_1_2.html" class="card">
+        <div class="card-num">1.2</div>
+        <div class="card-title">Common Myths vs. Production Reality</div>
+        <div class="card-preview">5 myths that trip up developers — and what production actually demands</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_1_3.html" class="card">
+        <div class="card-num">1.3</div>
+        <div class="card-title">The 5-Component Agent Anatomy</div>
+        <div class="card-preview">Brain, Tools, Memory, Loop, and Guardrails — the universal agent blueprint</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_1_4.html" class="card">
+        <div class="card-num">1.4</div>
+        <div class="card-title">The ReAct Loop</div>
+        <div class="card-preview">Observe → Think → Act → Evaluate — the core agent execution cycle with worked example</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_1_5.html" class="card">
+        <div class="card-num">1.5</div>
+        <div class="card-title">The 4 Types of Memory</div>
+        <div class="card-preview">Working, Episodic, Semantic &amp; Procedural — interactive explorer with classify exercise</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_1_6.html" class="card">
+        <div class="card-num">1.6</div>
+        <div class="card-title">Prototype vs. Production Gap</div>
+        <div class="card-preview">Why demos work but production fails — checklist, failure scenarios &amp; deployment pipeline</div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <footer>Agentic AI Architect · Pre-Course · 6 Concepts</footer>
+</div>
+<script>
+  const siteNav = document.getElementById('site-nav');
+  window.addEventListener('scroll', () => {
+    siteNav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+  function toggleMobileMenu() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.getElementById('mobile-overlay').classList.toggle('open');
+  }
+</script>
+</body>
+</html>

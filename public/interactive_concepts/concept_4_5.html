@@ -1,0 +1,553 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.5 Choreography Pattern | Agentic AI</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+  --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+  --accent: #ffd166; --accent2: #06d6a0; --blue: #58a6ff; --purple: #c678dd;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: .6rem 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+nav a { color: var(--muted); font-size: .85rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+.hero { padding: 2.5rem 1.5rem 1.5rem; max-width: 900px; margin: 0 auto; }
+.tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+.tag { background: var(--surface2); border: 1px solid var(--border); padding: .2rem .7rem;
+  border-radius: 999px; font-size: .75rem; color: var(--muted); }
+.tag.accent { background: rgba(255,209,102,.12); border-color: var(--accent); color: var(--accent); }
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: .5rem; }
+.subtitle { color: var(--muted); font-size: 1rem; }
+main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { margin-top: 2.5rem; }
+h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: .4rem;
+  border-bottom: 1px solid var(--border); }
+h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accent); }
+.code-block { background: #010409; border: 1px solid var(--border); border-radius: 6px; padding: 1rem;
+  font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .8rem; overflow-x: auto;
+  white-space: pre; color: #c9d1d9; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 1rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+
+/* FLOW BUILDER */
+.flow-builder { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.flow-steps { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
+.flow-step { display: flex; align-items: flex-start; gap: .8rem; padding: .8rem; border-radius: 8px;
+  border: 1px solid var(--border); cursor: pointer; transition: border-color .2s; }
+.flow-step:hover { border-color: var(--accent); }
+.flow-step.active { border-color: var(--accent); background: rgba(255,209,102,.07); }
+.flow-step.triggered { border-color: var(--accent2); background: rgba(6,214,160,.06); }
+.step-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: .1rem; }
+.step-body { flex: 1; }
+.step-title { font-weight: 600; font-size: .9rem; }
+.step-trigger { font-size: .78rem; color: var(--muted); margin-top: .2rem; }
+.step-trigger span { color: var(--accent); }
+.step-desc { font-size: .84rem; color: var(--muted); margin-top: .4rem; display: none; }
+.flow-step.active .step-desc { display: block; }
+.flow-arrow { text-align: center; color: var(--muted); font-size: .9rem; }
+.if-else-badge { display: inline-block; background: rgba(198,120,221,.15); border: 1px solid var(--purple);
+  color: var(--purple); padding: .1rem .5rem; border-radius: 4px; font-size: .72rem; margin-left: .5rem; }
+
+/* EVENT STREAM */
+.event-stream { background: #010409; border: 1px solid var(--border); border-radius: 8px;
+  font-family: 'Cascadia Code', monospace; font-size: .8rem; padding: 1rem;
+  min-height: 140px; max-height: 300px; overflow-y: auto; }
+.ev-line { padding: .1rem 0; opacity: 0; animation: fadein .3s forwards; }
+@keyframes fadein { to { opacity: 1; } }
+.ev-line.event { color: var(--accent); }
+.ev-line.trigger { color: var(--accent2); }
+.ev-line.agent { color: var(--blue); }
+.ev-line.branch { color: var(--purple); }
+.ev-line.system { color: var(--muted); font-style: italic; }
+.btn-row { display: flex; gap: .5rem; margin-bottom: .7rem; flex-wrap: wrap; }
+.btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  padding: .4rem .9rem; border-radius: 6px; cursor: pointer; font-size: .82rem; transition: border-color .2s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.active { border-color: var(--accent); color: var(--accent); background: rgba(255,209,102,.1); }
+
+/* COMPARISON TABLE */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th, td { padding: .65rem .9rem; border: 1px solid var(--border); text-align: left; }
+th { background: var(--surface2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+/* RULE EXPLORER */
+.rule-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem; margin-bottom: .7rem; cursor: pointer; transition: border-color .2s; }
+.rule-card:hover { border-color: var(--accent); }
+.rule-card.open { border-color: var(--accent); }
+.rule-header { display: flex; justify-content: space-between; align-items: center; }
+.rule-name { font-weight: 600; font-size: .9rem; }
+.rule-badge { font-size: .72rem; padding: .1rem .5rem; border-radius: 4px; }
+.if-badge { background: rgba(255,209,102,.15); border: 1px solid var(--accent); color: var(--accent); }
+.when-badge { background: rgba(88,166,255,.12); border: 1px solid var(--blue); color: var(--blue); }
+.rule-body { margin-top: .7rem; display: none; }
+.rule-card.open .rule-body { display: block; }
+.rule-body p { color: var(--muted); font-size: .84rem; margin-bottom: .5rem; }
+
+/* PROS CONS */
+.pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.side { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+.side h3 { color: var(--accent2); }
+.side.cons h3 { color: #ff7eb6; }
+ul { list-style: none; padding: 0; }
+li { padding: .3rem 0; font-size: .88rem; color: var(--muted); }
+li::before { content: 'â€¢ '; color: var(--accent); }
+.side.cons li::before { color: #ff7eb6; }
+
+/* QUIZ */
+.quiz-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 2.5rem; }
+.score-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+.score-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: .35rem .9rem; font-size: .85rem; }
+.score-num { color: var(--accent); font-weight: 700; }
+.q-block { margin-bottom: 1.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
+.q-block:last-of-type { border-bottom: none; }
+.q-text { font-size: .95rem; margin-bottom: .7rem; }
+.opts { display: flex; flex-direction: column; gap: .4rem; }
+.opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: .5rem .9rem; cursor: pointer; font-size: .87rem; text-align: left;
+  transition: border-color .2s; color: var(--text); }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.correct { border-color: var(--accent2); background: rgba(6,214,160,.12); color: var(--accent2); }
+.opt.wrong { border-color: #ff7eb6; background: rgba(255,126,182,.1); color: #ff7eb6; }
+.opt:disabled { cursor: default; }
+.feedback { font-size: .82rem; margin-top: .4rem; display: none; }
+.feedback.show { display: block; }
+.feedback.correct { color: var(--accent2); }
+.feedback.wrong { color: #ff7eb6; }
+.reset-btn { background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: .25rem .6rem; border-radius: 5px; cursor: pointer; font-size: .75rem; margin-top: .4rem; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+@media(max-width:600px){ .pros-cons{grid-template-columns:1fr;} h1{font-size:1.5rem;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_4_4.html">â† Map-Reduce Pattern</a>
+  <a href="main-course.html">â˜° All Concepts</a>
+  <a href="concept_4_6.html">LangGraph â†’</a>
+</nav>
+
+<div class="hero">
+  <div class="tags">
+    <span class="tag accent">Session 4</span>
+    <span class="tag">Day 2 Forenoon Â· Orchestration</span>
+    <span class="tag">Concept 4.5</span>
+  </div>
+  <h1>Choreography Pattern</h1>
+  <p class="subtitle">Event-driven, rule-based flow â€” agents react to events autonomously without a central controller</p>
+</div>
+
+<main>
+
+  <!-- DEFINITION -->
+  <section>
+    <h2>What is Choreography?</h2>
+    <blockquote style="border-left:3px solid var(--accent);padding:.8rem 1.2rem;background:var(--surface);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin-bottom:1rem;">
+      "Each agent knows its own trigger conditions and actions. When an event occurs, the right agent reacts automatically
+      â€” no orchestrator decides who does what."
+    </blockquote>
+    <div class="card-grid">
+      <div class="card">
+        <h3>ðŸŽ­ Event-Driven</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Agents subscribe to events. When an event fires, subscribed agents react â€” like IFTTT for AI agents.</p>
+      </div>
+      <div class="card">
+        <h3>ðŸ“œ Rule-Based</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Each agent has explicit IF/WHEN rules: "When order placed â†’ trigger payment agent." Logic is in the rules, not a central brain.</p>
+      </div>
+      <div class="card">
+        <h3>ðŸ”— Loose Coupling</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Agents don't know about each other â€” they only know the events they produce and consume. Adding a new agent = adding new event subscriptions.</p>
+      </div>
+      <div class="card">
+        <h3>âš¡ Reactive Flow</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Flow emerges from event chains. Agent A emits Event X â†’ Agent B reacts â†’ emits Event Y â†’ Agent C reacts.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE FLOW -->
+  <section>
+    <h2>Interactive Event Flow â€” E-Commerce Order Processing</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">Click any step to see its trigger rule and logic.</p>
+    <div class="flow-builder">
+      <div class="flow-steps">
+        <div class="flow-step" onclick="toggleStep(this)">
+          <div class="step-icon">ðŸ›’</div>
+          <div class="step-body">
+            <div class="step-title">Order Agent <span class="if-else-badge">EVENT EMITTER</span></div>
+            <div class="step-trigger">Trigger: User submits order â†’ emits <span>order.placed</span></div>
+            <div class="step-desc">Validates order items and customer info. Writes order to DB. Emits `order.placed` event with order ID, items, and total.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">â†“ event: order.placed</div>
+        <div class="flow-step" onclick="toggleStep(this)">
+          <div class="step-icon">ðŸ’³</div>
+          <div class="step-body">
+            <div class="step-title">Payment Agent <span class="if-else-badge">LISTENER</span></div>
+            <div class="step-trigger">Trigger: <span>order.placed</span> â†’ charges card â†’ emits <span>payment.success</span> or <span>payment.failed</span></div>
+            <div class="step-desc">Subscribes to `order.placed`. Calls payment gateway. On success emits `payment.success`. On failure emits `payment.failed` â†’ triggers refund/cancel agent.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">â†“ event: payment.success</div>
+        <div class="flow-step" onclick="toggleStep(this)">
+          <div class="step-icon">ðŸ“¦</div>
+          <div class="step-body">
+            <div class="step-title">Inventory Agent <span class="if-else-badge">LISTENER</span></div>
+            <div class="step-trigger">Trigger: <span>payment.success</span> â†’ reserves stock â†’ emits <span>inventory.reserved</span> or <span>inventory.out_of_stock</span></div>
+            <div class="step-desc">Checks and reserves inventory. If stock available: emits `inventory.reserved`. If not: emits `inventory.out_of_stock` which triggers the backorder agent.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">â†“ event: inventory.reserved</div>
+        <div class="flow-step" onclick="toggleStep(this)">
+          <div class="step-icon">ðŸšš</div>
+          <div class="step-body">
+            <div class="step-title">Shipping Agent <span class="if-else-badge">LISTENER</span></div>
+            <div class="step-trigger">Trigger: <span>inventory.reserved</span> â†’ books courier â†’ emits <span>shipment.dispatched</span></div>
+            <div class="step-desc">Books courier, generates label, schedules pickup. Emits `shipment.dispatched` with tracking number.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">â†“ event: shipment.dispatched</div>
+        <div class="flow-step" onclick="toggleStep(this)">
+          <div class="step-icon">ðŸ“§</div>
+          <div class="step-body">
+            <div class="step-title">Notification Agent <span class="if-else-badge">LISTENER</span></div>
+            <div class="step-trigger">Trigger: <span>shipment.dispatched</span> â†’ sends email/SMS to customer</div>
+            <div class="step-desc">Listens to ALL order events (placed, paid, shipped, cancelled). Generates appropriate customer notification for each. No central orchestrator told it to do this.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENT SIMULATOR -->
+  <section>
+    <h2>Event Flow Simulator</h2>
+    <div class="btn-row">
+      <button class="btn" onclick="runEvent(0)">âœ… Happy Path</button>
+      <button class="btn" onclick="runEvent(1)">âŒ Payment Failed</button>
+      <button class="btn" onclick="runEvent(2)">ðŸ“¦ Out of Stock</button>
+    </div>
+    <div class="event-stream" id="eventStream"><span style="color:var(--muted);">Select a scenario above...</span></div>
+  </section>
+
+  <!-- RULE EXPLORER -->
+  <section>
+    <h2>Rule Patterns in Choreography</h2>
+    <div id="ruleCards">
+      <div class="rule-card" onclick="toggleRule(this)">
+        <div class="rule-header">
+          <div class="rule-name">ðŸ”— Simple Chain Rule</div>
+          <div class="rule-badge if-badge">IF â†’ THEN</div>
+        </div>
+        <div class="rule-body">
+          <p>Simplest pattern: one event triggers exactly one agent action.</p>
+          <div class="code-block">@on_event("order.placed")
+async def handle_order_placed(event: Event):
+    charge_result = await payment_gateway.charge(event.order_id)
+    if charge_result.success:
+        emit("payment.success", order_id=event.order_id)
+    else:
+        emit("payment.failed", reason=charge_result.error)</div>
+        </div>
+      </div>
+
+      <div class="rule-card" onclick="toggleRule(this)">
+        <div class="rule-header">
+          <div class="rule-name">ðŸŒ¿ Conditional Branch Rule</div>
+          <div class="rule-badge if-badge">IF â†’ BRANCH</div>
+        </div>
+        <div class="rule-body">
+          <p>Event is processed differently based on payload content. Multiple downstream paths are possible.</p>
+          <div class="code-block">@on_event("document.uploaded")
+async def route_document(event: Event):
+    doc_type = await classify_document(event.file_path)
+    if doc_type == "invoice":
+        emit("invoice.received", file=event.file_path)
+    elif doc_type == "contract":
+        emit("contract.received", file=event.file_path)
+    elif doc_type == "support_ticket":
+        emit("ticket.created", content=extract_text(event.file_path))</div>
+        </div>
+      </div>
+
+      <div class="rule-card" onclick="toggleRule(this)">
+        <div class="rule-header">
+          <div class="rule-name">ðŸ“¡ Fan-Out Rule</div>
+          <div class="rule-badge when-badge">WHEN â†’ MANY</div>
+        </div>
+        <div class="rule-body">
+          <p>One event triggers multiple agents simultaneously. Each agent handles a different concern.</p>
+          <div class="code-block">@on_event("new_user.registered")
+async def on_new_user(event: Event):
+    # All three fire in parallel â€” no coordination needed
+    await asyncio.gather(
+        emit("email.welcome_send", user_id=event.user_id),
+        emit("crm.contact_created", user=event.user),
+        emit("analytics.conversion_logged", source=event.source)
+    )</div>
+        </div>
+      </div>
+
+      <div class="rule-card" onclick="toggleRule(this)">
+        <div class="rule-header">
+          <div class="rule-name">â±ï¸ Time-Based / Deadline Rule</div>
+          <div class="rule-badge when-badge">WHEN time elapses</div>
+        </div>
+        <div class="rule-body">
+          <p>An agent reacts to the passage of time, not just state changes. Common for follow-ups, escalations, and SLA enforcement.</p>
+          <div class="code-block">@on_event("ticket.created")
+async def schedule_followup(event: Event):
+    # Set a timer â€” if ticket not resolved in 24h, escalate
+    await timer.set(
+        delay_hours=24,
+        event="ticket.sla_breach",
+        payload={"ticket_id": event.ticket_id},
+        cancel_on="ticket.resolved"  # cancel if resolved first
+    )</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VS ORCHESTRATION TABLE -->
+  <section>
+    <h2>Choreography vs Orchestration</h2>
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>Choreography</th><th>Orchestration (Supervisor)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Decision maker</td><td>Each agent â€” local rules</td><td>Central supervisor agent</td></tr>
+        <tr><td>Coupling</td><td>Loose â€” event contracts only</td><td>Tight â€” supervisor knows all agents</td></tr>
+        <tr><td>Visibility</td><td>Harder â€” flow is implicit in events</td><td>Easy â€” supervisor owns the flow</td></tr>
+        <tr><td>Scalability</td><td>High â€” add agents independently</td><td>Medium â€” supervisor can bottleneck</td></tr>
+        <tr><td>Changing flow</td><td>Add/remove event subscriptions</td><td>Modify supervisor logic</td></tr>
+        <tr><td>Best for</td><td>Microservice-style, event-driven tasks</td><td>Complex multi-step reasoning tasks</td></tr>
+        <tr><td>Debugging</td><td>Trace event log</td><td>Trace supervisor decisions</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PROS CONS -->
+  <section>
+    <h2>Strengths &amp; Limitations</h2>
+    <div class="pros-cons">
+      <div class="side">
+        <h3>âœ… Strengths</h3>
+        <ul>
+          <li>Highly decoupled â€” agents are independent</li>
+          <li>Easy to add new agents (just subscribe)</li>
+          <li>Natural audit trail via event log</li>
+          <li>Resilient â€” no central SPOF</li>
+          <li>Maps cleanly to microservice patterns</li>
+        </ul>
+      </div>
+      <div class="side cons">
+        <h3>âš ï¸ Limitations</h3>
+        <ul>
+          <li>Flow is implicit â€” harder to visualise</li>
+          <li>Risk of event cycles (Aâ†’Bâ†’A loops)</li>
+          <li>Distributed debugging is complex</li>
+          <li>Schema contracts between agents must be maintained</li>
+          <li>Not suitable for tasks requiring dynamic planning</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <div class="quiz-section">
+    <div class="score-bar">
+      <h2 style="border:none;margin:0;padding:0;">ðŸ§  Knowledge Check</h2>
+      <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <p class="q-text">1. In choreography, how does Agent B know when to start its work?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q1','a','c')">a) A supervisor agent sends it a direct instruction</button>
+        <button class="opt" onclick="answer('q1','b','c')">b) It polls a shared queue every few seconds</button>
+        <button class="opt" onclick="answer('q1','c','c')">c) It reacts to an event emitted by Agent A based on its own subscription rules</button>
+        <button class="opt" onclick="answer('q1','d','c')">d) The user explicitly triggers each agent in sequence</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <p class="q-text">2. The key advantage of loose coupling in choreography is:</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q2','a','d')">a) Agents run faster with no coordination overhead</button>
+        <button class="opt" onclick="answer('q2','b','d')">b) The event log is automatically encrypted</button>
+        <button class="opt" onclick="answer('q2','c','d')">c) The supervisor can see all agent states</button>
+        <button class="opt" onclick="answer('q2','d','d')">d) New agents can be added without modifying existing agents</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <p class="q-text">3. Which pattern risk is unique to choreography?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q3','a','b')">a) Single point of failure at the supervisor</button>
+        <button class="opt" onclick="answer('q3','b','b')">b) Accidental event cycles where Agent A and B trigger each other infinitely</button>
+        <button class="opt" onclick="answer('q3','c','b')">c) Context window overflow at the central planner</button>
+        <button class="opt" onclick="answer('q3','d','b')">d) Mapper agents receiving duplicate inputs</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <p class="q-text">4. In the e-commerce example, if payment fails, which agent reacts â€” and why?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q4','a','c')">a) The supervisor decides and tells the Order Agent to cancel</button>
+        <button class="opt" onclick="answer('q4','b','c')">b) The Shipping Agent skips its step automatically</button>
+        <button class="opt" onclick="answer('q4','c','c')">c) A cancel/refund agent subscribed to payment.failed reacts autonomously</button>
+        <button class="opt" onclick="answer('q4','d','c')">d) The Inventory Agent is notified directly by the Payment Agent</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <p class="q-text">5. Compared to a hierarchical supervisor, choreography is typically BETTER for:</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q5','a','b')">a) Complex multi-step reasoning that requires dynamic planning</button>
+        <button class="opt" onclick="answer('q5','b','b')">b) Microservice-style pipelines with well-defined event contracts between independent agents</button>
+        <button class="opt" onclick="answer('q5','c','b')">c) Tasks where the full workflow is unknown upfront</button>
+        <button class="opt" onclick="answer('q5','d','b')">d) Scenarios requiring a single audit point for compliance</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* â”€â”€ QUIZ â”€â”€ */
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'In choreography agents subscribe to events and react autonomously â€” no supervisor instructs them.',
+  q2: 'Loose coupling means new agents can be added by subscribing to existing events without touching other agents.',
+  q3: 'Event cycles (A triggers B which triggers A) are a unique choreography risk requiring cycle detection.',
+  q4: 'A cancel/refund agent subscribes to payment.failed and reacts without any supervisor involvement.',
+  q5: 'Choreography excels at microservice-style pipelines with clear event contracts between independent services.'
+};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = 'âœ“ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+
+/* â”€â”€ FLOW STEPS â”€â”€ */
+function toggleStep(el) {
+  document.querySelectorAll('.flow-step').forEach(s => s.classList.remove('active'));
+  el.classList.toggle('active');
+}
+
+/* â”€â”€ RULE CARDS â”€â”€ */
+function toggleRule(el) {
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.rule-card').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) el.classList.add('open');
+}
+
+/* â”€â”€ EVENT SIMULATOR â”€â”€ */
+const eventScenarios = [
+  [ // Happy Path
+    {cls:'system',  t:0,    txt:'â”€â”€ Happy Path: Customer places order â”€â”€'},
+    {cls:'event',   t:200,  txt:'[EVENT]   order.placed  { order_id: "ORD-7821", total: $149.99 }'},
+    {cls:'agent',   t:500,  txt:'[Payment] â† subscribed to order.placed â†’ charging card...'},
+    {cls:'trigger', t:900,  txt:'[Payment] â†’ emits payment.success { order_id: "ORD-7821" }'},
+    {cls:'agent',   t:1100, txt:'[Inventory]â† subscribed to payment.success â†’ checking stock...'},
+    {cls:'agent',   t:1300, txt:'[Notifier] â† subscribed to payment.success â†’ sending payment receipt email'},
+    {cls:'trigger', t:1600, txt:'[Inventory]â†’ emits inventory.reserved { warehouse: "EU-West-2" }'},
+    {cls:'agent',   t:1900, txt:'[Shipping] â† subscribed to inventory.reserved â†’ booking courier...'},
+    {cls:'trigger', t:2300, txt:'[Shipping] â†’ emits shipment.dispatched { tracking: "UPS-4829482" }'},
+    {cls:'agent',   t:2500, txt:'[Notifier] â† subscribed to shipment.dispatched â†’ sending tracking email'},
+    {cls:'system',  t:2800, txt:'â”€â”€ Order fulfilled. 5 agents, 0 supervisor calls â”€â”€'},
+  ],
+  [ // Payment Failed
+    {cls:'system',  t:0,    txt:'â”€â”€ Payment Failure Path â”€â”€'},
+    {cls:'event',   t:200,  txt:'[EVENT]   order.placed  { order_id: "ORD-7822", total: $299.00 }'},
+    {cls:'agent',   t:500,  txt:'[Payment] â† subscribed to order.placed â†’ charging card...'},
+    {cls:'branch',  t:900,  txt:'[Payment] âœ— Card declined â€” insufficient funds'},
+    {cls:'trigger', t:1100, txt:'[Payment] â†’ emits payment.failed { reason: "card_declined", order_id: "ORD-7822" }'},
+    {cls:'agent',   t:1400, txt:'[Cancel]   â† subscribed to payment.failed â†’ cancelling order...'},
+    {cls:'agent',   t:1500, txt:'[Notifier] â† subscribed to payment.failed â†’ sending decline email'},
+    {cls:'trigger', t:1800, txt:'[Cancel]   â†’ emits order.cancelled { order_id: "ORD-7822" }'},
+    {cls:'system',  t:2100, txt:'â”€â”€ Order cancelled. Inventory agent never triggered (correct!) â”€â”€'},
+  ],
+  [ // Out of Stock
+    {cls:'system',  t:0,    txt:'â”€â”€ Out of Stock Path â”€â”€'},
+    {cls:'event',   t:200,  txt:'[EVENT]   order.placed  { order_id: "ORD-7823" }'},
+    {cls:'agent',   t:500,  txt:'[Payment] â† subscribed to order.placed â†’ charging card...'},
+    {cls:'trigger', t:900,  txt:'[Payment] â†’ emits payment.success'},
+    {cls:'agent',   t:1100, txt:'[Inventory]â† subscribed to payment.success â†’ checking stock...'},
+    {cls:'branch',  t:1500, txt:'[Inventory]âœ— SKU-2291 out of stock in EU-West-2'},
+    {cls:'trigger', t:1700, txt:'[Inventory]â†’ emits inventory.out_of_stock { sku: "SKU-2291" }'},
+    {cls:'agent',   t:1900, txt:'[Backorder] â† subscribed to inventory.out_of_stock â†’ checking alternate warehouses...'},
+    {cls:'agent',   t:2000, txt:'[Notifier]  â† subscribed to inventory.out_of_stock â†’ sending delay notification'},
+    {cls:'trigger', t:2400, txt:'[Backorder] â†’ emits inventory.reserved { warehouse: "US-East-1", delay: "3 days" }'},
+    {cls:'agent',   t:2600, txt:'[Shipping]  â† subscribed to inventory.reserved â†’ booking expedited courier'},
+    {cls:'system',  t:2900, txt:'â”€â”€ Order rerouted automatically. No supervisor intervention needed â”€â”€'},
+  ]
+];
+
+let evTimer = null;
+function runEvent(idx) {
+  document.querySelectorAll('.btn-row .btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  if (evTimer) clearTimeout(evTimer);
+  const box = document.getElementById('eventStream');
+  box.innerHTML = '';
+  eventScenarios[idx].forEach(line => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'ev-line ' + line.cls;
+      div.textContent = line.txt;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }, line.t);
+  });
+}
+</script>
+</body>
+</html>

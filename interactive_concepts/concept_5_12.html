@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.12 — Ethics, Governance & Responsible AI</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --accent: #06d6a0;
+    --accent2: #6c63ff;
+    --accent3: #ffd166;
+    --accent4: #ff6584;
+    --accent5: #00b4d8;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(6,214,160,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  .nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  .nav a:hover { color: var(--accent); }
+  .nav-sep { color: var(--muted); font-size: 13px; }
+  .nav-current { color: var(--accent); font-size: 13px; font-weight: 700; }
+
+  .hero { background: linear-gradient(135deg, #0f1117 0%, #0d1a1f 50%, #0f1117 100%); padding: 52px 40px 40px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(6,214,160,0.1) 0%, transparent 70%); pointer-events: none; }
+  .hero-badge { display: inline-block; background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.35); color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 6px 18px; border-radius: 20px; margin-bottom: 18px; }
+  .hero h1 { font-size: clamp(24px,4vw,42px); font-weight: 800; background: linear-gradient(90deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 640px; margin: 0 auto; line-height: 1.6; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* WHY ETHICS MATTERS */
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 48px; }
+  .why-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: all 0.2s; }
+  .why-card:hover { transform: translateY(-3px); border-color: rgba(6,214,160,0.4); }
+  .why-icon { font-size: 32px; margin-bottom: 10px; }
+  .why-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .why-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* PRINCIPLES WHEEL / TABS */
+  .principles-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .ptab { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; color: var(--muted); }
+  .ptab.active { background: rgba(6,214,160,0.12); border-color: var(--accent); color: var(--accent); }
+  .principle-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; display: none; }
+  .principle-panel.active { display: block; }
+  .pp-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .pp-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .pp-meta h2 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .pp-meta p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .pp-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-top: 20px; }
+  .pp-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px; border-left: 3px solid; }
+  .pp-item-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .pp-item-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .pp-example { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 14px; margin-top: 16px; }
+  .pp-example-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .pp-example-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+  /* RISK RADAR */
+  .risk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 48px; }
+  .risk-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; transition: all 0.2s; }
+  .risk-card:hover { transform: translateY(-3px); }
+  .risk-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .risk-icon { font-size: 24px; }
+  .risk-name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .risk-level { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; }
+  .risk-level.high { background: rgba(255,101,132,0.15); color: var(--accent4); }
+  .risk-level.med { background: rgba(255,209,102,0.15); color: var(--accent3); }
+  .risk-level.low { background: rgba(6,214,160,0.15); color: var(--accent); }
+  .risk-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 12px; }
+  .risk-mitigation { font-size: 12px; color: var(--accent); background: rgba(6,214,160,0.08); border-radius: 8px; padding: 8px 10px; }
+  .risk-mit-label { font-weight: 700; display: inline; margin-right: 4px; }
+
+  /* FRAMEWORK COMPARE */
+  .framework-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 48px; }
+  .fw-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; transition: all 0.2s; cursor: default; }
+  .fw-card:hover { transform: translateY(-2px); border-color: rgba(108,99,255,0.4); }
+  .fw-flag { font-size: 28px; margin-bottom: 8px; }
+  .fw-name { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .fw-org { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+  .fw-points { display: flex; flex-direction: column; gap: 6px; }
+  .fw-point { font-size: 12px; color: var(--muted); display: flex; gap: 6px; }
+  .fw-point::before { content: '•'; color: var(--accent2); flex-shrink: 0; }
+
+  /* DILEMMA SIMULATOR */
+  .dilemma-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .dilemma-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .dilemma-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .dilemma-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+  .d-nav-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+  .d-nav-btn.active { background: rgba(108,99,255,0.12); border-color: var(--accent2); color: var(--accent2); }
+  .dilemma-card { background: var(--card); border-radius: 12px; padding: 22px; }
+  .d-scenario { font-size: 15px; color: var(--text); line-height: 1.6; margin-bottom: 18px; font-style: italic; border-left: 3px solid var(--accent3); padding-left: 14px; }
+  .d-tension { margin-bottom: 18px; }
+  .d-tension-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent3); margin-bottom: 8px; }
+  .d-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .d-side { border-radius: 8px; padding: 12px; }
+  .d-side.a { background: rgba(6,214,160,0.08); border: 1px solid rgba(6,214,160,0.2); }
+  .d-side.b { background: rgba(255,101,132,0.08); border: 1px solid rgba(255,101,132,0.2); }
+  .d-side-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .d-side.a .d-side-label { color: var(--accent); }
+  .d-side.b .d-side-label { color: var(--accent4); }
+  .d-side-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .d-resolution { background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.2); border-radius: 8px; padding: 14px; margin-top: 14px; }
+  .d-res-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent2); margin-bottom: 6px; }
+  .d-res-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: var(--accent); text-decoration: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; transition: all 0.2s; margin-top: 16px; }
+  .back-btn:hover { background: rgba(6,214,160,0.2); }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">← All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">5.12 — Ethics, Governance & Responsible AI</span>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Session 5 · Day 2 Afternoon</div>
+  <h1>Ethics, Governance & Responsible AI</h1>
+  <p>As agents gain autonomy, the stakes rise — explore the principles, real risks, global frameworks, and hard ethical dilemmas every builder must navigate</p>
+</div>
+
+<div class="container">
+
+  <!-- WHY IT MATTERS -->
+  <div class="section-title">Why Ethics Can't Be an Afterthought</div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">⚡</div>
+      <div class="why-title">Agents Act, Not Just Advise</div>
+      <div class="why-desc">Unlike chatbots, agents execute code, send emails, transfer files — ethical failures have real-world consequences</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🔗</div>
+      <div class="why-title">Multi-Agent Complexity</div>
+      <div class="why-desc">Responsibility diffuses across agent chains — who is accountable when 5 agents collaborate on a harmful outcome?</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🌍</div>
+      <div class="why-title">Global Regulation Incoming</div>
+      <div class="why-desc">EU AI Act, US EO 14110, China's GenAI rules — compliance is not optional for production systems</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🤝</div>
+      <div class="why-title">Trust Is the Product</div>
+      <div class="why-desc">Enterprise adoption of AI agents depends entirely on demonstrable trustworthiness — ethics drives business</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📈</div>
+      <div class="why-title">Compounding Bias</div>
+      <div class="why-desc">Biased decisions in agentic loops compound over iterations — early bias amplifies into systemic discrimination</div>
+    </div>
+  </div>
+
+  <!-- CORE PRINCIPLES -->
+  <div class="section-title">Core Principles of Responsible AI</div>
+  <div class="principles-tabs" id="principlesTabs"></div>
+  <div id="principlesPanels"></div>
+
+  <!-- RISK RADAR -->
+  <div class="section-title">Key Ethical Risks in Agentic Systems</div>
+  <div class="risk-grid" id="riskGrid"></div>
+
+  <!-- FRAMEWORKS -->
+  <div class="section-title">Global Responsible AI Frameworks</div>
+  <div class="framework-grid" id="fwGrid"></div>
+
+  <!-- DILEMMA SIMULATOR -->
+  <div class="dilemma-section">
+    <div class="dilemma-title">⚖️ Ethical Dilemma Simulator</div>
+    <div class="dilemma-sub">Explore real trade-offs that AI architects must navigate — there are no easy answers</div>
+    <div class="dilemma-nav" id="dilNav"></div>
+    <div class="dilemma-card" id="dilCard"></div>
+  </div>
+
+  <a href="index.html" class="back-btn">← Back to All Concepts</a>
+</div>
+
+<script>
+const principles = [
+  {
+    id: 'fairness', name: 'Fairness', icon: '⚖️', color: '#06d6a0',
+    tagline: 'AI systems must treat all people equitably and not discriminate based on protected characteristics.',
+    items: [
+      { title: 'Group Fairness', text: 'Equal error rates across demographic groups — an agent should not fail more often for one group' },
+      { title: 'Individual Fairness', text: 'Similar individuals should receive similar decisions from the agent' },
+      { title: 'Counterfactual Fairness', text: 'Decision should not change if protected attribute (race, gender) were different, all else equal' },
+      { title: 'Fairness-Accuracy Trade-off', text: 'Acknowledge that optimizing for accuracy alone often produces unfair outcomes — must be balanced' }
+    ],
+    example: { label: 'Agent Example', text: 'A hiring agent trained on historical data perpetuates gender bias by down-ranking female candidates. Fairness requires auditing outcomes by gender, not just overall accuracy.' }
+  },
+  {
+    id: 'transparency', name: 'Transparency', icon: '🔍', color: '#00b4d8',
+    tagline: 'Users and stakeholders must be able to understand what AI systems do and why.',
+    items: [
+      { title: 'Explainability', text: "Users should understand why an agent made a decision — not just what it decided" },
+      { title: 'Disclosure', text: "Users must know they are interacting with an AI agent, not a human" },
+      { title: 'Audit Trails', text: "Full trace of agent reasoning, tool calls, and data accessed must be logged and reviewable" },
+      { title: 'Model Cards', text: "Document training data, intended use, limitations, and known failure modes publicly" }
+    ],
+    example: { label: 'Agent Example', text: 'A loan-processing agent must explain in plain language why it recommended rejection — not just cite a risk score. Transparency enables contestability.' }
+  },
+  {
+    id: 'accountability', name: 'Accountability', icon: '📋', color: '#6c63ff',
+    tagline: 'Clear responsibility must be assigned for AI system outcomes — both human and organizational.',
+    items: [
+      { title: 'Human Oversight', text: "High-stakes decisions must have human review gates — agents recommend, humans confirm" },
+      { title: 'Responsibility Assignment', text: "Define who is accountable: developer, deployer, or operator — cannot be left ambiguous" },
+      { title: 'Redress Mechanisms', text: "Users must have a way to appeal, correct, or challenge agent decisions that affect them" },
+      { title: 'Incident Response', text: "When agents cause harm, there must be clear protocols for investigation and remedy" }
+    ],
+    example: { label: 'Agent Example', text: 'When a financial agent makes a bad trade, accountability chains must be clear: the firm is liable, the developer must provide logs, the operator must implement rollback.' }
+  },
+  {
+    id: 'privacy', name: 'Privacy', icon: '🔒', color: '#ffd166',
+    tagline: 'AI agents must collect minimum necessary data and protect it throughout the agent lifecycle.',
+    items: [
+      { title: 'Data Minimization', text: "Agents should only access and retain data strictly needed for the task — delete after use" },
+      { title: 'Purpose Limitation', text: "Data collected for one purpose must not be used for another without consent" },
+      { title: 'Memory Hygiene', text: "Agent memory must have TTL (time-to-live), user deletion rights, and cross-user isolation" },
+      { title: 'PII Handling', text: "Detect, mask, or refuse to process personally identifiable information in tool calls and logs" }
+    ],
+    example: { label: 'Agent Example', text: 'A medical agent must never store patient health data in persistent memory, must mask PII in logs, and must comply with HIPAA data handling requirements.' }
+  },
+  {
+    id: 'safety', name: 'Safety', icon: '🛡️', color: '#ff6584',
+    tagline: 'Agents must not cause physical, psychological, financial, or societal harm — even when instructed to.',
+    items: [
+      { title: 'Harm Prevention', text: "Agents must refuse actions that could cause harm even if user or operator requests them" },
+      { title: 'Corrigibility', text: "Agents must remain correctable — humans must be able to stop, override, or retrain agents" },
+      { title: 'Fail-Safe Design', text: "Default to inaction (not action) when uncertain — ambiguity should halt, not proceed" },
+      { title: 'Red-Teaming', text: "Systematically probe agents for harmful outputs before deployment — not just after incidents" }
+    ],
+    example: { label: 'Agent Example', text: 'An autonomous trading agent that detects a bug in its own strategy must halt and alert humans — not continue trading to "fix itself" by generating more trades.' }
+  }
+];
+
+const risks = [
+  { icon: '🎭', name: 'Algorithmic Bias', level: 'high', desc: 'Agents trained on historical data encode and amplify societal biases — affecting hiring, lending, criminal justice recommendations.', mitigation: 'Audit outputs by demographic group; use fairness-aware training; implement bias monitoring in production.' },
+  { icon: '🕳️', name: 'Opacity / Black Box', level: 'high', desc: 'LLM-based agents cannot explain their reasoning in mechanistic terms — users and regulators cannot audit decisions.', mitigation: 'Require chain-of-thought traces; use LLM-as-Judge explanation layers; maintain audit logs of all decisions.' },
+  { icon: '🔄', name: 'Autonomy Creep', level: 'high', desc: 'Agents given narrow autonomy gradually expand scope beyond intent — especially in multi-agent systems with self-directed planning.', mitigation: 'Define hard capability boundaries; require human approval for scope expansion; monitor goal drift metrics.' },
+  { icon: '👤', name: 'Privacy Erosion', level: 'high', desc: 'Agents with memory, tool access, and multi-session context can aggregate sensitive user data beyond original consent.', mitigation: 'Implement memory TTL; PII detection in tool call interceptors; zero-retention modes for sensitive domains.' },
+  { icon: '📣', name: 'Misinformation Amplification', level: 'med', desc: 'Hallucinating agents acting at scale can propagate false information through automated pipelines — emails, reports, decisions.', mitigation: 'Require source citations; implement RAG with verified corpora; add hallucination detection guardrails.' },
+  { icon: '🎯', name: 'Manipulation Risk', level: 'med', desc: 'Persuasive agents optimized for engagement or conversion may manipulate users psychologically to achieve goals.', mitigation: 'Prohibit dark pattern tool calls; require transparency about persuasive intent; user override mechanisms.' },
+  { icon: '⚡', name: 'Flash Crash / Cascade', level: 'high', desc: 'Autonomous agents operating at machine speed in financial or infrastructure domains can cause catastrophic cascades before humans intervene.', mitigation: 'Implement circuit breakers; rate-limit consequential actions; require human-in-the-loop for high-velocity domains.' },
+  { icon: '🌐', name: 'Accountability Gap', level: 'med', desc: 'Multi-agent chains diffuse responsibility — when harm occurs, no single actor accepts full accountability.', mitigation: 'Define accountability contracts per agent role; log full decision provenance; require named human accountable for each deployment.' }
+];
+
+const frameworks = [
+  { flag: '🇪🇺', name: 'EU AI Act', org: 'European Union · 2024', points: ['Risk-based classification (Unacceptable / High / Limited / Minimal)', 'High-risk AI requires human oversight, transparency, audit trails', 'Foundation model providers must publish training data summaries', 'Non-compliance: up to €35M or 7% global turnover'] },
+  { flag: '🇺🇸', name: 'NIST AI RMF', org: 'NIST · 2023', points: ['4 functions: GOVERN, MAP, MEASURE, MANAGE', 'Risk management lifecycle, not a compliance checklist', 'Profiles allow domain-specific tailoring', 'Companion playbook for LLM and generative AI systems'] },
+  { flag: '🌍', name: 'UNESCO Recommendation', org: 'UNESCO · 2021 · 193 countries', points: ['First global normative standard on AI ethics', 'Focuses on human rights, gender equality, environmental impact', 'Non-binding but signals global consensus', 'Emphasizes indigenous and minority community protection'] },
+  { flag: '🇬🇧', name: 'UK AI Safety Institute', org: 'AISI · 2023', points: ['Safety evaluations for frontier models', 'Red-teaming protocols for dangerous capabilities', 'International AI Safety Report coordination', 'Focus on catastrophic and systemic risks'] },
+  { flag: '🌐', name: 'ISO/IEC 42001', org: 'ISO · 2023', points: ['AI management system standard (like ISO 27001 for AI)', 'Certifiable framework for organizations deploying AI', 'Covers risk, objectives, performance evaluation', 'Increasingly required in enterprise procurement'] },
+  { flag: '🤝', name: 'Partnership on AI', org: 'Multi-stakeholder · Industry + Civil Society', points: ['Responsible practices for synthetic media', 'Shared framework for facial recognition', 'Worker wellbeing and AI displacement guidance', 'Open research on fairness and accountability'] }
+];
+
+const dilemmas = [
+  {
+    id: 'autonomy', name: 'Autonomy vs. Safety',
+    scenario: 'Your customer service agent can autonomously process refunds up to $500. A customer provides a compelling but unverifiable reason for a $2,000 refund. The agent has 80% confidence the claim is legitimate.',
+    tension: 'User Autonomy & Experience vs. Financial Safety',
+    sideA: { label: 'Approve Autonomously', text: 'Maximize user experience, trust the model confidence, reduce friction for legitimate cases' },
+    sideB: { label: 'Require Human Review', text: 'Reduce financial fraud risk, maintain accountability, but slow resolution and frustrate legitimate users' },
+    resolution: 'Best practice: define hard monetary thresholds for autonomy. Flag for human review above threshold — not as punishment, but as protection for both user and business. Communicate the delay transparently.'
+  },
+  {
+    id: 'privacy', name: 'Personalization vs. Privacy',
+    scenario: 'Your agent could deliver significantly better results by retaining conversation history across sessions. However, users have not explicitly consented to cross-session memory, and the data includes sensitive personal details.',
+    tension: 'Performance & Personalization vs. Privacy Rights',
+    sideA: { label: 'Enable Cross-Session Memory', text: '30% improvement in task completion, better user experience, competitive differentiation' },
+    sideB: { label: 'Stateless Per Session', text: 'Full privacy by default, GDPR-safe, but degraded experience and repeated context re-entry' },
+    resolution: 'Privacy-by-design solution: offer opt-in memory with clear disclosure, granular controls, and deletion rights. Never enable persistent memory silently — consent must be explicit and withdrawable.'
+  },
+  {
+    id: 'transparency', name: 'Disclosure vs. Engagement',
+    scenario: 'A/B testing shows that users engage 40% more and complete 25% more tasks when they believe they are talking to a human named "Alex" rather than an AI agent. Leadership wants to ship without the AI disclosure.',
+    tension: 'Business Metrics vs. Honesty & User Trust',
+    sideA: { label: 'Skip Disclosure', text: '40% engagement lift, competitive pressure justifies it, users don\'t seem to mind' },
+    sideB: { label: 'Disclose AI Identity', text: 'Legally required in many jurisdictions (EU AI Act), ethically required always, long-term trust preservation' },
+    resolution: 'Non-negotiable: disclose AI identity. EU AI Act makes deception about AI identity illegal. But disclosure design matters — transparent, friendly AI personas can achieve similar engagement without deception.'
+  },
+  {
+    id: 'fairness', name: 'Fairness vs. Accuracy',
+    scenario: 'Your medical triage agent has 94% overall accuracy. But auditing reveals 87% accuracy for Black patients vs 96% for white patients — a 9-point disparity caused by underrepresented training data.',
+    tension: 'Overall Accuracy vs. Demographic Fairness',
+    sideA: { label: 'Deploy (94% is good)', text: 'Faster deployment, good overall outcomes, costly to re-train and re-validate' },
+    sideB: { label: 'Delay Until Fair', text: 'Prevents discriminatory harm, legally and ethically correct, but delays a system that does help most users' },
+    resolution: 'Delay until fair — especially in high-stakes medical contexts. Collecting additional training data for underrepresented groups is mandatory. Deploy with human oversight in the interim. Document known limitations.'
+  }
+];
+
+// Render principles
+const tabsEl = document.getElementById('principlesTabs');
+const panelsEl = document.getElementById('principlesPanels');
+principles.forEach((p, i) => {
+  const tab = document.createElement('div');
+  tab.className = `ptab${i===0?' active':''}`;
+  tab.textContent = `${p.icon} ${p.name}`;
+  tab.dataset.id = p.id;
+  tabsEl.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = `principle-panel${i===0?' active':''}`;
+  panel.id = `panel-${p.id}`;
+  panel.innerHTML = `
+    <div class="pp-header">
+      <div class="pp-icon" style="background:${p.color}18;">${p.icon}</div>
+      <div class="pp-meta">
+        <h2>${p.name}</h2>
+        <p>${p.tagline}</p>
+      </div>
+    </div>
+    <div class="pp-items">
+      ${p.items.map(item => `
+        <div class="pp-item" style="border-color:${p.color}">
+          <div class="pp-item-title">${item.title}</div>
+          <div class="pp-item-text">${item.text}</div>
+        </div>`).join('')}
+    </div>
+    <div class="pp-example">
+      <div class="pp-example-label" style="color:${p.color}">🏛️ ${p.example.label}</div>
+      <div class="pp-example-text">${p.example.text}</div>
+    </div>`;
+  panelsEl.appendChild(panel);
+});
+tabsEl.addEventListener('click', e => {
+  if (!e.target.classList.contains('ptab')) return;
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.principle-panel').forEach(p => p.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(`panel-${e.target.dataset.id}`).classList.add('active');
+});
+
+// Render risks
+const rg = document.getElementById('riskGrid');
+risks.forEach(r => {
+  const div = document.createElement('div');
+  div.className = 'risk-card';
+  div.innerHTML = `
+    <div class="risk-header">
+      <div class="risk-icon">${r.icon}</div>
+      <div class="risk-name">${r.name}</div>
+      <div class="risk-level ${r.level}">${r.level === 'high' ? '⚠️ High' : r.level === 'med' ? '⚡ Medium' : '🟢 Low'}</div>
+    </div>
+    <div class="risk-desc">${r.desc}</div>
+    <div class="risk-mitigation"><span class="risk-mit-label">✅ Mitigation:</span>${r.mitigation}</div>`;
+  rg.appendChild(div);
+});
+
+// Render frameworks
+const fg = document.getElementById('fwGrid');
+frameworks.forEach(f => {
+  const div = document.createElement('div');
+  div.className = 'fw-card';
+  div.innerHTML = `
+    <div class="fw-flag">${f.flag}</div>
+    <div class="fw-name">${f.name}</div>
+    <div class="fw-org">${f.org}</div>
+    <div class="fw-points">${f.points.map(p => `<div class="fw-point">${p}</div>`).join('')}</div>`;
+  fg.appendChild(div);
+});
+
+// Render dilemmas
+const dilNav = document.getElementById('dilNav');
+const dilCard = document.getElementById('dilCard');
+let activeDil = 0;
+function renderDil(i) {
+  const d = dilemmas[i];
+  dilCard.innerHTML = `
+    <div class="d-scenario">${d.scenario}</div>
+    <div class="d-tension">
+      <div class="d-tension-label">⚖️ Core Tension: ${d.tension}</div>
+      <div class="d-sides">
+        <div class="d-side a"><div class="d-side-label">✅ Option A</div><div class="d-side-text"><strong>${d.sideA.label}:</strong> ${d.sideA.text}</div></div>
+        <div class="d-side b"><div class="d-side-label">🔴 Option B</div><div class="d-side-text"><strong>${d.sideB.label}:</strong> ${d.sideB.text}</div></div>
+      </div>
+    </div>
+    <div class="d-resolution">
+      <div class="d-res-label">💡 Responsible Design Resolution</div>
+      <div class="d-res-text">${d.resolution}</div>
+    </div>`;
+}
+dilemmas.forEach((d, i) => {
+  const btn = document.createElement('div');
+  btn.className = `d-nav-btn${i===0?' active':''}`;
+  btn.textContent = d.name;
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.d-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeDil = i;
+    renderDil(i);
+  });
+  dilNav.appendChild(btn);
+});
+renderDil(0);
+</script>
+</body>
+</html>

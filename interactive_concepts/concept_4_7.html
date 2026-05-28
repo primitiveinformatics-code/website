@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.7 Durable Execution — Temporal & Restate | Agentic AI</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+  --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+  --accent: #ffd166; --accent2: #06d6a0; --blue: #58a6ff; --purple: #c678dd;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: .6rem 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+nav a { color: var(--muted); font-size: .85rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+.hero { padding: 2.5rem 1.5rem 1.5rem; max-width: 900px; margin: 0 auto; }
+.tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+.tag { background: var(--surface2); border: 1px solid var(--border); padding: .2rem .7rem;
+  border-radius: 999px; font-size: .75rem; color: var(--muted); }
+.tag.accent { background: rgba(255,209,102,.12); border-color: var(--accent); color: var(--accent); }
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: .5rem; }
+.subtitle { color: var(--muted); font-size: 1rem; }
+main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+section { margin-top: 2.5rem; }
+h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: .4rem;
+  border-bottom: 1px solid var(--border); }
+h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accent); }
+.code-block { background: #010409; border: 1px solid var(--border); border-radius: 6px; padding: 1rem;
+  font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: .8rem; overflow-x: auto;
+  white-space: pre; color: #c9d1d9; margin-top: .7rem; }
+
+/* COMPARISON PANEL */
+.compare-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.compare-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.compare-panel.temporal { border-color: var(--blue); }
+.compare-panel.restate { border-color: var(--accent); }
+.compare-panel h3 { margin-bottom: .6rem; }
+.compare-panel.temporal h3 { color: var(--blue); }
+.compare-panel.restate h3 { color: var(--accent); }
+.compare-panel ul { list-style: none; padding: 0; }
+.compare-panel li { padding: .25rem 0; font-size: .85rem; color: var(--muted); }
+.compare-panel li::before { content: '• '; color: var(--accent); }
+.compare-panel.temporal li::before { color: var(--blue); }
+
+/* FAILURE SIMULATOR */
+.fail-sim { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.step-row { display: flex; gap: .5rem; align-items: center; margin: .4rem 0; flex-wrap: wrap; }
+.step-chip { border-radius: 6px; padding: .35rem .8rem; font-size: .8rem; font-weight: 600; border: 1.5px solid; }
+.chip-pending { background: var(--surface2); border-color: var(--border); color: var(--muted); }
+.chip-running { background: rgba(88,166,255,.12); border-color: var(--blue); color: var(--blue); }
+.chip-done { background: rgba(6,214,160,.1); border-color: var(--accent2); color: var(--accent2); }
+.chip-failed { background: rgba(255,126,182,.1); border-color: #ff7eb6; color: #ff7eb6; }
+.chip-skip { background: rgba(255,209,102,.08); border-color: var(--accent); color: var(--accent); font-style: italic; }
+.arrow-chip { color: var(--muted); font-size: .9rem; }
+.sim-log { background: #010409; border: 1px solid var(--border); border-radius: 6px;
+  font-family: 'Cascadia Code', monospace; font-size: .78rem; padding: .8rem;
+  min-height: 80px; max-height: 200px; overflow-y: auto; color: #c9d1d9; margin-top: .8rem; }
+.log-line { padding: .08rem 0; opacity: 0; animation: fadein .3s forwards; }
+@keyframes fadein { to { opacity: 1; } }
+.log-line.ok { color: var(--accent2); }
+.log-line.fail { color: #ff7eb6; }
+.log-line.replay { color: var(--accent); }
+.log-line.skip { color: var(--blue); }
+.log-line.sys { color: var(--muted); font-style: italic; }
+
+/* BUTTONS */
+.btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  padding: .4rem .9rem; border-radius: 6px; cursor: pointer; font-size: .82rem; transition: border-color .2s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary { border-color: var(--accent); color: var(--accent); }
+.btn.active { border-color: var(--accent); color: var(--accent); background: rgba(255,209,102,.1); }
+.btn-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+
+/* SAGA PATTERN */
+.saga-steps { display: flex; flex-direction: column; gap: .5rem; }
+.saga-step { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; padding: .7rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; transition: border-color .2s; }
+.saga-step:hover { border-color: var(--accent); }
+.saga-step.open { border-color: var(--accent); }
+.saga-col { }
+.saga-col-label { font-size: .72rem; color: var(--muted); margin-bottom: .2rem; text-transform: uppercase; letter-spacing: .05em; }
+.saga-forward { color: var(--accent2); font-size: .85rem; font-weight: 600; }
+.saga-compensate { color: #ff7eb6; font-size: .85rem; font-weight: 600; }
+.saga-detail { grid-column: 1/-1; display: none; }
+.saga-step.open .saga-detail { display: block; }
+.saga-detail p { color: var(--muted); font-size: .82rem; margin-bottom: .4rem; }
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th, td { padding: .65rem .9rem; border: 1px solid var(--border); text-align: left; }
+th { background: var(--surface2); color: var(--accent); font-weight: 600; }
+tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+.yes { color: var(--accent2); }
+.no { color: #ff7eb6; }
+.partial { color: var(--accent); }
+
+/* QUIZ */
+.quiz-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 2.5rem; }
+.score-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+.score-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+  padding: .35rem .9rem; font-size: .85rem; }
+.score-num { color: var(--accent); font-weight: 700; }
+.q-block { margin-bottom: 1.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--border); }
+.q-block:last-of-type { border-bottom: none; }
+.q-text { font-size: .95rem; margin-bottom: .7rem; }
+.opts { display: flex; flex-direction: column; gap: .4rem; }
+.opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: .5rem .9rem; cursor: pointer; font-size: .87rem; text-align: left;
+  transition: border-color .2s; color: var(--text); }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.correct { border-color: var(--accent2); background: rgba(6,214,160,.12); color: var(--accent2); }
+.opt.wrong { border-color: #ff7eb6; background: rgba(255,126,182,.1); color: #ff7eb6; }
+.opt:disabled { cursor: default; }
+.feedback { font-size: .82rem; margin-top: .4rem; display: none; }
+.feedback.show { display: block; }
+.feedback.correct { color: var(--accent2); }
+.feedback.wrong { color: #ff7eb6; }
+.reset-btn { background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: .25rem .6rem; border-radius: 5px; cursor: pointer; font-size: .75rem; margin-top: .4rem; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+@media(max-width:600px){ .compare-wrap{grid-template-columns:1fr;} h1{font-size:1.5rem;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_4_6.html">← LangGraph</a>
+  <a href="index.html">☰ All Concepts</a>
+  <a href="index.html">All Concepts →</a>
+</nav>
+
+<div class="hero">
+  <div class="tags">
+    <span class="tag accent">Session 4</span>
+    <span class="tag">Day 2 Forenoon · Orchestration</span>
+    <span class="tag">Concept 4.7</span>
+  </div>
+  <h1>Durable Execution</h1>
+  <p class="subtitle">Temporal &amp; Restate — workflows that survive crashes, handle retries automatically, and guarantee exactly-once execution</p>
+</div>
+
+<main>
+
+  <!-- THE PROBLEM -->
+  <section>
+    <h2>The Problem: Long-Running Agents Are Fragile</h2>
+    <blockquote style="border-left:3px solid var(--accent);padding:.8rem 1.2rem;background:var(--surface);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin-bottom:1rem;">
+      "An agent running a 2-hour research task that touches 10 APIs, processes 500 documents, and costs $50
+      in compute — crashes after 1h 50min. Do you restart from scratch? Durable execution means you don't."
+    </blockquote>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.8rem;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <h3>💥 Process Crash</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Server runs OOM or gets restarted by k8s. All in-memory state is gone.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <h3>🌐 Network Timeout</h3>
+        <p style="color:var(--muted);font-size:.85rem;">External API times out after 30s. Without retry logic, the whole workflow fails.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <h3>⏱️ Multi-Day Tasks</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Agent waits 24h for a human approval. A process cannot stay alive in memory for 24 hours.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+        <h3>💳 Partial Completion</h3>
+        <p style="color:var(--muted);font-size:.85rem;">Payment charged, but order not created — crash mid-transaction leaves data inconsistent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT IS DURABLE EXECUTION -->
+  <section>
+    <h2>What is Durable Execution?</h2>
+    <p style="color:var(--muted);margin-bottom:1rem;">
+      Durable execution frameworks record every step your code takes to an <strong style="color:var(--text);">event log</strong>.
+      If the process crashes, the framework replays the log to restore exact state — completed steps are skipped,
+      and execution resumes from the exact failure point. Your workflow code looks like normal sequential Python,
+      but it gains crash-safety, automatic retries, and exactly-once guarantees automatically.
+    </p>
+    <div class="code-block"># ❌ Fragile — crash between steps = data inconsistency
+def process_order(order):
+    payment = charge_card(order)       # ← crash here = charged but no order
+    inventory = reserve_stock(order)   # never runs
+    shipment = book_shipping(order)    # never runs
+    send_confirmation(order)           # never runs
+
+# ✅ Durable — crash = replay from last checkpoint
+@workflow.defn
+class ProcessOrderWorkflow:
+    @workflow.run
+    async def run(self, order: Order) -> str:
+        payment   = await workflow.execute_activity(charge_card, order)
+        inventory = await workflow.execute_activity(reserve_stock, order)
+        shipment  = await workflow.execute_activity(book_shipping, order)
+        await workflow.execute_activity(send_confirmation, order)
+        return shipment.tracking_id</div>
+  </section>
+
+  <!-- FAILURE SIMULATOR -->
+  <section>
+    <h2>Crash &amp; Replay Simulator</h2>
+    <div class="fail-sim">
+      <div class="btn-row">
+        <button class="btn primary" onclick="runNormal()">▶ Run Without Crash</button>
+        <button class="btn" onclick="runCrash()">💥 Simulate Crash at Step 3</button>
+        <button class="btn" onclick="runReplay()">🔄 Replay from Log</button>
+      </div>
+      <div class="step-row">
+        <div class="step-chip chip-pending" id="step1">Step 1: Charge Card</div>
+        <div class="arrow-chip">→</div>
+        <div class="step-chip chip-pending" id="step2">Step 2: Reserve Stock</div>
+        <div class="arrow-chip">→</div>
+        <div class="step-chip chip-pending" id="step3">Step 3: Book Shipping</div>
+        <div class="arrow-chip">→</div>
+        <div class="step-chip chip-pending" id="step4">Step 4: Send Email</div>
+      </div>
+      <div class="sim-log" id="simLog"><span style="color:var(--muted);">Click a button above...</span></div>
+    </div>
+  </section>
+
+  <!-- TEMPORAL vs RESTATE -->
+  <section>
+    <h2>Temporal vs Restate</h2>
+    <div class="compare-wrap">
+      <div class="compare-panel temporal">
+        <h3>⏱️ Temporal</h3>
+        <ul>
+          <li>Battle-tested — used at Uber, Netflix, Stripe</li>
+          <li>Go + Java + Python + TypeScript SDKs</li>
+          <li>Workflow = code (not YAML/DSL)</li>
+          <li>Signals (async messages to running workflows)</li>
+          <li>Queries (read live workflow state)</li>
+          <li>Schedules (cron-like workflow triggers)</li>
+          <li>Heavy infrastructure (Temporal server + DB)</li>
+          <li>Best for: enterprise, existing Java/Go teams</li>
+        </ul>
+      </div>
+      <div class="compare-panel restate">
+        <h3>🔁 Restate</h3>
+        <ul>
+          <li>Newer, cloud-native — simpler ops story</li>
+          <li>TypeScript + Java + Python (Rust core)</li>
+          <li>Embedded durable promises in functions</li>
+          <li>Service mesh friendly — HTTP native</li>
+          <li>Serverless-compatible (Lambda, Deno Deploy)</li>
+          <li>Simpler local dev experience</li>
+          <li>Lighter weight than Temporal</li>
+          <li>Best for: cloud-native, serverless, new projects</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAGA PATTERN -->
+  <section>
+    <h2>Saga Pattern — Compensation for Failures</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;">
+      When a workflow step fails mid-way, the Saga pattern runs <em>compensation actions</em> to undo
+      previously completed steps. Click each step to see its forward action and compensation.
+    </p>
+    <div class="saga-steps" id="sagaSteps">
+      <div class="saga-step" onclick="toggleSaga(this)">
+        <div class="saga-col">
+          <div class="saga-col-label">Forward Action</div>
+          <div class="saga-forward">✓ Charge customer card ($149.99)</div>
+        </div>
+        <div class="saga-col">
+          <div class="saga-col-label">Compensation</div>
+          <div class="saga-compensate">↩ Refund $149.99 to card</div>
+        </div>
+        <div class="saga-detail">
+          <p>Payment is the first step. If ANY later step fails, this compensation issues a full refund. Idempotency key prevents double-charging on retry.</p>
+          <div class="code-block">async with saga.compensate_on_failure():
+    saga.add_compensation(refund_payment, payment_id)
+    payment = await charge_card(order, idempotency_key=order.id)</div>
+        </div>
+      </div>
+      <div class="saga-step" onclick="toggleSaga(this)">
+        <div class="saga-col">
+          <div class="saga-col-label">Forward Action</div>
+          <div class="saga-forward">✓ Reserve inventory (SKU-2291 × 2)</div>
+        </div>
+        <div class="saga-col">
+          <div class="saga-col-label">Compensation</div>
+          <div class="saga-compensate">↩ Release inventory reservation</div>
+        </div>
+        <div class="saga-detail">
+          <p>Inventory is reserved but not removed. If shipping fails, the reservation is released so stock is available for other orders.</p>
+          <div class="code-block">saga.add_compensation(release_inventory, reservation_id)
+reservation = await reserve_stock(sku="SKU-2291", qty=2)</div>
+        </div>
+      </div>
+      <div class="saga-step" onclick="toggleSaga(this)">
+        <div class="saga-col">
+          <div class="saga-col-label">Forward Action</div>
+          <div class="saga-forward">✓ Book courier (UPS Next Day)</div>
+        </div>
+        <div class="saga-col">
+          <div class="saga-col-label">Compensation</div>
+          <div class="saga-compensate">↩ Cancel courier booking</div>
+        </div>
+        <div class="saga-detail">
+          <p>If notification fails, we still need to cancel the booked courier and release the slot — otherwise we get billed for an unneeded shipment.</p>
+          <div class="code-block">saga.add_compensation(cancel_booking, booking_id)
+booking = await book_courier(warehouse="EU-West", service="next_day")</div>
+        </div>
+      </div>
+      <div class="saga-step" onclick="toggleSaga(this)">
+        <div class="saga-col">
+          <div class="saga-col-label">Forward Action</div>
+          <div class="saga-forward">✓ Send order confirmation email</div>
+        </div>
+        <div class="saga-col">
+          <div class="saga-col-label">Compensation</div>
+          <div class="saga-compensate">↩ No-op (email is fire-and-forget)</div>
+        </div>
+        <div class="saga-detail">
+          <p>Email delivery cannot be "undone" — if it was sent, it's sent. The compensation is a no-op, but retrying is safe since the email is idempotent (same order ID = no duplicate).</p>
+          <div class="code-block">await send_email(to=order.email, template="order_confirmed",
+                  data=order, idempotency_key=f"confirm_{order.id}")</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section>
+    <h2>When to Use Durable Execution</h2>
+    <table>
+      <thead>
+        <tr><th>Scenario</th><th>Durable Needed?</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Single LLM call (&lt;30s)</td><td class="no">No</td><td>Fast, stateless — retry at call site is enough</td></tr>
+        <tr><td>Multi-step agent (minutes)</td><td class="partial">Maybe</td><td>Depends on cost and external side-effects</td></tr>
+        <tr><td>Long-running agent (hours)</td><td class="yes">Yes</td><td>Process will be restarted; replay needed</td></tr>
+        <tr><td>Multi-day task with human pause</td><td class="yes">Yes</td><td>Cannot hold state in memory for days</td></tr>
+        <tr><td>Financial transactions</td><td class="yes">Yes</td><td>Exactly-once and compensation required</td></tr>
+        <tr><td>Tasks touching external APIs</td><td class="yes">Yes</td><td>Idempotency + retry saves re-charging</td></tr>
+        <tr><td>Simple data processing pipeline</td><td class="partial">Maybe</td><td>Idempotent batch jobs can use simpler retry</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- TEMPORAL CODE -->
+  <section>
+    <h2>Temporal Agent Workflow — Full Example</h2>
+    <div class="code-block">import asyncio
+from datetime import timedelta
+from temporalio import activity, workflow
+from temporalio.client import Client
+from temporalio.worker import Worker
+
+# ── Activities = individual steps ──────────────────────────────────────
+@activity.defn
+async def research_topic(topic: str) -> str:
+    """Step 1: Web research (can fail, will be retried)."""
+    return await web_search(topic)
+
+@activity.defn
+async def analyse_findings(findings: str) -> dict:
+    """Step 2: LLM analysis."""
+    return await llm.structured_output(analyse_prompt + findings)
+
+@activity.defn
+async def write_report(analysis: dict) -> str:
+    """Step 3: Generate final report."""
+    return await llm.complete(report_prompt + str(analysis))
+
+# ── Workflow = durable coordinator ────────────────────────────────────
+@workflow.defn
+class ResearchWorkflow:
+    @workflow.run
+    async def run(self, topic: str) -> str:
+        # Each execute_activity is automatically:
+        # - Retried on failure (up to 10 times with backoff)
+        # - Recorded to event log (crash-safe)
+        # - Skipped on replay (exactly-once)
+        findings = await workflow.execute_activity(
+            research_topic, topic,
+            start_to_close_timeout=timedelta(minutes=5)
+        )
+        analysis = await workflow.execute_activity(
+            analyse_findings, findings,
+            start_to_close_timeout=timedelta(minutes=2)
+        )
+        report = await workflow.execute_activity(
+            write_report, analysis,
+            start_to_close_timeout=timedelta(minutes=3)
+        )
+        return report
+
+# ── Client: start the workflow ─────────────────────────────────────────
+async def main():
+    client = await Client.connect("localhost:7233")
+    result = await client.execute_workflow(
+        ResearchWorkflow.run,
+        "Agentic AI trends 2025",
+        id="research-001",           # deterministic ID = idempotent
+        task_queue="research-queue",
+    )
+    print(result)</div>
+  </section>
+
+  <!-- QUIZ -->
+  <div class="quiz-section">
+    <div class="score-bar">
+      <h2 style="border:none;margin:0;padding:0;">🧠 Knowledge Check</h2>
+      <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <p class="q-text">1. How does durable execution ensure a workflow survives a process crash?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q1','a','c')">a) It checkpoints state to a Redis cache every 30 seconds</button>
+        <button class="opt" onclick="answer('q1','b','c')">b) It runs the workflow on 3 servers simultaneously</button>
+        <button class="opt" onclick="answer('q1','c','c')">c) It records every step to an event log; on restart it replays the log, skipping already-completed steps</button>
+        <button class="opt" onclick="answer('q1','d','c')">d) It uses database transactions to lock the workflow state</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <p class="q-text">2. "Exactly-once execution" means:</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q2','a','d')">a) Each step runs exactly once per second</button>
+        <button class="opt" onclick="answer('q2','b','d')">b) The workflow can only handle one request at a time</button>
+        <button class="opt" onclick="answer('q2','c','d')">c) Each activity has exactly one retry on failure</button>
+        <button class="opt" onclick="answer('q2','d','d')">d) Even after retries or replays, each activity's side-effects are applied exactly once — not double-charged</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <p class="q-text">3. In the Saga pattern, what is a "compensation action"?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q3','a','b')">a) An automatic retry of the failed step</button>
+        <button class="opt" onclick="answer('q3','b','b')">b) A corrective action that undoes the effect of a previously completed step when a later step fails</button>
+        <button class="opt" onclick="answer('q3','c','b')">c) A human approval step added to the workflow</button>
+        <button class="opt" onclick="answer('q3','d','b')">d) A payment dispute filed with the bank</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <p class="q-text">4. Which scenario MOST justifies using durable execution?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q4','a','d')">a) Answering a simple FAQ using RAG (&lt;5 seconds)</button>
+        <button class="opt" onclick="answer('q4','b','d')">b) Classifying 10 product descriptions</button>
+        <button class="opt" onclick="answer('q4','c','d')">c) Running a nightly batch job that always completes in 2 minutes</button>
+        <button class="opt" onclick="answer('q4','d','d')">d) A multi-day customer onboarding workflow that charges a card, provisions accounts, and sends emails across 5 external services</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <p class="q-text">5. What is the key difference between Temporal and LangGraph checkpointing?</p>
+      <div class="opts">
+        <button class="opt" onclick="answer('q5','a','c')">a) LangGraph is faster because it uses in-memory storage only</button>
+        <button class="opt" onclick="answer('q5','b','c')">b) Temporal only works with Go, not Python</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) Temporal provides infrastructure-level durability with retries, signals, and schedules; LangGraph provides agent-level state checkpointing focused on graph traversal</button>
+        <button class="opt" onclick="answer('q5','d','c')">d) LangGraph supports Saga patterns natively; Temporal does not</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ── QUIZ ── */
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'Durable execution writes every step to an event log. On restart it replays the log — completed steps are skipped, incomplete steps resume.',
+  q2: 'Exactly-once means side-effects (like charging a card) happen once even if the workflow retries multiple times, thanks to idempotency keys.',
+  q3: 'A compensation action undoes a previously completed step when a later step in the saga fails.',
+  q4: 'Multi-day workflows with external side-effects (payments, account provisioning) absolutely require durable execution.',
+  q5: 'Temporal is infrastructure-level durability (retries, signals, cron); LangGraph checkpointing is agent-level state persistence for graph traversal.'
+};
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+
+/* ── FAILURE SIMULATOR ── */
+function setStep(id, cls) {
+  document.getElementById(id).className = 'step-chip ' + cls;
+}
+function resetSteps() {
+  ['step1','step2','step3','step4'].forEach(s => setStep(s, 'chip-pending'));
+  document.getElementById('simLog').innerHTML = '';
+}
+function addLog(msg, cls, delay) {
+  setTimeout(() => {
+    const log = document.getElementById('simLog');
+    if (log.innerHTML.includes('Click a button')) log.innerHTML = '';
+    const d = document.createElement('div');
+    d.className = 'log-line ' + cls;
+    d.textContent = msg;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+  }, delay);
+}
+
+function runNormal() {
+  resetSteps();
+  const steps = [
+    {id:'step1', label:'Step 1: Charge Card', ms:600},
+    {id:'step2', label:'Step 2: Reserve Stock', ms:1300},
+    {id:'step3', label:'Step 3: Book Shipping', ms:2000},
+    {id:'step4', label:'Step 4: Send Email', ms:2700},
+  ];
+  steps.forEach(s => {
+    setTimeout(() => setStep(s.id, 'chip-running'), s.ms - 400);
+    setTimeout(() => {
+      setStep(s.id, 'chip-done');
+      addLog(`✓ ${s.label} — completed`, 'ok', 0);
+    }, s.ms);
+  });
+  addLog('── Workflow started ──', 'sys', 0);
+  setTimeout(() => addLog('── All steps complete. Order fulfilled ──', 'sys', 0), 3100);
+}
+
+function runCrash() {
+  resetSteps();
+  addLog('── Workflow started ──', 'sys', 0);
+  setTimeout(() => { setStep('step1','chip-running'); }, 200);
+  setTimeout(() => { setStep('step1','chip-done'); addLog('✓ Step 1: Charge Card — completed ($149.99 charged)', 'ok', 0); }, 700);
+  setTimeout(() => { setStep('step2','chip-running'); }, 1000);
+  setTimeout(() => { setStep('step2','chip-done'); addLog('✓ Step 2: Reserve Stock — completed (SKU-2291 × 2)', 'ok', 0); }, 1600);
+  setTimeout(() => { setStep('step3','chip-running'); }, 1900);
+  setTimeout(() => { setStep('step3','chip-failed'); addLog('💥 PROCESS CRASH at Step 3: Book Shipping', 'fail', 0); addLog('   All in-memory state LOST — $149.99 charged but no order created!', 'fail', 0); }, 2500);
+}
+
+function runReplay() {
+  resetSteps();
+  addLog('── Durable replay starting from event log ──', 'sys', 0);
+  setTimeout(() => {
+    setStep('step1','chip-running');
+    addLog('📼 Replaying event log...', 'replay', 0);
+  }, 300);
+  setTimeout(() => {
+    setStep('step1','chip-skip');
+    addLog('⏭  Step 1: Charge Card — SKIP (already in log, idempotency key matched)', 'skip', 0);
+  }, 800);
+  setTimeout(() => {
+    setStep('step2','chip-skip');
+    addLog('⏭  Step 2: Reserve Stock — SKIP (already in log)', 'skip', 0);
+  }, 1200);
+  setTimeout(() => {
+    setStep('step3','chip-running');
+    addLog('▶  Step 3: Book Shipping — RESUMING (not in log, executing fresh)', 'replay', 0);
+  }, 1600);
+  setTimeout(() => {
+    setStep('step3','chip-done');
+    addLog('✓ Step 3: Book Shipping — completed (UPS Next Day booked)', 'ok', 0);
+  }, 2400);
+  setTimeout(() => {
+    setStep('step4','chip-running');
+    addLog('▶  Step 4: Send Email — executing', 'replay', 0);
+  }, 2700);
+  setTimeout(() => {
+    setStep('step4','chip-done');
+    addLog('✓ Step 4: Send Email — completed', 'ok', 0);
+    addLog('── Workflow complete. Zero work repeated. Zero double-charges. ──', 'sys', 0);
+  }, 3300);
+}
+
+/* ── SAGA TOGGLE ── */
+function toggleSaga(el) {
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.saga-step').forEach(s => s.classList.remove('open'));
+  if (!wasOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>

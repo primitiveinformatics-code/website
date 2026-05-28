@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.17 — Token Economics: Controlling Agent Costs</title>
+<style>
+  :root {
+    --bg:#0f1117; --surface:#1a1d27; --card:#21263a; --accent:#ffd166;
+    --text:#e8eaf6; --muted:#8892b0; --border:rgba(255,209,102,0.2);
+    --c1:#6c63ff; --c2:#00d2ff; --c3:#06d6a0; --c4:#ffd166; --c5:#ff6584;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; }
+
+  .nav { display:flex; align-items:center; gap:12px; padding:16px 32px; border-bottom:1px solid var(--border); }
+  .nav a { color:var(--muted); text-decoration:none; font-size:13px; } .nav a:hover { color:var(--text); }
+  .nav-sep { color:rgba(255,255,255,0.15); }
+  .nav-cur { color:var(--accent); font-weight:700; font-size:13px; }
+
+  .hero { background:linear-gradient(135deg,#0f1117,#1a1507,#1a1d27); padding:56px 40px 44px; text-align:center; position:relative; overflow:hidden; border-bottom:1px solid var(--border); }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(255,209,102,0.1),transparent 70%); pointer-events:none; }
+  .hero-badge { display:inline-block; background:rgba(255,209,102,0.12); border:1px solid rgba(255,209,102,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:16px; }
+  .hero h1 { font-size:clamp(24px,4vw,42px); font-weight:800; background:linear-gradient(90deg,#fff,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:12px; }
+  .hero p { color:var(--muted); font-size:15px; max-width:640px; margin:0 auto 28px; line-height:1.6; }
+  .hero-stats { display:flex; justify-content:center; gap:40px; flex-wrap:wrap; }
+  .hstat { text-align:center; } .hstat-n { font-size:26px; font-weight:800; color:var(--accent); } .hstat-l { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+  .main { max-width:1100px; margin:0 auto; padding:40px 24px 80px; }
+  .sec-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+  .sec-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* COST CALCULATOR */
+  .calc-box { background:var(--card); border:1px solid rgba(255,209,102,0.3); border-radius:16px; padding:28px; margin-bottom:40px; }
+  .calc-box h3 { font-size:15px; font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .calc-box p { font-size:12px; color:var(--muted); margin-bottom:20px; }
+  .calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:600px){ .calc-grid { grid-template-columns:1fr; } }
+  .calc-group { display:flex; flex-direction:column; gap:14px; }
+  .calc-row { display:flex; flex-direction:column; gap:6px; }
+  .calc-label { font-size:12px; font-weight:600; color:var(--muted); display:flex; justify-content:space-between; }
+  .calc-val { color:var(--accent); font-weight:700; }
+  .calc-slider { width:100%; accent-color:var(--accent); cursor:pointer; }
+  .calc-output { background:rgba(0,0,0,0.4); border-radius:12px; padding:20px; }
+  .cost-big { font-size:36px; font-weight:900; color:var(--accent); }
+  .cost-label { font-size:12px; color:var(--muted); margin-bottom:14px; }
+  .cost-breakdown { display:flex; flex-direction:column; gap:8px; }
+  .cb-row { display:flex; justify-content:space-between; font-size:12px; }
+  .cb-key { color:var(--muted); }
+  .cb-val { font-weight:700; }
+  .savings-badge { display:inline-block; margin-top:12px; background:rgba(6,214,160,0.12); border:1px solid rgba(6,214,160,0.3); color:#06d6a0; font-size:12px; font-weight:700; padding:6px 16px; border-radius:20px; }
+
+  /* OPTIMISATION TECHNIQUES */
+  .opt-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:40px; }
+  .opt-card { background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:22px; cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden; }
+  .opt-card::before { content:''; position:absolute; bottom:0;left:0;right:0; height:3px; }
+  .opt-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,0.4); }
+  .opt-card.active { border-color:var(--oc); background:rgba(255,255,255,0.03); }
+  .oc-icon { font-size:28px; margin-bottom:10px; }
+  .oc-name { font-size:15px; font-weight:800; margin-bottom:6px; }
+  .oc-saving { font-size:12px; font-weight:700; padding:3px 10px; border-radius:6px; margin-bottom:8px; display:inline-block; }
+  .oc-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+  .oc-detail { display:none; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.07); }
+  .opt-card.active .oc-detail { display:block; }
+  .oc-detail p { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:8px; }
+  .oc-code { font-family:monospace; font-size:11px; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; color:#06d6a0; white-space:pre-wrap; margin-top:6px; }
+
+  /* TOKEN BUDGET VISUALIZER */
+  .budget-viz { background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:28px; margin-bottom:40px; }
+  .budget-viz h3 { font-size:14px; font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .budget-viz p { font-size:12px; color:var(--muted); margin-bottom:20px; }
+  .bv-select { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+  .bv-btn { padding:8px 18px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:var(--muted); transition:all 0.2s; }
+  .bv-btn.active { border-color:var(--accent); background:rgba(255,209,102,0.1); color:var(--accent); }
+  .bv-bar-container { display:flex; flex-direction:column; gap:10px; }
+  .bv-row { display:flex; align-items:center; gap:10px; }
+  .bv-label { font-size:12px; font-weight:600; width:160px; flex-shrink:0; }
+  .bv-track { flex:1; background:rgba(255,255,255,0.05); border-radius:20px; height:28px; overflow:hidden; display:flex; }
+  .bv-seg { height:100%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; transition:width 0.7s ease; overflow:hidden; white-space:nowrap; }
+  .bv-total { font-size:13px; font-weight:700; width:80px; text-align:right; }
+  .bv-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; }
+  .bv-leg { display:flex; align-items:center; gap:6px; font-size:11px; }
+  .bv-leg-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+
+  /* ANTI-PATTERNS */
+  .ap-list { display:flex; flex-direction:column; gap:12px; margin-bottom:40px; }
+  .ap-item { background:var(--card); border:1px solid rgba(255,101,132,0.2); border-radius:12px; overflow:hidden; cursor:pointer; }
+  .ap-header { display:flex; align-items:center; gap:14px; padding:16px 20px; transition:background 0.2s; }
+  .ap-header:hover { background:rgba(255,255,255,0.02); }
+  .ap-icon { font-size:20px; }
+  .ap-name { font-size:14px; font-weight:700; flex:1; }
+  .ap-waste { font-size:11px; font-weight:700; padding:3px 10px; border-radius:6px; background:rgba(255,101,132,0.15); color:#ff6584; }
+  .ap-chevron { color:var(--muted); transition:transform 0.2s; }
+  .ap-item.open .ap-chevron { transform:rotate(90deg); }
+  .ap-body { display:none; padding:0 20px 16px; }
+  .ap-item.open .ap-body { display:block; }
+  .ap-cols { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px; }
+  @media(max-width:500px){ .ap-cols { grid-template-columns:1fr; } }
+  .apc-box { background:rgba(0,0,0,0.25); border-radius:8px; padding:12px; }
+  .apc-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:6px; }
+  .apc-text { font-size:12px; line-height:1.5; }
+
+  .back-row { text-align:center; margin-top:40px; }
+  .back-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(255,209,102,0.1); border:1px solid rgba(255,209,102,0.3); color:var(--accent); padding:10px 24px; border-radius:30px; text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s; }
+  .back-btn:hover { background:rgba(255,209,102,0.2); }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">← All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-cur">4.17 — Token Economics: Controlling Agent Costs</span>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>Token Economics — Controlling Agent Costs</h1>
+  <p>Every token costs money and time. Learn to design agents that are as lean as they are capable</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">5</div><div class="hstat-l">Optimisation Levers</div></div>
+    <div class="hstat"><div class="hstat-n">90%</div><div class="hstat-l">Max Cost Reduction</div></div>
+    <div class="hstat"><div class="hstat-n">3x</div><div class="hstat-l">Loop Multiplier Risk</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="sec-title">Live Cost Calculator</div>
+  <div class="calc-box">
+    <h3>💰 Agent Cost Estimator</h3>
+    <p>Adjust the sliders to model your production costs — see how architecture choices change the bill</p>
+    <div class="calc-grid">
+      <div class="calc-group">
+        <div class="calc-row">
+          <label class="calc-label">Requests/day <span class="calc-val" id="v-req">1,000</span></label>
+          <input class="calc-slider" type="range" min="100" max="100000" step="100" value="1000" oninput="updateCalc()">
+        </div>
+        <div class="calc-row">
+          <label class="calc-label">Avg input tokens/req <span class="calc-val" id="v-in">2,000</span></label>
+          <input class="calc-slider" type="range" min="200" max="20000" step="100" value="2000" oninput="updateCalc()">
+        </div>
+        <div class="calc-row">
+          <label class="calc-label">Avg output tokens/req <span class="calc-val" id="v-out">500</span></label>
+          <input class="calc-slider" type="range" min="50" max="5000" step="50" value="500" oninput="updateCalc()">
+        </div>
+        <div class="calc-row">
+          <label class="calc-label">Avg ReAct loop turns <span class="calc-val" id="v-turns">3</span></label>
+          <input class="calc-slider" type="range" min="1" max="10" step="1" value="3" oninput="updateCalc()">
+        </div>
+        <div class="calc-row">
+          <label class="calc-label">Model tier ($ / 1M tokens) <span class="calc-val" id="v-price">$15</span></label>
+          <input class="calc-slider" type="range" min="1" max="30" step="1" value="15" oninput="updateCalc()">
+        </div>
+      </div>
+      <div class="calc-output">
+        <div class="cost-label">Estimated Daily Cost</div>
+        <div class="cost-big" id="cost-big">$0.00</div>
+        <div class="cost-breakdown">
+          <div class="cb-row"><div class="cb-key">Total tokens/day</div><div class="cb-val" id="cb-tokens">—</div></div>
+          <div class="cb-row"><div class="cb-key">Cost/request</div><div class="cb-val" id="cb-per-req">—</div></div>
+          <div class="cb-row"><div class="cb-key">Monthly estimate</div><div class="cb-val" id="cb-monthly">—</div></div>
+          <div class="cb-row"><div class="cb-key">Annual estimate</div><div class="cb-val" id="cb-annual">—</div></div>
+        </div>
+        <div id="savings-badge" class="savings-badge" style="display:none;"></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:14px;background:rgba(255,209,102,0.05);border-radius:10px;border:1px solid rgba(255,209,102,0.15);font-size:12px;color:var(--muted);">
+      <strong style="color:var(--accent);">💡 Loop multiplier:</strong> Each ReAct turn adds the full conversation history to the next input (context accumulation). 3 turns can mean 4–6x the tokens of a single call. This is the biggest hidden cost driver.
+    </div>
+  </div>
+
+  <div class="sec-title">5 Cost Optimisation Techniques — Click to Explore</div>
+  <div class="opt-grid">
+    <div class="opt-card active" style="--oc:#6c63ff;" onclick="toggleOpt(this)">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:#6c63ff;"></div>
+      <div class="oc-icon">✂️</div>
+      <div class="oc-name" style="color:#6c63ff;">Prompt Compression</div>
+      <div class="oc-saving" style="background:rgba(108,99,255,0.15);color:#6c63ff;">Save 30–60%</div>
+      <div class="oc-desc">Trim system prompts, remove redundant instructions, use shorter few-shot examples</div>
+      <div class="oc-detail">
+        <p><strong>Before:</strong> Verbose system prompt with repeated instructions = 800 tokens</p>
+        <p><strong>After:</strong> Compressed prompt with only essential constraints = 320 tokens</p>
+        <div class="oc-code">❌ "You are a helpful assistant that always tries to be as helpful as possible and provides comprehensive, detailed answers to all questions..."
+
+✅ "Answer concisely. JSON output only. No preamble."</div>
+      </div>
+    </div>
+    <div class="opt-card" style="--oc:#00d2ff;" onclick="toggleOpt(this)">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:#00d2ff;opacity:0;"></div>
+      <div class="oc-icon">🔀</div>
+      <div class="oc-name" style="color:#00d2ff;">Model Routing</div>
+      <div class="oc-saving" style="background:rgba(0,210,255,0.15);color:#00d2ff;">Save 70–90%</div>
+      <div class="oc-desc">Route 80% of simple sub-tasks to cheap fast models, reserve frontier for orchestration</div>
+      <div class="oc-detail">
+        <p>Most agent tasks are simple: extract, classify, format. Only the planner + synthesis step needs a frontier model.</p>
+        <div class="oc-code">if task_complexity == "simple":
+    model = "claude-haiku"  # $0.25/1M
+else:
+    model = "claude-opus"   # $15/1M
+# 80% cheap → 90% cost saved</div>
+      </div>
+    </div>
+    <div class="opt-card" style="--oc:#06d6a0;" onclick="toggleOpt(this)">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:#06d6a0;opacity:0;"></div>
+      <div class="oc-icon">📦</div>
+      <div class="oc-name" style="color:#06d6a0;">Context Pruning</div>
+      <div class="oc-saving" style="background:rgba(6,214,160,0.15);color:#06d6a0;">Save 40–60%</div>
+      <div class="oc-desc">Summarise old turns, keep only relevant tool results, discard intermediate steps after synthesis</div>
+      <div class="oc-detail">
+        <p>In a 5-turn ReAct loop, early turns accumulate in context. After each hop, summarize resolved sub-goals to a 1-line memo.</p>
+        <div class="oc-code">def prune_context(messages, max_turns=3):
+    if len(messages) > max_turns * 2:
+        summary = llm.summarize(messages[:-4])
+        return [{"role":"system","content":summary}] + messages[-4:]
+    return messages</div>
+      </div>
+    </div>
+    <div class="opt-card" style="--oc:#ffd166;" onclick="toggleOpt(this)">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:#ffd166;opacity:0;"></div>
+      <div class="oc-icon">💾</div>
+      <div class="oc-name" style="color:#ffd166;">Response Caching</div>
+      <div class="oc-saving" style="background:rgba(255,209,102,0.15);color:#ffd166;">Save 20–50%</div>
+      <div class="oc-desc">Cache deterministic LLM responses by input hash — especially for repeated sub-queries in multi-agent systems</div>
+      <div class="oc-detail">
+        <p>Many agent sub-tasks are repeated across sessions (same document, same question). Cache at semantic hash level.</p>
+        <div class="oc-code">cache_key = hash(model + system_prompt + user_msg)
+if cache_key in redis:
+    return redis.get(cache_key)
+result = llm.call(...)
+redis.set(cache_key, result, ttl=3600)
+return result</div>
+      </div>
+    </div>
+    <div class="opt-card" style="--oc:#ff6584;" onclick="toggleOpt(this)">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:#ff6584;opacity:0;"></div>
+      <div class="oc-icon">🛑</div>
+      <div class="oc-name" style="color:#ff6584;">Loop Guard Rails</div>
+      <div class="oc-saving" style="background:rgba(255,101,132,0.15);color:#ff6584;">Prevent runaway cost</div>
+      <div class="oc-desc">Set hard limits on max turns, token budgets per session, and timeout kill switches</div>
+      <div class="oc-detail">
+        <p>An infinite loop burns $100s per agent run. Always set MAX_TURNS and token budget cutoffs.</p>
+        <div class="oc-code">MAX_TURNS = 10
+TOKEN_BUDGET = 50_000
+
+if turn_count >= MAX_TURNS:
+    return graceful_exit("Max turns reached")
+if total_tokens > TOKEN_BUDGET:
+    return graceful_exit("Budget exceeded")</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">Token Budget Visualizer — Context by Architecture</div>
+  <div class="budget-viz">
+    <h3>📊 Where Your Tokens Go</h3>
+    <p>See the token breakdown for different agent architectures</p>
+    <div class="bv-select">
+      <button class="bv-btn active" onclick="selectArch(0)">Naive Agent</button>
+      <button class="bv-btn" onclick="selectArch(1)">Optimised Agent</button>
+      <button class="bv-btn" onclick="selectArch(2)">Multi-Agent System</button>
+    </div>
+    <div class="bv-bar-container" id="bv-bars"></div>
+    <div class="bv-legend">
+      <div class="bv-leg"><div class="bv-leg-dot" style="background:#6c63ff;"></div>System Prompt</div>
+      <div class="bv-leg"><div class="bv-leg-dot" style="background:#00d2ff;"></div>User Message</div>
+      <div class="bv-leg"><div class="bv-leg-dot" style="background:#ffd166;"></div>Tool Results</div>
+      <div class="bv-leg"><div class="bv-leg-dot" style="background:#ff6584;"></div>History (accumulated)</div>
+      <div class="bv-leg"><div class="bv-leg-dot" style="background:#06d6a0;"></div>Output</div>
+    </div>
+  </div>
+
+  <div class="sec-title">Token Anti-Patterns — What to Avoid</div>
+  <div class="ap-list">
+    <div class="ap-item" onclick="toggleAP(this)">
+      <div class="ap-header"><div class="ap-icon">🔁</div><div class="ap-name">Unbounded Context Accumulation</div><div class="ap-waste">3–10x token waste</div><div class="ap-chevron">›</div></div>
+      <div class="ap-body">
+        <div class="ap-cols">
+          <div class="apc-box"><div class="apc-label">Pattern</div><div class="apc-text">Appending every tool response to the conversation history without pruning. Turn 5 carries the full content of turns 1–4.</div></div>
+          <div class="apc-box"><div class="apc-label">Fix</div><div class="apc-text">Summarize resolved sub-goals. Keep a "working memory" of only active context. Use episodic memory store for long tasks.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ap-item" onclick="toggleAP(this)">
+      <div class="ap-header"><div class="ap-icon">📄</div><div class="ap-name">Full Document Injection</div><div class="ap-waste">50–500x token waste</div><div class="ap-chevron">›</div></div>
+      <div class="ap-body">
+        <div class="ap-cols">
+          <div class="apc-box"><div class="apc-label">Pattern</div><div class="apc-text">Injecting entire 50-page PDFs into context when only 2 paragraphs are needed. Common in naive RAG implementations.</div></div>
+          <div class="apc-box"><div class="apc-label">Fix</div><div class="apc-text">Use chunking + retrieval. Only inject the top-3 relevant chunks. Use Self-Query to filter before retrieval.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ap-item" onclick="toggleAP(this)">
+      <div class="ap-header"><div class="ap-icon">🧾</div><div class="ap-name">Verbose Tool Schemas</div><div class="ap-waste">200–500 tokens/call</div><div class="ap-chevron">›</div></div>
+      <div class="ap-body">
+        <div class="ap-cols">
+          <div class="apc-box"><div class="apc-label">Pattern</div><div class="apc-text">Auto-generated tool schemas with full docstrings, every parameter described in 3 sentences. Repeated in every request.</div></div>
+          <div class="apc-box"><div class="apc-label">Fix</div><div class="apc-text">Write concise schemas: name, 1-line description, typed parameters only. 50-token schemas instead of 500-token schemas.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ap-item" onclick="toggleAP(this)">
+      <div class="ap-header"><div class="ap-icon">🔁</div><div class="ap-name">Redundant LLM Calls</div><div class="ap-waste">2–5x call count</div><div class="ap-chevron">›</div></div>
+      <div class="ap-body">
+        <div class="ap-cols">
+          <div class="apc-box"><div class="apc-label">Pattern</div><div class="apc-text">Calling LLM to validate output format when a regex check would work. Calling LLM for routing decisions that are rule-based.</div></div>
+          <div class="apc-box"><div class="apc-label">Fix</div><div class="apc-text">Use deterministic code for structural validation, format checking, and simple routing. Reserve LLM calls for semantic decisions.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ap-item" onclick="toggleAP(this)">
+      <div class="ap-header"><div class="ap-icon">🌊</div><div class="ap-name">Frontier Model for Everything</div><div class="ap-waste">10–100x cost overhead</div><div class="ap-chevron">›</div></div>
+      <div class="ap-body">
+        <div class="ap-cols">
+          <div class="apc-box"><div class="apc-label">Pattern</div><div class="apc-text">Using GPT-4o for all tasks including simple extraction, classification, and formatting — because "it's easier to set up."</div></div>
+          <div class="apc-box"><div class="apc-label">Fix</div><div class="apc-text">Implement Two-Tier architecture. Route 80% of volume to fast/cheap models. Use frontier only for orchestration and synthesis.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="back-row">
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
+  </div>
+</div>
+
+<script>
+// ─── COST CALCULATOR ──────────────────────────────────
+let baseCost = null;
+
+function updateCalc() {
+  const sliders = document.querySelectorAll('.calc-slider');
+  const req     = parseInt(sliders[0].value);
+  const inTok   = parseInt(sliders[1].value);
+  const outTok  = parseInt(sliders[2].value);
+  const turns   = parseInt(sliders[3].value);
+  const price   = parseInt(sliders[4].value);
+
+  document.getElementById('v-req').textContent   = req.toLocaleString();
+  document.getElementById('v-in').textContent    = inTok.toLocaleString();
+  document.getElementById('v-out').textContent   = outTok.toLocaleString();
+  document.getElementById('v-turns').textContent = turns;
+  document.getElementById('v-price').textContent = '$' + price;
+
+  // Loop accumulation: each turn adds the previous history
+  // Total input per request ≈ inTok * (1 + 1/2 + 1/3 + ... 1/turns) heuristic → simplify to 1.5x multiplier per extra turn
+  const loopMultiplier = 1 + (turns - 1) * 0.6;
+  const totalInPerReq  = inTok * loopMultiplier * turns;
+  const totalOutPerReq = outTok * turns;
+  const totalTokPerReq = totalInPerReq + totalOutPerReq;
+  const totalTokPerDay = totalTokPerReq * req;
+  const costPerDay     = (totalTokPerDay / 1_000_000) * price;
+  const costPerReq     = costPerDay / req;
+
+  document.getElementById('cost-big').textContent  = '$' + costPerDay.toFixed(2);
+  document.getElementById('cb-tokens').textContent  = (totalTokPerDay / 1_000_000).toFixed(1) + 'M';
+  document.getElementById('cb-per-req').textContent = '$' + costPerReq.toFixed(4);
+  document.getElementById('cb-monthly').textContent = '$' + (costPerDay * 30).toFixed(0);
+  document.getElementById('cb-annual').textContent  = '$' + (costPerDay * 365).toFixed(0);
+
+  // Savings hint
+  const badge = document.getElementById('savings-badge');
+  if (price > 10 && req > 1000) {
+    const optimised = costPerDay * 0.15;
+    badge.textContent = `✅ Two-tier routing → ~$${optimised.toFixed(2)}/day (save ${Math.round((1-optimised/costPerDay)*100)}%)`;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+updateCalc();
+
+// ─── OPT CARDS ────────────────────────────────────────
+function toggleOpt(el) {
+  const wasActive = el.classList.contains('active');
+  document.querySelectorAll('.opt-card').forEach(c => {
+    c.classList.remove('active');
+    const bar = c.querySelector('[style*="bottom:0"]');
+    if(bar && !bar.style.background.includes('gradient')) bar.style.opacity = '0';
+  });
+  if(!wasActive) {
+    el.classList.add('active');
+    const bar = el.querySelector('[style*="bottom:0"]');
+    if(bar) bar.style.opacity = '1';
+  }
+}
+// init first
+document.querySelector('.opt-card [style*="bottom:0"]').style.opacity = '1';
+
+// ─── BUDGET VISUALIZER ───────────────────────────────
+const archs = [
+  {
+    name: "Naive Agent",
+    rows: [
+      { label:"Turn 1 Input", segs:[{w:35,c:'#6c63ff',t:'System Prompt'},{w:15,c:'#00d2ff',t:'User Msg'},{w:0,c:'#ffd166',t:''},{w:0,c:'#ff6584',t:''},{w:50,c:'#06d6a0',t:'Output'}], total:"2,500 tok" },
+      { label:"Turn 2 Input", segs:[{w:20,c:'#6c63ff',t:'System'},{w:8,c:'#00d2ff',t:'User'},{w:22,c:'#ffd166',t:'Tool Result'},{w:50,c:'#ff6584',t:'Turn 1 History →'}], total:"6,200 tok" },
+      { label:"Turn 3 Input", segs:[{w:12,c:'#6c63ff',t:'Sys'},{w:5,c:'#00d2ff',t:'Usr'},{w:13,c:'#ffd166',t:'Tool'},{w:70,c:'#ff6584',t:'History Turns 1+2 → massive'}], total:"14,800 tok" },
+    ]
+  },
+  {
+    name: "Optimised Agent",
+    rows: [
+      { label:"Turn 1 Input", segs:[{w:15,c:'#6c63ff',t:'Compressed Prompt'},{w:15,c:'#00d2ff',t:'User Msg'},{w:30,c:'#06d6a0',t:'Output'}], total:"1,800 tok" },
+      { label:"Turn 2 Input", segs:[{w:10,c:'#6c63ff',t:'Sys'},{w:8,c:'#00d2ff',t:'User'},{w:20,c:'#ffd166',t:'Tool'},{w:12,c:'#ff6584',t:'Summary memo'},{w:50,c:'#06d6a0',t:'Output'}], total:"3,100 tok" },
+      { label:"Turn 3 Input", segs:[{w:8,c:'#6c63ff',t:'Sys'},{w:6,c:'#00d2ff',t:'User'},{w:18,c:'#ffd166',t:'Tool'},{w:18,c:'#ff6584',t:'Pruned memo'},{w:50,c:'#06d6a0',t:'Output'}], total:"3,400 tok" },
+    ]
+  },
+  {
+    name: "Multi-Agent System",
+    rows: [
+      { label:"Orchestrator (Frontier)", segs:[{w:20,c:'#6c63ff',t:'System'},{w:15,c:'#00d2ff',t:'Goal'},{w:65,c:'#06d6a0',t:'Plan Output'}], total:"3,000 tok" },
+      { label:"Worker 1 (Fast)", segs:[{w:10,c:'#6c63ff',t:'Sys'},{w:30,c:'#00d2ff',t:'Sub-task'},{w:60,c:'#06d6a0',t:'Result'}], total:"1,200 tok" },
+      { label:"Worker 2 (Fast)", segs:[{w:10,c:'#6c63ff',t:'Sys'},{w:30,c:'#00d2ff',t:'Sub-task'},{w:60,c:'#06d6a0',t:'Result'}], total:"1,200 tok" },
+      { label:"Orchestrator Synthesis", segs:[{w:12,c:'#6c63ff',t:'Sys'},{w:8,c:'#00d2ff',t:'Goal'},{w:35,c:'#ffd166',t:'Worker results'},{w:45,c:'#06d6a0',t:'Final Answer'}], total:"2,800 tok" },
+    ]
+  }
+];
+
+function selectArch(i) {
+  document.querySelectorAll('.bv-btn').forEach((b,idx) => b.classList.toggle('active', idx===i));
+  const arch = archs[i];
+  const container = document.getElementById('bv-bars');
+  container.innerHTML = arch.rows.map(row => `
+    <div class="bv-row">
+      <div class="bv-label">${row.label}</div>
+      <div class="bv-track">
+        ${row.segs.map(s => `
+          <div class="bv-seg" style="width:0%;background:${s.c};" data-w="${s.w}">
+            ${s.t ? `<span style="font-size:9px;color:#000;font-weight:700;padding:0 4px;white-space:nowrap;">${s.t}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+      <div class="bv-total" style="color:var(--accent);">${row.total}</div>
+    </div>
+  `).join('');
+  setTimeout(() => {
+    document.querySelectorAll('.bv-seg').forEach(seg => {
+      seg.style.width = seg.dataset.w + '%';
+    });
+  }, 30);
+}
+selectArch(0);
+
+// ─── ANTI-PATTERNS ────────────────────────────────────
+function toggleAP(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.ap-item').forEach(i => i.classList.remove('open'));
+  if(!open) el.classList.add('open');
+}
+</script>
+</body>
+</html>

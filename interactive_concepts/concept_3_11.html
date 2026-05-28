@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.11 Structured Outputs | Agentic AI</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --green: #06d6a0; --yellow: #ffd166;
+    --blue: #00d2ff; --purple: #c678dd; --orange: #e5c07b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  /* NAV */
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px;
+        display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.85rem; padding: 6px 12px;
+           border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+  nav a:hover { background: var(--surface2); border-color: var(--accent); }
+  nav span { color: var(--muted); font-size: 0.8rem; }
+
+  /* HEADER */
+  .hero { background: linear-gradient(135deg, #1a0a0f 0%, #1a1020 100%);
+          border-bottom: 1px solid var(--border); padding: 48px 24px 36px; text-align: center; }
+  .hero .tag { display: inline-block; background: rgba(255,101,132,0.15); color: var(--accent);
+               border: 1px solid rgba(255,101,132,0.3); border-radius: 20px; padding: 4px 14px;
+               font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1rem; }
+
+  /* LAYOUT */
+  .container { max-width: 980px; margin: 0 auto; padding: 40px 24px; }
+  .section { margin-bottom: 48px; }
+  .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* PROBLEM GRID */
+  .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .problem-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px;
+                  border-top: 3px solid var(--accent); transition: transform 0.2s; }
+  .problem-card:hover { transform: translateY(-3px); }
+  .problem-card .icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .problem-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+  .problem-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
+  .tab-btn { background: none; border: none; color: var(--muted); padding: 10px 20px; cursor: pointer;
+             font-size: 0.9rem; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* CODE BLOCKS */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+        font-family: 'Consolas', 'Monaco', monospace; font-size: 0.82rem; overflow-x: auto;
+        line-height: 1.6; color: var(--text); margin: 0; }
+  .code-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .bad { border-left: 3px solid #f85149; }
+  .good { border-left: 3px solid var(--green); }
+  .kw { color: #ff7b72; } .str { color: #a5d6ff; } .cm { color: var(--muted); }
+  .fn { color: #d2a8ff; } .cls { color: #ffa657; } .num { color: #79c0ff; }
+
+  /* BEFORE/AFTER */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-box { background: var(--surface); border-radius: 10px; padding: 20px; }
+  .compare-box h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .label-bad { color: #f85149; } .label-good { color: var(--green); }
+
+  /* PYDANTIC EXPLORER */
+  .field-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .field-item { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border);
+                border-radius: 8px; padding: 10px 14px; cursor: pointer; transition: all 0.2s; }
+  .field-item:hover, .field-item.active { border-color: var(--accent); background: var(--surface2); }
+  .field-item .fname { font-family: monospace; font-size: 0.9rem; color: var(--blue); flex: 1; }
+  .field-item .ftype { font-family: monospace; font-size: 0.82rem; color: var(--purple); }
+  .field-item .badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .badge-req { background: rgba(255,101,132,0.15); color: var(--accent); border: 1px solid rgba(255,101,132,0.3); }
+  .badge-opt { background: rgba(139,148,158,0.15); color: var(--muted); border: 1px solid var(--border); }
+  .field-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px;
+                  min-height: 120px; display: none; }
+  .field-detail.show { display: block; }
+  .field-detail h4 { color: var(--accent); margin-bottom: 8px; font-size: 1rem; }
+  .field-detail p { color: var(--muted); font-size: 0.88rem; margin-bottom: 12px; }
+  .field-detail .validators { display: flex; flex-wrap: wrap; gap: 8px; }
+  .validator-tag { background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.25); color: var(--blue);
+                   border-radius: 6px; padding: 3px 10px; font-size: 0.78rem; font-family: monospace; }
+
+  /* FAILURE MODES */
+  .failure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .failure-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.2s; }
+  .failure-card:hover { border-color: var(--yellow); }
+  .failure-card.open { border-color: var(--yellow); }
+  .failure-card .fc-header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .failure-card .fc-title { font-weight: 700; font-size: 0.95rem; color: var(--yellow); }
+  .failure-card .fc-arrow { color: var(--muted); transition: transform 0.2s; }
+  .failure-card.open .fc-arrow { transform: rotate(90deg); }
+  .failure-card .fc-body { display: none; margin-top: 14px; font-size: 0.85rem; color: var(--muted); }
+  .failure-card.open .fc-body { display: block; }
+  .failure-card .fix-tag { display: inline-block; margin-top: 10px; background: rgba(6,214,160,0.1);
+                            border: 1px solid rgba(6,214,160,0.25); color: var(--green); border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; }
+
+  /* PIPELINE FLOW */
+  .pipeline { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-bottom: 24px; }
+  .pipe-step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px;
+               font-size: 0.85rem; text-align: center; min-width: 110px; cursor: pointer; transition: all 0.2s; }
+  .pipe-step:hover, .pipe-step.active { border-color: var(--accent); background: rgba(255,101,132,0.08); }
+  .pipe-arrow { color: var(--muted); padding: 0 8px; font-size: 1.1rem; }
+  .pipe-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px;
+                 min-height: 100px; border-left: 3px solid var(--accent); }
+  .pipe-detail h4 { color: var(--accent); margin-bottom: 8px; }
+
+  /* QUIZ */
+  .quiz-header { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+                 display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .quiz-header h3 { font-size: 1rem; }
+  .score-display { background: rgba(255,101,132,0.1); border: 1px solid rgba(255,101,132,0.3);
+                   color: var(--accent); padding: 4px 16px; border-radius: 20px; font-weight: 700; font-size: 1rem; }
+  .question { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .question p { font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+         color: var(--text); cursor: pointer; text-align: left; font-size: 0.88rem; transition: all 0.2s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(255,101,132,0.08); }
+  .opt.correct { background: rgba(6,214,160,0.15); border-color: var(--green); color: var(--green); }
+  .opt.wrong { background: rgba(248,81,73,0.15); border-color: #f85149; color: #f85149; }
+  .opt:disabled { cursor: default; }
+  .feedback { margin-top: 10px; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.3); }
+  .feedback.wrong { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+  .reset-btn { margin-top: 8px; background: none; border: 1px solid var(--border); color: var(--muted);
+               padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* UTIL */
+  .info-box { background: rgba(0,210,255,0.06); border: 1px solid rgba(0,210,255,0.2); border-radius: 10px;
+              padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+  .info-box strong { color: var(--blue); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_3_10.html">← Tool Design</a>
+  <span>Session 3 · Concept 3.11</span>
+  <a href="concept_3_12.html">RAG Foundations →</a>
+</nav>
+<nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
+</nav>
+
+<div class="hero">
+  <div class="tag">Session 3 · Concept 3.11</div>
+  <h1>Structured <span>Outputs</span></h1>
+  <p>Why agents need deterministic, machine-readable responses — and how to enforce them with JSON Schema and Pydantic.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHY IT MATTERS -->
+  <div class="section">
+    <div class="section-title">Why Agents Need Structured Outputs</div>
+    <div class="info-box">
+      <strong>The Core Problem:</strong> LLMs are stochastic text generators. Without enforcement, they might say "The answer is 42" one run and "42\n\nHope that helps!" the next. Downstream code that tries to parse either response will break. <strong>Structured outputs</strong> force the model to emit valid, schema-conformant data every time.
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="icon">🔗</div>
+        <h4>Chaining Agents</h4>
+        <p>Agent A's output becomes Agent B's input. Any hallucinated field name or unexpected nesting breaks the entire pipeline silently.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🗄️</div>
+        <h4>Database Writes</h4>
+        <p>Saving to a database requires exact field types. A string "null" where a boolean false is expected corrupts your data layer.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🖥️</div>
+        <h4>UI Rendering</h4>
+        <p>A React component expects <code>user.name</code> but the model returns <code>user.full_name</code>. The UI crashes or shows empty fields.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🔍</div>
+        <h4>Testability</h4>
+        <p>You cannot write reliable unit tests against free-form text. Structured outputs make agent behavior deterministic and auditable.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER -->
+  <div class="section">
+    <div class="section-title">Before vs After: The Difference It Makes</div>
+    <div class="compare-grid">
+      <div class="compare-box">
+        <h4><span class="label-bad">✗ Unstructured Response</span></h4>
+        <div class="code-label">Model Output (free text)</div>
+        <pre class="bad">The sentiment of the review is
+<span class="str">positive</span> with a confidence of
+about <span class="num">0.87</span>. The key topics are
+pricing, ease of use, and support.
+Overall score: <span class="num">4.2</span>/5.</pre>
+        <div style="margin-top:12px; font-size:0.82rem; color:#f85149;">
+          ⚠ Requires fragile regex parsing<br>
+          ⚠ Format changes between calls<br>
+          ⚠ Missing data = silent failure
+        </div>
+      </div>
+      <div class="compare-box">
+        <h4><span class="label-good">✓ Structured Response</span></h4>
+        <div class="code-label">Model Output (JSON Schema enforced)</div>
+        <pre class="good">{
+  <span class="str">"sentiment"</span>: <span class="str">"positive"</span>,
+  <span class="str">"confidence"</span>: <span class="num">0.87</span>,
+  <span class="str">"topics"</span>: [
+    <span class="str">"pricing"</span>, <span class="str">"ease_of_use"</span>,
+    <span class="str">"support"</span>
+  ],
+  <span class="str">"score"</span>: <span class="num">4.2</span>
+}</pre>
+        <div style="margin-top:12px; font-size:0.82rem; color:var(--green);">
+          ✓ Zero parsing required<br>
+          ✓ Schema validated on every call<br>
+          ✓ Null-safe with required fields
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENFORCEMENT METHODS TABS -->
+  <div class="section">
+    <div class="section-title">Enforcement Methods</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('json-schema')">JSON Schema</button>
+      <button class="tab-btn" onclick="switchTab('pydantic')">Pydantic Models</button>
+      <button class="tab-btn" onclick="switchTab('openai-mode')">OpenAI Structured Mode</button>
+      <button class="tab-btn" onclick="switchTab('instructor')">Instructor Library</button>
+    </div>
+
+    <div id="json-schema" class="tab-panel active">
+      <div class="two-col">
+        <div>
+          <div class="code-label">Define the Schema</div>
+          <pre><span class="cm"># The contract you give to the LLM</span>
+schema = {
+  <span class="str">"type"</span>: <span class="str">"object"</span>,
+  <span class="str">"properties"</span>: {
+    <span class="str">"action"</span>: {
+      <span class="str">"type"</span>: <span class="str">"string"</span>,
+      <span class="str">"enum"</span>: [<span class="str">"search"</span>, <span class="str">"answer"</span>, <span class="str">"clarify"</span>]
+    },
+    <span class="str">"query"</span>: { <span class="str">"type"</span>: <span class="str">"string"</span> },
+    <span class="str">"confidence"</span>: {
+      <span class="str">"type"</span>: <span class="str">"number"</span>,
+      <span class="str">"minimum"</span>: <span class="num">0</span>, <span class="str">"maximum"</span>: <span class="num">1</span>
+    }
+  },
+  <span class="str">"required"</span>: [<span class="str">"action"</span>, <span class="str">"confidence"</span>],
+  <span class="str">"additionalProperties"</span>: <span class="kw">false</span>
+}</pre>
+        </div>
+        <div>
+          <div class="code-label">Validate the Response</div>
+          <pre><span class="kw">import</span> jsonschema
+
+<span class="kw">def</span> <span class="fn">validated_call</span>(prompt, schema):
+    response = llm.call(
+        prompt=prompt,
+        response_format={
+            <span class="str">"type"</span>: <span class="str">"json_object"</span>
+        }
+    )
+    data = json.loads(response)
+
+    <span class="cm"># Raises ValidationError if</span>
+    <span class="cm"># schema not satisfied</span>
+    jsonschema.<span class="fn">validate</span>(data, schema)
+    <span class="kw">return</span> data</pre>
+        </div>
+      </div>
+      <div class="info-box" style="margin-top:16px; margin-bottom:0;">
+        <strong>Key constraint:</strong> Always set <code>"additionalProperties": false</code> — otherwise the model can add extra fields that silently break downstream consumers.
+      </div>
+    </div>
+
+    <div id="pydantic" class="tab-panel">
+      <div class="two-col">
+        <div>
+          <div class="code-label">Define with Pydantic v2</div>
+          <pre><span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+<span class="kw">from</span> typing <span class="kw">import</span> Literal, List
+<span class="kw">from</span> enum <span class="kw">import</span> Enum
+
+<span class="kw">class</span> <span class="cls">AgentAction</span>(str, Enum):
+    SEARCH = <span class="str">"search"</span>
+    ANSWER = <span class="str">"answer"</span>
+    CLARIFY = <span class="str">"clarify"</span>
+
+<span class="kw">class</span> <span class="cls">AgentDecision</span>(BaseModel):
+    action: <span class="cls">AgentAction</span>
+    query: str | <span class="kw">None</span> = <span class="kw">None</span>
+    confidence: <span class="fn">float</span> = Field(
+        ge=<span class="num">0.0</span>, le=<span class="num">1.0</span>
+    )
+    reasoning: str = Field(
+        min_length=<span class="num">10</span>
+    )</pre>
+        </div>
+        <div>
+          <div class="code-label">Parse & Validate</div>
+          <pre><span class="kw">import</span> json
+
+<span class="kw">def</span> <span class="fn">get_decision</span>(context: str):
+    raw = llm.call(
+        prompt=f<span class="str">"Analyze: {context}"</span>,
+        response_format={
+            <span class="str">"type"</span>: <span class="str">"json_object"</span>
+        }
+    )
+
+    <span class="cm"># Pydantic validates AND coerces</span>
+    decision = <span class="cls">AgentDecision</span>(
+        **json.loads(raw)
+    )
+
+    <span class="cm"># Now fully type-safe!</span>
+    <span class="kw">if</span> decision.action == \
+       <span class="cls">AgentAction</span>.SEARCH:
+        <span class="kw">return</span> <span class="fn">run_search</span>(decision.query)</pre>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="section-title" style="font-size:1rem; margin-bottom:12px;">Click a field to explore validation rules</div>
+        <ul class="field-list">
+          <li class="field-item" onclick="showField('action')">
+            <span class="fname">action</span><span class="ftype">AgentAction (Enum)</span><span class="badge badge-req">required</span>
+          </li>
+          <li class="field-item" onclick="showField('query')">
+            <span class="fname">query</span><span class="ftype">str | None</span><span class="badge badge-opt">optional</span>
+          </li>
+          <li class="field-item" onclick="showField('confidence')">
+            <span class="fname">confidence</span><span class="ftype">float</span><span class="badge badge-req">required</span>
+          </li>
+          <li class="field-item" onclick="showField('reasoning')">
+            <span class="fname">reasoning</span><span class="ftype">str</span><span class="badge badge-req">required</span>
+          </li>
+        </ul>
+        <div id="field-detail" class="field-detail">
+          <h4 id="fd-title"></h4>
+          <p id="fd-desc"></p>
+          <div class="validators" id="fd-validators"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="openai-mode" class="tab-panel">
+      <div class="info-box">
+        <strong>OpenAI Structured Outputs (Nov 2024+):</strong> Pass a Pydantic model or JSON Schema directly as <code>response_format</code>. The API guarantees the output matches the schema — no parsing fallbacks needed.
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="code-label">Using Pydantic Class</div>
+          <pre><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+
+<span class="kw">class</span> <span class="cls">ExtractedData</span>(BaseModel):
+    name: str
+    age: <span class="fn">int</span>
+    skills: <span class="fn">list</span>[str]
+
+client = <span class="cls">OpenAI</span>()
+response = client.beta.chat\
+    .completions.parse(
+        model=<span class="str">"gpt-4o-2024-08-06"</span>,
+        messages=[...],
+        response_format=<span class="cls">ExtractedData</span>
+    )
+
+<span class="cm"># Already a typed object!</span>
+data = response.choices[<span class="num">0</span>]\
+    .message.parsed</pre>
+        </div>
+        <div>
+          <div class="code-label">Refusal Handling</div>
+          <pre><span class="cm"># Always check for refusal!</span>
+msg = response.choices[<span class="num">0</span>].message
+
+<span class="kw">if</span> msg.refusal:
+    <span class="cm"># Model refused to comply</span>
+    <span class="fn">handle_refusal</span>(msg.refusal)
+<span class="kw">elif</span> msg.parsed:
+    <span class="cm"># Safe to use</span>
+    <span class="fn">process</span>(msg.parsed)
+<span class="kw">else</span>:
+    <span class="cm"># Shouldn't happen but</span>
+    <span class="cm"># handle defensively</span>
+    <span class="fn">handle_empty</span>()</pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="instructor" class="tab-panel">
+      <div class="info-box">
+        <strong>Instructor library:</strong> Provider-agnostic wrapper that patches any LLM client to support Pydantic validation with automatic retry on validation failure. Works with OpenAI, Anthropic, Gemini, and local models.
+      </div>
+      <pre><span class="kw">import</span> instructor
+<span class="kw">from</span> anthropic <span class="kw">import</span> Anthropic
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+<span class="cm"># Patch the client once</span>
+client = instructor.<span class="fn">from_anthropic</span>(<span class="cls">Anthropic</span>())
+
+<span class="kw">class</span> <span class="cls">TaskBreakdown</span>(BaseModel):
+    tasks: <span class="fn">list</span>[str] = Field(min_length=<span class="num">1</span>, max_length=<span class="num">10</span>)
+    estimated_minutes: <span class="fn">int</span> = Field(gt=<span class="num">0</span>)
+    priority: Literal[<span class="str">"low"</span>, <span class="str">"medium"</span>, <span class="str">"high"</span>]
+
+<span class="cm"># Instructor handles retries automatically if validation fails</span>
+result = client.messages.create(
+    model=<span class="str">"claude-3-5-sonnet-20241022"</span>,
+    response_model=<span class="cls">TaskBreakdown</span>,
+    max_retries=<span class="num">3</span>,   <span class="cm"># Retry with validation error feedback</span>
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Break down: build a login page"</span>}]
+)
+
+<span class="cm"># result is a TaskBreakdown instance — fully typed, fully validated</span>
+<span class="fn">print</span>(result.tasks)  <span class="cm"># ['Design UI', 'Implement form', ...]</span></pre>
+    </div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div class="section">
+    <div class="section-title">Where Structured Outputs Fit in an Agent Pipeline</div>
+    <div class="pipeline">
+      <div class="pipe-step" onclick="showPipe(0)">User Input</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" onclick="showPipe(1)">LLM Call</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step active" onclick="showPipe(2)">Schema Enforce</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" onclick="showPipe(3)">Parse / Type</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" onclick="showPipe(4)">Tool / DB / UI</div>
+    </div>
+    <div class="pipe-detail" id="pipe-detail">
+      <h4>Schema Enforcement</h4>
+      <p style="color:var(--muted); font-size:0.88rem;">This is the critical gate. Either the model's response format is constrained at API level (OpenAI Structured Outputs, Anthropic's tool use schema) or validated post-response with jsonschema/Pydantic. Failed validation triggers a retry or escalation — never silently passes bad data downstream.</p>
+    </div>
+  </div>
+
+  <!-- FAILURE MODES -->
+  <div class="section">
+    <div class="section-title">Common Failure Modes & Fixes</div>
+    <div class="failure-grid">
+      <div class="failure-card" onclick="toggleFailure(this)">
+        <div class="fc-header">
+          <div class="fc-title">🔄 Hallucinated Enum Values</div>
+          <div class="fc-arrow">▶</div>
+        </div>
+        <div class="fc-body">
+          Model returns <code>"action": "lookup"</code> but your schema only allows <code>"search" | "answer" | "clarify"</code>. Validation fails but the model keeps trying the same wrong value.
+          <br><br><strong>Why:</strong> The model infers what seems reasonable rather than reading the constraint.
+          <div class="fix-tag">✓ Fix: Include enum values in the system prompt. "Valid actions: search, answer, clarify — no others."</div>
+        </div>
+      </div>
+      <div class="failure-card" onclick="toggleFailure(this)">
+        <div class="fc-header">
+          <div class="fc-title">📦 Nested Schema Drift</div>
+          <div class="fc-arrow">▶</div>
+        </div>
+        <div class="fc-body">
+          Schema defines <code>result.items[].id</code> as integer but model returns it as string. Works in Python (implicit cast) but breaks in typed languages or strict validators.
+          <br><br><strong>Why:</strong> JSON has no native integer type — "1" and 1 look similar to the model.
+          <div class="fix-tag">✓ Fix: Use Pydantic's strict mode or add type coercion at the boundary layer.</div>
+        </div>
+      </div>
+      <div class="failure-card" onclick="toggleFailure(this)">
+        <div class="fc-header">
+          <div class="fc-title">🚫 Missing Required Fields</div>
+          <div class="fc-arrow">▶</div>
+        </div>
+        <div class="fc-body">
+          Model returns valid JSON but omits a required field. Pydantic raises <code>ValidationError</code> but with no retry logic, the pipeline crashes.
+          <br><br><strong>Why:</strong> Model optimizes for "reasonable" response — may omit fields it deems irrelevant.
+          <div class="fix-tag">✓ Fix: Use Instructor with max_retries=3. The validation error is fed back as context for self-correction.</div>
+        </div>
+      </div>
+      <div class="failure-card" onclick="toggleFailure(this)">
+        <div class="fc-header">
+          <div class="fc-title">📝 Markdown Contamination</div>
+          <div class="fc-arrow">▶</div>
+        </div>
+        <div class="fc-body">
+          Model wraps JSON in a markdown code block: <code>```json\n{...}\n```</code>. Direct <code>json.loads()</code> fails with a syntax error.
+          <br><br><strong>Why:</strong> Model was trained to present code nicely for humans.
+          <div class="fix-tag">✓ Fix: Use <code>response_format: json_object</code> at API level, or strip markdown with a pre-parser before validation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="quiz-header">
+      <h3>🧠 Knowledge Check</h3>
+      <div class="score-display" id="scoreDisplay">0 / 5</div>
+    </div>
+
+    <div class="question" id="q1">
+      <p>1. An agent's output is parsed by downstream code. Which enforcement approach provides the strongest guarantee that the schema will always be satisfied?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q1','a','b')">a) Including "please respond in JSON" in the system prompt</button>
+        <button class="opt" onclick="answer('q1','b','b')">b) OpenAI Structured Outputs with a Pydantic model as response_format</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) Wrapping the raw response in a try/except block</button>
+        <button class="opt" onclick="answer('q1','d','b')">d) Asking the model to validate its own output before responding</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q2">
+      <p>2. What does setting <code>"additionalProperties": false</code> in a JSON Schema achieve?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q2','a','a')">a) Prevents the model from adding unexpected fields not in the schema</button>
+        <button class="opt" onclick="answer('q2','b','a')">b) Makes all properties required</button>
+        <button class="opt" onclick="answer('q2','c','a')">c) Disables nested object validation</button>
+        <button class="opt" onclick="answer('q2','d','a')">d) Converts the schema to strict mode</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q3">
+      <p>3. The Instructor library's key advantage over raw Pydantic validation is:</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q3','a','c')">a) It works only with OpenAI models</button>
+        <button class="opt" onclick="answer('q3','b','c')">b) It generates JSON Schemas automatically from type hints</button>
+        <button class="opt" onclick="answer('q3','c','c')">c) It automatically retries the LLM call with the validation error as feedback</button>
+        <button class="opt" onclick="answer('q3','d','c')">d) It caches validated responses to avoid repeat calls</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q4">
+      <p>4. A model returns <code>"confidence": "0.87"</code> (string) instead of <code>0.87</code> (float). Which failure mode is this?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q4','a','b')">a) Hallucinated enum value</button>
+        <button class="opt" onclick="answer('q4','b','b')">b) Nested schema drift (type mismatch)</button>
+        <button class="opt" onclick="answer('q4','c','b')">c) Missing required field</button>
+        <button class="opt" onclick="answer('q4','d','b')">d) Markdown contamination</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q5">
+      <p>5. When using OpenAI's <code>.parse()</code> method, you should always check <code>message.refusal</code> because:</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q5','a','d')">a) The API charges extra for refused responses</button>
+        <button class="opt" onclick="answer('q5','b','d')">b) Refusals return None for message.parsed, which causes an AttributeError if unchecked</button>
+        <button class="opt" onclick="answer('q5','c','d')">c) Refusals always contain the correct answer in a different format</button>
+        <button class="opt" onclick="answer('q5','d','d')">d) Both B is correct — refusals set parsed to None and must be handled to avoid crashes</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// TABS
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const panels = document.querySelectorAll('.tab-panel');
+    b.classList.remove('active');
+    if (panels[i]) panels[i].classList.remove('active');
+  });
+  const idx = ['json-schema','pydantic','openai-mode','instructor'].indexOf(id);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// FIELD EXPLORER
+const fieldData = {
+  action: {
+    title: 'action: AgentAction',
+    desc: 'An Enum field — the model must return exactly one of the defined enum members. Pydantic will reject any string not in the Enum class, preventing hallucinated action names.',
+    validators: ['Enum("search","answer","clarify")', 'required']
+  },
+  query: {
+    title: 'query: str | None',
+    desc: 'Optional field using Python union type. When None, it means no search query is needed (for "answer" or "clarify" actions). Pydantic accepts both null JSON and a string.',
+    validators: ['Optional — can be null', 'type: string or null']
+  },
+  confidence: {
+    title: 'confidence: float',
+    desc: 'A numeric field with range constraints. The Field(ge=0.0, le=0.0) means "greater than or equal to 0" and "less than or equal to 1". Any value outside 0–1 raises ValidationError.',
+    validators: ['ge=0.0 (min: 0)', 'le=1.0 (max: 1)', 'type: float', 'required']
+  },
+  reasoning: {
+    title: 'reasoning: str',
+    desc: 'A required string with minimum length constraint. This forces the model to provide actual reasoning rather than an empty string, which improves downstream explainability and debugging.',
+    validators: ['min_length=10', 'type: string', 'required']
+  }
+};
+
+function showField(name) {
+  const data = fieldData[name];
+  document.getElementById('fd-title').textContent = data.title;
+  document.getElementById('fd-desc').textContent = data.desc;
+  const v = document.getElementById('fd-validators');
+  v.innerHTML = data.validators.map(t => `<span class="validator-tag">${t}</span>`).join('');
+  document.getElementById('field-detail').classList.add('show');
+  document.querySelectorAll('.field-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// PIPELINE
+const pipeData = [
+  { title: 'User Input', body: 'The raw user message or upstream agent output. Could be natural language or semi-structured data. At this stage, nothing is guaranteed about format.' },
+  { title: 'LLM Call', body: 'The model processes the prompt. With OpenAI Structured Outputs or Anthropic tool-use schemas, the format constraint is enforced at inference time — the model\'s decoding is biased toward valid tokens.' },
+  { title: 'Schema Enforcement', body: 'The critical gate. Either the model\'s response format is constrained at API level (OpenAI Structured Outputs, Anthropic\'s tool use schema) or validated post-response with jsonschema/Pydantic. Failed validation triggers a retry or escalation — never silently passes bad data downstream.' },
+  { title: 'Parse / Type', body: 'JSON is parsed into a typed Python object (Pydantic model, dataclass, or TypedDict). From here, all fields are type-safe and IDE-autocomplete works on them.' },
+  { title: 'Tool / DB / UI', body: 'The validated, typed data is handed off to the next stage: a tool call, a database write, a UI render, or another agent. Because the schema is enforced, these consumers can trust the data shape completely.' }
+];
+
+function showPipe(idx) {
+  document.querySelectorAll('.pipe-step').forEach((el,i) => el.classList.toggle('active', i===idx));
+  const d = pipeData[idx];
+  document.getElementById('pipe-detail').innerHTML = `<h4>${d.title}</h4><p style="color:var(--muted);font-size:0.88rem;margin-top:8px;">${d.body}</p>`;
+}
+
+// FAILURES
+function toggleFailure(el) {
+  el.classList.toggle('open');
+}
+
+// QUIZ
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'API-level enforcement (Structured Outputs) is the only guaranteed method — prompt instructions are advisory, not enforced.',
+  q2: 'additionalProperties:false blocks any field not declared in the schema, preventing extra fields from slipping through.',
+  q3: 'Instructor\'s key feature is automatic retry with validation error context fed back to the model.',
+  q4: 'Type mismatch (string vs number) is schema drift — the structure is correct but the type is wrong.',
+  q5: 'Refusals set message.parsed to None; accessing it without checking causes AttributeError and pipeline crashes.'
+};
+
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

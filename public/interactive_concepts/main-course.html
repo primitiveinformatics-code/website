@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI Architect — Main Course</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --accent1: #6c63ff;
+    --accent2: #00d2ff;
+    --accent3: #ff6584;
+    --accent4: #ffd166;
+    --accent5: #06d6a0;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(108,99,255,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 72px 0 60px;
+  }
+  header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #1f1535 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(108,99,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.4);
+    color: var(--accent1);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    background: linear-gradient(90deg, #fff 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent1);
+    display: block;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 0;
+  }
+  .module-block { margin-bottom: 48px; }
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .module-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .module-sub {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .divider { flex: 1; height: 1px; background: var(--border); }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .card:hover {
+    border-color: rgba(108,99,255,0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+  .card:hover::before { opacity: 1; }
+  .card-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-preview {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .card-arrow {
+    position: absolute;
+    bottom: 18px; right: 18px;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    transform: translateX(-4px);
+  }
+  .card:hover .card-arrow { opacity: 0.6; transform: translateX(0); }
+
+  /* Module colors */
+  .m1 .module-dot { background: #00d2ff; }
+  .m2 .module-dot { background: #ff6584; }
+  .m3 .module-dot { background: #ffd166; }
+  .m4 .module-dot { background: #06d6a0; }
+  .m1 .card-num { color: #00d2ff; }
+  .m2 .card-num { color: #ff6584; }
+  .m3 .card-num { color: #ffd166; }
+  .m4 .card-num { color: #06d6a0; }
+  .m1 .card::before { background: #00d2ff; }
+  .m2 .card::before { background: #ff6584; }
+  .m3 .card::before { background: #ffd166; }
+  .m4 .card::before { background: #06d6a0; }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* ── Site Navbar ─────────────────────────── */
+  .site-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+  }
+  .site-nav.scrolled {
+    background: rgba(10,15,28,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-color: rgba(30,41,59,0.5);
+  }
+  .site-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3B82F6, #6366F1);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .nav-logo-text { font-size: 17px; font-weight: 700; color: #F1F5F9; letter-spacing: -0.3px; }
+  .nav-logo-dot { color: #3B82F6; }
+  .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .nav-links a {
+    padding: 7px 14px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    color: #94A3B8; text-decoration: none; transition: color 0.2s, background 0.2s;
+  }
+  .nav-links a:hover { color: #F1F5F9; background: rgba(255,255,255,0.04); }
+  .nav-hamburger {
+    display: none; background: none; border: none; cursor: pointer;
+    padding: 6px; color: #94A3B8; border-radius: 8px; transition: background 0.2s;
+  }
+  .nav-hamburger:hover { background: rgba(255,255,255,0.06); }
+  .mobile-overlay {
+    display: none; position: fixed; inset: 0; z-index: 105;
+    background: rgba(10,15,28,0.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  }
+  .mobile-overlay.open { display: block; }
+  .mobile-menu {
+    display: none; position: fixed; top: 0; right: 0; bottom: 0; width: 260px; z-index: 110;
+    background: #111827; border-left: 1px solid rgba(30,41,59,0.8);
+    padding: 72px 16px 20px; flex-direction: column; gap: 4px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    display: block; padding: 11px 16px; border-radius: 8px; font-size: 15px; font-weight: 500;
+    color: #F1F5F9; text-decoration: none; transition: background 0.2s, color 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(59,130,246,0.1); color: #3B82F6; }
+  .mobile-close {
+    position: absolute; top: 16px; right: 16px; background: none; border: none;
+    cursor: pointer; color: #94A3B8; padding: 6px; border-radius: 6px; transition: background 0.2s;
+  }
+  .mobile-close:hover { background: rgba(255,255,255,0.06); }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-hamburger { display: block; }
+  }
+</style>
+</head>
+<body>
+<nav class="site-nav" id="site-nav">
+  <div class="site-nav-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">PI</div>
+      <span class="nav-logo-text">Primitive<span class="nav-logo-dot">.</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Open menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+<div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-close" onclick="toggleMobileMenu()">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+  <a href="/">Home</a>
+  <a href="/products">Products</a>
+  <a href="/blog">Blog</a>
+  <a href="/contact">Contact</a>
+</div>
+
+<header>
+  <div class="header-badge">Agentic AI Architect · Main Course</div>
+  <h1>Complete Concepts Reference</h1>
+  <p>All core concepts across 4 modules — from agent reasoning to observability, security, and production deployment</p>
+  <div class="stats">
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Modules</span></div>
+    <div class="stat"><span class="stat-num">53</span><span class="stat-label">Concepts</span></div>
+    <div class="stat"><span class="stat-num">53</span><span class="stat-label">Live Now</span></div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- MODULE 1 -->
+  <div class="module-block m1">
+    <div class="module-header">
+      <div class="module-dot"></div>
+      <div><div class="module-sub">Agent Foundations &amp; Reasoning</div></div>
+      <div class="divider"></div>
+    </div>
+    <div class="cards">
+      <a href="concept_2_1.html" class="card">
+        <div class="card-num">2.1</div>
+        <div class="card-title">The Paradigm Shift: Tools → Agents</div>
+        <div class="card-preview">3 generations of AI — from tool executors to decision-makers with autonomous loops</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_2.html" class="card">
+        <div class="card-num">2.2</div>
+        <div class="card-title">The 4 Pillars of Agent Characteristics</div>
+        <div class="card-preview">Autonomy, Reactivity, Proactivity &amp; Social Ability — clickable pillar cards with classify exercise</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_3.html" class="card">
+        <div class="card-num">2.3</div>
+        <div class="card-title">The BDI Model</div>
+        <div class="card-preview">Beliefs, Desires, Intentions — the rational agent mental model with scenario mapper</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_4.html" class="card">
+        <div class="card-num">2.4</div>
+        <div class="card-title">The BDI Rationality Loop</div>
+        <div class="card-preview">Perceive → Update Beliefs → Generate Options → Select Intention → Execute — 3-scenario trace viewer</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_5.html" class="card">
+        <div class="card-num">2.5</div>
+        <div class="card-title">Agent Anatomy — Deep Dive</div>
+        <div class="card-preview">5-component explorer: Brain, Tools, Memory, Loop, Guardrails — internals, failure modes &amp; flow diagram</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_6.html" class="card">
+        <div class="card-num">2.6</div>
+        <div class="card-title">Planning Strategies</div>
+        <div class="card-preview">CoT, ToT, Reflexion, ReWOO — interactive strategy explorer and decision tree</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_7.html" class="card">
+        <div class="card-num">2.7</div>
+        <div class="card-title">Guardrails in Depth</div>
+        <div class="card-preview">Input / Output / Tool Call guardrails — 3-tab explorer, policy types table, scenario challenge</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_8.html" class="card">
+        <div class="card-num">2.8</div>
+        <div class="card-title">The ReAct Loop — Full Technical Detail</div>
+        <div class="card-preview">3-scenario live trace viewer, tool call anatomy JSON, 6 production failure modes with fixes</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_9.html" class="card">
+        <div class="card-num">2.9</div>
+        <div class="card-title">Single-Agent vs. Multi-Agent Systems</div>
+        <div class="card-preview">Planner + Executor + Critic pattern, 90% benchmark gap, use-case matcher</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_10.html" class="card">
+        <div class="card-num">2.10</div>
+        <div class="card-title">Design Pattern Decision Tree</div>
+        <div class="card-preview">Interactive 3-question tree → pattern recommendation with property cards for all 5 patterns</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_11.html" class="card">
+        <div class="card-num">2.11</div>
+        <div class="card-title">Common Pitfalls and Fixes</div>
+        <div class="card-preview">7 accordion pitfalls — Symptom, Root Cause &amp; Fix with code snippets + diagnosis challenge</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_2_12.html" class="card">
+        <div class="card-num">2.12</div>
+        <div class="card-title">Symbolic vs. Neural AI &amp; Neuro-Symbolic Hybrids</div>
+        <div class="card-preview">Spectrum slider, 4 hybrid patterns, when-to-use guide, production examples</div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- MODULE 2 -->
+  <div class="module-block m2">
+    <div class="module-header">
+      <div class="module-dot"></div>
+      <div><div class="module-sub">Protocols, Prompt Engineering &amp; RAG</div></div>
+      <div class="divider"></div>
+    </div>
+    <div class="cards">
+      <a href="concept_3_1.html" class="card">
+        <div class="card-num">3.1</div>
+        <div class="card-title">MCP — Model Context Protocol</div>
+        <div class="card-preview">Client–server architecture, stdio vs SSE transport, tool registration flow, live session simulator</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_2.html" class="card">
+        <div class="card-num">3.2</div>
+        <div class="card-title">The MCP Hub Pattern</div>
+        <div class="card-preview">Hub architecture, tool namespacing, routing simulator with animated traces, multi-agent diagram</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_3.html" class="card">
+        <div class="card-num">3.3</div>
+        <div class="card-title">MCP in Production</div>
+        <div class="card-preview">Auth, versioning, error handling, rate limits &amp; observability — production checklist + failure scenarios</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_4.html" class="card">
+        <div class="card-num">3.4</div>
+        <div class="card-title">A2A Protocol</div>
+        <div class="card-preview">Agent-to-agent delegation, task lifecycle (5 states), core messages, MCP vs A2A comparison</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_5.html" class="card">
+        <div class="card-num">3.5</div>
+        <div class="card-title">A2A Discovery — The Agent Card</div>
+        <div class="card-preview">/.well-known/agent.json anatomy, discovery flow, interactive card builder with live JSON preview</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_6.html" class="card">
+        <div class="card-num">3.6</div>
+        <div class="card-title">A2A Communication Flow</div>
+        <div class="card-preview">Full state machine, 4-scenario live trace simulator, artifact types, polling vs push notifications</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_7.html" class="card">
+        <div class="card-num">3.7</div>
+        <div class="card-title">Transport Layers</div>
+        <div class="card-preview">HTTP+SSE vs WebSockets vs stdio — deep dives, comparison table, interactive decision tree</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_8.html" class="card">
+        <div class="card-num">3.8</div>
+        <div class="card-title">Prompt Engineering for Agents</div>
+        <div class="card-preview">6 techniques — persona, constraints, tool rules, output format, CoT, termination — before/after comparator</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_9.html" class="card">
+        <div class="card-num">3.9</div>
+        <div class="card-title">7-Layer System Prompt Architecture</div>
+        <div class="card-preview">Identity, Context, Task, Constraints, Format, Examples &amp; Fallback — layer-by-layer annotated prompt builder with assembly simulator</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_10.html" class="card">
+        <div class="card-num">3.10</div>
+        <div class="card-title">Tool Design — 5 Principles</div>
+        <div class="card-preview">Single responsibility, typed schemas, idempotency, error contracts &amp; observability — annotated tool spec with 5-principle design checklist</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_11.html" class="card">
+        <div class="card-num">3.11</div>
+        <div class="card-title">Structured Outputs</div>
+        <div class="card-preview">JSON mode, function calling, Pydantic schemas &amp; output parsers — schema design patterns with parsing pipeline explorer and error handling</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_12.html" class="card">
+        <div class="card-num">3.12</div>
+        <div class="card-title">RAG Foundations — Why RAG?</div>
+        <div class="card-preview">Why LLMs hallucinate, parametric vs. non-parametric memory, when RAG beats fine-tuning — decision framework with cost comparison</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_13.html" class="card">
+        <div class="card-num">3.13</div>
+        <div class="card-title">RAG Architecture — Two Pipelines</div>
+        <div class="card-preview">Ingestion (chunk → embed → store) and Query (retrieve → rank → generate) — end-to-end animated pipeline and interactive simulator</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_14.html" class="card">
+        <div class="card-num">3.14</div>
+        <div class="card-title">Chunking Strategies</div>
+        <div class="card-preview">Fixed-size, sentence, semantic, recursive &amp; sliding window — chunk size impact explorer, overlap strategies and strategy comparison table</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_15.html" class="card">
+        <div class="card-num">3.15</div>
+        <div class="card-title">Embeddings</div>
+        <div class="card-preview">Dense vs. sparse vectors, model selection, dimensionality tradeoffs — cosine similarity visualizer and embedding model comparison guide</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_3_16.html" class="card">
+        <div class="card-num">3.16</div>
+        <div class="card-title">Vector Databases</div>
+        <div class="card-preview">HNSW vs. IVF indexing, metadata filtering, namespaces &amp; multi-tenancy — pgvector vs. Pinecone vs. Weaviate comparison with query anatomy</div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- MODULE 3 -->
+  <div class="module-block m3">
+    <div class="module-header">
+      <div class="module-dot"></div>
+      <div><div class="module-sub">Orchestration, Memory &amp; Advanced RAG</div></div>
+      <div class="divider"></div>
+    </div>
+    <div class="cards">
+      <a href="concept_4_1.html" class="card">
+        <div class="card-num">4.1</div>
+        <div class="card-title">Why Orchestration?</div>
+        <div class="card-preview">The coordination problem: 5 failure scenarios where single agents break down — orchestration value map and pattern selection guide</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_2.html" class="card">
+        <div class="card-num">4.2</div>
+        <div class="card-title">Hierarchical Pattern (Supervisor-Worker)</div>
+        <div class="card-preview">Supervisor delegates to specialized workers — interactive delegation diagram, task decomposition flow, and 3 real-world deployment scenarios</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_3.html" class="card">
+        <div class="card-num">4.3</div>
+        <div class="card-title">Network/Swarm Pattern (Peer-to-Peer)</div>
+        <div class="card-preview">Agents as peers with direct message passing — emergent coordination, broadcast vs. unicast, swarm simulator with failure mode analysis</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_4.html" class="card">
+        <div class="card-num">4.4</div>
+        <div class="card-title">Map-Reduce Pattern (Fan-Out/Fan-In)</div>
+        <div class="card-preview">Parallel fan-out to N workers then result aggregation — interactive flow builder, merge strategies, and throughput vs. latency tradeoffs</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_5.html" class="card">
+        <div class="card-num">4.5</div>
+        <div class="card-title">Choreography Pattern (Rule-Based Flow)</div>
+        <div class="card-preview">Event-driven sequencing without a central coordinator — rule-based state machine, event chain simulator, vs. orchestration comparison</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_6.html" class="card">
+        <div class="card-num">4.6</div>
+        <div class="card-title">LangGraph — Agents as State Machines</div>
+        <div class="card-preview">Nodes, edges, state schema &amp; conditional routing — interactive graph builder, checkpointing, and human-in-the-loop interrupt patterns</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_7.html" class="card">
+        <div class="card-num">4.7</div>
+        <div class="card-title">Durable Execution — Temporal &amp; Restate</div>
+        <div class="card-preview">Workflow-as-code with automatic retries, timeouts, signals &amp; queries — Temporal vs. Restate feature comparison with durable workflow trace</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_8.html" class="card">
+        <div class="card-num">4.8</div>
+        <div class="card-title">ReWOO — Reasoning Without Observation</div>
+        <div class="card-preview">Plan-once-execute pattern: 3 modules, ~60% token savings, parallel worker execution vs ReAct</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_9.html" class="card">
+        <div class="card-num">4.9</div>
+        <div class="card-title">Memory Hierarchy — 5 Types</div>
+        <div class="card-preview">Interactive pyramid: Working → Procedural → Semantic → Episodic → External with classify challenge</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_10.html" class="card">
+        <div class="card-num">4.10</div>
+        <div class="card-title">Context Engineering — 4 Strategies</div>
+        <div class="card-preview">Token budget visualiser + 4 strategies: Selective Inclusion, Progressive Disclosure, Compression, Dynamic Assembly</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_11.html" class="card">
+        <div class="card-num">4.11</div>
+        <div class="card-title">Memory Failure Modes</div>
+        <div class="card-preview">6 failure modes with accordion details: Truncation, Stale Memory, Overload, False Recall, Cross-User Contamination, Ghosting</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_12.html" class="card">
+        <div class="card-num">4.12</div>
+        <div class="card-title">Advanced RAG — Retrieval Strategies</div>
+        <div class="card-preview">Dense, Sparse, Hybrid, Multi-Vector, Contextual — interactive explorer with query→strategy matcher</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_13.html" class="card">
+        <div class="card-num">4.13</div>
+        <div class="card-title">Advanced RAG — 4 Power Techniques</div>
+        <div class="card-preview">Query Rewriting, Re-Ranking, HyDE, RAPTOR — technique deep dives + live pipeline builder</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_14.html" class="card">
+        <div class="card-num">4.14</div>
+        <div class="card-title">Self-Query Retriever &amp; Multi-Hop RAG</div>
+        <div class="card-preview">Parse metadata filters from natural language — then chain retrievals across 3 hop scenarios with live trace</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_15.html" class="card">
+        <div class="card-num">4.15</div>
+        <div class="card-title">RAG Evaluation — RAGAS Framework</div>
+        <div class="card-preview">4 metrics (Faithfulness, Answer Relevancy, Context Precision &amp; Recall) with live pipeline scorer and failure mode map</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_16.html" class="card">
+        <div class="card-num">4.16</div>
+        <div class="card-title">LLM Selection — Two-Tier Architecture</div>
+        <div class="card-preview">Route tasks between Frontier &amp; Fast models — interactive task router, model comparison, decision tree</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_4_17.html" class="card">
+        <div class="card-num">4.17</div>
+        <div class="card-title">Token Economics — Controlling Agent Costs</div>
+        <div class="card-preview">Live cost calculator, 5 optimisation techniques, token budget visualizer, and 5 anti-patterns to avoid</div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- MODULE 4 -->
+  <div class="module-block m4">
+    <div class="module-header">
+      <div class="module-dot"></div>
+      <div><div class="module-sub">Observability, Security, Multimodal &amp; CI/CD</div></div>
+      <div class="divider"></div>
+    </div>
+    <div class="cards">
+      <a href="concept_5_1.html" class="card">
+        <div class="card-num">5.1</div>
+        <div class="card-title">Why Agent Observability Is Different</div>
+        <div class="card-preview">5 unique challenges: non-determinism, semantic failure, multi-hop chains, goal drift &amp; side effects — live trace simulator</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_2.html" class="card">
+        <div class="card-num">5.2</div>
+        <div class="card-title">The 3-Layer Monitoring Model</div>
+        <div class="card-preview">Infrastructure → Execution → Semantic layers — interactive pyramid, live dashboard simulation, signal mapping challenge</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_3.html" class="card">
+        <div class="card-num">5.3</div>
+        <div class="card-title">Semantic Telemetry</div>
+        <div class="card-preview">5 core semantic metrics, semantic span builder with live JSON, evaluation pipeline stage explorer</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_4.html" class="card">
+        <div class="card-num">5.4</div>
+        <div class="card-title">Knowledge-Practice Gap — Agent Evaluation</div>
+        <div class="card-preview">4 evaluation strategies: Offline, LLM-as-Judge, Shadow, Human-in-Loop — scenario matcher + code examples</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_5.html" class="card">
+        <div class="card-num">5.5</div>
+        <div class="card-title">Why Agent Security Is a New Problem</div>
+        <div class="card-preview">6 agent-specific threats, live prompt injection simulator with guardrail toggle, threat identification quiz</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_6.html" class="card">
+        <div class="card-num">5.6</div>
+        <div class="card-title">MAESTRO — 7-Layer AI Threat Framework</div>
+        <div class="card-preview">Interactive 7-layer stack explorer, attack scenario simulator, and threat matrix across supply chain → governance</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_7.html" class="card">
+        <div class="card-num">5.7</div>
+        <div class="card-title">Key Agent-Specific Attack Vectors</div>
+        <div class="card-preview">8 expandable attack vectors — prompt injection, tool poisoning, memory poisoning, goal hijacking, jailbreak — with live demo &amp; quiz</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_8.html" class="card">
+        <div class="card-num">5.8</div>
+        <div class="card-title">Mitigations &amp; Guardrails — Defence in Depth</div>
+        <div class="card-preview">5-layer defence fortress with interactive pipeline attack simulation, clickable controls, and production checklist</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_9.html" class="card">
+        <div class="card-num">5.9</div>
+        <div class="card-title">Multimodal Agents</div>
+        <div class="card-preview">Vision, audio, document, code &amp; video modality explorer — interactive pipeline builder, architecture diagram, challenges table</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_10.html" class="card">
+        <div class="card-num">5.10</div>
+        <div class="card-title">Agent Evaluation &amp; CI/CD</div>
+        <div class="card-preview">7-stage CI/CD pipeline with click-through details, live eval harness demo, deployment strategies, and simulated pipeline run</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_11.html" class="card">
+        <div class="card-num">5.11</div>
+        <div class="card-title">MLOps for Agents — 6 Practices</div>
+        <div class="card-preview">6 core MLOps practices for agentic systems — versioning, observability, drift detection, canary deployments, rollback strategies, and continuous evaluation</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_12.html" class="card">
+        <div class="card-num">5.12</div>
+        <div class="card-title">Ethics, Governance &amp; Responsible AI</div>
+        <div class="card-preview">Responsible AI principles, bias mitigation strategies, fairness frameworks, transparency mechanisms, and accountability structures for production AI systems</div>
+        <div class="card-arrow">→</div>
+      </a>
+      <a href="concept_5_13.html" class="card">
+        <div class="card-num">5.13</div>
+        <div class="card-title">The 6 Governance Dimensions</div>
+        <div class="card-preview">Deep dive into the 6 governance dimensions — transparency, accountability, fairness, security, privacy, and reliability — with real-world implementation patterns</div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <footer>Agentic AI Architect · Main Course · 4 Modules · 53 Concepts</footer>
+</div>
+<script>
+  const siteNav = document.getElementById('site-nav');
+  window.addEventListener('scroll', () => {
+    siteNav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+  function toggleMobileMenu() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.getElementById('mobile-overlay').classList.toggle('open');
+  }
+</script>
+</body>
+</html>

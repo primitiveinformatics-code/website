@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.14 Chunking Strategies | Agentic AI</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #ff6584; --green: #06d6a0; --yellow: #ffd166;
+    --blue: #00d2ff; --purple: #c678dd; --orange: #e5c07b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px;
+        display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.85rem; padding: 6px 12px;
+          border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+  nav a:hover { background: var(--surface2); border-color: var(--accent); }
+  nav span { color: var(--muted); font-size: 0.8rem; }
+
+  .hero { background: linear-gradient(135deg, #1a0f0a 0%, #1a1a0a 100%);
+          border-bottom: 1px solid var(--border); padding: 48px 24px 36px; text-align: center; }
+  .hero .tag { display: inline-block; background: rgba(255,209,102,0.12); color: var(--yellow);
+               border: 1px solid rgba(255,209,102,0.3); border-radius: 20px; padding: 4px 14px;
+               font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+  .hero h1 span { color: var(--yellow); }
+  .hero p { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1rem; }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 40px 24px; }
+  .section { margin-bottom: 52px; }
+  .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* STRATEGY CARDS */
+  .strategy-tabs { display: flex; gap: 0; flex-wrap: wrap; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+  .stab { background: none; border: none; color: var(--muted); padding: 10px 18px; cursor: pointer;
+          font-size: 0.88rem; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .stab.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+  .stab:hover:not(.active) { color: var(--text); }
+  .spanel { display: none; background: var(--surface); border: 1px solid var(--border); border-top: none;
+            border-radius: 0 0 10px 10px; padding: 28px; }
+  .spanel.active { display: block; }
+  .spanel h3 { color: var(--yellow); font-size: 1.05rem; margin-bottom: 8px; }
+  .spanel .s-desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 20px; line-height: 1.7; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  @media (max-width: 500px) { .pros-cons { grid-template-columns: 1fr; } }
+  .pc-box { background: var(--surface2); border-radius: 8px; padding: 14px; }
+  .pc-box h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .pc-box.pros h4 { color: var(--green); } .pc-box.cons h4 { color: var(--accent); }
+  .pc-box ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .pc-box ul li { font-size: 0.83rem; color: var(--muted); padding-left: 14px; position: relative; }
+  .pc-box.pros ul li::before { content: '✓'; color: var(--green); position: absolute; left: 0; }
+  .pc-box.cons ul li::before { content: '✗'; color: var(--accent); position: absolute; left: 0; }
+  .use-when { margin-top: 16px; background: rgba(255,209,102,0.06); border: 1px solid rgba(255,209,102,0.2);
+              border-radius: 8px; padding: 12px 16px; font-size: 0.85rem; color: var(--yellow); }
+
+  /* CHUNK SIZE EXPLORER */
+  .slider-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .slider-row label { color: var(--muted); font-size: 0.88rem; white-space: nowrap; }
+  input[type=range] { flex: 1; min-width: 180px; accent-color: var(--yellow); }
+  .slider-val { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px;
+                font-family: monospace; font-size: 0.9rem; color: var(--yellow); min-width: 70px; text-align: center; }
+  .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 560px) { .impact-grid { grid-template-columns: 1fr; } }
+  .impact-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .impact-card h4 { font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+  .impact-bar { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; margin-bottom: 8px; }
+  .impact-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+  .impact-label { font-size: 0.82rem; font-weight: 600; }
+
+  /* VISUAL CHUNK DEMO */
+  .doc-text { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px;
+              font-size: 0.85rem; line-height: 2; margin-bottom: 16px; }
+  .chunk { display: inline; border-radius: 3px; padding: 1px 0; cursor: default; }
+  .c0 { background: rgba(255,209,102,0.25); } .c1 { background: rgba(0,210,255,0.2); }
+  .c2 { background: rgba(6,214,160,0.2); } .c3 { background: rgba(198,120,221,0.2); }
+  .c4 { background: rgba(255,101,132,0.2); }
+  .overlap-highlight { background: rgba(255,165,0,0.35) !important; outline: 2px solid orange; }
+  .chunk-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); }
+  .leg-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* COMPARISON TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  .comp-table th { background: var(--surface2); padding: 10px 12px; text-align: left; border: 1px solid var(--border); color: var(--muted); }
+  .comp-table td { padding: 10px 12px; border: 1px solid var(--border); vertical-align: top; }
+  .comp-table tr:hover td { background: var(--surface); }
+  .tag-good { color: var(--green); font-weight: 600; }
+  .tag-bad { color: var(--accent); font-weight: 600; }
+  .tag-med { color: var(--yellow); font-weight: 600; }
+
+  /* CODE */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+        font-family: 'Consolas','Monaco',monospace; font-size: 0.8rem; overflow-x: auto; line-height: 1.6; }
+  .code-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .kw { color: #ff7b72; } .str { color: #a5d6ff; } .cm { color: var(--muted); }
+  .fn { color: #d2a8ff; } .cls { color: #ffa657; } .num { color: #79c0ff; }
+
+  .info-box { background: rgba(255,209,102,0.06); border: 1px solid rgba(255,209,102,0.2); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+  .info-box strong { color: var(--yellow); }
+
+  /* QUIZ */
+  .quiz-header { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px;
+                 display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .score-display { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.3);
+                   color: var(--yellow); padding: 4px 16px; border-radius: 20px; font-weight: 700; }
+  .question { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .question p { font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+         color: var(--text); cursor: pointer; text-align: left; font-size: 0.88rem; transition: all 0.2s; }
+  .opt:hover:not(:disabled) { border-color: var(--yellow); background: rgba(255,209,102,0.08); }
+  .opt.correct { background: rgba(6,214,160,0.15); border-color: var(--green); color: var(--green); }
+  .opt.wrong { background: rgba(248,81,73,0.15); border-color: #f85149; color: #f85149; }
+  .opt:disabled { cursor: default; }
+  .feedback { margin-top: 10px; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.3); }
+  .feedback.wrong { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+  .reset-btn { margin-top: 8px; background: none; border: 1px solid var(--border); color: var(--muted);
+               padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .reset-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="concept_3_13.html">← RAG Architecture</a>
+  <span>Session 3 · Concept 3.14</span>
+  <a href="concept_3_15.html">Embeddings →</a>
+</nav>
+<nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
+</nav>
+
+<div class="hero">
+  <div class="tag">Session 3 · Concept 3.14</div>
+  <h1>Chunking <span>Strategies</span></h1>
+  <p>How you split documents determines what your RAG system can find. The wrong chunking strategy silently destroys retrieval quality.</p>
+</div>
+
+<div class="container">
+
+  <!-- WHY IT MATTERS -->
+  <div class="section">
+    <div class="section-title">Why Chunking Is the Most Underestimated Step</div>
+    <div class="info-box">
+      <strong>The core tension:</strong> Small chunks → high retrieval precision (you find the exact passage), but low context per chunk (the LLM doesn't have enough to answer). Large chunks → rich context per chunk, but retrieval imprecision (you retrieve a whole section when you needed one sentence). <strong>Chunking strategy is about resolving this tension for your specific document type.</strong>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="comp-table">
+        <thead>
+          <tr><th>Strategy</th><th>Chunk Size</th><th>Best For</th><th>Retrieval Precision</th><th>Context Quality</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong style="color:var(--yellow);">Fixed-Size</strong></td><td>256–512 tokens</td><td>General prose, articles</td><td class="tag-med">Medium</td><td class="tag-med">Medium</td></tr>
+          <tr><td><strong style="color:var(--blue);">Sentence</strong></td><td>1–3 sentences</td><td>Q&amp;A, FAQ docs</td><td class="tag-good">High</td><td class="tag-bad">Low</td></tr>
+          <tr><td><strong style="color:var(--green);">Semantic</strong></td><td>Variable</td><td>Dense technical docs</td><td class="tag-good">High</td><td class="tag-good">High</td></tr>
+          <tr><td><strong style="color:var(--purple);">Parent-Child</strong></td><td>Child: 128 / Parent: 1024</td><td>Long-form docs, books</td><td class="tag-good">High</td><td class="tag-good">High</td></tr>
+          <tr><td><strong style="color:var(--accent);">Document-Aware</strong></td><td>Per-section</td><td>Markdown, code, PDFs with structure</td><td class="tag-good">High</td><td class="tag-good">High</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STRATEGY DEEP DIVES -->
+  <div class="section">
+    <div class="section-title">Strategy Deep Dives</div>
+    <div class="strategy-tabs">
+      <button class="stab active" onclick="switchStrat('fixed')">Fixed-Size</button>
+      <button class="stab" onclick="switchStrat('sentence')">Sentence</button>
+      <button class="stab" onclick="switchStrat('semantic')">Semantic</button>
+      <button class="stab" onclick="switchStrat('parent')">Parent-Child</button>
+      <button class="stab" onclick="switchStrat('docaware')">Document-Aware</button>
+    </div>
+
+    <div id="strat-fixed" class="spanel active">
+      <h3>Fixed-Size (Recursive Character) Chunking</h3>
+      <div class="s-desc">Split text at a target token count, trying natural separators first: paragraph breaks → sentence breaks → word breaks → characters. The <code>chunk_overlap</code> slides a window so that boundary context is preserved in both adjacent chunks.</div>
+      <div class="two-col">
+        <div>
+          <div class="code-label">Implementation</div>
+          <pre><span class="kw">from</span> langchain.text_splitter <span class="kw">import</span> \
+    RecursiveCharacterTextSplitter
+
+splitter = <span class="cls">RecursiveCharacterTextSplitter</span>(
+    chunk_size=<span class="num">512</span>,
+    chunk_overlap=<span class="num">64</span>,
+    separators=[
+        <span class="str">"\n\n"</span>,  <span class="cm"># paragraph break</span>
+        <span class="str">"\n"</span>,    <span class="cm"># line break</span>
+        <span class="str">". "</span>,    <span class="cm"># sentence end</span>
+        <span class="str">" "</span>,     <span class="cm"># word break</span>
+        <span class="str">""</span>       <span class="cm"># character (last resort)</span>
+    ]
+)
+chunks = splitter.<span class="fn">split_documents</span>(docs)</pre>
+        </div>
+        <div>
+          <div class="pros-cons">
+            <div class="pc-box pros"><h4>Pros</h4><ul>
+              <li>Simple to implement</li><li>Predictable chunk sizes</li><li>Good default baseline</li><li>Works on any text</li>
+            </ul></div>
+            <div class="pc-box cons"><h4>Cons</h4><ul>
+              <li>Splits mid-sentence sometimes</li><li>Ignores document structure</li><li>Overlap tuning is manual</li>
+            </ul></div>
+          </div>
+          <div class="use-when">📌 Use when: You need a quick, reliable baseline and don't have time to tune. Works well for general prose.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="strat-sentence" class="spanel">
+      <h3>Sentence-Level Chunking</h3>
+      <div class="s-desc">Split on sentence boundaries using an NLP sentence tokenizer (spaCy, NLTK). Each chunk is 1–3 sentences. Maximizes retrieval precision for Q&A — you retrieve the exact sentence that answers the question, not a surrounding paragraph.</div>
+      <div class="two-col">
+        <div>
+          <div class="code-label">Implementation (spaCy)</div>
+          <pre><span class="kw">import</span> spacy
+nlp = spacy.<span class="fn">load</span>(<span class="str">"en_core_web_sm"</span>)
+
+<span class="kw">def</span> <span class="fn">sentence_chunks</span>(text, window=<span class="num">2</span>):
+    doc = nlp(text)
+    sents = <span class="fn">list</span>(doc.sents)
+    chunks = []
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, <span class="fn">len</span>(sents), window):
+        group = sents[i:i+window]
+        chunks.<span class="fn">append</span>(
+            <span class="str">" "</span>.<span class="fn">join</span>(s.text <span class="kw">for</span> s <span class="kw">in</span> group)
+        )
+    <span class="kw">return</span> chunks</pre>
+        </div>
+        <div>
+          <div class="pros-cons">
+            <div class="pc-box pros"><h4>Pros</h4><ul>
+              <li>Highest retrieval precision</li><li>Respects semantic units</li><li>Great for FAQ-style docs</li>
+            </ul></div>
+            <div class="pc-box cons"><h4>Cons</h4><ul>
+              <li>Very small chunks = low LLM context</li><li>Needs NLP library</li><li>Cross-sentence context lost</li>
+            </ul></div>
+          </div>
+          <div class="use-when">📌 Use when: Your documents are FAQ-style, highly dense, and questions map to individual sentences. Pair with parent-child for better context.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="strat-semantic" class="spanel">
+      <h3>Semantic Chunking</h3>
+      <div class="s-desc">Embed every sentence, then detect "meaning breaks" where cosine similarity between adjacent sentences drops sharply. Chunk at those semantic boundary points. Produces variable-size chunks that are each thematically coherent.</div>
+      <div class="two-col">
+        <div>
+          <div class="code-label">Implementation (LlamaIndex)</div>
+          <pre><span class="kw">from</span> llama_index.node_parser <span class="kw">import</span> \
+    SemanticSplitterNodeParser
+<span class="kw">from</span> llama_index.embeddings.openai <span class="kw">import</span> \
+    OpenAIEmbedding
+
+splitter = <span class="cls">SemanticSplitterNodeParser</span>(
+    buffer_size=<span class="num">1</span>,
+    <span class="cm"># Split when similarity drops below</span>
+    <span class="cm"># this percentile threshold</span>
+    breakpoint_percentile_threshold=<span class="num">95</span>,
+    embed_model=<span class="cls">OpenAIEmbedding</span>()
+)
+nodes = splitter.<span class="fn">get_nodes_from_documents</span>(docs)</pre>
+        </div>
+        <div>
+          <div class="pros-cons">
+            <div class="pc-box pros"><h4>Pros</h4><ul>
+              <li>Thematically coherent chunks</li><li>Best for dense technical docs</li><li>No fixed size limits</li>
+            </ul></div>
+            <div class="pc-box cons"><h4>Cons</h4><ul>
+              <li>Slowest — embeds every sentence</li><li>Needs embedding model at index time</li><li>Threshold requires tuning</li>
+            </ul></div>
+          </div>
+          <div class="use-when">📌 Use when: Documents have dense multi-topic sections (e.g., medical papers, legal contracts). Worth the extra cost for complex corpora.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="strat-parent" class="spanel">
+      <h3>Parent-Child (Small-to-Big) Chunking</h3>
+      <div class="s-desc">Store two levels: small <em>child</em> chunks (128 tokens) for high-precision retrieval, and large <em>parent</em> chunks (1024 tokens) for rich LLM context. Retrieve using child vectors, but inject the parent chunk into the prompt. Best of both worlds.</div>
+      <div class="two-col">
+        <div>
+          <div class="code-label">Implementation (LangChain)</div>
+          <pre><span class="kw">from</span> langchain.retrievers <span class="kw">import</span> \
+    ParentDocumentRetriever
+<span class="kw">from</span> langchain.text_splitter <span class="kw">import</span> \
+    RecursiveCharacterTextSplitter
+
+<span class="cm"># Small chunks → used for retrieval</span>
+child_splitter = <span class="cls">RecursiveCharacterTextSplitter</span>(
+    chunk_size=<span class="num">200</span>
+)
+<span class="cm"># Large chunks → returned to LLM</span>
+parent_splitter = <span class="cls">RecursiveCharacterTextSplitter</span>(
+    chunk_size=<span class="num">2000</span>
+)
+
+retriever = <span class="cls">ParentDocumentRetriever</span>(
+    vectorstore=vector_db,
+    docstore=doc_store,
+    child_splitter=child_splitter,
+    parent_splitter=parent_splitter
+)</pre>
+        </div>
+        <div>
+          <div class="pros-cons">
+            <div class="pc-box pros"><h4>Pros</h4><ul>
+              <li>High precision + high context</li><li>Works great for long-form docs</li><li>No information loss at retrieval</li>
+            </ul></div>
+            <div class="pc-box cons"><h4>Cons</h4><ul>
+              <li>More complex setup</li><li>Needs separate docstore</li><li>2x storage overhead</li>
+            </ul></div>
+          </div>
+          <div class="use-when">📌 Use when: Long documents (books, reports, manuals) where you need precise retrieval but the LLM needs surrounding context. The go-to production pattern.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="strat-docaware" class="spanel">
+      <h3>Document-Aware (Structure-Based) Chunking</h3>
+      <div class="s-desc">Split on semantic document structure: Markdown headers, HTML tags, code block boundaries, PDF section headings. Each chunk maps to a meaningful unit of the document — a section, a function, a table — preserving its natural context.</div>
+      <div class="two-col">
+        <div>
+          <div class="code-label">Markdown-Aware Splitting</div>
+          <pre><span class="kw">from</span> langchain.text_splitter <span class="kw">import</span> \
+    MarkdownHeaderTextSplitter
+
+headers_to_split = [
+    (<span class="str">"#"</span>, <span class="str">"H1"</span>),
+    (<span class="str">"##"</span>, <span class="str">"H2"</span>),
+    (<span class="str">"###"</span>, <span class="str">"H3"</span>),
+]
+splitter = <span class="cls">MarkdownHeaderTextSplitter</span>(
+    headers_to_split_on=headers_to_split
+)
+<span class="cm"># Each chunk gets section metadata:</span>
+<span class="cm"># {"H1": "Installation", "H2": "Config"}</span>
+chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
+        </div>
+        <div>
+          <div class="pros-cons">
+            <div class="pc-box pros"><h4>Pros</h4><ul>
+              <li>Preserves document intent</li><li>Section metadata enables filtering</li><li>Great for technical docs &amp; wikis</li>
+            </ul></div>
+            <div class="pc-box cons"><h4>Cons</h4><ul>
+              <li>Requires consistent doc structure</li><li>Very long sections need secondary split</li><li>Format-specific parsers needed</li>
+            </ul></div>
+          </div>
+          <div class="use-when">📌 Use when: Your corpus is well-structured (Confluence, GitHub wikis, API docs). Metadata from headers dramatically improves filter-based retrieval.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHUNK SIZE EXPLORER -->
+  <div class="section">
+    <div class="section-title">Chunk Size Impact Explorer</div>
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:20px;">Drag the slider to see how chunk size affects key retrieval characteristics.</p>
+    <div class="slider-row">
+      <label>Chunk size (tokens):</label>
+      <input type="range" id="chunkSlider" min="64" max="2048" step="64" value="512" oninput="updateImpact()">
+      <div class="slider-val" id="sliderVal">512</div>
+    </div>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <h4>Retrieval Precision</h4>
+        <div class="impact-bar"><div class="impact-fill" id="bar-precision" style="background:var(--green);"></div></div>
+        <div class="impact-label" id="lbl-precision"></div>
+      </div>
+      <div class="impact-card">
+        <h4>LLM Context Quality</h4>
+        <div class="impact-bar"><div class="impact-fill" id="bar-context" style="background:var(--blue);"></div></div>
+        <div class="impact-label" id="lbl-context"></div>
+      </div>
+      <div class="impact-card">
+        <h4>Tokens per Prompt</h4>
+        <div class="impact-bar"><div class="impact-fill" id="bar-tokens" style="background:var(--yellow);"></div></div>
+        <div class="impact-label" id="lbl-tokens"></div>
+      </div>
+      <div class="impact-card">
+        <h4>Index Storage</h4>
+        <div class="impact-bar"><div class="impact-fill" id="bar-storage" style="background:var(--purple);"></div></div>
+        <div class="impact-label" id="lbl-storage"></div>
+      </div>
+      <div class="impact-card">
+        <h4>Embedding Cost</h4>
+        <div class="impact-bar"><div class="impact-fill" id="bar-cost" style="background:var(--orange);"></div></div>
+        <div class="impact-label" id="lbl-cost"></div>
+      </div>
+      <div class="impact-card">
+        <h4>Overall Assessment</h4>
+        <div class="impact-bar"><div class="impact-fill" id="bar-overall" style="background:var(--accent);"></div></div>
+        <div class="impact-label" id="lbl-overall"></div>
+      </div>
+    </div>
+    <div id="size-tip" style="margin-top:16px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:0.85rem; color:var(--muted);"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="quiz-header">
+      <h3>🧠 Knowledge Check</h3>
+      <div class="score-display" id="scoreDisplay">0 / 5</div>
+    </div>
+
+    <div class="question" id="q1">
+      <p>1. What is the primary purpose of <code>chunk_overlap</code> in fixed-size chunking?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q1','a','b')">a) To reduce the number of embeddings needed</button>
+        <button class="opt" onclick="answer('q1','b','b')">b) To preserve context that would otherwise be lost when a passage is split across two chunks</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) To increase retrieval speed by creating duplicate entries</button>
+        <button class="opt" onclick="answer('q1','d','b')">d) To allow different embedding models to be used for adjacent chunks</button>
+      </div>
+      <div class="feedback" id="q1-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q2">
+      <p>2. Parent-child chunking solves which fundamental retrieval tension?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q2','a','c')">a) Speed vs storage cost</button>
+        <button class="opt" onclick="answer('q2','b','c')">b) Embedding cost vs retrieval latency</button>
+        <button class="opt" onclick="answer('q2','c','c')">c) Retrieval precision (small chunks) vs LLM context quality (large chunks)</button>
+        <button class="opt" onclick="answer('q2','d','c')">d) Document format compatibility vs chunk size limits</button>
+      </div>
+      <div class="feedback" id="q2-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q3">
+      <p>3. Semantic chunking is slower than fixed-size chunking during indexing because:</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q3','a','d')">a) It requires loading a larger LLM model</button>
+        <button class="opt" onclick="answer('q3','b','d')">b) It must parse the document's HTML structure</button>
+        <button class="opt" onclick="answer('q3','c','d')">c) It stores two copies of each document</button>
+        <button class="opt" onclick="answer('q3','d','d')">d) It embeds every single sentence to detect meaning-change boundaries before splitting</button>
+      </div>
+      <div class="feedback" id="q3-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q4">
+      <p>4. You're indexing a well-structured Confluence wiki where every page has consistent H1/H2/H3 headers. Which chunking strategy is most appropriate?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q4','a','d')">a) Sentence-level chunking for maximum precision</button>
+        <button class="opt" onclick="answer('q4','b','d')">b) Fixed-size chunking with 512-token chunks</button>
+        <button class="opt" onclick="answer('q4','c','d')">c) Semantic chunking to detect topic shifts</button>
+        <button class="opt" onclick="answer('q4','d','d')">d) Document-aware (MarkdownHeaderTextSplitter) to preserve section structure and add header metadata</button>
+      </div>
+      <div class="feedback" id="q4-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
+    </div>
+
+    <div class="question" id="q5">
+      <p>5. Very small chunk sizes (e.g., 64 tokens) cause a specific problem during generation. What is it?</p>
+      <div class="options">
+        <button class="opt" onclick="answer('q5','a','b')">a) They increase embedding cost exponentially</button>
+        <button class="opt" onclick="answer('q5','b','b')">b) The LLM receives too little context per chunk to generate a coherent, complete answer</button>
+        <button class="opt" onclick="answer('q5','c','b')">c) Vector databases cannot store vectors smaller than 256 tokens</button>
+        <button class="opt" onclick="answer('q5','d','b')">d) They cause cosine similarity scores to be artificially inflated</button>
+      </div>
+      <div class="feedback" id="q5-fb"></div>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// STRATEGY TABS
+function switchStrat(id) {
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.spanel').forEach(p => p.classList.remove('active'));
+  const ids = ['fixed','sentence','semantic','parent','docaware'];
+  document.querySelectorAll('.stab')[ids.indexOf(id)].classList.add('active');
+  document.getElementById('strat-' + id).classList.add('active');
+}
+
+// CHUNK SIZE IMPACT
+function updateImpact() {
+  const v = parseInt(document.getElementById('chunkSlider').value);
+  document.getElementById('sliderVal').textContent = v;
+  const max = 2048;
+
+  // Precision: high when small, drops as chunks grow
+  const precision = Math.max(5, 100 - (v / max) * 85);
+  // Context: low when small, high when large
+  const context = Math.min(95, (v / max) * 100 + 5);
+  // Tokens per prompt: scales with chunk size (top-k=5 chunks)
+  const tokens = Math.min(95, (v / max) * 90 + 5);
+  // Storage: inversely proportional to chunk size (more chunks = more vectors)
+  const storage = Math.max(5, 95 - (v / max) * 80);
+  // Embedding cost: same as storage (more chunks = more embeds)
+  const cost = Math.max(5, 95 - (v / max) * 80);
+  // Overall: best around 400–600
+  const dist = Math.abs(v - 480);
+  const overall = Math.max(20, 95 - (dist / 800) * 75);
+
+  const bars = [
+    ['precision', precision], ['context', context], ['tokens', tokens],
+    ['storage', storage], ['cost', cost], ['overall', overall]
+  ];
+  bars.forEach(([id, val]) => {
+    document.getElementById('bar-' + id).style.width = val + '%';
+  });
+
+  const pLabel = precision > 70 ? 'High ✓' : precision > 40 ? 'Medium' : 'Low ✗';
+  const cLabel = context > 70 ? 'Rich ✓' : context > 40 ? 'Moderate' : 'Sparse ✗';
+  const tLabel = tokens > 70 ? 'High (expensive)' : tokens > 40 ? 'Moderate' : 'Low (cheap)';
+  const sLabel = storage > 70 ? 'High (many vectors)' : storage > 40 ? 'Moderate' : 'Low (few vectors)';
+  const costLabel = cost > 70 ? 'High' : cost > 40 ? 'Moderate' : 'Low ✓';
+  const oLabel = overall > 75 ? '✓ Good range' : overall > 50 ? '⚠ Suboptimal' : '✗ Avoid';
+
+  document.getElementById('lbl-precision').textContent = pLabel;
+  document.getElementById('lbl-context').textContent = cLabel;
+  document.getElementById('lbl-tokens').textContent = tLabel;
+  document.getElementById('lbl-storage').textContent = sLabel;
+  document.getElementById('lbl-cost').textContent = costLabel;
+  document.getElementById('lbl-overall').textContent = oLabel;
+
+  let tip = '';
+  if (v < 128) tip = '⚠ Too small: chunks lack context. LLM will struggle to generate complete answers. Use sentence-level only with parent-child retrieval.';
+  else if (v < 256) tip = '📌 Good for Q&A and FAQ docs. High precision retrieval. Consider pairing with parent-child to give the LLM more context at generation time.';
+  else if (v <= 512) tip = '✓ The sweet spot for most use cases. Balanced precision and context. This is the recommended starting point for any new RAG system.';
+  else if (v <= 1024) tip = '📌 Better context per chunk but retrieval becomes less precise. Use when documents have long interconnected paragraphs that need to stay together.';
+  else tip = '⚠ Very large chunks hurt retrieval precision significantly. Consider switching to parent-child: use small children for retrieval, large parents for generation.';
+  document.getElementById('size-tip').textContent = tip;
+}
+updateImpact();
+
+// QUIZ
+let score = 0;
+const answered = {};
+const msgs = {
+  q1: 'Overlap slides a window across chunk boundaries so sentences split between two chunks appear in both, preserving their context.',
+  q2: 'Parent-child uses small child chunks for high-precision retrieval, then returns the large parent chunk to the LLM — high precision AND high context.',
+  q3: 'Semantic chunking embeds every sentence in the document to measure similarity between adjacent sentences, detecting meaning-change points.',
+  q4: 'MarkdownHeaderTextSplitter is purpose-built for structured docs — it preserves section hierarchy and adds header metadata for filtered retrieval.',
+  q5: 'Very small chunks don\'t give the LLM enough surrounding context to generate a coherent answer — it gets isolated fragments instead of complete ideas.'
+};
+
+function answer(qid, chosen, correct) {
+  if (answered[qid]) return;
+  answered[qid] = true;
+  const opts = document.querySelectorAll(`#${qid} .opt`);
+  opts.forEach(o => o.disabled = true);
+  const idx = ['a','b','c','d'];
+  opts[idx.indexOf(chosen)].classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) opts[idx.indexOf(correct)].classList.add('correct');
+  const fb = document.getElementById(qid + '-fb');
+  fb.classList.add('show');
+  if (chosen === correct) {
+    score++;
+    fb.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    document.getElementById('scoreDisplay').textContent = score + ' / 5';
+  } else {
+    fb.classList.add('wrong');
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
+  }
+}
+
+function resetQ(qid) {
+  if (!answered[qid]) return;
+  delete answered[qid];
+  document.querySelectorAll(`#${qid} .opt`).forEach(o => {
+    o.disabled = false; o.classList.remove('correct','wrong');
+  });
+  const fb = document.getElementById(qid + '-fb');
+  fb.className = 'feedback'; fb.textContent = '';
+}
+</script>
+</body>
+</html>

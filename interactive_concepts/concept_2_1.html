@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.1 The Paradigm Shift: Tools → Agents — Agentic AI</title>
+<style>
+  :root {
+    --bg:#0f1117;--surface:#1a1d27;--card:#21263a;
+    --accent:#00d2ff;--accent2:#6c63ff;
+    --green:#06d6a0;--yellow:#ffd166;--red:#ff6584;--orange:#ff9f43;
+    --text:#e8eaf6;--muted:#8892b0;--border:rgba(0,210,255,0.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding-bottom:80px;}
+  nav{display:flex;align-items:center;gap:10px;padding:16px 32px;border-bottom:1px solid var(--border);background:rgba(15,17,23,.9);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);}
+  .nav-home{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;}
+  .nav-home:hover{color:var(--text);}
+  .nav-sep{color:var(--border);}
+  .nav-current{color:var(--accent);font-size:13px;font-weight:700;}
+  .nav-arrows{margin-left:auto;display:flex;gap:8px;}
+  .nav-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;}
+  .nav-btn:hover{background:var(--accent);color:#0f1117;border-color:var(--accent);}
+  .hero{padding:56px 40px 44px;max-width:960px;margin:0 auto;}
+  .concept-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.3);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:20px;}
+  h1{font-size:clamp(26px,3.5vw,44px);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:16px;}
+  .hero-lead{font-size:17px;color:var(--muted);line-height:1.7;max-width:680px;}
+  .content{max-width:960px;margin:0 auto;padding:0 40px;}
+  .section{margin-bottom:52px;}
+  .section-title{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* ── EVOLUTION TIMELINE ── */
+  .evo-track{display:flex;flex-direction:column;gap:0;}
+  .evo-item{cursor:pointer;transition:all .2s;}
+  .evo-row{display:flex;gap:0;align-items:stretch;}
+  .evo-era{width:130px;flex-shrink:0;padding:18px 16px;border-right:3px solid transparent;transition:border-color .2s;}
+  .evo-era-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .evo-era-name{font-size:13px;font-weight:700;color:var(--muted);transition:color .2s;}
+  .evo-body{flex:1;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.04);}
+  .evo-title{font-size:16px;font-weight:700;margin-bottom:4px;transition:color .2s;}
+  .evo-tag{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .evo-detail{font-size:13px;color:var(--muted);line-height:1.6;display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05);}
+  .evo-item.active .evo-detail{display:block;}
+  .evo-item.active .evo-era{border-right-color:var(--accent);}
+  .evo-item.active .evo-era-name{color:var(--accent);}
+  .evo-item.active .evo-title{color:var(--accent);}
+  .evo-diff{background:rgba(0,210,255,.06);border-left:3px solid var(--accent);padding:8px 12px;border-radius:0 8px 8px 0;margin-top:8px;font-size:12.5px;line-height:1.55;}
+
+  /* ── THE KEY DISTINCTION ── */
+  .distinction-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .dist-card{border-radius:16px;padding:26px;border:1px solid;transition:all .25s;cursor:pointer;}
+  .dist-card.executor{background:rgba(255,101,132,.06);border-color:rgba(255,101,132,.2);}
+  .dist-card.decider{background:rgba(0,210,255,.06);border-color:rgba(0,210,255,.25);}
+  .dist-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.35);}
+  .dist-icon{font-size:36px;margin-bottom:14px;}
+  .dist-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+  .dist-card.executor .dist-label{color:var(--red);}
+  .dist-card.decider .dist-label{color:var(--accent);}
+  .dist-title{font-size:19px;font-weight:800;margin-bottom:10px;}
+  .dist-card.executor .dist-title{color:var(--red);}
+  .dist-card.decider .dist-title{color:var(--accent);}
+  .dist-body{font-size:13.5px;color:var(--muted);line-height:1.7;}
+  .dist-example{margin-top:14px;background:rgba(255,255,255,.04);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.55;}
+  .dist-example strong{color:var(--text);}
+
+  /* ── WHILE LOOP VISUAL ── */
+  .while-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .code-card{background:#11141f;border:1px solid;border-radius:12px;overflow:hidden;}
+  .code-card.trad{border-color:rgba(255,101,132,.2);}
+  .code-card.agent{border-color:rgba(0,210,255,.2);}
+  .code-head{padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06);}
+  .code-card.trad .code-head{background:rgba(255,101,132,.08);color:var(--red);}
+  .code-card.agent .code-head{background:rgba(0,210,255,.06);color:var(--accent);}
+  .code-body{padding:16px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.8;}
+  .ck{color:var(--accent2);font-weight:700;}
+  .cf{color:var(--accent);}
+  .cs{color:var(--green);}
+  .cc{color:#4e5d78;}
+  .cy{color:var(--yellow);}
+
+  /* ── 4 PILLARS ── */
+  .pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .pillar{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;transition:all .25s;}
+  .pillar:hover{border-color:rgba(0,210,255,.4);transform:translateY(-2px);}
+  .pillar-icon{font-size:28px;margin-bottom:12px;}
+  .pillar-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;}
+  .pillar-body{font-size:13px;color:var(--muted);line-height:1.6;}
+  .pillar-key{margin-top:10px;font-size:12px;color:var(--accent);font-weight:600;}
+
+  /* ── QUIZ ── */
+  .quiz-set{display:flex;flex-direction:column;gap:24px;}
+  .quiz-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;}
+  .quiz-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .quiz-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:18px;line-height:1.55;}
+  .quiz-options{display:flex;flex-direction:column;gap:9px;}
+  .quiz-option{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:13.5px;color:var(--muted);transition:all .2s;text-align:left;}
+  .quiz-option:hover:not(:disabled){background:rgba(0,210,255,.08);border-color:rgba(0,210,255,.3);color:var(--text);}
+  .quiz-option.correct{background:rgba(6,214,160,.12);border-color:#06d6a0;color:#06d6a0;}
+  .quiz-option.wrong{background:rgba(255,101,132,.1);border-color:#ff6584;color:#ff6584;}
+  .quiz-feedback{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:13.5px;line-height:1.6;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);color:#06d6a0;}
+  .quiz-feedback.wrong{background:rgba(255,101,132,.08);border:1px solid rgba(255,101,132,.25);color:#ff8fa3;}
+  .quiz-reset{margin-top:12px;background:var(--accent2);color:white;border:none;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:none;}
+  .quiz-reset.show{display:inline-block;}
+  .score-box{background:linear-gradient(135deg,rgba(0,210,255,.12),rgba(108,99,255,.08));border:1px solid rgba(0,210,255,.3);border-radius:14px;padding:20px 26px;text-align:center;margin-top:24px;display:none;}
+  .score-box.show{display:block;}
+  .score-num{font-size:42px;font-weight:900;color:var(--accent);}
+  .score-label{font-size:13px;color:var(--muted);margin-top:4px;}
+  .takeaway{background:linear-gradient(135deg,rgba(0,210,255,.1) 0%,rgba(108,99,255,.06) 100%);border:1px solid rgba(0,210,255,.3);border-left:4px solid var(--accent);border-radius:12px;padding:22px 26px;font-size:15px;color:var(--text);line-height:1.7;}
+  .takeaway strong{color:var(--accent);}
+  @media(max-width:700px){.hero,.content{padding-left:20px;padding-right:20px;}.distinction-wrap,.while-split,.pillars{grid-template-columns:1fr;}.evo-era{width:90px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-home">← All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">2.1 The Paradigm Shift</span>
+  <div class="nav-arrows">
+    <a href="concept_1_6.html" class="nav-btn">← Prototype Gap</a>
+    <a href="concept_2_3.html" class="nav-btn">BDI Model →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="concept-badge">Session 2 · Day 1 Forenoon · Concept 2.1</div>
+  <h1>The Paradigm Shift:<br>Tools → Agents</h1>
+  <p class="hero-lead">Traditional software executes exactly what you code. LLM chatbots produce smarter output but are still reactive. Agents are fundamentally different — they <em>choose</em> their next action. Understanding this shift is the foundation of everything in Day 1.</p>
+</div>
+
+<div class="content">
+
+  <!-- EVOLUTION TIMELINE -->
+  <div class="section">
+    <div class="section-title">Three Generations of Software — Click Each to Explore</div>
+    <div class="evo-track">
+      <div class="evo-item" id="ev1" onclick="activateEvo('ev1')">
+        <div class="evo-row">
+          <div class="evo-era"><div class="evo-era-label">Gen 1</div><div class="evo-era-name">Traditional</div></div>
+          <div class="evo-body">
+            <div class="evo-tag">Deterministic · Stateless</div>
+            <div class="evo-title">Traditional Software</div>
+            <div class="evo-detail">A traditional program executes a fixed sequence of instructions. Input in → deterministic output out. It never deviates, never reflects, never chooses. A sort function sorts; it doesn't decide whether sorting is the right action.
+              <div class="evo-diff">Key characteristic: <strong>executes exactly what you coded</strong>. The programmer made all decisions; the program just follows them.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="evo-item" id="ev2" onclick="activateEvo('ev2')">
+        <div class="evo-row">
+          <div class="evo-era"><div class="evo-era-label">Gen 2</div><div class="evo-era-name">LLM Chatbots</div></div>
+          <div class="evo-body">
+            <div class="evo-tag">Smart Output · Still Reactive</div>
+            <div class="evo-title">LLM Chatbots</div>
+            <div class="evo-detail">ChatGPT, Claude in chat mode — a user sends a message, the model generates a response. Smarter output, but fundamentally still single-turn and reactive. No persistent state between calls. No ability to take actions. No loop. The model waits for you to push it forward.
+              <div class="evo-diff">Key limitation: <strong>single-turn, reactive, no persistence</strong>. Each call is independent. The model has no memory of the last call unless you resend the history. It can't do anything in the world — only describe what it would do.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="evo-item active" id="ev3" onclick="activateEvo('ev3')">
+        <div class="evo-row">
+          <div class="evo-era"><div class="evo-era-label">Gen 3</div><div class="evo-era-name">Agents ←</div></div>
+          <div class="evo-body">
+            <div class="evo-tag">Autonomous · Decision-Maker · Goal-Directed</div>
+            <div class="evo-title">🚀 AI Agents</div>
+            <div class="evo-detail">An agent perceives its environment, reasons about what to do next, takes an action, observes the result, and loops — until the goal is reached. It <strong>chooses</strong> its next action from a set of available tools. This is the defining capability: agents are decision-makers, not executors.
+              <div class="evo-diff">Key difference: <strong>agents CHOOSE their next action</strong>. They are not following a pre-defined script — they are autonomously deciding what to do based on the current state of the world and their goal.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTOR vs DECISION-MAKER -->
+  <div class="section">
+    <div class="section-title">The Fundamental Distinction — Executor vs. Decision-Maker</div>
+    <div class="distinction-wrap">
+      <div class="dist-card executor">
+        <div class="dist-icon">⚙️</div>
+        <div class="dist-label">Traditional / Chatbot</div>
+        <div class="dist-title">Executor</div>
+        <div class="dist-body">Receives an instruction and executes it exactly as specified. The intelligence lives in the programmer or the user — the software just carries out the plan.</div>
+        <div class="dist-example"><strong>Example:</strong> "Sort this list." → Returns sorted list. Done. No further decisions made.</div>
+      </div>
+      <div class="dist-card decider">
+        <div class="dist-icon">🧭</div>
+        <div class="dist-label">Agentic AI</div>
+        <div class="dist-title">Decision-Maker</div>
+        <div class="dist-body">Receives a goal and autonomously decides how to achieve it — which tools to use, in what order, and when it's done. The intelligence lives in the agent itself.</div>
+        <div class="dist-example"><strong>Example:</strong> "Research and summarise the top 3 competitors." → Agent decides: search web → read pages → extract key facts → structure report → done.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHILE LOOP ANALOGY -->
+  <div class="section">
+    <div class="section-title">The While Loop Analogy — The Structural Difference</div>
+    <div class="while-split">
+      <div class="code-card trad">
+        <div class="code-head">❌ Traditional Program / Chatbot</div>
+        <div class="code-body">
+<span class="cc"># Runs once, returns result</span>
+<span class="ck">def</span> <span class="cf">chatbot_response</span>(user_msg):
+    response = llm.call(user_msg)
+    <span class="ck">return</span> response
+
+<span class="cc"># Called once. Then stops.</span>
+<span class="cc"># No loop. No tools. No memory.</span>
+        </div>
+      </div>
+      <div class="code-card agent">
+        <div class="code-head">✅ AI Agent</div>
+        <div class="code-body">
+<span class="cc"># Loops until goal is achieved</span>
+<span class="ck">def</span> <span class="cf">agent</span>(goal):
+  state = {<span class="cs">"goal"</span>: goal}
+  <span class="ck">while not</span> state[<span class="cs">"done"</span>]:
+    thought = llm.reason(state)
+    action  = llm.decide(thought)
+    result  = tools.run(action)
+    state   = update(state, result)
+  <span class="ck">return</span> state[<span class="cs">"answer"</span>]
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 CHARACTERISTICS -->
+  <div class="section">
+    <div class="section-title">The 4 Defining Characteristics of Agents</div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">🤖</div>
+        <div class="pillar-title">Autonomy</div>
+        <div class="pillar-body">Operates without direct human intervention per step. Manages its own internal state and decides what to do next without being told.</div>
+        <div class="pillar-key">Key implication: humans define the goal; the agent determines the path</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🔭</div>
+        <div class="pillar-title">Partial Observability</div>
+        <div class="pillar-body">No "God's eye view." The agent only sees what it can observe through its tools and context window — it makes decisions under uncertainty.</div>
+        <div class="pillar-key">Key implication: agents must handle incomplete, ambiguous, and sometimes wrong data</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🌐</div>
+        <div class="pillar-title">Decentralisation</div>
+        <div class="pillar-body">In multi-agent systems, no single point of failure. Distributed control enables resilience — if one agent fails, others can continue.</div>
+        <div class="pillar-key">Key implication: systems can scale and recover in ways monolithic apps cannot</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🎯</div>
+        <div class="pillar-title">Goal-Directedness</div>
+        <div class="pillar-body">Agents pursue objectives. They are not mere responders to inputs — they have an end state they are working toward and every action moves toward it.</div>
+        <div class="pillar-key">Key implication: agents can decompose goals into sub-tasks and sequence actions to achieve them</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <div class="section">
+    <div class="section-title">Key Takeaway</div>
+    <div class="takeaway">The paradigm shift is not about smarter text generation — it's about <strong>autonomy and agency</strong>. An agent CHOOSES its next action. It runs in a loop. It uses tools to act on the world. <strong>Every architectural decision in agentic AI — memory design, tool design, orchestration, security — flows from this single structural difference between executors and decision-makers.</strong></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="section-title">Knowledge Check — 5 Questions</div>
+    <div class="quiz-set">
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 1 of 5</div>
+        <div class="quiz-q">What is the single most important structural difference between an LLM chatbot (Generation 2) and an AI agent (Generation 3)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Agents use more powerful LLM models than chatbots</button>
+          <button class="quiz-option" onclick="qa(this,true,'q1')">Agents operate in a continuous loop, autonomously choosing and executing actions until a goal is reached — chatbots respond once per user turn</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Agents have access to the internet; chatbots do not</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Agents have a better user interface than chatbots</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q1"></div>
+        <button class="quiz-reset" id="rst-q1" onclick="resetQ('q1')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 2 of 5</div>
+        <div class="quiz-q">A user tells an agent: "Research the top 3 EV competitors and produce a comparison report." The agent searches the web, reads pages, extracts data, and formats a report — all without further user input. Which characteristic is most central to this?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Partial Observability — the agent can only see some information</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Decentralisation — multiple agents work in parallel</button>
+          <button class="quiz-option" onclick="qa(this,true,'q2')">Autonomy + Goal-Directedness — the agent operates independently and pursues the objective across multiple steps without human direction</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">The While Loop — the code runs in a loop</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q2"></div>
+        <button class="quiz-reset" id="rst-q2" onclick="resetQ('q2')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 3 of 5</div>
+        <div class="quiz-q">Traditional software is described as "deterministic." What does this mean, and why does it matter for agentic AI?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q3')">It means the software runs very fast — agents are slower because they reason</button>
+          <button class="quiz-option" onclick="qa(this,true,'q3')">Same input always produces same output — agents are non-deterministic because the LLM's reasoning, tool results, and world state vary each run, making testing and debugging fundamentally harder</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">It means traditional software is more secure than agents</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">It means the software follows a deterministic deployment pipeline</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q3"></div>
+        <button class="quiz-reset" id="rst-q3" onclick="resetQ('q3')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 4 of 5</div>
+        <div class="quiz-q">An agent is described as having "Partial Observability." A developer argues: "Just give the agent access to all data — then it won't have partial observability." What's wrong with this reasoning?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q4')">There's nothing wrong — full data access would fix the problem</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">It's too expensive to give agents full data access</button>
+          <button class="quiz-option" onclick="qa(this,true,'q4')">Partial observability is inherent, not a data access problem — the agent's context window is finite, the world changes in real time, and tool results are always incomplete snapshots. Full "omniscience" is architecturally impossible for any real system</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Agents are legally restricted from accessing all data</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q4"></div>
+        <button class="quiz-reset" id="rst-q4" onclick="resetQ('q4')">Try Again</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-num">Question 5 of 5</div>
+        <div class="quiz-q">Which of the following is the best definition of an AI agent?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="qa(this,false,'q5')">A large language model with access to a search engine</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">A chatbot that can remember previous conversations</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">A Python script that calls an LLM API in a loop</button>
+          <button class="quiz-option" onclick="qa(this,true,'q5')">Any system that autonomously perceives its environment, reasons about it, takes actions using tools, and pursues a goal across multiple steps — without requiring a human to direct each step</button>
+        </div>
+        <div class="quiz-feedback" id="fb-q5"></div>
+        <button class="quiz-reset" id="rst-q5" onclick="resetQ('q5')">Try Again</button>
+      </div>
+
+    </div>
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">—</div>
+      <div class="score-label">questions answered correctly</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function activateEvo(id) {
+  ['ev1','ev2','ev3'].forEach(e=>document.getElementById(e).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+const answers={};
+const cfb={
+  q1:"✓ The loop is the key. A chatbot processes one message and stops — its execution model is a function call. An agent runs a continuous while-loop: observe → think → act → observe again, until done. That loop is what enables multi-step autonomous task completion.",
+  q2:"✓ Right. Autonomy (no human direction per step) combined with Goal-Directedness (every action serves the research objective) is exactly what makes this scenario agentic. The while loop is the implementation detail — the defining characteristics are Autonomy and Goal-Directedness.",
+  q3:"✓ Correct. Determinism means the same input always gives the same output — testable, reproducible, debuggable. Agents are non-deterministic: the LLM samples differently each run, tool results depend on live external APIs, and world state changes. This makes regression testing, reproducibility, and debugging qualitatively harder — which is why golden test sets and distributed tracing are so critical.",
+  q4:"✓ Exactly right. Partial observability is a fundamental property of any real-world intelligent agent — not a data access problem. Even with every database open, the agent can only read a finite amount per context window, tool results are snapshots that age the moment they're read, and the world continues to change. Designing agents to make good decisions under uncertainty is the architectural challenge.",
+  q5:"✓ Perfect. That definition captures all four characteristics: perceives (partial observability), reasons (autonomy), takes actions using tools (goal-directedness), pursues a goal across multiple steps (the while loop). None of the other options capture the autonomous multi-step nature of agents."
+};
+const wfb={
+  q1:"✗ Model size and internet access are not the defining differences. Many chatbots have internet access. The structural difference is the loop — agents decide and act repeatedly, autonomously, until done. Chatbots wait for a human to push them each step.",
+  q2:"✗ Partial Observability describes a constraint, not the capability shown here. Decentralisation isn't involved (there's one agent). The While Loop is implementation, not characteristic. The core characteristics on display are Autonomy (no human direction) and Goal-Directedness (pursuing the research objective across steps).",
+  q3:"✗ Speed is not the issue. Determinism is about predictability: given the same input, a traditional program always produces the same output. This makes testing and debugging straightforward. Agents are non-deterministic because their reasoning, tool outputs, and world state vary run-to-run — making standard unit testing insufficient.",
+  q4:"✗ Full data access is architecturally impossible and doesn't solve the problem. Even if every database were open, the agent's context window is finite (8K–200K tokens), tool calls take snapshots of dynamic data, and the world changes between steps. Partial observability is inherent to all real intelligent systems.",
+  q5:"✗ Each of the other options is incomplete. A 'search engine + LLM' is a RAG system. A 'chatbot with memory' is still single-turn. A 'Python loop' is just the plumbing. The complete definition requires: autonomous operation + perceiving environment + reasoning + using tools + pursuing goals across multiple steps."
+};
+function qa(btn,isCorrect,qid){
+  if(answers[qid]!==undefined)return;
+  answers[qid]=isCorrect;
+  const opts=btn.closest('.quiz-box').querySelectorAll('.quiz-option');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect)opts.forEach(o=>{if(o.getAttribute('onclick').includes('true'))o.classList.add('correct');});
+  const fb=document.getElementById('fb-'+qid);
+  fb.className='quiz-feedback show '+(isCorrect?'correct':'wrong');
+  fb.textContent=isCorrect?cfb[qid]:wfb[qid];
+  document.getElementById('rst-'+qid).className='quiz-reset show';
+  updateScore();
+}
+function resetQ(qid){
+  delete answers[qid];
+  const box=document.getElementById('fb-'+qid).closest('.quiz-box');
+  box.querySelectorAll('.quiz-option').forEach(o=>{o.disabled=false;o.className='quiz-option';});
+  document.getElementById('fb-'+qid).className='quiz-feedback';
+  document.getElementById('rst-'+qid).className='quiz-reset';
+  updateScore();
+}
+function updateScore(){
+  const c=Object.values(answers).filter(Boolean).length;
+  const t=Object.keys(answers).length;
+  if(t>0){document.getElementById('score-box').classList.add('show');document.getElementById('score-num').textContent=c+'/5 correct';}
+}
+</script>
+</body>
+</html>

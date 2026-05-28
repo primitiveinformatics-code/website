@@ -86,7 +86,7 @@ export const FAQ_ITEMS = [
   {
     question: "How do I report an issue or give feedback?",
     answer:
-      "We love feedback! You can reach us at admin@primitiveinformatics.in, use the contact form on this page, or tweet at us @primitiveinformatics. We typically respond within 24 hours. Bug reports can be filed directly from inside the platform.",
+      "We love feedback! You can reach us at primitiveinformatics@gmail.com, use the contact form on this page, or tweet at us @primitiveinformatics. We typically respond within 24 hours. Bug reports can be filed directly from inside the platform.",
   },
 ];
 

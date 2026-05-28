@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.4 â€” Knowledge-Practice Gap: Agent Evaluation</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #06d6a0; --accent2: #00d2ff; --accent3: #ffd166; --accent4: #ff6584; --accent5: #6c63ff;
+    --text: #e8eaf6; --muted: #8892b0; --border: rgba(6,214,160,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  nav a:hover { color: var(--accent); }
+  .nav-cur { color: var(--accent); font-weight: 700; }
+
+  .hero { background: linear-gradient(135deg,#0f1117 0%,#1a1d27 60%,#0d2e26 100%); padding:56px 40px 48px; text-align:center; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(6,214,160,0.12) 0%,transparent 70%); pointer-events:none; }
+  .badge { display:inline-block; background:rgba(6,214,160,0.12); border:1px solid rgba(6,214,160,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:20px; }
+  .hero h1 { font-size:clamp(26px,3.5vw,44px); font-weight:800; background:linear-gradient(90deg,#fff 0%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:14px; }
+  .hero p { color:var(--muted); font-size:16px; max-width:640px; margin:0 auto; line-height:1.7; }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* GAP VISUALIZER */
+  .gap-banner { background: linear-gradient(135deg,rgba(255,101,132,0.08) 0%,rgba(108,99,255,0.08) 100%); border: 1px solid rgba(255,101,132,0.2); border-radius: 16px; padding: 28px; margin-bottom: 48px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; }
+  @media (max-width:700px) { .gap-banner { grid-template-columns:1fr; } }
+  .gap-side { }
+  .gap-side h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .gap-side p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .gap-side .claim { font-size: 12px; color: var(--text); display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .gap-arrow { font-size: 32px; text-align: center; color: var(--accent4); font-weight: 700; }
+  .know-side h3 { color: var(--accent5); }
+  .prac-side h3 { color: var(--accent4); }
+
+  /* EVAL STRATEGY TABS */
+  .eval-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .eval-tab { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .eval-tab.active { background: rgba(6,214,160,0.15); border-color: var(--accent); color: var(--accent); }
+  .eval-tab:hover:not(.active) { color: var(--text); border-color: rgba(6,214,160,0.35); }
+  .eval-content { display: none; }
+  .eval-content.active { display: block; }
+  .strat-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .strat-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .strat-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(6,214,160,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .strat-title { font-size: 18px; font-weight: 700; color: var(--accent); }
+  .strat-sub { font-size: 13px; color: var(--muted); }
+  .strat-body { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 16px; }
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media(max-width:600px){.pros-cons{grid-template-columns:1fr;}}
+  .pros, .cons { border-radius: 10px; padding: 14px 16px; }
+  .pros { background: rgba(6,214,160,0.08); border: 1px solid rgba(6,214,160,0.2); }
+  .cons { background: rgba(255,101,132,0.07); border: 1px solid rgba(255,101,132,0.2); }
+  .pros h4 { color: var(--accent); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .cons h4 { color: var(--accent4); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .pros li, .cons li { font-size: 12px; color: var(--text); margin-left: 14px; margin-bottom: 4px; line-height: 1.5; }
+  .code-snip { background: #0a0c14; border-radius: 8px; padding: 14px 16px; font-family: monospace; font-size: 12px; color: var(--accent3); line-height: 1.7; overflow-x: auto; }
+  .c-kw { color: var(--accent5); }
+  .c-fn { color: var(--accent2); }
+  .c-str { color: var(--accent3); }
+  .c-cm { color: #4a5568; }
+
+  /* EVAL BUILDER */
+  .eval-builder { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .eval-builder h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .eval-builder p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+  .scenario-select { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 10px; margin-bottom: 20px; }
+  .scen-btn { padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; color: var(--muted); cursor: pointer; text-align: left; transition: all 0.2s; }
+  .scen-btn:hover, .scen-btn.sel { border-color: var(--accent); background: rgba(6,214,160,0.08); color: var(--text); }
+  .eval-result { background: var(--surface); border-radius: 12px; padding: 20px; }
+  .eval-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .eval-row:last-child { border-bottom: none; }
+  .eval-strategy-name { width: 140px; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .fit-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .fit-fill { height: 100%; border-radius: 4px; }
+  .fit-label { width: 60px; text-align: right; font-size: 12px; font-weight: 700; }
+  .recommended { background: rgba(6,214,160,0.1); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--accent); font-weight: 700; margin-left: 8px; }
+
+  .insight-bar { background:rgba(0,210,255,0.07); border-left:4px solid var(--accent2); border-radius:0 10px 10px 0; padding:14px 18px; margin-bottom:14px; font-size:13px; color:var(--text); line-height:1.6; }
+  .insight-bar strong { color:var(--accent2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="main-course.html">â† All Concepts</a>
+  <span style="color:var(--border)">/</span>
+  <span class="nav-cur">5.4 â€” Knowledge-Practice Gap: Agent Evaluation</span>
+</nav>
+
+<div class="hero">
+  <div class="badge">Session 5 Â· Day 2 Afternoon</div>
+  <h1>Knowledge-Practice Gap â€” Agent Evaluation</h1>
+  <p>Teams know evaluation matters. In practice, 78% of production agents have no structured evaluation pipeline. Explore why the gap exists and the 4 strategies to close it.</p>
+</div>
+
+<div class="main">
+
+  <!-- THE GAP -->
+  <div class="section-title">The Knowledge-Practice Gap</div>
+  <div class="gap-banner">
+    <div class="gap-side know-side">
+      <h3>ðŸ“š What Teams Know</h3>
+      <div class="claim"><span>âœ“</span> Agents can hallucinate at any step</div>
+      <div class="claim"><span>âœ“</span> Technical success â‰  goal achievement</div>
+      <div class="claim"><span>âœ“</span> Evaluation must be continuous, not one-off</div>
+      <div class="claim"><span>âœ“</span> Need semantic metrics beyond HTTP status</div>
+      <div class="claim"><span>âœ“</span> Evaluation should run in CI/CD pipeline</div>
+      <p style="margin-top:14px">Widely understood in the community. Docs, papers, and frameworks all emphasize evaluation.</p>
+    </div>
+    <div class="gap-arrow">âŸ¹<br><span style="font-size:14px;color:var(--muted)">GAP</span></div>
+    <div class="gap-side prac-side">
+      <h3>âš ï¸ What Teams Do</h3>
+      <div class="claim"><span style="color:var(--accent4)">âœ—</span> Manual spot-checks, not systematic evals</div>
+      <div class="claim"><span style="color:var(--accent4)">âœ—</span> No eval suite in CI â€” ships without testing</div>
+      <div class="claim"><span style="color:var(--accent4)">âœ—</span> Latency measured, semantic quality ignored</div>
+      <div class="claim"><span style="color:var(--accent4)">âœ—</span> Find failures from user complaints, not monitoring</div>
+      <div class="claim"><span style="color:var(--accent4)">âœ—</span> No ground truth dataset â€” "it works in the demo"</div>
+      <p style="margin-top:14px">78% of production agents have no structured evaluation pipeline. (Source: Multiple industry surveys 2024â€“25)</p>
+    </div>
+  </div>
+
+  <!-- 4 EVAL STRATEGIES -->
+  <div class="section-title">The 4 Evaluation Strategies</div>
+  <div class="eval-tabs">
+    <button class="eval-tab active" onclick="switchEval(0)">ðŸ”¬ Offline Evals</button>
+    <button class="eval-tab" onclick="switchEval(1)">ðŸ¤– LLM-as-Judge</button>
+    <button class="eval-tab" onclick="switchEval(2)">ðŸ” Online Shadow</button>
+    <button class="eval-tab" onclick="switchEval(3)">ðŸ§ª Human-in-Loop</button>
+  </div>
+
+  <!-- Strategy content panels -->
+  <div class="eval-content active" id="ec0">
+    <div class="strat-card">
+      <div class="strat-header"><div class="strat-icon">ðŸ”¬</div><div><div class="strat-title">Offline Evaluation</div><div class="strat-sub">Pre-deployment evaluation against a curated test set</div></div></div>
+      <div class="strat-body">Offline evaluation runs your agent against a dataset of (input, expected_output) pairs <em>before</em> deploying to production. It's the agentic equivalent of unit + integration tests. Build a ground-truth dataset from real user sessions, annotated by domain experts. Run it in CI on every code change.</div>
+      <div class="pros-cons">
+        <div class="pros"><h4>âœ… Strengths</h4><ul><li>Catches regressions before users see them</li><li>Fully deterministic, repeatable</li><li>Cheap â€” no live traffic needed</li><li>Can run in CI/CD pipeline</li></ul></div>
+        <div class="cons"><h4>âš ï¸ Limitations</h4><ul><li>Dataset must be maintained and kept current</li><li>Doesn't capture real user distribution</li><li>Only tests known failure modes</li><li>Dataset creation requires expert effort</li></ul></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Example Code â€” DeepEval</div>
+      <div class="code-snip"><span class="c-kw">from</span> deepeval <span class="c-kw">import</span> evaluate
+<span class="c-kw">from</span> deepeval.metrics <span class="c-kw">import</span> AnswerRelevancyMetric, FaithfulnessMetric
+<span class="c-kw">from</span> deepeval.test_case <span class="c-kw">import</span> LLMTestCase
+
+test_cases = [
+  LLMTestCase(
+    input=<span class="c-str">"What is Priya's renewal date?"</span>,
+    actual_output=agent.<span class="c-fn">run</span>(<span class="c-str">"What is Priya's renewal date?"</span>),
+    expected_output=<span class="c-str">"September 1, 2026"</span>,
+    retrieval_context=[customer_context]
+  )
+]
+<span class="c-fn">evaluate</span>(test_cases, metrics=[AnswerRelevancyMetric(), FaithfulnessMetric()])</div>
+    </div>
+  </div>
+
+  <div class="eval-content" id="ec1">
+    <div class="strat-card">
+      <div class="strat-header"><div class="strat-icon">ðŸ¤–</div><div><div class="strat-title">LLM-as-Judge</div><div class="strat-sub">Use a more capable LLM to evaluate your agent's outputs</div></div></div>
+      <div class="strat-body">Deploy a secondary LLM (often GPT-4o or Claude Opus) as a judge. The judge receives a rubric, the original task, and the agent's output â€” and scores quality dimensions like accuracy, helpfulness, safety, and task completion. Highly scalable: can score millions of responses asynchronously.</div>
+      <div class="pros-cons">
+        <div class="pros"><h4>âœ… Strengths</h4><ul><li>Scalable â€” scores all production traffic</li><li>Flexible rubrics for any task type</li><li>Catches nuanced quality issues</li><li>Provides explanation, not just a score</li></ul></div>
+        <div class="cons"><h4>âš ï¸ Limitations</h4><ul><li>Judge itself can be wrong or biased</li><li>Adds latency and cost to the pipeline</li><li>Positional bias â€” judge prefers first answer</li><li>Requires careful rubric engineering</li></ul></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Judge Prompt Template</div>
+      <div class="code-snip"><span class="c-cm"># LLM-as-Judge System Prompt</span>
+You are an objective evaluator. Score the following agent response
+on a scale of 1-5 for each dimension:
+
+<span class="c-cm"># Dimensions</span>
+- Accuracy: Does the response contain correct, grounded facts?
+- Completeness: Does it fully address the user's request?
+- Safety: Is the response free of harmful content?
+- Clarity: Is the response clear and well-structured?
+
+<span class="c-cm"># Task</span>
+User Query: <span class="c-str">"{query}"</span>
+Agent Response: <span class="c-str">"{response}"</span>
+Retrieved Context: <span class="c-str">"{context}"</span>
+
+Output JSON: <span class="c-str">{"accuracy": X, "completeness": X, "safety": X, "clarity": X, "reasoning": "..."}</span></div>
+    </div>
+  </div>
+
+  <div class="eval-content" id="ec2">
+    <div class="strat-card">
+      <div class="strat-header"><div class="strat-icon">ðŸ”</div><div><div class="strat-title">Online Shadow Evaluation</div><div class="strat-sub">Run a challenger agent in parallel on live traffic â€” compare without user impact</div></div></div>
+      <div class="strat-body">Shadow evaluation routes a copy of real production traffic to a new agent version without serving its responses to users. Compare the two versions across semantic metrics. When the challenger consistently outperforms, promote it. Enables risk-free A/B testing of agent changes at scale.</div>
+      <div class="pros-cons">
+        <div class="pros"><h4>âœ… Strengths</h4><ul><li>Uses real user query distribution</li><li>No user impact â€” shadow responses discarded</li><li>Reveals real-world regressions before rollout</li><li>Enables continuous improvement loops</li></ul></div>
+        <div class="cons"><h4>âš ï¸ Limitations</h4><ul><li>2Ã— inference cost during shadow phase</li><li>Write-action agents can't be shadowed safely</li><li>Complex infrastructure to route + compare</li><li>Still needs semantic scoring for comparison</li></ul></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Shadow Eval Architecture</div>
+      <div class="code-snip"><span class="c-cm"># Traffic Router</span>
+<span class="c-kw">async def</span> <span class="c-fn">handle_request</span>(query):
+    <span class="c-cm"># Serve production agent</span>
+    prod_response = <span class="c-kw">await</span> prod_agent.<span class="c-fn">run</span>(query)
+
+    <span class="c-cm"># Shadow: run challenger, discard response</span>
+    challenger_response = <span class="c-kw">await</span> challenger_agent.<span class="c-fn">run</span>(query)
+
+    <span class="c-cm"># Async eval comparison (doesn't block user)</span>
+    asyncio.<span class="c-fn">create_task</span>(
+        evaluator.<span class="c-fn">compare</span>(prod_response, challenger_response, query)
+    )
+
+    <span class="c-kw">return</span> prod_response  <span class="c-cm"># Only prod response shown to user</span></div>
+    </div>
+  </div>
+
+  <div class="eval-content" id="ec3">
+    <div class="strat-card">
+      <div class="strat-header"><div class="strat-icon">ðŸ§ª</div><div><div class="strat-title">Human-in-the-Loop Evaluation</div><div class="strat-sub">Domain experts annotate a sample of agent outputs â€” the gold standard</div></div></div>
+      <div class="strat-body">Automated metrics measure proxy signals. Human evaluation measures what actually matters: did a domain expert consider this output correct, safe, and helpful? Run human eval on a stratified sample of production traffic. Use it to calibrate automated judges and surface systematic failures that metrics miss.</div>
+      <div class="pros-cons">
+        <div class="pros"><h4>âœ… Strengths</h4><ul><li>Ground truth â€” highest signal quality</li><li>Catches failures automated metrics miss</li><li>Calibrates and validates your LLM judges</li><li>Required for high-stakes domains (legal, medical)</li></ul></div>
+        <div class="cons"><h4>âš ï¸ Limitations</h4><ul><li>Expensive and slow â€” can't scale to all traffic</li><li>Annotator agreement can be low (&lt;70%) on subjective tasks</li><li>Latency: days/weeks, not real-time</li><li>Requires domain expertise â€” can't outsource easily</li></ul></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Human Eval Rubric â€” Sampling Strategy</div>
+      <div class="code-snip"><span class="c-cm"># Stratified sampling for human review</span>
+samples = {
+  <span class="c-str">"random_5pct"</span>: <span class="c-fn">sample</span>(all_runs, 0.05),      <span class="c-cm"># Baseline</span>
+  <span class="c-str">"low_judge_score"</span>: runs_where(judge_score &lt; 0.7), <span class="c-cm"># Risky cases</span>
+  <span class="c-str">"new_task_types"</span>: <span class="c-fn">sample</span>(novel_tasks, 50),      <span class="c-cm"># Distribution shift</span>
+  <span class="c-str">"user_escalations"</span>: all_user_complaints,         <span class="c-cm"># User signals</span>
+  <span class="c-str">"high_value_users"</span>: runs_from(enterprise_tier),  <span class="c-cm"># Risk weighting</span>
+}</div>
+    </div>
+  </div>
+
+  <!-- STRATEGY SELECTOR -->
+  <div class="section-title">Which Evaluation Strategy Fits Your Scenario?</div>
+  <div class="eval-builder">
+    <h3>ðŸŽ¯ Scenario â†’ Strategy Matcher</h3>
+    <p>Select your scenario and see how well each evaluation strategy fits. The recommended strategy is highlighted.</p>
+    <div class="scenario-select" id="scenarioSelect"></div>
+    <div class="eval-result" id="evalResult" style="display:none"></div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="section-title">Key Insights</div>
+  <div class="insight-bar"><strong>The gap is not knowledge â€” it's activation energy.</strong> Teams know evaluation matters but face friction: no dataset, no tooling, no owner. Solve the infrastructure and ownership problem first.</div>
+  <div class="insight-bar"><strong>Start with offline evals on 10 golden test cases</strong> before building anything more sophisticated. 10 well-chosen cases catch 80% of regressions. Perfect is the enemy of good here.</div>
+  <div class="insight-bar"><strong>LLM-as-judge is not ground truth.</strong> It's a scalable proxy. Always calibrate your judge against human annotations quarterly. A judge that diverges from human judgment is worse than no judge.</div>
+  <div class="insight-bar"><strong>Evaluation is a product, not a project.</strong> It needs an owner, a roadmap, and ongoing maintenance â€” just like the agent itself. Teams that treat eval as a one-time setup always regress.</div>
+</div>
+
+<script>
+function switchEval(i) {
+  document.querySelectorAll('.eval-tab').forEach((t,j) => t.classList.toggle('active', j===i));
+  document.querySelectorAll('.eval-content').forEach((c,j) => c.classList.toggle('active', j===i));
+}
+
+const scenarios = [
+  { label: 'ðŸš€ Pre-deployment CI check', fits: [95, 60, 10, 40], rec: 0 },
+  { label: 'ðŸ“Š Scoring all production traffic', fits: [20, 90, 40, 15], rec: 1 },
+  { label: 'ðŸ”„ Testing a new agent version', fits: [70, 75, 95, 30], rec: 2 },
+  { label: 'âš•ï¸ High-stakes domain (medical)', fits: [80, 50, 50, 100], rec: 3 },
+  { label: 'ðŸ› Investigating a customer complaint', fits: [30, 70, 10, 90], rec: 3 },
+  { label: 'ðŸ“ˆ Continuous quality monitoring', fits: [20, 95, 60, 20], rec: 1 },
+];
+const stratNames = ['Offline Evals', 'LLM-as-Judge', 'Online Shadow', 'Human-in-Loop'];
+const stratColors = ['#6c63ff','#06d6a0','#00d2ff','#ffd166'];
+
+let selectedScen = 0;
+function renderScenarios() {
+  document.getElementById('scenarioSelect').innerHTML = scenarios.map((s,i) => `
+    <button class="scen-btn${i===selectedScen?' sel':''}" onclick="selectScen(${i})">${s.label}</button>
+  `).join('');
+}
+function selectScen(i) {
+  selectedScen = i;
+  renderScenarios();
+  const s = scenarios[i];
+  const er = document.getElementById('evalResult');
+  er.style.display = 'block';
+  er.innerHTML = stratNames.map((n,j) => `
+    <div class="eval-row">
+      <div class="eval-strategy-name" style="color:${stratColors[j]}">${n}</div>
+      <div class="fit-bar"><div class="fit-fill" style="width:${s.fits[j]}%;background:${stratColors[j]}"></div></div>
+      <div class="fit-label" style="color:${stratColors[j]}">${s.fits[j]}%</div>
+      ${j===s.rec?'<span class="recommended">â­ Recommended</span>':''}
+    </div>
+  `).join('');
+}
+
+renderScenarios();
+selectScen(0);
+</script>
+</body>
+</html>

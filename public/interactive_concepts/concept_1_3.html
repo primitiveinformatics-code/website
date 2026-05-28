@@ -1,0 +1,597 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.3 The 5-Component Agent Anatomy â€” Agentic AI</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #21263a;
+    --accent: #6c63ff;
+    --accent2: #00d2ff;
+    --red: #ff6584;
+    --green: #06d6a0;
+    --yellow: #ffd166;
+    --orange: #ff9f43;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(108,99,255,0.2);
+
+    /* Component colours */
+    --c-brain: #6c63ff;
+    --c-tools: #00d2ff;
+    --c-memory: #ffd166;
+    --c-loop: #06d6a0;
+    --c-guard: #ff6584;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+  nav {
+    display: flex; align-items: center; gap: 10px; padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,17,23,0.9); position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .nav-home { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s; }
+  .nav-home:hover { color: var(--text); }
+  .nav-sep { color: var(--border); font-size: 14px; }
+  .nav-current { color: var(--accent); font-size: 13px; font-weight: 700; }
+  .nav-arrows { margin-left: auto; display: flex; gap: 8px; }
+  .nav-btn {
+    background: var(--card); border: 1px solid var(--border); color: var(--muted);
+    padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+  }
+  .nav-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .hero { padding: 60px 40px 48px; max-width: 960px; margin: 0 auto; }
+  .concept-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent); font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 20px; margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(26px, 3.5vw, 44px); font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, var(--accent2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; line-height: 1.2; margin-bottom: 16px;
+  }
+  .hero-lead { font-size: 17px; color: var(--muted); line-height: 1.7; max-width: 680px; }
+
+  .content { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+  .section { margin-bottom: 52px; }
+  .section-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ANATOMY DIAGRAM */
+  .anatomy-wrapper {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .anatomy-diagram {
+    flex-shrink: 0;
+    width: 280px;
+  }
+  .agent-circle {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    border: 2px dashed rgba(108,99,255,0.3);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .agent-center {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(108,99,255,0.3), rgba(0,210,255,0.2));
+    border: 2px solid var(--accent);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 0 30px rgba(108,99,255,0.3);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .agent-center:hover, .agent-center.active {
+    box-shadow: 0 0 50px rgba(108,99,255,0.6);
+    transform: scale(1.05);
+  }
+  .agent-center-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--accent); margin-top: 2px;
+  }
+  .orbit-btn {
+    position: absolute;
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 18px;
+  }
+  .orbit-btn span {
+    font-size: 8px; font-weight: 700;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    margin-top: 2px; text-align: center;
+  }
+  .orbit-btn:hover, .orbit-btn.active {
+    transform: scale(1.12);
+  }
+  /* positions */
+  .ob-brain { top: 10px; left: 50%; transform: translateX(-50%); background: rgba(108,99,255,0.12); border-color: var(--c-brain); color: var(--c-brain); }
+  .ob-tools { top: 50%; right: 10px; transform: translateY(-50%); background: rgba(0,210,255,0.1); border-color: var(--c-tools); color: var(--c-tools); }
+  .ob-memory { bottom: 10px; right: 30%; background: rgba(255,209,102,0.1); border-color: var(--c-memory); color: var(--c-memory); }
+  .ob-loop { bottom: 10px; left: 30%; background: rgba(6,214,160,0.1); border-color: var(--c-loop); color: var(--c-loop); }
+  .ob-guard { top: 50%; left: 10px; transform: translateY(-50%); background: rgba(255,101,132,0.1); border-color: var(--c-guard); color: var(--c-guard); }
+  .ob-brain:hover, .ob-brain.active { box-shadow: 0 0 20px rgba(108,99,255,0.5); }
+  .ob-tools:hover, .ob-tools.active { box-shadow: 0 0 20px rgba(0,210,255,0.4); }
+  .ob-memory:hover, .ob-memory.active { box-shadow: 0 0 20px rgba(255,209,102,0.4); }
+  .ob-loop:hover, .ob-loop.active { box-shadow: 0 0 20px rgba(6,214,160,0.4); }
+  .ob-guard:hover, .ob-guard.active { box-shadow: 0 0 20px rgba(255,101,132,0.4); }
+
+  .anatomy-detail { flex: 1; }
+  .comp-card {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 26px;
+    display: none;
+  }
+  .comp-card.active { display: block; }
+  .comp-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+  }
+  .comp-icon-big { font-size: 36px; }
+  .comp-name { font-size: 20px; font-weight: 800; }
+  .comp-subtitle { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+  .comp-body { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+  .comp-points { display: flex; flex-direction: column; gap: 8px; }
+  .comp-point {
+    display: flex; gap: 10px; font-size: 13px; color: var(--text); line-height: 1.5;
+  }
+  .comp-bullet { flex-shrink: 0; font-size: 16px; }
+  .comp-analogy {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .comp-analogy strong { color: var(--text); }
+
+  /* DEEP DIVE TABLE */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  .comp-table th {
+    text-align: left; padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    color: var(--muted); font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-table td {
+    padding: 10px 12px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .comp-table td:first-child { color: var(--muted); font-weight: 600; white-space: nowrap; }
+
+  /* THE WHILE LOOP ANALOGY */
+  .code-block {
+    background: #11141f;
+    border: 1px solid rgba(108,99,255,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+  .code-comment { color: #4e5d78; }
+  .code-keyword { color: var(--accent); font-weight: 700; }
+  .code-func { color: var(--accent2); }
+  .code-str { color: var(--green); }
+  .code-var { color: var(--yellow); }
+
+  /* THE ASSEMBLY VIEW */
+  .assembly {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .asm-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    overflow: hidden;
+    border-bottom: none;
+  }
+  .asm-row:first-child { border-radius: 14px 14px 0 0; }
+  .asm-row:last-child { border-radius: 0 0 14px 14px; border-bottom: 1px solid var(--border); }
+  .asm-num {
+    width: 50px; min-width: 50px;
+    background: rgba(255,255,255,0.03);
+    border-right: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; padding: 16px;
+  }
+  .asm-body {
+    flex: 1;
+    padding: 14px 20px;
+  }
+  .asm-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .asm-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .asm-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 3px 10px;
+    border-radius: 20px; margin-bottom: 4px; display: inline-block;
+  }
+
+  /* QUIZ */
+  .quiz-box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px;
+  }
+  .quiz-q { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 12px 18px; cursor: pointer;
+    font-size: 14px; color: var(--muted); transition: all 0.2s; text-align: left;
+  }
+  .quiz-option:hover { background: rgba(108,99,255,0.1); border-color: rgba(108,99,255,0.3); color: var(--text); }
+  .quiz-option.correct { background: rgba(6,214,160,0.12); border-color: #06d6a0; color: #06d6a0; }
+  .quiz-option.wrong { background: rgba(255,101,132,0.1); border-color: #ff6584; color: #ff6584; }
+  .quiz-feedback {
+    margin-top: 16px; padding: 14px 18px; border-radius: 10px;
+    font-size: 14px; line-height: 1.6; display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: #06d6a0; }
+  .quiz-feedback.wrong { background: rgba(255,101,132,0.08); border: 1px solid rgba(255,101,132,0.25); color: #ff8fa3; }
+  .quiz-reset {
+    margin-top: 14px; background: var(--accent); color: white; border: none;
+    padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: none;
+  }
+  .quiz-reset.show { display: inline-block; }
+
+  .takeaway {
+    background: linear-gradient(135deg, rgba(108,99,255,0.12) 0%, rgba(0,210,255,0.06) 100%);
+    border: 1px solid rgba(108,99,255,0.3); border-left: 4px solid var(--accent);
+    border-radius: 12px; padding: 22px 26px; font-size: 15px; color: var(--text); line-height: 1.7;
+  }
+  .takeaway strong { color: var(--accent2); }
+
+  @media (max-width: 700px) {
+    .anatomy-wrapper { flex-direction: column; }
+    .anatomy-diagram { width: 100%; display: flex; justify-content: center; }
+    .hero, .content { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="pre-course.html" class="nav-home">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">1.3 Agent Anatomy</span>
+  <div class="nav-arrows">
+    <a href="concept_1_2.html" class="nav-btn">â† Myths vs Reality</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="concept-badge">Session 1 Â· Pre-Course Â· Concept 1.3</div>
+  <h1>The 5-Component<br>Anatomy of an AI Agent</h1>
+  <p class="hero-lead">Every production-grade agent â€” regardless of framework, LLM, or use case â€” is built from exactly five components. Understanding each one, and how they interact, is the foundation of agentic architecture.</p>
+</div>
+
+<div class="content">
+
+  <!-- INTERACTIVE ANATOMY -->
+  <div class="section">
+    <div class="section-title">Interactive Agent Diagram â€” Click Each Component</div>
+    <div class="anatomy-wrapper">
+      <div class="anatomy-diagram">
+        <div class="agent-circle">
+          <div class="agent-center" onclick="selectComp('brain')" id="btn-brain">
+            ðŸ§ 
+            <span class="agent-center-label">Agent</span>
+          </div>
+          <div class="orbit-btn ob-brain" onclick="selectComp('brain')" id="ob-brain">
+            ðŸ§ <span>Brain</span>
+          </div>
+          <div class="orbit-btn ob-tools" onclick="selectComp('tools')" id="ob-tools">
+            ðŸ”§<span>Tools</span>
+          </div>
+          <div class="orbit-btn ob-memory" onclick="selectComp('memory')" id="ob-memory">
+            ðŸ’¾<span>Memory</span>
+          </div>
+          <div class="orbit-btn ob-loop" onclick="selectComp('loop')" id="ob-loop">
+            ðŸ”„<span>Loop</span>
+          </div>
+          <div class="orbit-btn ob-guard" onclick="selectComp('guard')" id="ob-guard">
+            ðŸ›¡ï¸<span>Guard</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="anatomy-detail">
+
+        <div class="comp-card active" id="comp-brain">
+          <div class="comp-header">
+            <div class="comp-icon-big">ðŸ§ </div>
+            <div>
+              <div class="comp-name" style="color: var(--c-brain)">The Brain (LLM)</div>
+              <div class="comp-subtitle" style="color: var(--c-brain)">Cognitive Core</div>
+            </div>
+          </div>
+          <div class="comp-body">The LLM is not a text generator in this context â€” it's a <strong>decision maker</strong>. Every step of the loop, the brain reads all available context and decides: What is the current state? What is the right next action? Which tool should I call? Have I reached the goal?</div>
+          <div class="comp-points">
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Reads the full context: system prompt, task, history, tool results</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Selects the next action from available tools or returns a final answer</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Paradigm shift: its function is making CHOICES, not generating text</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Examples: GPT-4o, Claude 3 Opus, Gemini 1.5 Pro</div>
+          </div>
+          <div class="comp-analogy">
+            <strong>Analogy:</strong> The brain is the CEO of a company. It doesn't do the work directly â€” it reads reports (observations), makes decisions, and assigns tasks (tool calls) to the team. The quality of every other component depends on the quality of its reasoning.
+          </div>
+        </div>
+
+        <div class="comp-card" id="comp-tools">
+          <div class="comp-header">
+            <div class="comp-icon-big">ðŸ”§</div>
+            <div>
+              <div class="comp-name" style="color: var(--c-tools)">Tools (The Hands)</div>
+              <div class="comp-subtitle" style="color: var(--c-tools)">Action Interface</div>
+            </div>
+          </div>
+          <div class="comp-body">Tools are how the agent acts on the world. Without tools, an agent can only generate text â€” it can't retrieve real information, execute code, or trigger any real-world effect. Tools are the bridge from language to action.</div>
+          <div class="comp-points">
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>APIs: weather, stock prices, CRM data, external services</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>Code runners: execute Python/JS in a sandbox, return results</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>File systems: read, write, search documents</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>Browsers: navigate websites, fill forms, extract content</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>Standard interface: MCP (Model Context Protocol)</div>
+          </div>
+          <div class="comp-analogy">
+            <strong>Analogy:</strong> Tools are the hands of the agent. The brain can plan perfectly, but if it has no hands, it can only narrate what it would do. Every real-world capability an agent has comes from a tool.
+          </div>
+        </div>
+
+        <div class="comp-card" id="comp-memory">
+          <div class="comp-header">
+            <div class="comp-icon-big">ðŸ’¾</div>
+            <div>
+              <div class="comp-name" style="color: var(--c-memory)">Memory (State)</div>
+              <div class="comp-subtitle" style="color: var(--c-memory)">State Management</div>
+            </div>
+          </div>
+          <div class="comp-body">Without memory, every loop iteration starts from zero. The agent would re-derive the same conclusions, repeat failed tool calls, and forget what it already knows. Memory is what makes agents feel coherent and capable over long tasks.</div>
+          <table class="comp-table">
+            <tr><th>Type</th><th>What It Is</th></tr>
+            <tr><td>Short-term</td><td>Context window â€” everything visible to the LLM right now. Finite (8Kâ€“200K tokens), volatile.</td></tr>
+            <tr><td>Long-term</td><td>Vector database â€” semantic search over persistent documents, past interactions, knowledge bases.</td></tr>
+          </table>
+          <div class="comp-analogy" style="margin-top:14px">
+            <strong>Analogy:</strong> Short-term memory is your working memory â€” what you're holding in mind right now. Long-term memory is your hard drive â€” knowledge you can look up when you need it but don't keep front-of-mind constantly.
+          </div>
+        </div>
+
+        <div class="comp-card" id="comp-loop">
+          <div class="comp-header">
+            <div class="comp-icon-big">ðŸ”„</div>
+            <div>
+              <div class="comp-name" style="color: var(--c-loop)">The Loop (ReAct)</div>
+              <div class="comp-subtitle" style="color: var(--c-loop)">Execution Cycle</div>
+            </div>
+          </div>
+          <div class="comp-body">The loop is what makes an agent an agent. A standard LLM call runs once. An agent runs in a continuous cycle until it reaches its goal or a termination condition triggers. The standard implementation of this loop is called <strong>ReAct</strong>.</div>
+          <div class="comp-points">
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Observe</strong>: Read current state and latest tool results</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Think</strong>: Reason about what to do next</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Act</strong>: Call a tool or produce output</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Evaluate</strong>: Did the action achieve the sub-goal?</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Repeat or Finish</strong>: Loop back if not done; return answer if done</div>
+          </div>
+          <div class="comp-analogy">
+            <strong>Analogy:</strong> A standard program is a function â€” it runs once and returns. An agent is a while loop â€” it keeps running until a condition is met. This single structural difference is what makes agents capable of open-ended, multi-step tasks.
+          </div>
+        </div>
+
+        <div class="comp-card" id="comp-guard">
+          <div class="comp-header">
+            <div class="comp-icon-big">ðŸ›¡ï¸</div>
+            <div>
+              <div class="comp-name" style="color: var(--c-guard)">Guardrails (Safety)</div>
+              <div class="comp-subtitle" style="color: var(--c-guard)">Control Layer</div>
+            </div>
+          </div>
+          <div class="comp-body">Guardrails are designed in from day one â€” never bolted on after deployment. Because agents act autonomously, a flaw in an unguarded agent doesn't produce a bad answer: it can delete data, make financial transactions, or run up thousands of dollars in API costs before anyone notices.</div>
+          <div class="comp-points">
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Sandboxing</strong>: Code-executing agents run in isolated MicroVMs, destroyed after use</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>HITL (Human-in-the-Loop)</strong>: High-stakes actions pause for signed human approval</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Circuit Breakers</strong>: Hard stops â€” "stop if session exceeds $2 or 50 tool calls"</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Output Validation</strong>: Structured output parsing catches hallucinated schemas before downstream systems receive them</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Scope Restrictions</strong>: Minimum permissions â€” never "Admin" by default</div>
+          </div>
+          <div class="comp-analogy">
+            <strong>Principle:</strong> The more autonomy you give an agent, the more rigorous the guardrails must be. Autonomy and safety must scale together.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- THE WHILE LOOP ANALOGY -->
+  <div class="section">
+    <div class="section-title">The While Loop Analogy</div>
+    <div class="code-block">
+<span class="code-comment"># Standard program: runs once, returns result</span>
+<span class="code-keyword">def</span> <span class="code-func">chatbot</span>(user_input):
+    <span class="code-keyword">return</span> llm.call(user_input)  <span class="code-comment"># one call, done</span>
+
+<span class="code-comment"># Agent: loops until goal is achieved</span>
+<span class="code-keyword">def</span> <span class="code-func">agent</span>(goal, max_iterations=<span class="code-var">20</span>):
+    <span class="code-var">state</span> = {<span class="code-str">"goal"</span>: goal, <span class="code-str">"history"</span>: [], <span class="code-str">"cost"</span>: <span class="code-var">0.0</span>}
+
+    <span class="code-keyword">while</span> <span class="code-keyword">not</span> state[<span class="code-str">"done"</span>] <span class="code-keyword">and</span> iterations < max_iterations:
+        thought = llm.think(state)            <span class="code-comment"># ðŸ§  Brain reasons</span>
+        action  = llm.decide_action(thought)  <span class="code-comment"># ðŸ§  Brain decides</span>
+        result  = tools.execute(action)       <span class="code-comment"># ðŸ”§ Tools act</span>
+        memory.update(state, result)          <span class="code-comment"># ðŸ’¾ Memory persists</span>
+        guardrails.check(state)               <span class="code-comment"># ðŸ›¡ï¸ Guardrails verify</span>
+        iterations += <span class="code-var">1</span>
+
+    <span class="code-keyword">return</span> state[<span class="code-str">"final_answer"</span>]</div>
+  </div>
+
+  <!-- ASSEMBLY VIEW -->
+  <div class="section">
+    <div class="section-title">All 5 Components at a Glance</div>
+    <div class="assembly">
+      <div class="asm-row">
+        <div class="asm-num">ðŸ§ </div>
+        <div class="asm-body">
+          <div class="asm-tag" style="background:rgba(108,99,255,0.12);color:var(--c-brain)">Brain Â· LLM</div>
+          <div class="asm-title">Cognitive Core â€” reads context, reasons, decides next action</div>
+          <div class="asm-desc">GPT-4o, Claude Opus, Gemini 1.5. Paradigm shift: its function is making CHOICES, not generating text.</div>
+        </div>
+      </div>
+      <div class="asm-row">
+        <div class="asm-num">ðŸ”§</div>
+        <div class="asm-body">
+          <div class="asm-tag" style="background:rgba(0,210,255,0.1);color:var(--c-tools)">Tools Â· The Hands</div>
+          <div class="asm-title">Action Interface â€” APIs, code runners, file systems, browsers</div>
+          <div class="asm-desc">Connected via MCP. Without tools an agent can only describe actions â€” tools let it perform them.</div>
+        </div>
+      </div>
+      <div class="asm-row">
+        <div class="asm-num">ðŸ’¾</div>
+        <div class="asm-body">
+          <div class="asm-tag" style="background:rgba(255,209,102,0.1);color:var(--c-memory)">Memory Â· State</div>
+          <div class="asm-title">Prevents starting from zero â€” context window + vector store</div>
+          <div class="asm-desc">Short-term: context window (volatile, 8Kâ€“200K tokens). Long-term: vector database (persistent, semantic search).</div>
+        </div>
+      </div>
+      <div class="asm-row">
+        <div class="asm-num">ðŸ”„</div>
+        <div class="asm-body">
+          <div class="asm-tag" style="background:rgba(6,214,160,0.1);color:var(--c-loop)">Loop Â· ReAct</div>
+          <div class="asm-title">Observe â†’ Think â†’ Act â†’ Evaluate â†’ Repeat or Finish</div>
+          <div class="asm-desc">The agent runs in a continuous cycle until the goal is achieved or a termination condition fires. This is what makes it "agentic".</div>
+        </div>
+      </div>
+      <div class="asm-row">
+        <div class="asm-num">ðŸ›¡ï¸</div>
+        <div class="asm-body">
+          <div class="asm-tag" style="background:rgba(255,101,132,0.1);color:var(--c-guard)">Guardrails Â· Safety</div>
+          <div class="asm-title">Sandboxing, HITL, circuit breakers, output validation, scope limits</div>
+          <div class="asm-desc">Designed in from day one. Autonomy and safety must scale together â€” never bolt on guardrails after deployment.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAKEAWAY -->
+  <div class="section">
+    <div class="section-title">Key Takeaway</div>
+    <div class="takeaway">
+      Every agent, in every framework (LangChain, AutoGen, CrewAI, LangGraph), has these five components. The frameworks differ in how they wire them together â€” but the anatomy is universal. <strong>When an agent fails in production, the failure always traces back to a weakness in one of these five components.</strong> This is your diagnostic framework.
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section">
+    <div class="section-title">Quick Check</div>
+    <div class="quiz-box">
+      <div class="quiz-q">An agent is running a 20-step research task. At step 12, the API it's calling starts returning 503 errors. The agent retries the same failing call 8 more times, spending $15 in LLM tokens before anyone notices. Which component was missing or misconfigured?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="checkAnswer(this, false)">The Brain (LLM) â€” a better model would have noticed the error</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">The Tools â€” the API tool should have had better error messages</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">Memory â€” the agent forgot it had already tried this call</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">Guardrails â€” specifically a circuit breaker on repeated identical tool calls</button>
+      </div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <button class="quiz-reset" id="quiz-reset" onclick="resetQuiz()">Try Again</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const compMap = {
+  brain: { btn: 'ob-brain', comp: 'comp-brain' },
+  tools: { btn: 'ob-tools', comp: 'comp-tools' },
+  memory: { btn: 'ob-memory', comp: 'comp-memory' },
+  loop: { btn: 'ob-loop', comp: 'comp-loop' },
+  guard: { btn: 'ob-guard', comp: 'comp-guard' },
+};
+let currentComp = 'brain';
+
+function selectComp(name) {
+  // deactivate previous
+  document.getElementById('ob-' + currentComp)?.classList.remove('active');
+  document.getElementById('comp-' + currentComp)?.classList.remove('active');
+  // activate new
+  document.getElementById('ob-' + name)?.classList.add('active');
+  document.getElementById('comp-' + name)?.classList.add('active');
+  currentComp = name;
+}
+// init
+selectComp('brain');
+
+function checkAnswer(btn, isCorrect) {
+  const options = document.querySelectorAll('.quiz-option');
+  const feedback = document.getElementById('quiz-feedback');
+  const reset = document.getElementById('quiz-reset');
+  options.forEach(o => o.disabled = true);
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    options.forEach(o => {
+      if (o.getAttribute('onclick').includes('true')) o.classList.add('correct');
+    });
+  }
+  feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+  feedback.textContent = isCorrect
+    ? 'âœ“ Correct. This is the "Tool-Call Thrashing" failure mode. A circuit breaker configured to stop after 3 identical failing tool calls would have terminated the loop at step 14, saving $13 in unnecessary LLM spend. Guardrails are what separate a production agent from an expensive experiment.'
+    : 'âœ— Not quite. The root cause here is uncontrolled repetition â€” retrying the same failing call with no stopping condition. That\'s a guardrail problem (circuit breaker). Better error messages or a smarter LLM might help slightly, but without a hard stop on repeated failures, the agent keeps burning tokens.';
+  reset.className = 'quiz-reset show';
+}
+
+function resetQuiz() {
+  const options = document.querySelectorAll('.quiz-option');
+  const feedback = document.getElementById('quiz-feedback');
+  const reset = document.getElementById('quiz-reset');
+  options.forEach(o => { o.disabled = false; o.className = 'quiz-option'; });
+  feedback.className = 'quiz-feedback';
+  reset.className = 'quiz-reset';
+}
+</script>
+
+</body>
+</html>

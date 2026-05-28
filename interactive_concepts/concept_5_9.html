@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.9 — Multimodal Agents</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #00d2ff; --accent2: #6c63ff; --accent3: #ffd166; --accent4: #ff6584; --accent5: #06d6a0;
+    --text: #e8eaf6; --muted: #8892b0; --border: rgba(0,210,255,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  nav a:hover { color: var(--accent); }
+  .nav-cur { color: var(--accent); font-weight: 700; }
+
+  .hero { background: linear-gradient(135deg,#0f1117 0%,#071a22 40%,#091520 100%); padding:56px 40px 48px; text-align:center; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(0,210,255,0.12) 0%,transparent 70%); pointer-events:none; }
+  .badge { display:inline-block; background:rgba(0,210,255,0.12); border:1px solid rgba(0,210,255,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:20px; }
+  .hero h1 { font-size:clamp(26px,3.5vw,44px); font-weight:800; background:linear-gradient(90deg,#fff 0%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:14px; }
+  .hero p { color:var(--muted); font-size:16px; max-width:640px; margin:0 auto; line-height:1.7; }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:rgba(0,210,255,0.2); }
+
+  /* MODALITY EXPLORER */
+  .modality-tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+  .mod-tab { padding:10px 20px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:var(--card); color:var(--muted); font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:8px; font-family:inherit; }
+  .mod-tab:hover, .mod-tab.active { color:var(--text); border-color:var(--accent); background:rgba(0,210,255,0.1); }
+  .mod-panel { display:none; }
+  .mod-panel.visible { display:block; }
+  .mod-layout { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  @media(max-width:650px){.mod-layout{grid-template-columns:1fr;}}
+  .mod-info { background:var(--card); border-radius:14px; padding:24px; }
+  .mod-title { font-size:18px; font-weight:800; margin-bottom:8px; }
+  .mod-desc { color:var(--muted); font-size:14px; line-height:1.7; margin-bottom:18px; }
+  .mod-capabilities { list-style:none; }
+  .mod-capabilities li { padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:13px; display:flex; gap:10px; align-items:flex-start; line-height:1.5; }
+  .mod-capabilities li:last-child { border-bottom:none; }
+  .mod-models { background:var(--card); border-radius:14px; padding:24px; }
+  .model-chip { display:inline-block; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:8px 14px; margin:5px 4px; font-size:12px; font-weight:700; }
+  .use-cases { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+  .uc-item { background:rgba(255,255,255,0.04); border-radius:8px; padding:10px 14px; font-size:12px; line-height:1.5; }
+  .uc-tag { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-box { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:48px; }
+  .arch-title { font-size:15px; font-weight:700; margin-bottom:20px; }
+  .arch-diagram { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .arch-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; width:100%; }
+  .arch-node { background:var(--card); border-radius:12px; padding:14px 20px; text-align:center; border:1px solid rgba(255,255,255,0.08); min-width:100px; transition:all 0.2s; cursor:pointer; }
+  .arch-node:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+  .arch-node .an-icon { font-size:24px; margin-bottom:6px; }
+  .arch-node .an-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+  .arch-node .an-name { font-size:13px; font-weight:800; margin-top:2px; }
+  .arch-arrow { color:var(--muted); font-size:22px; display:flex; align-items:center; justify-content:center; height:24px; }
+  .arch-central { background:linear-gradient(135deg,rgba(0,210,255,0.2),rgba(108,99,255,0.15)); border:2px solid rgba(0,210,255,0.4); border-radius:16px; padding:20px 32px; text-align:center; min-width:200px; }
+  .arch-central .an-icon { font-size:36px; margin-bottom:8px; }
+  .arch-central .an-name { font-size:16px; font-weight:800; color:var(--accent); }
+
+  /* PIPELINE BUILDER */
+  .builder-box { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:48px; }
+  .builder-title { font-size:15px; font-weight:700; margin-bottom:6px; }
+  .builder-sub { color:var(--muted); font-size:12px; margin-bottom:20px; }
+  .input-picker { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+  .input-chip { padding:8px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:var(--card); color:var(--muted); font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; font-family:inherit; display:flex; align-items:center; gap:6px; }
+  .input-chip.selected { color:#fff; border-color:var(--accent); background:rgba(0,210,255,0.12); }
+  .pipeline-preview { background:var(--card); border-radius:12px; padding:20px; min-height:80px; display:flex; align-items:center; gap:0; overflow-x:auto; }
+  .pp-step { display:flex; flex-direction:column; align-items:center; min-width:90px; }
+  .pp-icon { width:48px; height:48px; border-radius:12px; background:rgba(0,210,255,0.15); border:2px solid rgba(0,210,255,0.4); display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .pp-label { font-size:10px; color:var(--muted); margin-top:6px; text-align:center; }
+  .pp-arrow { color:var(--muted); font-size:18px; flex-shrink:0; padding:0 6px; display:flex; align-items:center; }
+  .pp-placeholder { color:var(--muted); font-size:13px; width:100%; text-align:center; }
+  .output-display { margin-top:14px; background:#0a0d14; border-radius:10px; padding:16px; font-size:13px; line-height:1.7; }
+  .od-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent); margin-bottom:8px; }
+
+  /* COMPARISON TABLE */
+  .comparison { overflow-x:auto; margin-bottom:48px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { padding:12px 16px; text-align:left; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:1px; border-bottom:2px solid rgba(255,255,255,0.08); }
+  td { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; line-height:1.5; }
+  tr:hover td { background:rgba(255,255,255,0.03); }
+  .badge-sm { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+  .badge-high { background:rgba(6,214,160,0.2); color:#06d6a0; }
+  .badge-med { background:rgba(255,209,102,0.2); color:#ffd166; }
+  .badge-low { background:rgba(255,101,132,0.2); color:#ff6584; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">← All Concepts</a>
+  <span style="color:var(--muted)">›</span>
+  <span class="nav-cur">5.9 — Multimodal Agents</span>
+</nav>
+
+<div class="hero">
+  <div class="badge">Session 5 · Advanced Agents</div>
+  <h1>Multimodal Agents</h1>
+  <p>Agents that perceive and act across text, images, audio, video, and documents — enabling human-level task handling in complex real-world environments</p>
+</div>
+
+<div class="main">
+
+  <!-- MODALITY EXPLORER -->
+  <div class="section-title">Modality Explorer — What Agents Can Perceive & Generate</div>
+  <div class="modality-tabs">
+    <button class="mod-tab active" onclick="switchMod('vision')">👁️ Vision</button>
+    <button class="mod-tab" onclick="switchMod('audio')">🎙️ Audio</button>
+    <button class="mod-tab" onclick="switchMod('document')">📄 Documents</button>
+    <button class="mod-tab" onclick="switchMod('code')">💻 Code + Execution</button>
+    <button class="mod-tab" onclick="switchMod('video')">🎬 Video</button>
+  </div>
+
+  <div id="mod-vision" class="mod-panel visible">
+    <div class="mod-layout">
+      <div class="mod-info">
+        <div class="mod-title" style="color:#00d2ff">👁️ Vision Input / Output</div>
+        <div class="mod-desc">The ability to understand, reason about, and generate images — enabling agents to work with screenshots, diagrams, medical scans, product photos, and more.</div>
+        <ul class="mod-capabilities">
+          <li>📊 <strong>Chart & diagram reading</strong> — extract data, trends, and structure from visual graphs</li>
+          <li>🖥️ <strong>UI/screenshot understanding</strong> — navigate interfaces, fill forms, test web apps</li>
+          <li>🔍 <strong>Object detection & OCR</strong> — identify objects, read text from images</li>
+          <li>🔬 <strong>Medical imaging</strong> — assist radiologists with X-ray / MRI analysis</li>
+          <li>🏗️ <strong>Spatial reasoning</strong> — understand layout, distance, and 3D scene structure</li>
+        </ul>
+      </div>
+      <div class="mod-models">
+        <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--muted)">Key Models</div>
+        <div><span class="model-chip" style="color:#00d2ff">GPT-4o</span><span class="model-chip" style="color:#6c63ff">Claude 3.5 Sonnet</span><span class="model-chip" style="color:#ffd166">Gemini 1.5 Pro</span><span class="model-chip" style="color:#ff6584">LLaVA</span></div>
+        <div class="use-cases" style="margin-top:18px;">
+          <div class="uc-item"><div class="uc-tag" style="color:#00d2ff">Use Case</div>Agent takes a screenshot of a broken dashboard → identifies the error visually → writes a bug report and creates a Jira ticket</div>
+          <div class="uc-item"><div class="uc-tag" style="color:#00d2ff">Use Case</div>Insurance agent receives a photo of car damage → estimates repair cost → populates claim form automatically</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mod-audio" class="mod-panel">
+    <div class="mod-layout">
+      <div class="mod-info">
+        <div class="mod-title" style="color:#ffd166">🎙️ Audio Input / Output</div>
+        <div class="mod-desc">Speech recognition (ASR), speaker diarisation, sentiment analysis from voice, and speech synthesis (TTS) — enabling fully voice-driven agent interactions.</div>
+        <ul class="mod-capabilities">
+          <li>🗣️ <strong>Speech-to-text</strong> — real-time transcription with speaker separation</li>
+          <li>😊 <strong>Emotion detection</strong> — identify sentiment, urgency, and stress in voice</li>
+          <li>🌍 <strong>Multilingual audio</strong> — transcribe and translate across languages simultaneously</li>
+          <li>📞 <strong>Call analytics</strong> — extract action items, topics, and decisions from meetings</li>
+          <li>🔊 <strong>Text-to-speech output</strong> — synthesise natural voice responses</li>
+        </ul>
+      </div>
+      <div class="mod-models">
+        <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--muted)">Key Models</div>
+        <div><span class="model-chip" style="color:#ffd166">Whisper</span><span class="model-chip" style="color:#00d2ff">GPT-4o Audio</span><span class="model-chip" style="color:#06d6a0">ElevenLabs</span><span class="model-chip">Gemini Live</span></div>
+        <div class="use-cases" style="margin-top:18px;">
+          <div class="uc-item"><div class="uc-tag" style="color:#ffd166">Use Case</div>Customer calls support → agent transcribes in real-time, detects frustration, escalates to human agent, and pre-populates the case file</div>
+          <div class="uc-item"><div class="uc-tag" style="color:#ffd166">Use Case</div>Medical scribe agent records doctor-patient conversation → generates SOAP notes → submits to EHR automatically</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mod-document" class="mod-panel">
+    <div class="mod-layout">
+      <div class="mod-info">
+        <div class="mod-title" style="color:#06d6a0">📄 Document Understanding</div>
+        <div class="mod-desc">Processing PDFs, spreadsheets, presentations, contracts, invoices, and forms — extracting structured data from unstructured documents at scale.</div>
+        <ul class="mod-capabilities">
+          <li>📋 <strong>Table extraction</strong> — extract and structure tabular data from PDFs</li>
+          <li>✍️ <strong>Contract analysis</strong> — identify clauses, obligations, and risk factors</li>
+          <li>🧾 <strong>Invoice/receipt parsing</strong> — extract line items, totals, tax automatically</li>
+          <li>📑 <strong>Form completion</strong> — fill structured forms from unstructured source documents</li>
+          <li>🔗 <strong>Cross-document synthesis</strong> — reconcile information across multiple documents</li>
+        </ul>
+      </div>
+      <div class="mod-models">
+        <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--muted)">Key Tools</div>
+        <div><span class="model-chip" style="color:#06d6a0">Claude 3.5</span><span class="model-chip" style="color:#ffd166">GPT-4o</span><span class="model-chip">AWS Textract</span><span class="model-chip">Azure Form Recognizer</span></div>
+        <div class="use-cases" style="margin-top:18px;">
+          <div class="uc-item"><div class="uc-tag" style="color:#06d6a0">Use Case</div>Legal due diligence agent processes 500 contract PDFs → flags non-standard clauses → produces risk summary in 20 minutes</div>
+          <div class="uc-item"><div class="uc-tag" style="color:#06d6a0">Use Case</div>Accounts payable agent reads invoice images → validates against PO → posts to ERP with zero manual data entry</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mod-code" class="mod-panel">
+    <div class="mod-layout">
+      <div class="mod-info">
+        <div class="mod-title" style="color:#6c63ff">💻 Code + Execution</div>
+        <div class="mod-desc">Generating, executing, and iterating on code within a sandboxed environment — the foundation of computer-use and data-analysis agents.</div>
+        <ul class="mod-capabilities">
+          <li>📝 <strong>Code generation</strong> — write functions, scripts, and whole applications</li>
+          <li>▶️ <strong>Sandboxed execution</strong> — run code safely and observe outputs/errors</li>
+          <li>🔄 <strong>Iterative debugging</strong> — read error → fix → re-run until tests pass</li>
+          <li>📊 <strong>Data analysis</strong> — load CSVs, run pandas/SQL, generate charts</li>
+          <li>🖥️ <strong>Computer use</strong> — control browser/desktop like a human operator</li>
+        </ul>
+      </div>
+      <div class="mod-models">
+        <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--muted)">Key Tools</div>
+        <div><span class="model-chip" style="color:#6c63ff">Claude Code</span><span class="model-chip" style="color:#00d2ff">GPT-4o + Interpreter</span><span class="model-chip" style="color:#ffd166">Devin</span><span class="model-chip">E2B Sandbox</span></div>
+        <div class="use-cases" style="margin-top:18px;">
+          <div class="uc-item"><div class="uc-tag" style="color:#6c63ff">Use Case</div>Data agent receives a CSV of sales data → writes Python analysis → generates charts → emails a PDF report</div>
+          <div class="uc-item"><div class="uc-tag" style="color:#6c63ff">Use Case</div>SWE agent receives a GitHub issue → writes a fix → runs tests → opens a PR — no human involved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mod-video" class="mod-panel">
+    <div class="mod-layout">
+      <div class="mod-info">
+        <div class="mod-title" style="color:#ff6584">🎬 Video Understanding</div>
+        <div class="mod-desc">Processing temporal visual information — tracking objects over time, understanding actions, monitoring safety conditions, and indexing long-form video content.</div>
+        <ul class="mod-capabilities">
+          <li>🎥 <strong>Action recognition</strong> — identify what people are doing in video clips</li>
+          <li>⚠️ <strong>Safety monitoring</strong> — detect PPE violations, unusual events in CCTV</li>
+          <li>🏷️ <strong>Video captioning</strong> — generate timestamped summaries of long videos</li>
+          <li>📍 <strong>Temporal reasoning</strong> — answer "what happened before/after X?"</li>
+          <li>🎞️ <strong>Scene segmentation</strong> — split video into chapters with semantic labels</li>
+        </ul>
+      </div>
+      <div class="mod-models">
+        <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--muted)">Key Models</div>
+        <div><span class="model-chip" style="color:#ff6584">Gemini 1.5 Pro</span><span class="model-chip" style="color:#00d2ff">GPT-4o</span><span class="model-chip">VideoLLaMA</span></div>
+        <div class="use-cases" style="margin-top:18px;">
+          <div class="uc-item"><div class="uc-tag" style="color:#ff6584">Use Case</div>Factory safety agent monitors 50 CCTV feeds → alerts when a worker enters a hazard zone without PPE → generates incident report</div>
+          <div class="uc-item"><div class="uc-tag" style="color:#ff6584">Use Case</div>Media agent indexes 100 hours of news footage → creates searchable chapter summaries with entity tags</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <div class="section-title">Multimodal Agent Architecture</div>
+  <div class="arch-box">
+    <div class="arch-title">How a multimodal agent routes inputs through perception, reasoning, and action</div>
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-node" style="border-color:rgba(0,210,255,0.3)"><div class="an-icon">🖼️</div><div class="an-label">Input</div><div class="an-name" style="color:#00d2ff">Image</div></div>
+        <div class="arch-node" style="border-color:rgba(255,209,102,0.3)"><div class="an-icon">🎙️</div><div class="an-label">Input</div><div class="an-name" style="color:#ffd166">Audio</div></div>
+        <div class="arch-node" style="border-color:rgba(6,214,160,0.3)"><div class="an-icon">📄</div><div class="an-label">Input</div><div class="an-name" style="color:#06d6a0">Document</div></div>
+        <div class="arch-node" style="border-color:rgba(255,101,132,0.3)"><div class="an-icon">🎬</div><div class="an-label">Input</div><div class="an-name" style="color:#ff6584">Video</div></div>
+        <div class="arch-node" style="border-color:rgba(108,99,255,0.3)"><div class="an-icon">💬</div><div class="an-label">Input</div><div class="an-name" style="color:#6c63ff">Text</div></div>
+      </div>
+      <div class="arch-arrow">↓ Encoder/Tokeniser per modality</div>
+      <div class="arch-central">
+        <div class="an-icon">🧠</div>
+        <div class="an-name">Multimodal LLM Core</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">Unified token space · Cross-modal attention · Reasoning</div>
+      </div>
+      <div class="arch-arrow">↓ Action routing</div>
+      <div class="arch-row">
+        <div class="arch-node" style="border-color:rgba(0,210,255,0.3)"><div class="an-icon">🔧</div><div class="an-label">Action</div><div class="an-name" style="color:#00d2ff">Tool Call</div></div>
+        <div class="arch-node" style="border-color:rgba(108,99,255,0.3)"><div class="an-icon">💻</div><div class="an-label">Action</div><div class="an-name" style="color:#6c63ff">Code Run</div></div>
+        <div class="arch-node" style="border-color:rgba(6,214,160,0.3)"><div class="an-icon">🖱️</div><div class="an-label">Action</div><div class="an-name" style="color:#06d6a0">UI Control</div></div>
+        <div class="arch-node" style="border-color:rgba(255,209,102,0.3)"><div class="an-icon">🔊</div><div class="an-label">Output</div><div class="an-name" style="color:#ffd166">Speech</div></div>
+        <div class="arch-node" style="border-color:rgba(255,101,132,0.3)"><div class="an-icon">📝</div><div class="an-label">Output</div><div class="an-name" style="color:#ff6584">Report</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIPELINE BUILDER -->
+  <div class="section-title">Interactive Pipeline Builder</div>
+  <div class="builder-box">
+    <div class="builder-title">🔨 Build a Multimodal Agent Pipeline</div>
+    <div class="builder-sub">Select input modalities to see how the agent would process them and what outputs it can produce</div>
+    <div class="input-picker">
+      <button class="input-chip" id="chip-image" onclick="toggleInput('image')">🖼️ Image</button>
+      <button class="input-chip" id="chip-audio" onclick="toggleInput('audio')">🎙️ Audio</button>
+      <button class="input-chip" id="chip-pdf" onclick="toggleInput('pdf')">📄 PDF</button>
+      <button class="input-chip" id="chip-text" onclick="toggleInput('text')">💬 Text</button>
+      <button class="input-chip" id="chip-csv" onclick="toggleInput('csv')">📊 CSV Data</button>
+    </div>
+    <div class="pipeline-preview" id="pipelinePreview">
+      <div class="pp-placeholder">← Select input modalities above to build your pipeline</div>
+    </div>
+    <div class="output-display" id="pipelineOutput" style="display:none">
+      <div class="od-label">Pipeline Output</div>
+      <div id="outputText"></div>
+    </div>
+  </div>
+
+  <!-- CHALLENGES TABLE -->
+  <div class="section-title">Multimodal Agent Challenges</div>
+  <div class="comparison">
+    <table>
+      <thead>
+        <tr><th>Challenge</th><th>Description</th><th>Mitigation</th><th>Difficulty</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Modality Alignment</strong></td><td>Different modalities may contradict each other (text says "approve", image shows a denied stamp)</td><td>Conflict detection layer; explicit modality priority rules</td><td><span class="badge-sm badge-high">High</span></td></tr>
+        <tr><td><strong>Context Window Cost</strong></td><td>Images/audio consume 100-1000× more tokens than equivalent text descriptions</td><td>Compressed vision tokens, audio chunking, selective embedding</td><td><span class="badge-sm badge-med">Medium</span></td></tr>
+        <tr><td><strong>Hallucination in Vision</strong></td><td>Models can confidently describe objects not present in an image</td><td>Grounding checks, confidence thresholds, human-in-loop for high-stakes</td><td><span class="badge-sm badge-high">High</span></td></tr>
+        <tr><td><strong>Latency</strong></td><td>Processing large images or audio in real-time adds significant latency to agent loops</td><td>Async processing, streaming APIs, cached embeddings</td><td><span class="badge-sm badge-med">Medium</span></td></tr>
+        <tr><td><strong>Security</strong></td><td>Images can carry hidden prompt injections invisible to humans (pixel-level attacks)</td><td>Image sanitisation, separate visual content classifier</td><td><span class="badge-sm badge-high">High</span></td></tr>
+        <tr><td><strong>Evaluation</strong></td><td>Hard to write automated evals for "correctly described the chart"</td><td>LLM-as-judge for visual outputs; human eval rubrics</td><td><span class="badge-sm badge-med">Medium</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+function switchMod(id) {
+  document.querySelectorAll('.mod-panel').forEach(p => p.classList.remove('visible'));
+  document.querySelectorAll('.mod-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('mod-' + id).classList.add('visible');
+  event.target.classList.add('active');
+}
+
+const selectedInputs = new Set();
+const inputData = {
+  image: { icon:'🖼️', label:'Image\nEncoder', steps:['Vision Encoder', 'Object Detection', 'OCR Layer'], output:'Extracted text, objects, spatial layout' },
+  audio: { icon:'🎙️', label:'Audio\nProcessor', steps:['Whisper ASR', 'Speaker Diarisation', 'Sentiment Analysis'], output:'Transcript with speaker labels and emotional tone' },
+  pdf: { icon:'📄', label:'Doc\nParser', steps:['PDF Extractor', 'Table Parser', 'Layout Analyser'], output:'Structured text, tables, and metadata from document' },
+  text: { icon:'💬', label:'Text\nTokeniser', steps:['Tokenisation', 'Context Assembly'], output:'Natural language instructions and context' },
+  csv: { icon:'📊', label:'Data\nLoader', steps:['Schema Inference', 'Data Validation'], output:'Tabular data ready for Python/SQL analysis' }
+};
+
+const outputMap = {
+  'image,text': 'Visual Q&A, accessibility descriptions, UI testing reports',
+  'audio,text': 'Meeting summaries, transcribed notes, action item extraction',
+  'pdf,text': 'Contract analysis, document Q&A, form extraction',
+  'csv,text': 'Data analysis with Python, statistical summaries, charts',
+  'image,audio': 'Video-like multimodal analysis, scene + commentary pairing',
+  'image,pdf': 'Document image processing, scanned PDF understanding',
+  'image,audio,text': 'Full media analysis pipeline with narration and reporting',
+  'pdf,csv,text': 'Financial document analysis, table extraction + modelling',
+};
+
+function toggleInput(type) {
+  if (selectedInputs.has(type)) selectedInputs.delete(type);
+  else selectedInputs.add(type);
+  document.getElementById('chip-' + type).classList.toggle('selected', selectedInputs.has(type));
+  renderPipeline();
+}
+
+function renderPipeline() {
+  const preview = document.getElementById('pipelinePreview');
+  const output = document.getElementById('pipelineOutput');
+  if (selectedInputs.size === 0) {
+    preview.innerHTML = '<div class="pp-placeholder">← Select input modalities above to build your pipeline</div>';
+    output.style.display = 'none';
+    return;
+  }
+  let html = '';
+  const arr = [...selectedInputs];
+  arr.forEach((inp, i) => {
+    const d = inputData[inp];
+    html += `<div class="pp-step"><div class="pp-icon">${d.icon}</div><div class="pp-label">${d.label}</div></div>`;
+    html += `<div class="pp-arrow">→</div>`;
+  });
+  html += `<div class="pp-step"><div class="pp-icon" style="background:rgba(108,99,255,0.2);border-color:rgba(108,99,255,0.5)">🧠</div><div class="pp-label">LLM\nReasoning</div></div>`;
+  html += `<div class="pp-arrow">→</div>`;
+  html += `<div class="pp-step"><div class="pp-icon" style="background:rgba(6,214,160,0.2);border-color:rgba(6,214,160,0.5)">📤</div><div class="pp-label">Output\nFormatting</div></div>`;
+  preview.innerHTML = html;
+
+  const key = arr.sort().join(',');
+  const outputText = outputMap[key] || `Combined pipeline processing ${arr.join(' + ')} inputs — unified reasoning produces structured multi-modal output`;
+  document.getElementById('outputText').textContent = '🎯 Agent can produce: ' + outputText;
+  output.style.display = 'block';
+}
+</script>
+</body>
+</html>

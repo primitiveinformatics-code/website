@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The BDI Rationality Loop | Agentic AI Course</title>
+<style>
+  :root{--bg:#0f1117;--card:#21263a;--card2:#1a1f30;--text:#e8eaf6;--muted:#8892b0;--accent:#00d2ff;--border:rgba(0,210,255,.18);--radius:12px;--beliefs:#ffd166;--desires:#b57bee;--intentions:#06d6a0;--correct:#06d6a0;--wrong:#ef476f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6}
+  nav{background:rgba(15,17,23,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+  nav .brand{font-size:.8rem;color:var(--muted)} nav .brand span{color:var(--accent);font-weight:700}
+  nav .nav-links{display:flex;gap:12px}
+  nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:6px 14px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+  nav a:hover{color:var(--accent);border-color:var(--accent)}
+  .hero{text-align:center;padding:64px 24px 48px;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(0,210,255,.12) 0%,transparent 70%)}
+  .session-tag{display:inline-block;background:rgba(0,210,255,.15);color:var(--accent);border:1px solid rgba(0,210,255,.4);border-radius:20px;padding:4px 16px;font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:12px} .hero h1 span{color:var(--accent)}
+  .hero p{color:var(--muted);max-width:600px;margin:0 auto;font-size:1.05rem}
+  section{max-width:1000px;margin:0 auto;padding:40px 24px}
+  .section-title{font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* LOOP DIAGRAM */
+  .loop-container{background:var(--card);border-radius:var(--radius);padding:32px;border:1px solid var(--border)}
+  .loop-steps{display:flex;flex-direction:column;gap:0}
+  .loop-step{display:flex;align-items:stretch;gap:0;cursor:pointer}
+  .step-connector{width:2px;background:var(--border);margin-left:35px;height:20px;flex-shrink:0}
+  .step-body{display:flex;gap:16px;align-items:flex-start;padding:16px;border-radius:10px;border:2px solid transparent;transition:all .25s;flex:1}
+  .step-body:hover,.step-body.active{background:rgba(0,210,255,.06);border-color:var(--accent)}
+  .step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0;background:rgba(0,210,255,.15);color:var(--accent);border:2px solid rgba(0,210,255,.4)}
+  .step-content{flex:1}
+  .step-title{font-weight:700;font-size:1rem;margin-bottom:4px}
+  .step-brief{font-size:.85rem;color:var(--muted)}
+  .step-detail{display:none;margin-top:10px;padding:14px;background:var(--card2);border-radius:8px}
+  .step-detail.show{display:block}
+  .step-detail p{font-size:.87rem;color:var(--muted);line-height:1.6}
+  .step-detail .bdi-tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:8px}
+  .tag-b{background:rgba(255,209,102,.15);color:var(--beliefs)} .tag-d{background:rgba(181,123,238,.15);color:var(--desires)} .tag-i{background:rgba(6,214,160,.15);color:var(--intentions)}
+
+  /* SCENARIO TRACE */
+  .scenario-box{background:var(--card);border-radius:var(--radius);padding:28px;border:1px solid var(--border)}
+  .scenario-header{display:flex;gap:12px;align-items:center;margin-bottom:20px}
+  .scenario-header h3{font-size:1rem;font-weight:700}
+  .trace-steps{display:flex;flex-direction:column;gap:12px}
+  .trace-step{background:var(--card2);border-radius:8px;padding:14px 18px;border-left:3px solid var(--border);font-size:.87rem}
+  .trace-step.b{border-color:var(--beliefs)} .trace-step.d{border-color:var(--desires)} .trace-step.i{border-color:var(--intentions)} .trace-step.act{border-color:var(--accent)}
+  .trace-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+  .trace-step.b .trace-label{color:var(--beliefs)} .trace-step.d .trace-label{color:var(--desires)} .trace-step.i .trace-label{color:var(--intentions)} .trace-step.act .trace-label{color:var(--accent)}
+  .trace-step p{color:var(--muted)}
+  .scenario-nav{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  .sc-btn{background:var(--card2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:.82rem;transition:all .2s}
+  .sc-btn.active{background:rgba(0,210,255,.1);border-color:var(--accent);color:var(--accent)}
+  .sc-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* QUIZ */
+  .quiz-container{background:var(--card);border-radius:var(--radius);padding:32px;border:1px solid var(--border)}
+  .quiz-score{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .score-display{font-size:1rem;color:var(--muted)} .score-display span{color:var(--accent);font-weight:700;font-size:1.2rem}
+  .q-block{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.06)} .q-block:last-of-type{border-bottom:none}
+  .q-num{font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .q-text{font-size:1rem;font-weight:600;margin-bottom:14px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--card2);border:2px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;display:flex;align-items:center;gap:10px}
+  .opt:hover:not(.locked){border-color:var(--accent);background:rgba(0,210,255,.06)}
+  .opt.correct{border-color:var(--correct);background:rgba(6,214,160,.1);color:var(--correct)}
+  .opt.wrong{border-color:var(--wrong);background:rgba(239,71,111,.1);color:var(--wrong)}
+  .opt .opt-icon{font-size:1rem;flex-shrink:0;opacity:0} .opt.correct .opt-icon,.opt.wrong .opt-icon{opacity:1}
+  .feedback{display:none;margin-top:12px;padding:14px 16px;border-radius:8px;font-size:.88rem;line-height:1.5}
+  .feedback.show{display:block}
+  .feedback.correct-fb{background:rgba(6,214,160,.08);border-left:3px solid var(--correct);color:#a8f0d8}
+  .feedback.wrong-fb{background:rgba(239,71,111,.08);border-left:3px solid var(--wrong);color:#f8c3ce}
+  .q-reset{display:none;margin-top:10px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
+  .q-reset:hover{border-color:var(--accent);color:var(--accent)} .q-reset.show{display:inline-block}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">Agentic AI Course Â· <span>Session 2</span></div>
+  <div class="nav-links">
+    <a href="concept_2_3.html">â† Prev</a>
+    <a href="main-course.html">All Concepts</a>
+    <a href="concept_2_5.html">Next â†’</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="session-tag">Session 2 Â· Concept 2.4</div>
+  <h1>The BDI <span>Rationality Loop</span></h1>
+  <p>How a BDI agent cycles through perception, reasoning, and commitment â€” the heartbeat of rational agent behaviour.</p>
+</div>
+
+<section>
+  <div class="section-title">The 5-Step Rationality Loop â€” Click Each Step</div>
+  <div class="loop-container">
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:20px">The BDI Rationality Loop is the continuous cycle that governs how a rational agent perceives its world, updates its mental state, and decides what to do. Click each step to explore it.</p>
+    <div class="loop-steps">
+      <div class="loop-step">
+        <div class="step-body" onclick="toggleStep(this,'s1')">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Perceive Environment</div>
+            <div class="step-brief">Sense inputs from the world â€” messages, tool results, sensor data</div>
+            <div class="step-detail" id="s1">
+              <p>The agent reads its environment: incoming messages, tool results, API responses, sensor readings, or any external information stream. This is the agent's window to the world â€” it forms the raw material for belief updates.</p>
+              <p style="margin-top:8px"><strong>In code:</strong> This is where observation tokens enter the context window. The agent's context now contains new information it didn't have before.</p>
+              <span class="bdi-tag tag-b">â†’ Feeds Belief Update</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="loop-step">
+        <div class="step-body" onclick="toggleStep(this,'s2')">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Update Beliefs</div>
+            <div class="step-brief">Revise the agent's world model based on new perceptions</div>
+            <div class="step-detail" id="s2">
+              <p>Based on what was perceived, the agent updates its Beliefs â€” its internal model of the world's current state. Old beliefs that are contradicted by new evidence are revised. New facts are added.</p>
+              <p style="margin-top:8px"><strong>Example:</strong> Agent believed file X existed. Perception says file not found. Belief updated: file X does NOT exist; plan must change.</p>
+              <span class="bdi-tag tag-b">Belief State Updated</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="loop-step">
+        <div class="step-body" onclick="toggleStep(this,'s3')">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Generate / Revise Options (Desires)</div>
+            <div class="step-brief">What could the agent do? Generate candidate goals and sub-goals</div>
+            <div class="step-detail" id="s3">
+              <p>Given its updated Beliefs, the agent generates a set of possible desires â€” things it could pursue. These are candidate goals, not yet committed to. The agent evaluates which desires are achievable and relevant given the current world state.</p>
+              <p style="margin-top:8px"><strong>Example:</strong> "Could retry with alternative API" and "Could skip this document and continue" and "Could ask user for help" â€” all generated as options.</p>
+              <span class="bdi-tag tag-d">Desires Evaluated</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="loop-step">
+        <div class="step-body" onclick="toggleStep(this,'s4')">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title">Select Intention (Commit)</div>
+            <div class="step-brief">Choose ONE option to commit to â€” becoming an Intention</div>
+            <div class="step-detail" id="s4">
+              <p>The agent commits to one desire, turning it into an Intention. This is the most critical step in the rational agent loop â€” selecting WHAT to pursue drives all subsequent actions. The committed intention remains stable unless the world changes dramatically.</p>
+              <p style="margin-top:8px"><strong>Key insight:</strong> Intentions are resistant to change â€” they provide motivational stability. An agent that abandons intentions too easily wastes resources replanning constantly.</p>
+              <span class="bdi-tag tag-i">Intention Committed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="loop-step">
+        <div class="step-body" onclick="toggleStep(this,'s5')">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="step-title">Execute Action</div>
+            <div class="step-brief">Carry out the chosen intention, then loop back to Perceive</div>
+            <div class="step-detail" id="s5">
+              <p>The agent executes its intention â€” calling a tool, sending a message, writing to memory, or taking any other action. The result of this action becomes input to the next perception cycle, closing the loop.</p>
+              <p style="margin-top:8px"><strong>Loop continuation:</strong> After execution, the agent returns to Step 1 â€” perceiving the result of its own action. This is what makes it a loop, not a one-shot process.</p>
+              <span class="bdi-tag" style="background:rgba(0,210,255,.15);color:var(--accent)">â†’ Loop Restarts at Step 1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Worked Scenario Traces</div>
+  <div class="scenario-box">
+    <div class="scenario-header">
+      <h3>Follow the BDI Rationality Loop through real agent scenarios</h3>
+    </div>
+    <div class="scenario-nav">
+      <button class="sc-btn active" onclick="showScenario(0,this)">ðŸ“§ Email Agent</button>
+      <button class="sc-btn" onclick="showScenario(1,this)">ðŸ”¬ Research Agent</button>
+      <button class="sc-btn" onclick="showScenario(2,this)">ðŸ›’ E-commerce Agent</button>
+    </div>
+    <div id="scenarioDisplay" style="margin-top:20px"></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Check Your Understanding</div>
+  <div class="quiz-container">
+    <div class="quiz-score">
+      <div class="score-display">Score: <span id="scoreDisplay">0</span> / 5</div>
+      <div style="font-size:.8rem;color:var(--muted)">Click an answer to check it</div>
+    </div>
+
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 5</div>
+      <div class="q-text">In the BDI Rationality Loop, what happens to Beliefs when a tool returns an unexpected result?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">âœ—</span>a) Beliefs are ignored â€” only Intentions matter</div>
+        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">âœ“</span>b) Beliefs are updated to reflect the new reality, which may trigger new Desires and a new Intention</div>
+        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">âœ—</span>c) The loop halts until a human provides new beliefs</div>
+        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">âœ—</span>d) The agent retries the same action until it succeeds</div>
+      </div>
+      <div class="feedback correct-fb" id="q1-correct">âœ“ Right. The rationality loop's power is this cascading update: Perception â†’ Belief Update â†’ new Desire options â†’ potentially a new Intention. When a tool returns an error, the agent updates its belief ("the API is down"), generates new desires ("retry with backup API", "skip and log"), selects one, and commits. No human intervention required.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">âœ— The whole point of the rationality loop is autonomous adaptation. When perception brings unexpected results, Beliefs are updated first â€” then Desires are regenerated based on the new beliefs â€” then a new Intention is selected. The agent doesn't ignore it, halt, or blindly retry. It updates its world model and reasons anew.</div>
+      <button class="q-reset" onclick="resetQ('q1')">â†º Try again</button>
+    </div>
+
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 5</div>
+      <div class="q-text">Why are Intentions described as "resistant to change" in the BDI model?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">âœ—</span>a) Because the agent's code prevents changing intentions at runtime</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">âœ—</span>b) Because intentions are stored in long-term memory and are permanent</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">âœ“</span>c) Because constant replanning wastes resources â€” stability in commitments is computationally efficient</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">âœ—</span>d) Because changing intentions requires human approval</div>
+      </div>
+      <div class="feedback correct-fb" id="q2-correct">âœ“ Exactly. Motivational stability is a core BDI design principle. An agent that abandons its intentions the moment a slightly better option appears will spend all its resources replanning and never executing. Intentions should persist unless the world changes dramatically enough to make them unachievable or no longer relevant. This is called the "commitment strategy."</div>
+      <div class="feedback wrong-fb" id="q2-wrong">âœ— It's not about code constraints or permanent storage. The BDI model deliberately makes intentions "sticky" because constant replanning is computationally wasteful. If an agent reconsiders its plan at every perception cycle, it spends more time deliberating than acting. Intentions are meant to be stable commitments that provide a stable direction for action â€” changed only when the world changes significantly.</div>
+      <button class="q-reset" onclick="resetQ('q2')">â†º Try again</button>
+    </div>
+
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 5</div>
+      <div class="q-text">At which step does an agent move from "what I could do" to "what I will do"?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q3','a','c')"><span class="opt-icon">âœ—</span>a) Step 2 â€” Update Beliefs</div>
+        <div class="opt" onclick="answer('q3','b','c')"><span class="opt-icon">âœ—</span>b) Step 3 â€” Generate Options (Desires)</div>
+        <div class="opt" onclick="answer('q3','c','c')"><span class="opt-icon">âœ“</span>c) Step 4 â€” Select Intention (Commit)</div>
+        <div class="opt" onclick="answer('q3','d','c')"><span class="opt-icon">âœ—</span>d) Step 5 â€” Execute Action</div>
+      </div>
+      <div class="feedback correct-fb" id="q3-correct">âœ“ Step 4 is the commitment moment â€” where the agent narrows from a set of candidate Desires to a single committed Intention. "What I could do" = Desires (multiple options). "What I will do" = Intention (singular commitment). Step 5 is just execution of the already-decided intention.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">âœ— Step 3 generates multiple candidate options (Desires = what the agent could do). Step 5 executes after the decision is made. The transition from "could do" to "will do" happens at Step 4 â€” Select Intention â€” when the agent commits to one option from among its desires. This commitment is the defining act of rational choice in the BDI model.</div>
+      <button class="q-reset" onclick="resetQ('q3')">â†º Try again</button>
+    </div>
+
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 5</div>
+      <div class="q-text">How does the BDI Rationality Loop differ from a simple ReAct loop?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q4','a','b')"><span class="opt-icon">âœ—</span>a) ReAct has more steps</div>
+        <div class="opt" onclick="answer('q4','b','b')"><span class="opt-icon">âœ“</span>b) BDI explicitly models mental states (Beliefs, Desires, Intentions) as separate components; ReAct is a prompt-level trace pattern</div>
+        <div class="opt" onclick="answer('q4','c','b')"><span class="opt-icon">âœ—</span>c) BDI is newer than ReAct</div>
+        <div class="opt" onclick="answer('q4','d','b')"><span class="opt-icon">âœ—</span>d) They are identical â€” BDI is just a renamed version of ReAct</div>
+      </div>
+      <div class="feedback correct-fb" id="q4-correct">âœ“ Correct distinction. ReAct (Reason+Act) is a prompting strategy â€” a structured thought/action/observation trace pattern used with LLMs. BDI is an agent architecture theory from academic AI (Bratman, 1987) that explicitly defines three separate mental state types and how they interact. Modern LLM agents implement ReAct-style traces that approximate BDI reasoning, but they're different abstraction levels.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">âœ— BDI (from 1980s AI theory) is an architectural model that explicitly defines Beliefs, Desires, and Intentions as separate cognitive components with defined relationships. ReAct is a 2022 prompting technique that structures LLM output as Thoughtâ†’Actionâ†’Observation traces. BDI is a theoretical framework; ReAct is a practical implementation pattern. They're not the same â€” but modern agents often implement BDI principles via ReAct-style traces.</div>
+      <button class="q-reset" onclick="resetQ('q4')">â†º Try again</button>
+    </div>
+
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 5</div>
+      <div class="q-text">What triggers the BDI loop to RECONSIDER an existing Intention rather than just executing it?</div>
+      <div class="options">
+        <div class="opt" onclick="answer('q5','a','c')"><span class="opt-icon">âœ—</span>a) A timer expiry after a fixed interval</div>
+        <div class="opt" onclick="answer('q5','b','c')"><span class="opt-icon">âœ—</span>b) User sends a new message</div>
+        <div class="opt" onclick="answer('q5','c','c')"><span class="opt-icon">âœ“</span>c) A significant change in Beliefs that makes the current Intention unachievable or irrelevant</div>
+        <div class="opt" onclick="answer('q5','d','c')"><span class="opt-icon">âœ—</span>d) The agent always reconsiders at every loop iteration</div>
+      </div>
+      <div class="feedback correct-fb" id="q5-correct">âœ“ Exactly. Intention reconsideration is triggered by Belief changes â€” specifically when the world has changed enough that the current intention is either (a) no longer achievable, or (b) no longer relevant to the agent's goals. Minor environmental noise doesn't trigger reconsideration (that would be computationally wasteful). Only significant belief updates â€” like "the target resource no longer exists" â€” warrant abandoning and re-selecting an intention.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">âœ— Timers are an external mechanism, not intrinsic to BDI. User messages are one form of perception but not the only trigger. The agent does NOT always reconsider at every cycle â€” that's the commitment stability problem. The BDI trigger for reconsideration is a significant belief update that makes the current intention either unachievable (world has changed) or irrelevant (goal already achieved or superseded).</div>
+      <button class="q-reset" onclick="resetQ('q5')">â†º Try again</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  let score=0; const answered={};
+
+  const scenarios=[
+    {
+      title:'ðŸ“§ Email Agent â€” Drafting a Response',
+      steps:[
+        {cls:'b',label:'Perceive',text:'New email arrives: "Can you schedule a meeting with the product team for next week?"'},
+        {cls:'b',label:'Belief Update',text:'User wants a meeting. Product team exists. My calendar access tool is available. Next week = Mon-Fri May 26-30.'},
+        {cls:'d',label:'Desires (Options)',text:'Option A: Check calendars and propose times. Option B: Ask user for preferred time first. Option C: Create a meeting invite directly.'},
+        {cls:'i',label:'Intention (Commit)',text:'Commit to Option A â€” check all relevant calendars first to find overlapping free slots before proposing.'},
+        {cls:'act',label:'Execute',text:'Call calendar_check tool for user + product team â†’ receive availability data â†’ loop back to perceive the results.'}
+      ]
+    },
+    {
+      title:'ðŸ”¬ Research Agent â€” Literature Review',
+      steps:[
+        {cls:'b',label:'Perceive',text:'User goal: "Summarise the latest research on transformer attention mechanisms."'},
+        {cls:'b',label:'Belief Update',text:'Topic is transformer attention. I need recent papers (2022-2024). Search tools available. No papers loaded yet in context.'},
+        {cls:'d',label:'Desires (Options)',text:'Option A: Search arXiv for recent papers. Option B: Search Google Scholar. Option C: Check pre-loaded knowledge only.'},
+        {cls:'i',label:'Intention (Commit)',text:'Commit to arXiv search â€” most reliable source for cutting-edge ML research. Start with recent papers on attention.'},
+        {cls:'act',label:'Execute',text:'Call search_arxiv("transformer attention 2023 2024") â†’ perceive results â†’ update beliefs with paper list â†’ next loop: read top papers.'}
+      ]
+    },
+    {
+      title:'ðŸ›’ E-commerce Agent â€” Order Processing',
+      steps:[
+        {cls:'b',label:'Perceive',text:'New order #4521: Customer wants 3x Product A. Payment: confirmed. Shipping address: London.'},
+        {cls:'b',label:'Belief Update',text:'Order received and paid. Need to verify inventory. Need to calculate shipping. Product A stock level unknown.'},
+        {cls:'d',label:'Desires (Options)',text:'Option A: Check inventory then process. Option B: Process immediately (assume in stock). Option C: Flag for human review.'},
+        {cls:'i',label:'Intention (Commit)',text:'Commit to Option A â€” check inventory first to avoid overselling. Customer experience depends on accurate availability.'},
+        {cls:'act',label:'Execute',text:'Call check_inventory("Product-A", qty=3) â†’ Perceive result: "In stock: 12 units" â†’ Update belief â†’ Next loop: proceed to shipping calculation.'}
+      ]
+    }
+  ];
+
+  let currentScenario=0;
+
+  function showScenario(idx,btn){
+    currentScenario=idx;
+    document.querySelectorAll('.sc-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderScenario(idx);
+  }
+
+  function renderScenario(idx){
+    const sc=scenarios[idx];
+    const display=document.getElementById('scenarioDisplay');
+    display.innerHTML=`<h4 style="font-size:.95rem;font-weight:700;margin-bottom:14px;color:var(--text)">${sc.title}</h4>
+      <div class="trace-steps">${sc.steps.map(s=>`
+        <div class="trace-step ${s.cls}">
+          <div class="trace-label">${s.label}</div>
+          <p>${s.text}</p>
+        </div>`).join('')}
+      </div>`;
+  }
+
+  function toggleStep(el,id){
+    const wasActive=el.classList.contains('active');
+    document.querySelectorAll('.step-body').forEach(s=>{s.classList.remove('active'); s.querySelector('.step-detail').classList.remove('show');});
+    if(!wasActive){el.classList.add('active'); document.getElementById(id).classList.add('show');}
+  }
+
+  function answer(qid,chosen,correct){
+    if(answered[qid]) return;
+    answered[qid]=true;
+    const block=document.getElementById(qid);
+    const opts=block.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.add('locked'));
+    const letters=['a','b','c','d'];
+    opts[letters.indexOf(chosen)].classList.add(chosen===correct?'correct':'wrong');
+    if(chosen!==correct) opts[letters.indexOf(correct)].classList.add('correct');
+    const ok=chosen===correct;
+    if(ok){score++; document.getElementById('scoreDisplay').textContent=score;}
+    document.getElementById(qid+'-'+(ok?'correct':'wrong')).classList.add('show');
+    block.querySelector('.q-reset').classList.add('show');
+  }
+
+  function resetQ(qid){
+    if(!answered[qid]) return;
+    delete answered[qid];
+    const block=document.getElementById(qid);
+    block.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong','locked'));
+    block.querySelectorAll('.feedback').forEach(f=>f.classList.remove('show'));
+    block.querySelector('.q-reset').classList.remove('show');
+    if(score>0){score--; document.getElementById('scoreDisplay').textContent=score;}
+  }
+
+  renderScenario(0);
+</script>
+</body>
+</html>

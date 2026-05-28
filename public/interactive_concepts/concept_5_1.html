@@ -1,0 +1,398 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5.1 â€” Why Agent Observability Is Different</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #06d6a0; --accent2: #00d2ff; --accent3: #ffd166; --accent4: #ff6584;
+    --text: #e8eaf6; --muted: #8892b0; --border: rgba(6,214,160,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* NAV */
+  nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  nav a:hover { color: var(--accent); }
+  .nav-sep { color: var(--border); }
+  .nav-cur { color: var(--accent); font-weight: 700; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #0f1117 0%, #1a1d27 60%, #0d2e26 100%); padding: 56px 40px 48px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(6,214,160,0.12) 0%, transparent 70%); pointer-events: none; }
+  .badge { display: inline-block; background: rgba(6,214,160,0.12); border: 1px solid rgba(6,214,160,0.35); color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(26px, 3.5vw, 44px); font-weight: 800; background: linear-gradient(90deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; margin-bottom: 14px; }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 620px; margin: 0 auto; line-height: 1.7; }
+
+  /* MAIN */
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* SECTION TITLE */
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* COMPARISON CARDS */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 48px; }
+  @media (max-width: 700px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+  .compare-card.old { border-color: rgba(255,101,132,0.25); }
+  .compare-card.new { border-color: rgba(6,214,160,0.3); }
+  .compare-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .compare-card.old h3 { color: var(--accent4); }
+  .compare-card.new h3 { color: var(--accent); }
+  .compare-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; line-height: 1.5; }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .compare-row .label { color: var(--muted); min-width: 90px; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .compare-row .val { color: var(--text); }
+
+  /* OBSERVABLE DIMENSIONS â€” TABS */
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .tab.active { background: rgba(6,214,160,0.15); border-color: var(--accent); color: var(--accent); }
+  .tab:hover:not(.active) { border-color: rgba(6,214,160,0.35); color: var(--text); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .dim-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .dim-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .dim-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(6,214,160,0.12); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .dim-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .dim-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .dim-body { color: var(--muted); font-size: 14px; line-height: 1.7; margin-bottom: 16px; }
+  .signal-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .signal { background: rgba(6,214,160,0.07); border: 1px solid rgba(6,214,160,0.15); border-radius: 8px; padding: 10px 14px; font-size: 12px; }
+  .signal strong { color: var(--accent); display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+  /* CHALLENGE */
+  .challenge { background: linear-gradient(135deg, #1a1d27 0%, #0d2e26 100%); border: 1px solid rgba(6,214,160,0.3); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .challenge h3 { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  .challenge p { color: var(--muted); font-size: 13px; margin-bottom: 18px; line-height: 1.6; }
+  .scenario-box { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 16px; font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; border-left: 3px solid var(--accent3); }
+  .scenario-box strong { color: var(--text); }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+  .opt-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: var(--text); cursor: pointer; text-align: left; transition: all 0.2s; line-height: 1.4; }
+  .opt-btn:hover { border-color: var(--accent); background: rgba(6,214,160,0.07); }
+  .opt-btn.correct { border-color: var(--accent); background: rgba(6,214,160,0.15); color: var(--accent); }
+  .opt-btn.wrong { border-color: var(--accent4); background: rgba(255,101,132,0.1); color: var(--accent4); }
+  .feedback-box { background: rgba(6,214,160,0.08); border: 1px solid rgba(6,214,160,0.25); border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--text); line-height: 1.6; display: none; }
+  .feedback-box.show { display: block; }
+
+  /* GAP VISUALISER */
+  .gap-vis { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .gap-vis h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+  .gap-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .gap-label { width: 160px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .gap-bar-bg { flex: 1; height: 22px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; position: relative; }
+  .gap-bar { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 700; color: #fff; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+  .gap-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
+  .easy { background: rgba(6,214,160,0.25); color: var(--accent); }
+  .medium { background: rgba(255,209,102,0.25); color: var(--accent3); }
+  .hard { background: rgba(255,101,132,0.25); color: var(--accent4); }
+
+  /* TRACE DEMO */
+  .trace-demo { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .trace-demo h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .trace-demo p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .trace-controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .trace-btn { padding: 9px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .trace-btn.active-t { background: rgba(6,214,160,0.15); border-color: var(--accent); color: var(--accent); }
+  .trace-log { background: #0a0c14; border-radius: 10px; padding: 16px; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; line-height: 1.8; min-height: 200px; overflow-x: auto; }
+  .log-line { display: block; animation: fadeIn 0.3s ease; }
+  .log-line.info { color: #8892b0; }
+  .log-line.warn { color: var(--accent3); }
+  .log-line.error { color: var(--accent4); }
+  .log-line.ok { color: var(--accent); }
+  .log-line.span { color: var(--accent2); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
+  .run-btn { padding: 10px 24px; background: rgba(6,214,160,0.15); border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 12px; }
+  .run-btn:hover { background: rgba(6,214,160,0.25); }
+
+  /* KEY INSIGHT */
+  .insight-bar { background: rgba(0,210,255,0.07); border-left: 4px solid var(--accent2); border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 14px; font-size: 13px; color: var(--text); line-height: 1.6; }
+  .insight-bar strong { color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="main-course.html">â† All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-cur">5.1 â€” Why Agent Observability Is Different</span>
+</nav>
+
+<div class="hero">
+  <div class="badge">Session 5 Â· Day 2 Afternoon</div>
+  <h1>Why Agent Observability Is Different</h1>
+  <p>Traditional monitoring watches fixed flows. Agents make decisions, branch unpredictably, spawn sub-agents, and fail in ways that don't show up in logs â€” until it's too late.</p>
+</div>
+
+<div class="main">
+
+  <!-- COMPARISON -->
+  <div class="section-title">Traditional vs Agent Observability</div>
+  <div class="compare-grid" style="margin-bottom:48px">
+    <div class="compare-card old">
+      <h3>ðŸ”§ Traditional Systems</h3>
+      <div class="compare-row"><span class="icon">ðŸ“</span><div><span class="label">Flow</span><span class="val"> Deterministic â€” same input â†’ same path</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸ“Š</span><div><span class="label">Errors</span><span class="val"> Crash logs, HTTP status codes, exceptions</span></div></div>
+      <div class="compare-row"><span class="icon">â±ï¸</span><div><span class="label">Latency</span><span class="val"> Single request latency in ms</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸ”</span><div><span class="label">Debug</span><span class="val"> Stack traces â†’ pinpoint line number</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸŽ¯</span><div><span class="label">Success</span><span class="val"> Binary: 200 OK vs error</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸ”—</span><div><span class="label">Scope</span><span class="val"> Single service or microservice boundary</span></div></div>
+    </div>
+    <div class="compare-card new">
+      <h3>ðŸ¤– Agentic Systems</h3>
+      <div class="compare-row"><span class="icon">ðŸŒ€</span><div><span class="label">Flow</span><span class="val"> Non-deterministic â€” LLM decisions branch unpredictably</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸ§ </span><div><span class="label">Errors</span><span class="val"> Hallucinations, wrong tool choices, silent drift</span></div></div>
+      <div class="compare-row"><span class="icon">â›“ï¸</span><div><span class="label">Latency</span><span class="val"> Multi-hop chains; 1 slow tool tanks the whole run</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸ•µï¸</span><div><span class="label">Debug</span><span class="val"> Reason trace: WHY did the agent take that path?</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸŽ­</span><div><span class="label">Success</span><span class="val"> Fuzzy: did the agent achieve the goal semantically?</span></div></div>
+      <div class="compare-row"><span class="icon">ðŸŒ</span><div><span class="label">Scope</span><span class="val"> Multi-agent graphs; cross-system side effects</span></div></div>
+    </div>
+  </div>
+
+  <!-- 5 UNIQUE CHALLENGES â€” TABS -->
+  <div class="section-title">The 5 Unique Observability Challenges</div>
+  <div class="tabs" id="dimTabs">
+    <button class="tab active" onclick="switchDim(0)">Non-Determinism</button>
+    <button class="tab" onclick="switchDim(1)">Semantic Failure</button>
+    <button class="tab" onclick="switchDim(2)">Multi-Hop Chains</button>
+    <button class="tab" onclick="switchDim(3)">Goal Drift</button>
+    <button class="tab" onclick="switchDim(4)">Side Effects</button>
+  </div>
+
+  <div class="dim-card" id="dimCard">
+    <!-- populated by JS -->
+  </div>
+
+  <!-- GAP VISUALISER -->
+  <div class="section-title">Observability Coverage by System Type</div>
+  <div class="gap-vis">
+    <h3>How well do standard monitoring tools cover each signal?</h3>
+    <div id="gapRows"></div>
+  </div>
+
+  <!-- CHALLENGE QUIZ -->
+  <div class="section-title">Scenario Challenge</div>
+  <div class="challenge">
+    <h3>ðŸŽ¯ Diagnose the Failure</h3>
+    <p>Your agent runs nightly. Yesterday it "completed successfully" â€” but the output was wrong. Which observability gap explains this?</p>
+    <div class="scenario-box">
+      <strong>Evidence:</strong> HTTP 200 from all tool calls. No exception thrown. Agent returned a response. Customer says the email it drafted contained hallucinated data â€” wrong date, wrong customer name. Zero alerts fired.
+    </div>
+    <div class="options-grid">
+      <button class="opt-btn" onclick="checkAnswer(this, false)">A) Latency spike â€” the LLM was slow and returned a degraded response</button>
+      <button class="opt-btn" onclick="checkAnswer(this, false)">B) Tool crash â€” one of the API calls failed silently</button>
+      <button class="opt-btn" onclick="checkAnswer(this, true)">C) Semantic failure â€” technical success but goal not achieved; no semantic metric caught it</button>
+      <button class="opt-btn" onclick="checkAnswer(this, false)">D) Token overflow â€” context window exceeded and response was truncated</button>
+    </div>
+    <div class="feedback-box" id="quizFeedback"></div>
+  </div>
+
+  <!-- TRACE DEMO -->
+  <div class="section-title">Live Trace Simulator â€” What Good Agent Logs Look Like</div>
+  <div class="trace-demo">
+    <h3>Agent Execution Trace</h3>
+    <p>Select a scenario to see how observability signals differ between healthy runs, silent failures, and semantic drift.</p>
+    <div class="trace-controls">
+      <button class="trace-btn active-t" onclick="setTrace('healthy',this)">âœ… Healthy Run</button>
+      <button class="trace-btn" onclick="setTrace('silent',this)">âš ï¸ Silent Failure</button>
+      <button class="trace-btn" onclick="setTrace('drift',this)">ðŸŒ€ Semantic Drift</button>
+    </div>
+    <div class="trace-log" id="traceLog"></div>
+    <button class="run-btn" onclick="replayTrace()">â–¶ Replay Trace</button>
+  </div>
+
+  <!-- KEY INSIGHTS -->
+  <div class="section-title">Key Insights</div>
+  <div class="insight-bar"><strong>Insight 1:</strong> "No exceptions" does not mean "correct behaviour." Agents can succeed technically while failing semantically â€” you need semantic evaluation metrics alongside system metrics.</div>
+  <div class="insight-bar"><strong>Insight 2:</strong> Standard distributed tracing (Zipkin, Jaeger) captures spans, but not <em>why</em> the agent made a decision. You need reasoning traces with LLM prompt/response capture.</div>
+  <div class="insight-bar"><strong>Insight 3:</strong> Goal drift accumulates silently across long runs. Observability must include <em>goal tracking</em> â€” not just "what happened" but "are we still on track to the original objective?"</div>
+  <div class="insight-bar"><strong>Insight 4:</strong> Side effects are often irreversible (sent email, booked slot, deleted record). You need pre-action audit logging â€” not just post-action monitoring.</div>
+
+</div>
+
+<script>
+const dims = [
+  {
+    icon: 'ðŸŒ€', title: 'Non-Determinism', sub: 'Same input, different execution path every time',
+    body: 'LLMs are probabilistic. Even with the same task, an agent may choose different tools, different orderings, or different reasoning steps on consecutive runs. Traditional monitoring assumes replay-ability â€” if it worked yesterday it will work today. Agents break this assumption fundamentally.',
+    signals: [
+      { name: 'Run Fingerprint', desc: 'Hash of tool-call sequence per run to detect drift across identical inputs' },
+      { name: 'Decision Entropy', desc: 'Measure variance in tool selection across repeated runs of the same task' },
+      { name: 'Path Coverage', desc: 'Track which code/reasoning paths the agent explores over time' },
+      { name: 'Sampling Temp Log', desc: 'Log LLM temperature/seed to correlate variance with model settings' },
+    ]
+  },
+  {
+    icon: 'ðŸŽ­', title: 'Semantic Failure', sub: 'Technically correct, semantically wrong',
+    body: 'An agent can return HTTP 200, make all tool calls, and produce a response â€” yet the output is completely wrong. A hallucinated name, outdated fact, or misunderstood task. Standard error monitoring captures none of this. You need semantic evaluation: did the output actually answer the question correctly?',
+    signals: [
+      { name: 'LLM-as-Judge', desc: 'Use a secondary LLM to score output quality against the original goal' },
+      { name: 'Faithfulness Score', desc: 'Measure how closely the answer is grounded in retrieved context' },
+      { name: 'Hallucination Rate', desc: 'Track % of responses containing ungrounded claims over time' },
+      { name: 'Task Completion', desc: 'Binary or graded: did the agent actually complete the requested task?' },
+    ]
+  },
+  {
+    icon: 'â›“ï¸', title: 'Multi-Hop Chains', sub: 'Errors compound across tool call sequences',
+    body: 'A 10-step agent chain where step 3 returns slightly wrong data will silently corrupt every downstream step. By step 10, the answer is completely wrong â€” but each individual step "succeeded." You need span-level tracing across the entire chain, with data lineage tracking.',
+    signals: [
+      { name: 'Span Tree', desc: 'Full parent-child trace of every LLM call, tool call, and sub-agent invocation' },
+      { name: 'Data Lineage', desc: 'Track which pieces of retrieved data were used in which downstream steps' },
+      { name: 'Error Propagation', desc: 'Flag when a low-confidence output from step N is used as input to step N+1' },
+      { name: 'Chain Depth', desc: 'Alert when reasoning chains exceed expected depth (runaway recursion signal)' },
+    ]
+  },
+  {
+    icon: 'ðŸŽ¯', title: 'Goal Drift', sub: 'The agent subtly wanders away from the original objective',
+    body: 'Over a long multi-turn or multi-step run, agents can drift from the original goal â€” especially with ambiguous instructions. Each micro-decision seems reasonable, but the cumulative effect is an agent pursuing a subtly different objective. You need to track the original goal and compare it to the current plan at each step.',
+    signals: [
+      { name: 'Goal Embedding', desc: 'Embed the original task and compare with agent\'s current sub-goal at each step' },
+      { name: 'Plan Delta', desc: 'Alert when the agent rewrites its plan in a direction inconsistent with the goal' },
+      { name: 'Scope Creep Score', desc: 'Measure how many actions were taken beyond the declared task boundary' },
+      { name: 'Milestone Check', desc: 'Define expected intermediate states and verify agent reaches them in order' },
+    ]
+  },
+  {
+    icon: 'ðŸ’¥', title: 'Side Effects', sub: 'Agents act on the world â€” often irreversibly',
+    body: 'Agents with write-access tools (email, calendar, database, APIs) create real-world side effects. Unlike a read-only service where you can re-query, a sent email or deleted record cannot be un-done. Observability must include pre-action audit trails and post-action reconciliation â€” not just logs of what happened.',
+    signals: [
+      { name: 'Pre-Action Audit', desc: 'Log intent + full parameters BEFORE executing any write/send/delete action' },
+      { name: 'Write Census', desc: 'Count and categorise all write operations per run â€” detect unexpected side effects' },
+      { name: 'Reconciliation Log', desc: 'Verify post-action state matches expected state after each write' },
+      { name: 'Rollback Readiness', desc: 'Track which actions are reversible and which require human intervention' },
+    ]
+  }
+];
+
+let currentDim = 0;
+
+function renderDim(i) {
+  const d = dims[i];
+  document.getElementById('dimCard').innerHTML = `
+    <div class="dim-header">
+      <div class="dim-icon">${d.icon}</div>
+      <div><div class="dim-title">${d.title}</div><div class="dim-sub">${d.sub}</div></div>
+    </div>
+    <div class="dim-body">${d.body}</div>
+    <div class="section-title" style="margin-top:4px">Observability Signals Needed</div>
+    <div class="signal-list">
+      ${d.signals.map(s=>`<div class="signal"><strong>${s.name}</strong>${s.desc}</div>`).join('')}
+    </div>
+  `;
+}
+
+function switchDim(i) {
+  currentDim = i;
+  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', i===j));
+  renderDim(i);
+}
+
+// Gap rows
+const gaps = [
+  { label: 'HTTP Status / Errors', trad: 95, agent: 30, diff: 'Hard' },
+  { label: 'Latency / Perf', trad: 90, agent: 55, diff: 'Medium' },
+  { label: 'Semantic Correctness', trad: 5, agent: 85, diff: 'Hard' },
+  { label: 'Reasoning Traces', trad: 0, agent: 90, diff: 'Hard' },
+  { label: 'Goal Tracking', trad: 0, agent: 80, diff: 'Hard' },
+  { label: 'Side-Effect Audit', trad: 40, agent: 75, diff: 'Medium' },
+  { label: 'Multi-Hop Lineage', trad: 30, agent: 85, diff: 'Hard' },
+];
+function renderGaps() {
+  const container = document.getElementById('gapRows');
+  container.innerHTML = gaps.map(g => `
+    <div style="margin-bottom:6px;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px">${g.label}</div>
+    <div class="gap-row" style="margin-bottom:4px">
+      <div class="gap-label" style="font-size:11px">ðŸ”§ Traditional</div>
+      <div class="gap-bar-bg"><div class="gap-bar" style="width:${g.trad}%;background:linear-gradient(90deg,#6c63ff,#00d2ff)">${g.trad}%</div></div>
+    </div>
+    <div class="gap-row" style="margin-bottom:16px">
+      <div class="gap-label" style="font-size:11px">ðŸ¤– Agent-Aware</div>
+      <div class="gap-bar-bg"><div class="gap-bar" style="width:${g.agent}%;background:linear-gradient(90deg,#06d6a0,#00d2ff)">${g.agent}%</div></div>
+      <span class="gap-badge ${g.diff==='Hard'?'hard':g.diff==='Medium'?'medium':'easy'}">${g.diff}</span>
+    </div>
+  `).join('');
+}
+
+// Quiz
+function checkAnswer(btn, correct) {
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) document.querySelectorAll('.opt-btn')[2].classList.add('correct');
+  const fb = document.getElementById('quizFeedback');
+  fb.innerHTML = correct
+    ? 'âœ… <strong>Correct!</strong> This is a classic <em>semantic failure</em>. The system was technically healthy â€” all HTTP calls succeeded, no exceptions. But no semantic evaluation was in place to verify the output content. This is why agent observability needs LLM-as-judge scoring and hallucination detection, not just infrastructure metrics.'
+    : 'âŒ <strong>Not quite.</strong> The correct answer is <strong>C â€” Semantic Failure</strong>. No tool crashed, there was no token issue or latency spike. The agent produced a technically valid response that was semantically wrong. Standard monitoring is blind to this class of failure.';
+  fb.className = 'feedback-box show';
+}
+
+// Traces
+const traces = {
+  healthy: [
+    { cls: 'span', t: '00:00.000', msg: '[TRACE] run_id=a3f9 task="draft_customer_email" started' },
+    { cls: 'span', t: '00:00.032', msg: '[SPAN] lookup_customer tool called â€” customer_id=C-882' },
+    { cls: 'ok',   t: '00:00.210', msg: '[RESULT] customer: {name:"Priya Nair", plan:"Pro", renewal:"2026-09-01"}' },
+    { cls: 'span', t: '00:00.215', msg: '[SPAN] get_usage_stats tool called â€” customer_id=C-882' },
+    { cls: 'ok',   t: '00:00.401', msg: '[RESULT] usage: {api_calls:12400, overage:false}' },
+    { cls: 'span', t: '00:00.403', msg: '[LLM] drafting email â€” context_tokens=820 / 4000' },
+    { cls: 'ok',   t: '00:01.120', msg: '[LLM] response generated â€” output_tokens=310' },
+    { cls: 'ok',   t: '00:01.122', msg: '[SEMANTIC] LLM-judge score=0.94 (faithful, on-task)' },
+    { cls: 'ok',   t: '00:01.125', msg: '[TRACE] run complete â€” status=SUCCESS duration=1.125s' },
+  ],
+  silent: [
+    { cls: 'span', t: '00:00.000', msg: '[TRACE] run_id=b7e2 task="draft_customer_email" started' },
+    { cls: 'span', t: '00:00.031', msg: '[SPAN] lookup_customer tool called â€” customer_id=C-882' },
+    { cls: 'warn', t: '00:00.209', msg: '[WARN] DB timeout â€” fallback to cache. Cache age=72h âš ï¸' },
+    { cls: 'info', t: '00:00.211', msg: '[RESULT] customer: {name:"Priya Nair", plan:"Starter", renewal:"2025-03-01"} [STALE]' },
+    { cls: 'span', t: '00:00.213', msg: '[LLM] drafting email â€” using stale customer data (undetected)' },
+    { cls: 'ok',   t: '00:01.018', msg: '[LLM] HTTP 200 â€” no exception thrown' },
+    { cls: 'info', t: '00:01.020', msg: '[TRACE] run complete â€” status=SUCCESS â† WRONG! Stale data used, hallucinated plan/date' },
+    { cls: 'error', t: '00:01.021', msg: '[MISSING] No semantic check, no data-freshness validation, no goal verification' },
+  ],
+  drift: [
+    { cls: 'span', t: '00:00.000', msg: '[TRACE] run_id=c1a5 task="summarise_quarterly_report" started' },
+    { cls: 'span', t: '00:00.044', msg: '[LLM] initial plan: [fetch_report, extract_kpis, write_summary]' },
+    { cls: 'span', t: '00:00.610', msg: '[LLM] step 2 plan update: adding competitor_search â€” "seems relevant"' },
+    { cls: 'warn', t: '00:01.200', msg: '[GOAL CHECK] âš ï¸ Original task: quarterly summary. Current subtask: web scraping competitors' },
+    { cls: 'span', t: '00:02.800', msg: '[LLM] step 4 plan update: "should also check CEO LinkedIn for context"' },
+    { cls: 'error', t: '00:03.900', msg: '[GOAL DRIFT] Cosine similarity(goal, current_plan)=0.41 â€” THRESHOLD 0.75 breached!' },
+    { cls: 'error', t: '00:03.902', msg: '[ALERT] Agent has drifted from original task. 7 unrelated tool calls made. Halting.' },
+    { cls: 'warn', t: '00:03.905', msg: '[MISSING] Without goal-embedding check, this would run to completion and deliver wrong report' },
+  ]
+};
+
+let currentTraceKey = 'healthy';
+function setTrace(key, btn) {
+  currentTraceKey = key;
+  document.querySelectorAll('.trace-btn').forEach(b => b.classList.remove('active-t'));
+  btn.classList.add('active-t');
+  replayTrace();
+}
+
+function replayTrace() {
+  const log = document.getElementById('traceLog');
+  log.innerHTML = '';
+  const lines = traces[currentTraceKey];
+  lines.forEach((l, i) => {
+    setTimeout(() => {
+      const span = document.createElement('span');
+      span.className = `log-line ${l.cls}`;
+      span.textContent = `[${l.t}]  ${l.msg}`;
+      log.appendChild(span);
+      log.scrollTop = log.scrollHeight;
+    }, i * 280);
+  });
+}
+
+// Init
+renderDim(0);
+renderGaps();
+replayTrace();
+</script>
+</body>
+</html>

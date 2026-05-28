@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.10 — Context Engineering: 4 Strategies</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
+    --accent: #ffd166; --text: #e8eaf6; --muted: #8892b0; --border: rgba(255,209,102,0.2);
+    --c1:#6c63ff; --c2:#00d2ff; --c3:#06d6a0; --c4:#ff6584;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  .nav { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); }
+  .nav a { color: var(--muted); text-decoration: none; font-size: 13px; } .nav a:hover { color: var(--text); }
+  .nav-sep { color: var(--border); }
+  .nav-cur { color: var(--accent); font-weight: 700; font-size: 13px; }
+
+  .hero { background: linear-gradient(135deg,#0f1117,#1a1422,#1a1d27); padding: 56px 40px 44px; text-align: center; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+  .hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:700px; height:400px; background:radial-gradient(ellipse,rgba(255,209,102,0.1),transparent 70%); pointer-events:none; }
+  .hero-badge { display:inline-block; background:rgba(255,209,102,0.12); border:1px solid rgba(255,209,102,0.35); color:var(--accent); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:16px; }
+  .hero h1 { font-size:clamp(26px,4vw,42px); font-weight:800; background:linear-gradient(90deg,#fff,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:12px; }
+  .hero p { color:var(--muted); font-size:16px; max-width:620px; margin:0 auto; line-height:1.6; }
+
+  .main { max-width:1100px; margin:0 auto; padding:40px 24px 80px; }
+  .sec-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+  .sec-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* TOKEN BUDGET VISUAL */
+  .budget-viz { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
+  .budget-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+  .budget-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .window-bar { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; height: 56px; display: flex; margin-bottom: 12px; position: relative; }
+  .seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: rgba(0,0,0,0.8); transition: all 0.4s ease; cursor: default; overflow: hidden; white-space: nowrap; border-right: 2px solid rgba(0,0,0,0.2); }
+  .seg:last-child { border-right: none; }
+  .seg-sys   { background: #6c63ff; }
+  .seg-hist  { background: #00d2ff; }
+  .seg-tools { background: #ffd166; }
+  .seg-doc   { background: #ff6584; }
+  .seg-free  { background: rgba(255,255,255,0.05); color: var(--muted); }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; }
+  .leg-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .leg-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .slider-row { display: flex; align-items: center; gap: 14px; margin: 16px 0 6px; }
+  .slider-row label { font-size: 12px; color: var(--muted); width: 120px; flex-shrink: 0; }
+  .slider-row input[type=range] { flex: 1; accent-color: var(--accent); }
+  .slider-val { font-size: 12px; font-weight: 700; color: var(--accent); width: 50px; text-align: right; }
+
+  /* STRATEGY TABS */
+  .strat-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0; }
+  .stab { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 10px 10px 0 0; cursor: pointer; transition: all 0.2s; }
+  .stab:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+  .stab.active { color: #fff; border-bottom-color: transparent; }
+  .stab[data-s="0"].active { background: rgba(108,99,255,0.25); border-color: rgba(108,99,255,0.5); }
+  .stab[data-s="1"].active { background: rgba(0,210,255,0.2); border-color: rgba(0,210,255,0.5); }
+  .stab[data-s="2"].active { background: rgba(6,214,160,0.2); border-color: rgba(6,214,160,0.5); }
+  .stab[data-s="3"].active { background: rgba(255,101,132,0.2); border-color: rgba(255,101,132,0.5); }
+  .strat-panel { display: none; background: var(--card); border-radius: 0 14px 14px 14px; border: 1px solid var(--border); padding: 28px; margin-bottom: 48px; }
+  .strat-panel.visible { display: block; }
+  .strat-panel[data-p="0"] { border-color: rgba(108,99,255,0.4); }
+  .strat-panel[data-p="1"] { border-color: rgba(0,210,255,0.35); }
+  .strat-panel[data-p="2"] { border-color: rgba(6,214,160,0.35); }
+  .strat-panel[data-p="3"] { border-color: rgba(255,101,132,0.35); }
+  .strat-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .strat-icon { font-size: 40px; }
+  .strat-name { font-size: 20px; font-weight: 800; }
+  .strat-tagline { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .strat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media(max-width:600px){.strat-grid{grid-template-columns:1fr;}}
+  .strat-box { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px; }
+  .strat-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; }
+  .strat-box-val { font-size: 13px; line-height: 1.6; }
+  .code-snippet { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px 16px; font-family: monospace; font-size: 12px; color: #e8eaf6; line-height: 1.7; margin-top: 12px; overflow-x: auto; }
+  .code-snippet .kw { color: #6c63ff; } .code-snippet .str { color: #06d6a0; } .code-snippet .cm { color: #8892b0; }
+
+  /* DECISION GUIDE */
+  .decision-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 16px; margin-bottom: 48px; }
+  .dec-card { background: var(--card); border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+  .dec-q { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+  .dec-a { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .dec-rec { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 8px; }
+
+  .back-row { text-align:center; margin-top:40px; }
+  .back-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(255,209,102,0.1); border:1px solid rgba(255,209,102,0.3); color:var(--accent); padding:10px 24px; border-radius:30px; text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s; }
+  .back-btn:hover { background:rgba(255,209,102,0.2); }
+</style>
+</head>
+<body>
+<div class="nav">
+  <a href="index.html">← All Concepts</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-cur">4.10 — Context Engineering: 4 Strategies</span>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>Context Engineering — 4 Strategies</h1>
+  <p>The art and science of deciding what goes into the LLM's context window — and what gets left out</p>
+</div>
+
+<div class="main">
+
+  <!-- TOKEN BUDGET VISUALISER -->
+  <div class="sec-title">Token Budget Visualiser</div>
+  <div class="budget-viz">
+    <div class="budget-title">128K Context Window — Interactive Allocation</div>
+    <div class="budget-sub">Drag sliders to see how each section competes for the fixed context budget</div>
+
+    <div class="window-bar" id="ctx-bar">
+      <div class="seg seg-sys"  id="seg-sys"   style="width:10%">System</div>
+      <div class="seg seg-hist" id="seg-hist"  style="width:20%">History</div>
+      <div class="seg seg-tools"id="seg-tools" style="width:8%">Tools</div>
+      <div class="seg seg-doc"  id="seg-doc"   style="width:25%">Docs</div>
+      <div class="seg seg-free" id="seg-free"  style="width:37%">Free (37%)</div>
+    </div>
+
+    <div class="slider-row">
+      <label>System Prompt</label>
+      <input type="range" min="2" max="25" value="10" id="sl-sys" oninput="updateBudget()">
+      <span class="slider-val" id="sv-sys">10%</span>
+    </div>
+    <div class="slider-row">
+      <label>History / Episodic</label>
+      <input type="range" min="5" max="40" value="20" id="sl-hist" oninput="updateBudget()">
+      <span class="slider-val" id="sv-hist">20%</span>
+    </div>
+    <div class="slider-row">
+      <label>Tool Definitions</label>
+      <input type="range" min="2" max="20" value="8" id="sl-tools" oninput="updateBudget()">
+      <span class="slider-val" id="sv-tools">8%</span>
+    </div>
+    <div class="slider-row">
+      <label>Retrieved Docs (RAG)</label>
+      <input type="range" min="0" max="50" value="25" id="sl-doc" oninput="updateBudget()">
+      <span class="slider-val" id="sv-doc">25%</span>
+    </div>
+
+    <div style="margin-top:14px;font-size:13px;color:var(--muted)" id="budget-status">✅ 37% remaining for model output and reasoning</div>
+
+    <div class="legend" style="margin-top:16px">
+      <div class="leg-item"><div class="leg-dot" style="background:#6c63ff"></div>System Prompt</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#00d2ff"></div>History</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ffd166"></div>Tool Defs</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ff6584"></div>RAG Docs</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(255,255,255,0.1)"></div>Free</div>
+    </div>
+  </div>
+
+  <!-- 4 STRATEGY TABS -->
+  <div class="sec-title">The 4 Context Engineering Strategies</div>
+  <div class="strat-tabs">
+    <div class="stab active" data-s="0" onclick="showStrat(0)">① Selective Inclusion</div>
+    <div class="stab" data-s="1" onclick="showStrat(1)">② Progressive Disclosure</div>
+    <div class="stab" data-s="2" onclick="showStrat(2)">③ Compression & Summarisation</div>
+    <div class="stab" data-s="3" onclick="showStrat(3)">④ Dynamic Context Assembly</div>
+  </div>
+
+  <div class="strat-panel visible" data-p="0">
+    <div class="strat-header">
+      <div class="strat-icon">🎯</div>
+      <div>
+        <div class="strat-name" style="color:#6c63ff">Selective Inclusion</div>
+        <div class="strat-tagline">Only include what the current task actually needs — nothing else</div>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-box">
+        <div class="strat-box-label">The Problem</div>
+        <div class="strat-box-val">Naively including all available context (all tools, full history, all docs) wastes tokens and degrades model attention. "Lost in the middle" effect — models focus on start/end.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">The Solution</div>
+        <div class="strat-box-val">Filter at runtime — include only tools relevant to current task, only the last N relevant messages, only the most similar retrieved chunks. Relevance > completeness.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">When to Use</div>
+        <div class="strat-box-val">Large tool registries (10+ tools). Agents with rich conversation history. RAG with many candidate chunks.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Techniques</div>
+        <div class="strat-box-val">Tool relevance scoring, embedding-based history retrieval, chunk re-ranking (MMR/BM25), semantic routing.</div>
+      </div>
+    </div>
+    <div class="code-snippet">
+<span class="cm"># Only include top-3 relevant tools for current query</span>
+relevant_tools = rank_tools(query, all_tools, <span class="kw">top_k</span>=<span class="str">3</span>)
+context = build_context(
+    system=system_prompt,
+    history=get_relevant_history(query, <span class="kw">k</span>=<span class="str">5</span>),
+    tools=relevant_tools,           <span class="cm"># selective</span>
+    docs=rerank_chunks(query, chunks, <span class="kw">k</span>=<span class="str">3</span>)  <span class="cm"># selective</span>
+)
+    </div>
+  </div>
+
+  <div class="strat-panel" data-p="1">
+    <div class="strat-header">
+      <div class="strat-icon">📊</div>
+      <div>
+        <div class="strat-name" style="color:#00d2ff">Progressive Disclosure</div>
+        <div class="strat-tagline">Start minimal — add context only as the task evolves and more is needed</div>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-box">
+        <div class="strat-box-label">The Problem</div>
+        <div class="strat-box-val">Loading all context upfront means paying token costs even for simple tasks that resolve early. Over-provisioning is wasteful and slow.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">The Solution</div>
+        <div class="strat-box-val">Inject context in layers: start with query + system prompt, add tool results only when a tool is called, add retrieved docs only if needed. Lazy loading for context.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Example Flow</div>
+        <div class="strat-box-val">Turn 1: query only → Turn 2: + tool result → Turn 3: + retrieved doc → Turn 4: answer. Each turn adds only what's needed.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Trade-off</div>
+        <div class="strat-box-val">✅ Optimal token use for short tasks | ⚠️ More complex orchestration logic required</div>
+      </div>
+    </div>
+    <div class="code-snippet">
+<span class="cm"># Progressive disclosure pattern</span>
+context = [system_prompt, user_query]      <span class="cm"># Layer 1: minimal</span>
+
+<span class="kw">if</span> agent_needs_tool(response):
+    result = execute_tool(tool_call)
+    context.append(tool_result)            <span class="cm"># Layer 2: add tool output</span>
+
+<span class="kw">if</span> agent_needs_retrieval(response):
+    docs = rag_retrieve(query)
+    context.append(retrieved_docs)         <span class="cm"># Layer 3: add RAG docs only if needed</span>
+    </div>
+  </div>
+
+  <div class="strat-panel" data-p="2">
+    <div class="strat-header">
+      <div class="strat-icon">🗜</div>
+      <div>
+        <div class="strat-name" style="color:#06d6a0">Compression & Summarisation</div>
+        <div class="strat-tagline">Reduce old context to summaries — preserve meaning, free up tokens</div>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-box">
+        <div class="strat-box-label">The Problem</div>
+        <div class="strat-box-val">Long-running agents accumulate history. After 20+ turns, raw conversation history can consume 40–60% of the context window with diminishing returns.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">The Solution</div>
+        <div class="strat-box-val">Periodically summarise older turns into a compact "rolling summary". Keep recent turns verbatim; older turns are compressed. Hierarchical summaries for very long sessions.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Compression Techniques</div>
+        <div class="strat-box-val">Rolling summary, extractive key-fact extraction, tool-result compression (schema only, not full output), decision log (actions taken, not full trace).</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Compression Ratio</div>
+        <div class="strat-box-val">Typical: 10:1 to 20:1 — a 2000-token conversation summarised to 100–200 tokens with 85–90% key-fact retention.</div>
+      </div>
+    </div>
+    <div class="code-snippet">
+<span class="cm"># Rolling summary pattern</span>
+<span class="kw">if</span> len(history) > MAX_TURNS:
+    old_turns = history[:-KEEP_RECENT]
+    summary = llm.summarise(old_turns,
+        prompt=<span class="str">"Extract key facts, decisions, and unresolved items"</span>)
+    history = [summary_message(summary)] + history[-KEEP_RECENT:]
+    </div>
+  </div>
+
+  <div class="strat-panel" data-p="3">
+    <div class="strat-header">
+      <div class="strat-icon">⚡</div>
+      <div>
+        <div class="strat-name" style="color:#ff6584">Dynamic Context Assembly</div>
+        <div class="strat-tagline">Build the context window at runtime based on task type, user intent, and available budget</div>
+      </div>
+    </div>
+    <div class="strat-grid">
+      <div class="strat-box">
+        <div class="strat-box-label">The Concept</div>
+        <div class="strat-box-val">A Context Assembler component that runs before every LLM call. It classifies the task, retrieves relevant components (tools, docs, history), and allocates the token budget across them.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Budget Allocation Logic</div>
+        <div class="strat-box-val">Code task → more tool defs, less history. Research task → more RAG docs. Conversational → more history, fewer tools. Each task profile has a different allocation template.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Components</div>
+        <div class="strat-box-val">Task classifier → Component selector → Token budget allocator → Priority sorter → Context builder → Final assembly.</div>
+      </div>
+      <div class="strat-box">
+        <div class="strat-box-label">Production Benefit</div>
+        <div class="strat-box-val">Automated, task-aware context management. Reduces need for hand-crafted prompts. Enables consistent performance across diverse task types.</div>
+      </div>
+    </div>
+    <div class="code-snippet">
+<span class="cm"># Dynamic context assembly</span>
+task_type = classify_intent(user_query)    <span class="cm"># "research" | "code" | "chat"</span>
+budget = ContextBudget(total=<span class="str">128000</span>)
+
+profile = PROFILES[task_type]              <span class="cm"># predefined allocation templates</span>
+context = ContextAssembler(budget, profile).build(
+    system=system_prompt,
+    tools=filter_tools(query, all_tools),
+    history=get_history(budget.history_alloc),
+    docs=retrieve_docs(query, budget.doc_alloc)
+)
+    </div>
+  </div>
+
+  <!-- WHEN TO APPLY EACH -->
+  <div class="sec-title">Strategy Selection Guide</div>
+  <div class="decision-grid">
+    <div class="dec-card">
+      <div class="dec-q">You have 20+ tools registered</div>
+      <div class="dec-a">Most tools are irrelevant for most queries. Including all wastes ~15% of context and degrades attention.</div>
+      <div class="dec-rec" style="background:rgba(108,99,255,0.15);color:#6c63ff">→ Use Selective Inclusion</div>
+    </div>
+    <div class="dec-card">
+      <div class="dec-q">Agent runs 10+ turn conversations</div>
+      <div class="dec-a">History grows linearly. After turn 15, raw history dominates the window.</div>
+      <div class="dec-rec" style="background:rgba(6,214,160,0.15);color:#06d6a0">→ Use Compression</div>
+    </div>
+    <div class="dec-card">
+      <div class="dec-q">Most queries resolve in 1–2 turns</div>
+      <div class="dec-a">No need to front-load all context. Start minimal and expand only if needed.</div>
+      <div class="dec-rec" style="background:rgba(0,210,255,0.15);color:#00d2ff">→ Use Progressive Disclosure</div>
+    </div>
+    <div class="dec-card">
+      <div class="dec-q">Agent serves diverse task types</div>
+      <div class="dec-a">Research vs. code vs. chat need very different context profiles. One template won't fit all.</div>
+      <div class="dec-rec" style="background:rgba(255,101,132,0.15);color:#ff6584">→ Use Dynamic Assembly</div>
+    </div>
+  </div>
+
+  <div class="back-row">
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
+  </div>
+</div>
+
+<script>
+function updateBudget() {
+  const sys   = parseInt(document.getElementById('sl-sys').value);
+  const hist  = parseInt(document.getElementById('sl-hist').value);
+  const tools = parseInt(document.getElementById('sl-tools').value);
+  const doc   = parseInt(document.getElementById('sl-doc').value);
+  const total = sys + hist + tools + doc;
+  const free  = Math.max(0, 100 - total);
+
+  document.getElementById('sv-sys').textContent   = sys + '%';
+  document.getElementById('sv-hist').textContent  = hist + '%';
+  document.getElementById('sv-tools').textContent = tools + '%';
+  document.getElementById('sv-doc').textContent   = doc + '%';
+
+  document.getElementById('seg-sys').style.width   = sys + '%';
+  document.getElementById('seg-hist').style.width  = hist + '%';
+  document.getElementById('seg-tools').style.width = tools + '%';
+  document.getElementById('seg-doc').style.width   = doc + '%';
+  document.getElementById('seg-free').style.width  = free + '%';
+  document.getElementById('seg-free').textContent  = free > 4 ? 'Free (' + free + '%)' : '';
+
+  const status = document.getElementById('budget-status');
+  if (free < 10) {
+    status.style.color = '#ff6584';
+    status.textContent = '⚠️ Only ' + free + '% remaining — model output will be severely constrained!';
+  } else if (free < 20) {
+    status.style.color = '#ffd166';
+    status.textContent = '⚠️ ' + free + '% remaining — tight budget, consider compression.';
+  } else {
+    status.style.color = '#06d6a0';
+    status.textContent = '✅ ' + free + '% remaining for model output and reasoning';
+  }
+}
+
+function showStrat(idx) {
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.strat-panel').forEach(p => p.classList.remove('visible'));
+  document.querySelector(`.stab[data-s="${idx}"]`).classList.add('active');
+  document.querySelector(`.strat-panel[data-p="${idx}"]`).classList.add('visible');
+}
+</script>
+</body>
+</html>
