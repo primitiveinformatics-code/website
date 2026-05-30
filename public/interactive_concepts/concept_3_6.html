@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.6 â€” A2A Communication Flow</title>
+<title>Concept 3.6 — A2A Communication Flow</title>
 <style>
   :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -66,7 +67,7 @@
   .pn-box.polling h4{color:var(--wrong);}
   .pn-box.webhook h4{color:var(--correct);}
   .pn-box ul{list-style:none;font-size:.82rem;color:var(--muted);line-height:1.7;}
-  .pn-box ul li::before{content:'â€¢ ';}
+  .pn-box ul li::before{content:'• ';}
   .pn-box .verdict{font-size:.8rem;font-weight:700;margin-top:10px;padding:6px 10px;border-radius:6px;}
   .polling .verdict{background:rgba(255,101,132,.1);color:var(--wrong);}
   .webhook .verdict{background:rgba(6,214,160,.1);color:var(--correct);}
@@ -93,16 +94,16 @@
 <body>
 <nav>
   <div class="nav-links">
-    <a href="concept_3_5.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_7.html">Next â†’</a>
+    <a href="concept_3_5.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_7.html">Next →</a>
   </div>
-  <span class="title">3.6 â€” A2A Communication Flow</span>
+  <span class="title">3.6 — A2A Communication Flow</span>
 </nav>
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>A2A Communication Flow</h1>
-  <p>The full lifecycle of an A2A task â€” from delegation to artifacts â€” including streaming events, input required loops, and push notifications.</p>
+  <p>The full lifecycle of an A2A task — from delegation to artifacts — including streaming events, input required loops, and push notifications.</p>
 </div>
 <div class="content">
 
@@ -115,12 +116,12 @@
           <div class="sm-node start">submitted</div>
           <div class="sm-label">task received</div>
         </div>
-        <div class="sm-arrow">â†’</div>
+        <div class="sm-arrow">→</div>
         <div>
           <div class="sm-node work">working</div>
           <div class="sm-label">agent running</div>
         </div>
-        <div class="sm-arrow">â‡„</div>
+        <div class="sm-arrow">⇄</div>
         <div>
           <div class="sm-node inp">input-required</div>
           <div class="sm-label">needs caller reply</div>
@@ -128,14 +129,14 @@
       </div>
       <div class="sm-row" style="margin-top:4px;">
         <div style="width:110px;"></div>
-        <div class="sm-arrow">â†“&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        <div class="sm-arrow">↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
       </div>
       <div class="sm-row">
         <div style="width:220px;"></div>
-        <div class="sm-arrow">â†’</div>
+        <div class="sm-arrow">→</div>
         <div>
           <div class="sm-node done">completed</div>
-          <div class="sm-label">artifact ready âœ“</div>
+          <div class="sm-label">artifact ready ✓</div>
         </div>
         <div class="sm-arrow">|</div>
         <div>
@@ -148,7 +149,7 @@
           <div class="sm-label">tasks/cancel called</div>
         </div>
       </div>
-      <p style="text-align:center;margin-top:20px;font-size:.8rem;color:var(--muted);">working â‡„ input_required can loop multiple times for complex multi-turn tasks</p>
+      <p style="text-align:center;margin-top:20px;font-size:.8rem;color:var(--muted);">working ⇄ input_required can loop multiple times for complex multi-turn tasks</p>
     </div>
   </div>
 
@@ -156,7 +157,7 @@
   <div class="section">
     <h2>Live Flow Trace Simulator</h2>
     <div class="trace-sim">
-      <h3>ðŸ”¬ Choose a scenario to replay the full A2A communication</h3>
+      <h3>🔬 Choose a scenario to replay the full A2A communication</h3>
       <div class="scenario-btns">
         <button class="scn-btn" onclick="runScenario(0,this)">Simple Research Task</button>
         <button class="scn-btn" onclick="runScenario(1,this)">Multi-Turn (Input Required)</button>
@@ -174,25 +175,25 @@
     <h2>A2A Artifact Types</h2>
     <div class="art-grid">
       <div class="art-card">
-        <div class="a-icon">ðŸ“„</div>
+        <div class="a-icon">📄</div>
         <h4>Text Artifact</h4>
         <div class="a-type">type: "text"</div>
-        <p>Plain text or markdown. Most common output â€” summaries, reports, analysis, generated content.</p>
+        <p>Plain text or markdown. Most common output — summaries, reports, analysis, generated content.</p>
       </div>
       <div class="art-card">
-        <div class="a-icon">ðŸ”¢</div>
+        <div class="a-icon">🔢</div>
         <h4>Data Artifact</h4>
         <div class="a-type">type: "data"</div>
         <p>Structured JSON data. Use when the caller agent needs machine-parseable output for further processing.</p>
       </div>
       <div class="art-card">
-        <div class="a-icon">ðŸ“</div>
+        <div class="a-icon">📁</div>
         <h4>File Artifact</h4>
         <div class="a-type">type: "file"</div>
-        <p>Binary or text file â€” CSV, PDF, image, code. Includes filename, mimeType, and base64-encoded bytes or a URL.</p>
+        <p>Binary or text file — CSV, PDF, image, code. Includes filename, mimeType, and base64-encoded bytes or a URL.</p>
       </div>
       <div class="art-card">
-        <div class="a-icon">ðŸ–¼ï¸</div>
+        <div class="a-icon">🖼️</div>
         <h4>Image Artifact</h4>
         <div class="a-type">type: "image" / "inline_data"</div>
         <p>Generated images, charts, diagrams. Base64-encoded inline or referenced by URL with mimeType.</p>
@@ -205,7 +206,7 @@
     <h2>Polling vs. Push Notifications</h2>
     <div class="pn-layout">
       <div class="pn-box polling">
-        <h4>âš ï¸ Polling (tasks/get)</h4>
+        <h4>⚠️ Polling (tasks/get)</h4>
         <ul>
           <li>Caller repeatedly calls tasks/get</li>
           <li>Every N seconds: "Are you done yet?"</li>
@@ -216,11 +217,11 @@
         <div class="verdict">Use only for short tasks (&lt; 10s) or when push isn't supported</div>
       </div>
       <div class="pn-box webhook">
-        <h4>âœ“ Push Notifications (Webhook)</h4>
+        <h4>✓ Push Notifications (Webhook)</h4>
         <ul>
           <li>Caller registers a webhook: <code>tasks/pushNotification/set</code></li>
           <li>Agent POSTs to webhook when state changes</li>
-          <li>Zero wasted requests â€” caller sleeps until notified</li>
+          <li>Zero wasted requests — caller sleeps until notified</li>
           <li>Low latency for completion detection</li>
           <li>Requires the caller to host an HTTP endpoint</li>
         </ul>
@@ -231,7 +232,7 @@
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -242,7 +243,7 @@
       <div class="options" id="q1">
         <button class="opt" onclick="answer('q1','a','c')">A) The agent is retrying after failures</button>
         <button class="opt" onclick="answer('q1','b','c')">B) The task is being routed through multiple sub-agents</button>
-        <button class="opt" onclick="answer('q1','c','c')">C) A multi-turn dialogue â€” the agent needs clarification from the caller at multiple points before completing</button>
+        <button class="opt" onclick="answer('q1','c','c')">C) A multi-turn dialogue — the agent needs clarification from the caller at multiple points before completing</button>
         <button class="opt" onclick="answer('q1','d','c')">D) The agent's context window is being refreshed between steps</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
@@ -252,9 +253,9 @@
     <div class="quiz-card">
       <h3>Q2. What type of A2A artifact would you use when the remote agent produces a CSV file the caller needs to parse?</h3>
       <div class="options" id="q2">
-        <button class="opt" onclick="answer('q2','a','c')">A) text â€” wrap the CSV in a plain text part</button>
-        <button class="opt" onclick="answer('q2','b','c')">B) data â€” encode it as a JSON array</button>
-        <button class="opt" onclick="answer('q2','c','c')">C) file â€” with mimeType "text/csv" and base64-encoded bytes or a download URL</button>
+        <button class="opt" onclick="answer('q2','a','c')">A) text — wrap the CSV in a plain text part</button>
+        <button class="opt" onclick="answer('q2','b','c')">B) data — encode it as a JSON array</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) file — with mimeType "text/csv" and base64-encoded bytes or a download URL</button>
         <button class="opt" onclick="answer('q2','d','c')">D) A2A cannot return binary or file outputs</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
@@ -265,7 +266,7 @@
       <h3>Q3. Why are push notifications preferred over polling for long-running A2A tasks?</h3>
       <div class="options" id="q3">
         <button class="opt" onclick="answer('q3','a','b')">A) Polling is not allowed by the A2A specification</button>
-        <button class="opt" onclick="answer('q3','b','b')">B) Push notifications eliminate wasted polling requests â€” the caller sleeps until the agent notifies it, saving network resources and reducing latency</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) Push notifications eliminate wasted polling requests — the caller sleeps until the agent notifies it, saving network resources and reducing latency</button>
         <button class="opt" onclick="answer('q3','c','b')">C) Webhooks are more secure than polling</button>
         <button class="opt" onclick="answer('q3','d','b')">D) Push notifications are faster because they use UDP instead of TCP</button>
       </div>
@@ -289,7 +290,7 @@
       <h3>Q5. What happens to a task if <code>tasks/cancel</code> is called while it is in the <code>working</code> state?</h3>
       <div class="options" id="q5">
         <button class="opt" onclick="answer('q5','a','d')">A) The task is immediately deleted from the server</button>
-        <button class="opt" onclick="answer('q5','b','d')">B) The task continues â€” cancel is only a suggestion</button>
+        <button class="opt" onclick="answer('q5','b','d')">B) The task continues — cancel is only a suggestion</button>
         <button class="opt" onclick="answer('q5','c','d')">C) The agent retries the task from the beginning</button>
         <button class="opt" onclick="answer('q5','d','d')">D) The agent should stop processing and transition the task to <code>canceled</code> state</button>
       </div>
@@ -300,13 +301,13 @@
 
 </div>
 <script>
-// â”€â”€ TRACE SCENARIOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── TRACE SCENARIOS ──────────────────────────────────────────────
 const scenarios = [
   {
     name: 'Simple Research Task',
     lines: [
-      ['tl-caller','CALLER â†’ AGENT: tasks/send { id: "task-001", message: "Research top 3 LLM providers in 2025" }'],
-      ['tl-agent', 'AGENT â†’ CALLER: { state: "submitted" } âœ“ Task acknowledged'],
+      ['tl-caller','CALLER → AGENT: tasks/send { id: "task-001", message: "Research top 3 LLM providers in 2025" }'],
+      ['tl-agent', 'AGENT → CALLER: { state: "submitted" } ✓ Task acknowledged'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Searching web for LLM provider comparisons..." }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Analyzing pricing and benchmark data..." }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Compiling summary..." }'],
@@ -315,53 +316,53 @@ const scenarios = [
       ['tl-artifact','EVENT: TaskArtifactUpdateEvent { append: "2. Anthropic Claude 3.5: ..." } (streaming chunk 2)'],
       ['tl-artifact','EVENT: TaskArtifactUpdateEvent { append: "3. Google Gemini 1.5: ...", lastChunk: true }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "completed" }'],
-      ['tl-artifact','âœ“ CALLER: Task complete. Artifact "research_summary" ready for use.'],
+      ['tl-artifact','✓ CALLER: Task complete. Artifact "research_summary" ready for use.'],
     ]
   },
   {
     name: 'Multi-Turn (Input Required)',
     lines: [
-      ['tl-caller','CALLER â†’ AGENT: tasks/send { id: "task-002", message: "Analyze sales data and identify trends" }'],
+      ['tl-caller','CALLER → AGENT: tasks/send { id: "task-002", message: "Analyze sales data and identify trends" }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working" }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "input_required", message: "Which time period? Q1 2025 or full year 2024?" }'],
-      ['tl-caller','CALLER â†’ AGENT: tasks/send { id: "task-002", message: "Q1 2025 please" }  â† same task ID'],
+      ['tl-caller','CALLER → AGENT: tasks/send { id: "task-002", message: "Q1 2025 please" }  ← same task ID'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Loading Q1 2025 sales records..." }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "input_required", message: "Focus on which regions? All, or specific?" }'],
-      ['tl-caller','CALLER â†’ AGENT: tasks/send { id: "task-002", message: "APAC and EMEA only" }'],
+      ['tl-caller','CALLER → AGENT: tasks/send { id: "task-002", message: "APAC and EMEA only" }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Running trend analysis for APAC + EMEA Q1 2025..." }'],
       ['tl-artifact','EVENT: TaskArtifactUpdateEvent { name: "trend_report", type: "data", lastChunk: true }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "completed" }'],
-      ['tl-artifact','âœ“ CALLER: Multi-turn task complete after 2 clarifications.'],
+      ['tl-artifact','✓ CALLER: Multi-turn task complete after 2 clarifications.'],
     ]
   },
   {
     name: 'Streaming with Artifacts',
     lines: [
-      ['tl-caller','CALLER â†’ AGENT: tasks/sendSubscribe { id: "task-003", message: "Write a 500-word product blog post about MCP" }'],
-      ['tl-agent', 'AGENT â†’ CALLER: HTTP 200 + SSE stream opened âœ“'],
+      ['tl-caller','CALLER → AGENT: tasks/sendSubscribe { id: "task-003", message: "Write a 500-word product blog post about MCP" }'],
+      ['tl-agent', 'AGENT → CALLER: HTTP 200 + SSE stream opened ✓'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Outlining blog post structure..." }'],
       ['tl-artifact','EVENT: TaskArtifactUpdateEvent { name: "blog_post", index: 0, lastChunk: false }'],
-      ['tl-artifact','EVENT: chunk 1 â†’ "# The Model Context Protocol: A Universal Plug for AI\\n\\n..."'],
-      ['tl-artifact','EVENT: chunk 2 â†’ "## What Makes MCP Different\\n\\nUnlike proprietary integrations..."'],
-      ['tl-artifact','EVENT: chunk 3 â†’ "## Production Benefits\\n\\nTeams using MCP report..."'],
-      ['tl-artifact','EVENT: chunk 4 â†’ "## Getting Started\\n\\nThe fastest way to try MCP...", lastChunk: true'],
+      ['tl-artifact','EVENT: chunk 1 → "# The Model Context Protocol: A Universal Plug for AI\\n\\n..."'],
+      ['tl-artifact','EVENT: chunk 2 → "## What Makes MCP Different\\n\\nUnlike proprietary integrations..."'],
+      ['tl-artifact','EVENT: chunk 3 → "## Production Benefits\\n\\nTeams using MCP report..."'],
+      ['tl-artifact','EVENT: chunk 4 → "## Getting Started\\n\\nThe fastest way to try MCP...", lastChunk: true'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "completed" }'],
       ['tl-agent', 'AGENT: SSE stream closed.'],
-      ['tl-artifact','âœ“ CALLER: Full blog post received via streaming chunks â€” 4 chunks total.'],
+      ['tl-artifact','✓ CALLER: Full blog post received via streaming chunks — 4 chunks total.'],
     ]
   },
   {
     name: 'Task Cancellation',
     lines: [
-      ['tl-caller','CALLER â†’ AGENT: tasks/send { id: "task-004", message: "Build a full competitor analysis report" }'],
+      ['tl-caller','CALLER → AGENT: tasks/send { id: "task-004", message: "Build a full competitor analysis report" }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Fetching competitor data from 12 sources..." }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "working", message: "Analyzing feature comparisons..." }'],
-      ['tl-caller','âš ï¸ CALLER: User changed priorities. Canceling task.'],
-      ['tl-caller','CALLER â†’ AGENT: tasks/cancel { id: "task-004" }'],
+      ['tl-caller','⚠️ CALLER: User changed priorities. Canceling task.'],
+      ['tl-caller','CALLER → AGENT: tasks/cancel { id: "task-004" }'],
       ['tl-event', 'EVENT: TaskStatusUpdateEvent { state: "canceled" }'],
       ['tl-agent', 'AGENT: Stopped processing. Partial results discarded.'],
-      ['tl-info',  'â„¹  Note: "canceled" is a terminal state â€” the same task ID cannot be resumed.'],
-      ['tl-info',  'â„¹  To retry, caller must submit a new tasks/send with a fresh task ID.'],
+      ['tl-info',  'ℹ  Note: "canceled" is a terminal state — the same task ID cannot be resumed.'],
+      ['tl-info',  'ℹ  To retry, caller must submit a new tasks/send with a fresh task ID.'],
     ]
   }
 ];
@@ -389,7 +390,7 @@ function runScenario(idx, btn) {
   addLine();
 }
 
-// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── QUIZ ─────────────────────────────────────────────────────────
 let score = 0;
 const answered = {};
 function answer(qid, chosen, correct) {
@@ -405,18 +406,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
-      q1: 'The working â‡„ input_required loop supports multi-turn tasks. The agent pauses, asks the caller a question, and resumes when it receives the answer â€” all within the same task ID.',
+      q1: 'The working ⇄ input_required loop supports multi-turn tasks. The agent pauses, asks the caller a question, and resumes when it receives the answer — all within the same task ID.',
       q2: 'A file artifact with mimeType "text/csv" is the correct type. The bytes can be base64-encoded inline or provided as a URL the caller can download.',
-      q3: 'Push notifications (webhooks) eliminate polling overhead â€” the caller registers once and sleeps until notified. This is essential for tasks that run for minutes.',
+      q3: 'Push notifications (webhooks) eliminate polling overhead — the caller registers once and sleeps until notified. This is essential for tasks that run for minutes.',
       q4: 'TaskStatusUpdateEvent carries state changes (working, completed, input_required). TaskArtifactUpdateEvent delivers actual content chunks as the agent produces them during streaming.',
-      q5: 'tasks/cancel signals the agent to stop. The agent should cease processing and transition to "canceled" â€” a terminal state. A new task/send with a fresh ID is needed to start again.'
+      q5: 'tasks/cancel signals the agent to stop. The agent should cease processing and transition to "canceled" — a terminal state. A new task/send with a fresh ID is needed to start again.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {

@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.15 â€” RAG Evaluation: RAGAS Framework</title>
+<title>4.15 — RAG Evaluation: RAGAS Framework</title>
 <style>
   :root {
     --bg:#0f1117; --surface:#1a1d27; --card:#21263a; --accent:#ffd166;
@@ -112,84 +113,84 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.15 â€” RAG Evaluation: RAGAS Framework</span>
+  <span class="nav-cur">4.15 — RAG Evaluation: RAGAS Framework</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
-  <h1>RAG Evaluation â€” RAGAS Framework</h1>
-  <p>Measure RAG pipeline quality without ground-truth labels â€” four metrics that cover every failure mode</p>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>RAG Evaluation — RAGAS Framework</h1>
+  <p>Measure RAG pipeline quality without ground-truth labels — four metrics that cover every failure mode</p>
   <div class="hero-stats">
     <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">Core Metrics</div></div>
-    <div class="hstat"><div class="hstat-n">0â€“1</div><div class="hstat-l">Score Range</div></div>
+    <div class="hstat"><div class="hstat-n">0–1</div><div class="hstat-l">Score Range</div></div>
     <div class="hstat"><div class="hstat-n">LLM-Free</div><div class="hstat-l">Reference Option</div></div>
   </div>
 </div>
 
 <div class="main">
 
-  <div class="sec-title">The 4 RAGAS Metrics â€” Click to Explore</div>
+  <div class="sec-title">The 4 RAGAS Metrics — Click to Explore</div>
   <div class="metric-grid">
     <div class="metric-card active" style="--mc:#6c63ff;" onclick="toggleMetric(this)" data-idx="0">
-      <div class="mc-icon">ðŸŽ¯</div>
+      <div class="mc-icon">🎯</div>
       <div class="mc-name" style="color:#6c63ff;">Faithfulness</div>
-      <div class="mc-score" style="color:#6c63ff;">0.0â€“1.0</div>
+      <div class="mc-score" style="color:#6c63ff;">0.0–1.0</div>
       <div class="mc-tagline">Is the answer grounded in the retrieved context?</div>
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#6c63ff;"></div>
       <div class="mc-detail">
         <p>Measures: What fraction of statements in the generated answer can be inferred from the retrieved context.</p>
-        <p><strong>Catches:</strong> Hallucinations â€” answers that add facts not in the context.</p>
+        <p><strong>Catches:</strong> Hallucinations — answers that add facts not in the context.</p>
         <div class="mc-formula">score = |verified claims| / |total claims in answer|</div>
       </div>
     </div>
     <div class="metric-card" style="--mc:#00d2ff;" onclick="toggleMetric(this)" data-idx="1">
-      <div class="mc-icon">ðŸ”</div>
+      <div class="mc-icon">🔍</div>
       <div class="mc-name" style="color:#00d2ff;">Answer Relevancy</div>
-      <div class="mc-score" style="color:#00d2ff;">0.0â€“1.0</div>
+      <div class="mc-score" style="color:#00d2ff;">0.0–1.0</div>
       <div class="mc-tagline">Does the answer actually address the question?</div>
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#00d2ff;opacity:0;transition:opacity 0.2s;"></div>
       <div class="mc-detail">
-        <p>Measures: Semantic similarity between the question and answer. Uses reverse-generation â€” the LLM generates N questions from the answer, then computes similarity to the original.</p>
+        <p>Measures: Semantic similarity between the question and answer. Uses reverse-generation — the LLM generates N questions from the answer, then computes similarity to the original.</p>
         <p><strong>Catches:</strong> Tangential or off-topic answers that are technically grounded but don't answer the actual question.</p>
         <div class="mc-formula">score = mean(cosine_sim(q, generated_qs))</div>
       </div>
     </div>
     <div class="metric-card" style="--mc:#06d6a0;" onclick="toggleMetric(this)" data-idx="2">
-      <div class="mc-icon">ðŸ“š</div>
+      <div class="mc-icon">📚</div>
       <div class="mc-name" style="color:#06d6a0;">Context Precision</div>
-      <div class="mc-score" style="color:#06d6a0;">0.0â€“1.0</div>
+      <div class="mc-score" style="color:#06d6a0;">0.0–1.0</div>
       <div class="mc-tagline">Are the top retrieved chunks actually relevant?</div>
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#06d6a0;opacity:0;transition:opacity 0.2s;"></div>
       <div class="mc-detail">
         <p>Measures: Ranking quality of retrieval. Are the relevant chunks retrieved at the top positions, or buried below irrelevant ones?</p>
-        <p><strong>Catches:</strong> Noisy retrieval â€” when the right chunk exists in the DB but gets ranked below irrelevant chunks.</p>
+        <p><strong>Catches:</strong> Noisy retrieval — when the right chunk exists in the DB but gets ranked below irrelevant chunks.</p>
         <div class="mc-formula">Weighted Precision@k over retrieved contexts</div>
       </div>
     </div>
     <div class="metric-card" style="--mc:#ff6584;" onclick="toggleMetric(this)" data-idx="3">
-      <div class="mc-icon">ðŸ•¸ï¸</div>
+      <div class="mc-icon">🕸️</div>
       <div class="mc-name" style="color:#ff6584;">Context Recall</div>
-      <div class="mc-score" style="color:#ff6584;">0.0â€“1.0</div>
+      <div class="mc-score" style="color:#ff6584;">0.0–1.0</div>
       <div class="mc-tagline">Did retrieval find all necessary information?</div>
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#ff6584;opacity:0;transition:opacity 0.2s;"></div>
       <div class="mc-detail">
         <p>Measures: What fraction of the ground-truth answer's content can be attributed to the retrieved context. Requires reference answer.</p>
-        <p><strong>Catches:</strong> Missing retrieval â€” when the retriever returns chunks that don't cover all the facts needed to answer.</p>
+        <p><strong>Catches:</strong> Missing retrieval — when the retriever returns chunks that don't cover all the facts needed to answer.</p>
         <div class="mc-formula">score = |ground truth sentences supported| / |total ground truth sentences|</div>
       </div>
     </div>
   </div>
 
-  <div class="sec-title">Live RAGAS Scorer â€” Compare 3 RAG Pipelines</div>
+  <div class="sec-title">Live RAGAS Scorer — Compare 3 RAG Pipelines</div>
   <div class="scorer-box">
-    <h3>ðŸ§ª Pipeline Comparison</h3>
+    <h3>🧪 Pipeline Comparison</h3>
     <p>Select a pipeline to see its RAGAS scores and understand which failure mode it hits</p>
     <div class="scenario-selector">
-      <button class="ss-btn active" onclick="selectPipeline(0)">Pipeline A â€” Naive RAG</button>
-      <button class="ss-btn" onclick="selectPipeline(1)">Pipeline B â€” Advanced RAG</button>
-      <button class="ss-btn" onclick="selectPipeline(2)">Pipeline C â€” Over-Compressed</button>
+      <button class="ss-btn active" onclick="selectPipeline(0)">Pipeline A — Naive RAG</button>
+      <button class="ss-btn" onclick="selectPipeline(1)">Pipeline B — Advanced RAG</button>
+      <button class="ss-btn" onclick="selectPipeline(2)">Pipeline C — Over-Compressed</button>
     </div>
     <div class="scenario-display">
       <div class="sdisp-box">
@@ -211,36 +212,36 @@
       <div class="pipe-box" style="background:rgba(108,99,255,0.15);color:#6c63ff;">
         Question<br><div class="pipe-note">User query</div>
       </div>
-      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-arrow">→</div>
       <div class="pipe-box" style="background:rgba(0,210,255,0.15);color:#00d2ff;">
         RAG Pipeline<br><div class="pipe-note">Retrieve + Generate</div>
       </div>
-      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-arrow">→</div>
       <div class="pipe-box" style="background:rgba(255,209,102,0.15);color:#ffd166;">
         [Q, Context,<br>Answer, GT?]<br><div class="pipe-note">Evaluation inputs</div>
       </div>
-      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-arrow">→</div>
       <div class="pipe-box" style="background:rgba(6,214,160,0.15);color:#06d6a0;">
         RAGAS Scorer<br><div class="pipe-note">LLM-as-judge</div>
       </div>
-      <div class="pipe-arrow">â†’</div>
+      <div class="pipe-arrow">→</div>
       <div class="pipe-box" style="background:rgba(255,101,132,0.15);color:#ff6584;">
         4 Scores<br><div class="pipe-note">F, AR, CP, CR</div>
       </div>
     </div>
     <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:16px;font-size:13px;line-height:1.7;">
-      <strong style="color:var(--accent);">Key insight:</strong> Faithfulness & Answer Relevancy require <em>no ground truth</em> â€” RAGAS uses an LLM as evaluator. Context Precision & Recall optionally use ground truth for more accurate measurement. This makes RAGAS practical for production evaluation where labelled data is scarce.
+      <strong style="color:var(--accent);">Key insight:</strong> Faithfulness & Answer Relevancy require <em>no ground truth</em> — RAGAS uses an LLM as evaluator. Context Precision & Recall optionally use ground truth for more accurate measurement. This makes RAGAS practical for production evaluation where labelled data is scarce.
     </div>
   </div>
 
-  <div class="sec-title">What Each Score Tells You â€” Failure Mode Map</div>
+  <div class="sec-title">What Each Score Tells You — Failure Mode Map</div>
   <div class="failure-list">
     <div class="failure-item" onclick="toggleFailure(this)">
       <div class="failure-header">
-        <div class="fail-icon">ðŸ”´</div>
-        <div class="fail-name">Low Faithfulness â†’ Hallucination</div>
+        <div class="fail-icon">🔴</div>
+        <div class="fail-name">Low Faithfulness → Hallucination</div>
         <div class="fail-metric">Faithfulness &lt; 0.5</div>
-        <div class="fail-arrow">â€º</div>
+        <div class="fail-arrow">›</div>
       </div>
       <div class="failure-body">
         <div class="fail-cols">
@@ -257,10 +258,10 @@
     </div>
     <div class="failure-item" onclick="toggleFailure(this)">
       <div class="failure-header">
-        <div class="fail-icon">ðŸŸ¡</div>
-        <div class="fail-name">Low Answer Relevancy â†’ Off-Topic Answer</div>
+        <div class="fail-icon">🟡</div>
+        <div class="fail-name">Low Answer Relevancy → Off-Topic Answer</div>
         <div class="fail-metric">AR &lt; 0.6</div>
-        <div class="fail-arrow">â€º</div>
+        <div class="fail-arrow">›</div>
       </div>
       <div class="failure-body">
         <div class="fail-cols">
@@ -277,10 +278,10 @@
     </div>
     <div class="failure-item" onclick="toggleFailure(this)">
       <div class="failure-header">
-        <div class="fail-icon">ðŸŸ </div>
-        <div class="fail-name">Low Context Precision â†’ Noisy Retrieval</div>
+        <div class="fail-icon">🟠</div>
+        <div class="fail-name">Low Context Precision → Noisy Retrieval</div>
         <div class="fail-metric">CP &lt; 0.6</div>
-        <div class="fail-arrow">â€º</div>
+        <div class="fail-arrow">›</div>
       </div>
       <div class="failure-body">
         <div class="fail-cols">
@@ -297,10 +298,10 @@
     </div>
     <div class="failure-item" onclick="toggleFailure(this)">
       <div class="failure-header">
-        <div class="fail-icon">ðŸ”µ</div>
-        <div class="fail-name">Low Context Recall â†’ Missing Information</div>
+        <div class="fail-icon">🔵</div>
+        <div class="fail-name">Low Context Recall → Missing Information</div>
         <div class="fail-metric">CR &lt; 0.6</div>
-        <div class="fail-arrow">â€º</div>
+        <div class="fail-arrow">›</div>
       </div>
       <div class="failure-body">
         <div class="fail-cols">
@@ -310,7 +311,7 @@
           </div>
           <div class="fail-col-box">
             <div class="fcb-label">Fix</div>
-            <div class="fcb-text">Increase top-k. Use multi-query retrieval (generate 3â€“5 query variants). Improve chunking strategy to avoid splitting related content.</div>
+            <div class="fcb-text">Increase top-k. Use multi-query retrieval (generate 3–5 query variants). Improve chunking strategy to avoid splitting related content.</div>
           </div>
         </div>
       </div>
@@ -322,16 +323,16 @@
     <div class="quiz-q" id="quiz-q">Loading...</div>
     <div class="quiz-opts" id="quiz-opts"></div>
     <div class="quiz-fb" id="quiz-fb"></div>
-    <button onclick="nextQuiz()" style="margin-top:14px;padding:9px 20px;border-radius:8px;border:1px solid var(--accent);background:rgba(255,209,102,0.1);color:var(--accent);font-weight:700;cursor:pointer;font-size:13px;">Next â†’</button>
+    <button onclick="nextQuiz()" style="margin-top:14px;padding:9px 20px;border-radius:8px;border:1px solid var(--accent);background:rgba(255,209,102,0.1);color:var(--accent);font-weight:700;cursor:pointer;font-size:13px;">Next →</button>
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
 <script>
-// â”€â”€â”€ METRIC CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── METRIC CARDS ─────────────────────────────────────
 function toggleMetric(el) {
   const wasActive = el.classList.contains('active');
   document.querySelectorAll('.metric-card').forEach(c => {
@@ -348,10 +349,10 @@ function toggleMetric(el) {
 // init first card bar
 document.querySelector('.metric-card [style*="height:3px"]').style.opacity = '1';
 
-// â”€â”€â”€ PIPELINE SCORER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PIPELINE SCORER ──────────────────────────────────
 const pipelines = [
   {
-    name: "Pipeline A â€” Naive RAG",
+    name: "Pipeline A — Naive RAG",
     setup: "Simple top-5 chunk retrieval, chunk size=512, no re-ranking, direct GPT-4 generation",
     weakness: "Retrieves irrelevant chunks; model sometimes adds facts not in context",
     scores: [
@@ -362,7 +363,7 @@ const pipelines = [
     ]
   },
   {
-    name: "Pipeline B â€” Advanced RAG",
+    name: "Pipeline B — Advanced RAG",
     setup: "Hybrid retrieval (dense+sparse), cross-encoder re-ranker, HyDE query expansion, chunk size=256",
     weakness: "Slightly higher latency; strong across all dimensions",
     scores: [
@@ -373,9 +374,9 @@ const pipelines = [
     ]
   },
   {
-    name: "Pipeline C â€” Over-Compressed",
+    name: "Pipeline C — Over-Compressed",
     setup: "Aggressive summarization before storage, top-2 retrieval only, minimal context window",
-    weakness: "Lost information during summarization â€” high precision but low recall",
+    weakness: "Lost information during summarization — high precision but low recall",
     scores: [
       { name:"Faithfulness", val:0.88, color:"#6c63ff" },
       { name:"Answer Relevancy", val:0.82, color:"#00d2ff" },
@@ -399,7 +400,7 @@ function renderScores(scores) {
   const container = document.getElementById('score-bars');
   container.innerHTML = scores.map(s => {
     const pct = Math.round(s.val * 100);
-    const grade = s.val >= 0.8 ? 'ðŸŸ¢' : s.val >= 0.6 ? 'ðŸŸ¡' : 'ðŸ”´';
+    const grade = s.val >= 0.8 ? '🟢' : s.val >= 0.6 ? '🟡' : '🔴';
     return `
       <div class="score-row">
         <div class="score-label">${grade} ${s.name}</div>
@@ -420,38 +421,38 @@ function renderScores(scores) {
   }, 10);
 }
 
-// â”€â”€â”€ FAILURE MODES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── FAILURE MODES ───────────────────────────────────
 function toggleFailure(el) {
   const open = el.classList.contains('open');
   document.querySelectorAll('.failure-item').forEach(i => i.classList.remove('open'));
   if(!open) el.classList.add('open');
 }
 
-// â”€â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── QUIZ ─────────────────────────────────────────────
 const quizzes = [
   {
     q: "Your RAG system gives factually correct answers, but they don't address what the user actually asked. Which RAGAS metric is low?",
     opts: ["Faithfulness","Answer Relevancy","Context Precision","Context Recall"],
     correct: 1,
-    explain: "âœ… Answer Relevancy â€” measures whether the answer addresses the question. The answer can be faithful (grounded) yet still miss the point."
+    explain: "✅ Answer Relevancy — measures whether the answer addresses the question. The answer can be faithful (grounded) yet still miss the point."
   },
   {
     q: "Your retriever finds 5 chunks, but only 1 is actually relevant and it's ranked #4. Which metric catches this?",
     opts: ["Faithfulness","Answer Relevancy","Context Precision","Context Recall"],
     correct: 2,
-    explain: "âœ… Context Precision â€” measures ranking quality. Relevant chunk at position 4 means poor precision even if it's eventually found."
+    explain: "✅ Context Precision — measures ranking quality. Relevant chunk at position 4 means poor precision even if it's eventually found."
   },
   {
     q: "Which two RAGAS metrics do NOT require a ground-truth reference answer?",
     opts: ["Faithfulness & Context Recall","Faithfulness & Answer Relevancy","Context Precision & Context Recall","Answer Relevancy & Context Recall"],
     correct: 1,
-    explain: "âœ… Faithfulness & Answer Relevancy â€” both use LLM-as-judge without needing labelled data, making them ideal for production use."
+    explain: "✅ Faithfulness & Answer Relevancy — both use LLM-as-judge without needing labelled data, making them ideal for production use."
   },
   {
     q: "A RAG pipeline adds information to the answer that doesn't appear in any retrieved chunk. Which metric detects this?",
     opts: ["Answer Relevancy","Context Precision","Context Recall","Faithfulness"],
     correct: 3,
-    explain: "âœ… Faithfulness â€” verifies that every claim in the answer can be traced back to the retrieved context. Extra facts = hallucination = low faithfulness."
+    explain: "✅ Faithfulness — verifies that every claim in the answer can be traced back to the retrieved context. Extra facts = hallucination = low faithfulness."
   }
 ];
 let qIdx = 0, qAnswered = false;
@@ -472,12 +473,12 @@ function answerQuiz(i) {
   btns[i].classList.add(i===q.correct ? 'correct' : 'wrong');
   btns[q.correct].classList.add('correct');
   const fb = document.getElementById('quiz-fb');
-  fb.textContent = i===q.correct ? q.explain : 'âŒ ' + q.explain;
+  fb.textContent = i===q.correct ? q.explain : '❌ ' + q.explain;
   fb.className = 'quiz-fb show ' + (i===q.correct ? 'ok' : 'bad');
 }
 function nextQuiz() { qIdx++; loadQuiz(); }
 
-// â”€â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── INIT ─────────────────────────────────────────────
 selectPipeline(0);
 loadQuiz();
 </script>

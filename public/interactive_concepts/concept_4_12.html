@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.12 â€” Advanced RAG: Retrieval Strategies</title>
+<title>4.12 — Advanced RAG: Retrieval Strategies</title>
 <style>
   :root {
     --bg:#0f1117; --card:#21263a; --accent:#00d2ff;
@@ -87,19 +88,19 @@
 </head>
 <body>
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.12 â€” Advanced RAG: Retrieval Strategies</span>
+  <span class="nav-cur">4.12 — Advanced RAG: Retrieval Strategies</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
-  <h1>Advanced RAG â€” Retrieval Strategies</h1>
-  <p>Beyond naive vector search â€” dense, sparse, hybrid, multi-vector, and contextual retrieval strategies</p>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>Advanced RAG — Retrieval Strategies</h1>
+  <p>Beyond naive vector search — dense, sparse, hybrid, multi-vector, and contextual retrieval strategies</p>
   <div class="hero-stats">
     <div class="hstat"><div class="hstat-n">5</div><div class="hstat-l">Strategies</div></div>
     <div class="hstat"><div class="hstat-n">+40%</div><div class="hstat-l">Recall (Hybrid)</div></div>
-    <div class="hstat"><div class="hstat-n">â†“60%</div><div class="hstat-l">Miss Rate (Contextual)</div></div>
+    <div class="hstat"><div class="hstat-n">↓60%</div><div class="hstat-l">Miss Rate (Contextual)</div></div>
   </div>
 </div>
 
@@ -109,11 +110,11 @@
   <div class="sec-title">Retrieval Strategy Explorer</div>
   <div class="strat-explorer">
     <div class="strat-list" id="strat-list">
-      <div class="strat-btn active" onclick="showStrat(0)"><div class="sb-icon">ðŸ“Š</div><div class="sb-name">Dense Retrieval</div><div class="sb-tag">Semantic similarity via embeddings</div></div>
-      <div class="strat-btn" onclick="showStrat(1)"><div class="sb-icon">ðŸ”¤</div><div class="sb-name">Sparse Retrieval (BM25)</div><div class="sb-tag">Keyword-based exact matching</div></div>
-      <div class="strat-btn" onclick="showStrat(2)"><div class="sb-icon">âš¡</div><div class="sb-name">Hybrid Retrieval</div><div class="sb-tag">Dense + Sparse fused</div></div>
-      <div class="strat-btn" onclick="showStrat(3)"><div class="sb-icon">ðŸ—‚</div><div class="sb-name">Multi-Vector</div><div class="sb-tag">Summary + full doc separation</div></div>
-      <div class="strat-btn" onclick="showStrat(4)"><div class="sb-icon">ðŸ§©</div><div class="sb-name">Contextual Retrieval</div><div class="sb-tag">Chunk + surrounding context</div></div>
+      <div class="strat-btn active" onclick="showStrat(0)"><div class="sb-icon">📊</div><div class="sb-name">Dense Retrieval</div><div class="sb-tag">Semantic similarity via embeddings</div></div>
+      <div class="strat-btn" onclick="showStrat(1)"><div class="sb-icon">🔤</div><div class="sb-name">Sparse Retrieval (BM25)</div><div class="sb-tag">Keyword-based exact matching</div></div>
+      <div class="strat-btn" onclick="showStrat(2)"><div class="sb-icon">⚡</div><div class="sb-name">Hybrid Retrieval</div><div class="sb-tag">Dense + Sparse fused</div></div>
+      <div class="strat-btn" onclick="showStrat(3)"><div class="sb-icon">🗂</div><div class="sb-name">Multi-Vector</div><div class="sb-tag">Summary + full doc separation</div></div>
+      <div class="strat-btn" onclick="showStrat(4)"><div class="sb-icon">🧩</div><div class="sb-name">Contextual Retrieval</div><div class="sb-tag">Chunk + surrounding context</div></div>
     </div>
 
     <div class="strat-detail" id="strat-detail">
@@ -130,38 +131,38 @@
       <tr><td><strong style="color:#ffd166">Sparse (BM25)</strong></td><td>Exact terms, codes, IDs</td><td>No semantic understanding</td><td><span class="tag mid">Medium</span></td><td><span class="tag good">High</span></td><td><span class="tag good">Low</span></td></tr>
       <tr><td><strong style="color:#06d6a0">Hybrid</strong></td><td>General-purpose production RAG</td><td>More infra complexity</td><td><span class="tag good">High</span></td><td><span class="tag good">High</span></td><td><span class="tag bad">Higher</span></td></tr>
       <tr><td><strong style="color:#6c63ff">Multi-Vector</strong></td><td>Long documents, multi-topic</td><td>Indexing overhead</td><td><span class="tag good">High</span></td><td><span class="tag mid">Medium</span></td><td><span class="tag bad">High</span></td></tr>
-      <tr><td><strong style="color:#ff6584">Contextual</strong></td><td>Chunks losing meaning in isolation</td><td>2Ã— storage & indexing cost</td><td><span class="tag good">Very High</span></td><td><span class="tag good">High</span></td><td><span class="tag bad">High</span></td></tr>
+      <tr><td><strong style="color:#ff6584">Contextual</strong></td><td>Chunks losing meaning in isolation</td><td>2× storage & indexing cost</td><td><span class="tag good">Very High</span></td><td><span class="tag good">High</span></td><td><span class="tag bad">High</span></td></tr>
     </tbody>
   </table>
 
   <!-- QUERY TYPE MATCHER -->
-  <div class="sec-title">Query â†’ Strategy Matcher</div>
+  <div class="sec-title">Query → Strategy Matcher</div>
   <div class="qmatcher">
-    <div class="qm-title">Pick a Query Type â€” Get the Right Strategy</div>
+    <div class="qm-title">Pick a Query Type — Get the Right Strategy</div>
     <div class="qm-sub">Different query patterns demand different retrieval approaches</div>
     <div class="qm-queries">
-      <button class="qqbtn" onclick="showMatch(0,this)">ðŸ” "What is transformer architecture?"</button>
-      <button class="qqbtn" onclick="showMatch(1,this)">ðŸ“‹ "Find error code ERR-4021"</button>
-      <button class="qqbtn" onclick="showMatch(2,this)">ðŸ’¬ "Compare BERT and GPT models"</button>
-      <button class="qqbtn" onclick="showMatch(3,this)">ðŸ“„ "Summarise this 50-page report"</button>
-      <button class="qqbtn" onclick="showMatch(4,this)">ðŸ§© "What does section 3.2 say about X?"</button>
+      <button class="qqbtn" onclick="showMatch(0,this)">🔍 "What is transformer architecture?"</button>
+      <button class="qqbtn" onclick="showMatch(1,this)">📋 "Find error code ERR-4021"</button>
+      <button class="qqbtn" onclick="showMatch(2,this)">💬 "Compare BERT and GPT models"</button>
+      <button class="qqbtn" onclick="showMatch(3,this)">📄 "Summarise this 50-page report"</button>
+      <button class="qqbtn" onclick="showMatch(4,this)">🧩 "What does section 3.2 say about X?"</button>
     </div>
-    <div id="qmr0" class="qm-result"><div class="qm-rec">âœ… Recommended: Dense Retrieval</div><div class="qm-why">Semantic question about a concept â€” no exact keywords needed. Dense embeddings capture "what is" / "explain" intent well. BM25 would miss paraphrases like "how does the attention mechanism work".</div></div>
-    <div id="qmr1" class="qm-result"><div class="qm-rec">âœ… Recommended: Sparse (BM25)</div><div class="qm-why">Exact identifier "ERR-4021" â€” this is a keyword match problem. Dense retrieval would retrieve semantically similar errors but might miss the exact code. BM25 excels at exact term matching.</div></div>
-    <div id="qmr2" class="qm-result"><div class="qm-rec">âœ… Recommended: Hybrid Retrieval</div><div class="qm-why">Comparative query needs both semantic understanding (concepts) and exact term matching (model names). Hybrid fuses dense + BM25 scores for the best of both worlds. Use RRF fusion.</div></div>
-    <div id="qmr3" class="qm-result"><div class="qm-rec">âœ… Recommended: Multi-Vector</div><div class="qm-why">Long document with multiple topics â€” index section summaries separately from full content. Retrieve the relevant summary first, then fetch the full section. Avoids "lost in the middle" with large docs.</div></div>
-    <div id="qmr4" class="qm-result"><div class="qm-rec">âœ… Recommended: Contextual Retrieval</div><div class="qm-why">Section reference query â€” the chunk "section 3.2" loses meaning without knowing what document it's in. Contextual retrieval prepends document context to each chunk before embedding, making isolated chunks meaningful.</div></div>
+    <div id="qmr0" class="qm-result"><div class="qm-rec">✅ Recommended: Dense Retrieval</div><div class="qm-why">Semantic question about a concept — no exact keywords needed. Dense embeddings capture "what is" / "explain" intent well. BM25 would miss paraphrases like "how does the attention mechanism work".</div></div>
+    <div id="qmr1" class="qm-result"><div class="qm-rec">✅ Recommended: Sparse (BM25)</div><div class="qm-why">Exact identifier "ERR-4021" — this is a keyword match problem. Dense retrieval would retrieve semantically similar errors but might miss the exact code. BM25 excels at exact term matching.</div></div>
+    <div id="qmr2" class="qm-result"><div class="qm-rec">✅ Recommended: Hybrid Retrieval</div><div class="qm-why">Comparative query needs both semantic understanding (concepts) and exact term matching (model names). Hybrid fuses dense + BM25 scores for the best of both worlds. Use RRF fusion.</div></div>
+    <div id="qmr3" class="qm-result"><div class="qm-rec">✅ Recommended: Multi-Vector</div><div class="qm-why">Long document with multiple topics — index section summaries separately from full content. Retrieve the relevant summary first, then fetch the full section. Avoids "lost in the middle" with large docs.</div></div>
+    <div id="qmr4" class="qm-result"><div class="qm-rec">✅ Recommended: Contextual Retrieval</div><div class="qm-why">Section reference query — the chunk "section 3.2" loses meaning without knowing what document it's in. Contextual retrieval prepends document context to each chunk before embedding, making isolated chunks meaningful.</div></div>
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
 <script>
 const strats = [
   {
-    icon:'ðŸ“Š', name:'Dense Retrieval', color:'#00d2ff',
+    icon:'📊', name:'Dense Retrieval', color:'#00d2ff',
     tagline:'Convert query and documents to embedding vectors; find nearest neighbours',
     how:'Both query and chunks are embedded using an encoder model (e.g., text-embedding-3-small). At query time, find top-K chunks by cosine similarity in the vector space.',
     when:'Semantic questions, paraphrase-heavy queries, conceptual lookups. Query and document may use different words for the same concept.',
@@ -173,48 +174,48 @@ const strats = [
     ]
   },
   {
-    icon:'ðŸ”¤', name:'Sparse Retrieval (BM25)', color:'#ffd166',
-    tagline:'TF-IDF style keyword matching â€” exact term frequency and inverse document frequency',
-    how:'BM25 scores documents by term frequency (TF) Ã— inverse document frequency (IDF). High score when query keywords appear frequently in a doc but rarely across all docs.',
+    icon:'🔤', name:'Sparse Retrieval (BM25)', color:'#ffd166',
+    tagline:'TF-IDF style keyword matching — exact term frequency and inverse document frequency',
+    how:'BM25 scores documents by term frequency (TF) × inverse document frequency (IDF). High score when query keywords appear frequently in a doc but rarely across all docs.',
     when:'Exact keyword search, error codes, product SKUs, legal clause IDs, technical specifications with precise terminology.',
     strength:'Zero-miss for exact terms. Interpretable scores. Very fast, no GPU needed. Great for IDs and codes.',
-    weakness:'No semantic understanding. "automobile" â‰  "car". Struggles with paraphrases and conceptual queries.',
+    weakness:'No semantic understanding. "automobile" ≠ "car". Struggles with paraphrases and conceptual queries.',
     flow:[
       {label:'Query', hi:false}, {arr:true}, {label:'Tokenize', hi:true},
       {arr:true}, {label:'BM25 Score', hi:false}, {arr:true}, {label:'Top-K by score', out:true}
     ]
   },
   {
-    icon:'âš¡', name:'Hybrid Retrieval', color:'#06d6a0',
+    icon:'⚡', name:'Hybrid Retrieval', color:'#06d6a0',
     tagline:'Run dense + sparse in parallel; fuse with Reciprocal Rank Fusion (RRF)',
-    how:'Execute both dense (embedding) and sparse (BM25) searches. Merge ranked lists using RRF: score = Î£ 1/(k + rank_i). Higher combined rank = higher final score.',
+    how:'Execute both dense (embedding) and sparse (BM25) searches. Merge ranked lists using RRF: score = Σ 1/(k + rank_i). Higher combined rank = higher final score.',
     when:'Production RAG systems that must handle diverse query types. Default choice when you don\'t know the query distribution.',
-    strength:'Best of both worlds â€” semantic + exact. 20â€“40% recall improvement over either alone in benchmarks.',
-    weakness:'2Ã— retrieval infra required. Two index types to maintain. Slightly higher latency.',
+    strength:'Best of both worlds — semantic + exact. 20–40% recall improvement over either alone in benchmarks.',
+    weakness:'2× retrieval infra required. Two index types to maintain. Slightly higher latency.',
     flow:[
       {label:'Query', hi:false}, {arr:true}, {label:'Dense path', hi:true}, {arr:true}, {label:'RRF Fusion', merge:true},
       {arr:true}, {label:'Reranked Top-K', out:true}
     ]
   },
   {
-    icon:'ðŸ—‚', name:'Multi-Vector Retrieval', color:'#6c63ff',
-    tagline:'Index document at multiple granularities: summary, section, chunk â€” retrieve the summary, return the full doc',
+    icon:'🗂', name:'Multi-Vector Retrieval', color:'#6c63ff',
+    tagline:'Index document at multiple granularities: summary, section, chunk — retrieve the summary, return the full doc',
     how:'For each document: (1) embed the full doc summary, (2) embed individual chunks. At query time, match against summaries for topic routing, then fetch detailed chunks.',
     when:'Long documents (reports, manuals, papers) where a single chunk loses context. Multi-topic documents where top-level routing matters.',
     strength:'Handles long docs gracefully. Summary match gives intent; chunk gives detail. Reduces irrelevant chunk retrieval.',
-    weakness:'Higher indexing cost â€” multiple embeddings per document. More complex retrieval pipeline.',
+    weakness:'Higher indexing cost — multiple embeddings per document. More complex retrieval pipeline.',
     flow:[
       {label:'Doc', hi:false}, {arr:true}, {label:'Summary embed', hi:true}, {arr:true}, {label:'Match query'},
       {arr:true}, {label:'Fetch full chunks', out:true}
     ]
   },
   {
-    icon:'ðŸ§©', name:'Contextual Retrieval', color:'#ff6584',
-    tagline:'Prepend document-level context to each chunk before embedding â€” chunks retain meaning in isolation',
-    how:'Before indexing, use an LLM to generate a context prefix for each chunk: "This chunk is from [doc title], section [X], which covers [topic]â€¦". Embed the enhanced chunk.',
+    icon:'🧩', name:'Contextual Retrieval', color:'#ff6584',
+    tagline:'Prepend document-level context to each chunk before embedding — chunks retain meaning in isolation',
+    how:'Before indexing, use an LLM to generate a context prefix for each chunk: "This chunk is from [doc title], section [X], which covers [topic]…". Embed the enhanced chunk.',
     when:'Corpora where chunks lose meaning without knowing their source. Dense policy docs, technical specs, legal contracts.',
     strength:'Eliminates "lost context" problem. Chunks reference their parent document, section, and purpose. ~60% miss rate reduction reported.',
-    weakness:'2Ã— indexing cost (LLM call per chunk). Storage overhead for context prefixes. Slower initial ingestion.',
+    weakness:'2× indexing cost (LLM call per chunk). Storage overhead for context prefixes. Slower initial ingestion.',
     flow:[
       {label:'Chunk', hi:false}, {arr:true}, {label:'+ Context prefix', hi:true}, {arr:true}, {label:'Embed enhanced'},
       {arr:true}, {label:'Contextual Top-K', out:true}
@@ -233,13 +234,13 @@ function showStrat(idx) {
     <div class="sd-props">
       <div class="sd-prop"><div class="sd-prop-label">How It Works</div><div class="sd-prop-val">${s.how}</div></div>
       <div class="sd-prop"><div class="sd-prop-label">Best For</div><div class="sd-prop-val">${s.when}</div></div>
-      <div class="sd-prop"><div class="sd-prop-label">âœ… Strength</div><div class="sd-prop-val">${s.strength}</div></div>
-      <div class="sd-prop"><div class="sd-prop-label">âš ï¸ Weakness</div><div class="sd-prop-val">${s.weakness}</div></div>
+      <div class="sd-prop"><div class="sd-prop-label">✅ Strength</div><div class="sd-prop-val">${s.strength}</div></div>
+      <div class="sd-prop"><div class="sd-prop-label">⚠️ Weakness</div><div class="sd-prop-val">${s.weakness}</div></div>
     </div>
     <div class="vis-area">
       <div class="vis-label">Retrieval Flow</div>
       <div class="flow-row">
-        ${s.flow.map(f => f.arr ? `<span class="flow-arr">â†’</span>` : `<span class="flow-box ${f.hi?'hi':''} ${f.merge?'merge':''} ${f.out?'out':''}">${f.label}</span>`).join('')}
+        ${s.flow.map(f => f.arr ? `<span class="flow-arr">→</span>` : `<span class="flow-box ${f.hi?'hi':''} ${f.merge?'merge':''} ${f.out?'out':''}">${f.label}</span>`).join('')}
       </div>
     </div>
   `;

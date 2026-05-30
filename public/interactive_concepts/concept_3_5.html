@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.5 â€” A2A Discovery: The Agent Card</title>
+<title>Concept 3.5 — A2A Discovery: The Agent Card</title>
 <style>
   :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -89,22 +90,22 @@
 <body>
 <nav>
   <div class="nav-links">
-    <a href="concept_3_4.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_6.html">Next â†’</a>
+    <a href="concept_3_4.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_6.html">Next →</a>
   </div>
-  <span class="title">3.5 â€” A2A Discovery: The Agent Card</span>
+  <span class="title">3.5 — A2A Discovery: The Agent Card</span>
 </nav>
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>A2A Discovery: The Agent Card</h1>
-  <p>The JSON document at <code>/.well-known/agent.json</code> that tells the world what an agent can do â€” A2A's discovery mechanism.</p>
+  <p>The JSON document at <code>/.well-known/agent.json</code> that tells the world what an agent can do — A2A's discovery mechanism.</p>
 </div>
 <div class="content">
 
   <!-- WHAT IS THE AGENT CARD -->
   <div class="section">
-    <h2>Agent Card Anatomy â€” Click a Field</h2>
+    <h2>Agent Card Anatomy — Click a Field</h2>
     <div class="anatomy-layout">
       <div class="card-visual" id="cardVisual">
 <span class="field ck" data-field="name" onclick="showField('name',this)">"name"</span>: <span class="cs">"ResearchAgent"</span>,
@@ -129,7 +130,7 @@
 }
       </div>
       <div id="fieldDetail">
-        <div class="field-placeholder">â† Click any field in the Agent Card to see what it means</div>
+        <div class="field-placeholder">← Click any field in the Agent Card to see what it means</div>
       </div>
     </div>
   </div>
@@ -139,21 +140,21 @@
     <h2>Discovery Flow</h2>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
       <div class="disc-steps">
-        <div class="disc-box caller"><h4>ðŸ¤– Caller Agent</h4><p>Needs a research agent</p></div>
-        <div class="disc-arrow">â†’</div>
+        <div class="disc-box caller"><h4>🤖 Caller Agent</h4><p>Needs a research agent</p></div>
+        <div class="disc-arrow">→</div>
         <div class="disc-box well"><h4>GET /.well-known/agent.json</h4><p>Fetch from target domain</p></div>
-        <div class="disc-arrow">â†’</div>
+        <div class="disc-arrow">→</div>
         <div class="disc-box well"><h4>Parse Agent Card</h4><p>Read skills, caps, auth</p></div>
-        <div class="disc-arrow">â†’</div>
+        <div class="disc-arrow">→</div>
         <div class="disc-box cache"><h4>Cache Card</h4><p>TTL from Cache-Control</p></div>
-        <div class="disc-arrow">â†’</div>
+        <div class="disc-arrow">→</div>
         <div class="disc-box caller"><h4>tasks/send</h4><p>Now start delegation</p></div>
       </div>
       <div style="background:var(--surface2);border-radius:8px;padding:16px;font-size:.84rem;color:var(--muted);line-height:1.6;">
-        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 1 â€” Fetch:</strong> The calling agent does a simple HTTP GET to <code style="color:var(--accent2)">https://target-agent-domain.com/.well-known/agent.json</code>. No auth needed â€” discovery is public.</p>
-        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 2 â€” Validate:</strong> Parse the JSON and confirm the agent has the skills needed (check <code style="color:var(--accent2)">skills[].tags</code> and <code style="color:var(--accent2)">skills[].description</code>).</p>
-        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 3 â€” Check capabilities:</strong> Verify <code style="color:var(--accent2)">capabilities.streaming</code> if you need live updates. Check <code style="color:var(--accent2)">defaultInputModes</code> to know what content types to send.</p>
-        <p><strong style="color:var(--text)">Step 4 â€” Auth setup:</strong> Read <code style="color:var(--accent2)">securitySchemes</code> to understand how to authenticate. Then obtain credentials via that scheme before calling <code style="color:var(--accent2)">tasks/send</code>.</p>
+        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 1 — Fetch:</strong> The calling agent does a simple HTTP GET to <code style="color:var(--accent2)">https://target-agent-domain.com/.well-known/agent.json</code>. No auth needed — discovery is public.</p>
+        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 2 — Validate:</strong> Parse the JSON and confirm the agent has the skills needed (check <code style="color:var(--accent2)">skills[].tags</code> and <code style="color:var(--accent2)">skills[].description</code>).</p>
+        <p style="margin-bottom:8px;"><strong style="color:var(--text)">Step 3 — Check capabilities:</strong> Verify <code style="color:var(--accent2)">capabilities.streaming</code> if you need live updates. Check <code style="color:var(--accent2)">defaultInputModes</code> to know what content types to send.</p>
+        <p><strong style="color:var(--text)">Step 4 — Auth setup:</strong> Read <code style="color:var(--accent2)">securitySchemes</code> to understand how to authenticate. Then obtain credentials via that scheme before calling <code style="color:var(--accent2)">tasks/send</code>.</p>
       </div>
     </div>
   </div>
@@ -162,7 +163,7 @@
   <div class="section">
     <h2>Agent Card Builder</h2>
     <div class="builder">
-      <h3>ðŸ”§ Fill in the fields to generate your Agent Card JSON</h3>
+      <h3>🔧 Fill in the fields to generate your Agent Card JSON</h3>
       <div class="builder-grid">
         <div class="builder-form">
           <div class="form-group">
@@ -205,7 +206,7 @@
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -228,7 +229,7 @@
       <div class="options" id="q2">
         <button class="opt" onclick="answer('q2','a','c')">A) The A2A spec doesn't support auth for discovery endpoints</button>
         <button class="opt" onclick="answer('q2','b','c')">B) The Agent Card only contains encrypted data that's safe to expose</button>
-        <button class="opt" onclick="answer('q2','c','c')">C) Discovery must happen before credentials are obtained â€” a caller needs to know what auth scheme to use before it can authenticate</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) Discovery must happen before credentials are obtained — a caller needs to know what auth scheme to use before it can authenticate</button>
         <button class="opt" onclick="answer('q2','d','c')">D) All A2A traffic is unauthenticated by design</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
@@ -263,7 +264,7 @@
       <h3>Q5. What is the purpose of the <code>skills</code> array in the Agent Card?</h3>
       <div class="options" id="q5">
         <button class="opt" onclick="answer('q5','a','b')">A) It lists the MCP tool functions the agent exposes</button>
-        <button class="opt" onclick="answer('q5','b','b')">B) It describes discrete capabilities the agent has â€” each with tags and examples â€” so callers can match tasks to the right agent</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) It describes discrete capabilities the agent has — each with tags and examples — so callers can match tasks to the right agent</button>
         <button class="opt" onclick="answer('q5','c','b')">C) It defines the OAuth scopes required to call each feature</button>
         <button class="opt" onclick="answer('q5','d','b')">D) It contains the agent's pricing model per skill</button>
       </div>
@@ -274,13 +275,13 @@
 
 </div>
 <script>
-// â”€â”€ FIELD DETAILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── FIELD DETAILS ────────────────────────────────────────────────
 const fields = {
   name: { title: '"name"', req: true, desc: 'Human-readable identifier for the agent. Used by calling agents and dashboards to identify which agent handled a task. Should be unique within your organization.' },
-  desc: { title: '"description"', req: true, desc: 'A natural language description of what the agent does. LLM-based orchestrators read this to decide which agent to delegate to â€” write it to be search-friendly and precise.' },
+  desc: { title: '"description"', req: true, desc: 'A natural language description of what the agent does. LLM-based orchestrators read this to decide which agent to delegate to — write it to be search-friendly and precise.' },
   url: { title: '"url"', req: true, desc: 'The base URL where the agent\'s A2A endpoint lives. All A2A methods (tasks/send, tasks/get, etc.) are called against this URL as the root.' },
   version: { title: '"version"', req: true, desc: 'Semantic version of the agent API. Callers can use this to detect breaking changes. Bump the major version when removing or renaming skills or changing authentication.' },
-  auth: { title: '"defaultInputModes"', req: true, desc: 'MIME types the agent accepts as input (e.g., "text/plain", "application/json", "image/png"). Callers must format their task messages accordingly â€” sending unsupported types will result in errors.' },
+  auth: { title: '"defaultInputModes"', req: true, desc: 'MIME types the agent accepts as input (e.g., "text/plain", "application/json", "image/png"). Callers must format their task messages accordingly — sending unsupported types will result in errors.' },
   output: { title: '"defaultOutputModes"', req: false, desc: 'MIME types the agent can produce as output artifacts. Helps callers know what to expect and how to parse the result. Multiple modes indicate the agent can return different formats.' },
   caps: { title: '"capabilities"', req: true, desc: 'Machine-readable flags: "streaming" (supports tasks/sendSubscribe), "pushNotifications" (supports webhook callbacks), "stateTransitionHistory" (task state history is available in responses).' },
   skills: { title: '"skills"', req: true, desc: 'Array of discrete capabilities the agent offers. Each skill has: id, name, description, tags (for searchability), inputModes, outputModes, and examples. Used by orchestrators to route tasks to the right agent.' },
@@ -292,7 +293,7 @@ function showField(id, el) {
   document.querySelectorAll('.field').forEach(f => f.classList.remove('active'));
   const detail = document.getElementById('fieldDetail');
   if (activeField === id) {
-    detail.innerHTML = '<div class="field-placeholder">â† Click any field in the Agent Card to see what it means</div>';
+    detail.innerHTML = '<div class="field-placeholder">← Click any field in the Agent Card to see what it means</div>';
     activeField = null;
     return;
   }
@@ -307,7 +308,7 @@ function showField(id, el) {
     </div>`;
 }
 
-// â”€â”€ CARD BUILDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CARD BUILDER ─────────────────────────────────────────────────
 function updateCard() {
   const name = document.getElementById('b-name').value || 'MyAgent';
   const desc = document.getElementById('b-desc').value || 'An AI agent';
@@ -345,7 +346,7 @@ function updateCard() {
 }
 updateCard();
 
-// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── QUIZ ─────────────────────────────────────────────────────────
 let score = 0;
 const answered = {};
 function answer(qid, chosen, correct) {
@@ -361,18 +362,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
-      q1: 'The Agent Card lives at /.well-known/agent.json â€” following the "well-known" URI convention from RFC 8615, the same pattern used by OpenID Connect discovery.',
+      q1: 'The Agent Card lives at /.well-known/agent.json — following the "well-known" URI convention from RFC 8615, the same pattern used by OpenID Connect discovery.',
       q2: 'Discovery is intentionally public because you need to read the Agent Card to know WHAT auth scheme to use. You can\'t authenticate before you know how to authenticate.',
       q3: 'streaming:true means the agent supports tasks/sendSubscribe, which opens an SSE stream for real-time TaskStatusUpdateEvent and TaskArtifactUpdateEvent messages.',
       q4: 'If an agent only accepts "text/plain", you should not send binary images or structured JSON objects. The agent would reject them with an unsupported input mode error.',
       q5: 'The skills array describes what the agent can do in a human and machine-readable way. Orchestrators match task requirements against skill descriptions, tags, and examples to route correctly.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {

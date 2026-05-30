@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5.12 â€” Ethics, Governance & Responsible AI</title>
+<title>5.12 — Ethics, Governance & Responsible AI</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -88,7 +89,7 @@
   .fw-org { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
   .fw-points { display: flex; flex-direction: column; gap: 6px; }
   .fw-point { font-size: 12px; color: var(--muted); display: flex; gap: 6px; }
-  .fw-point::before { content: 'â€¢'; color: var(--accent2); flex-shrink: 0; }
+  .fw-point::before { content: '•'; color: var(--accent2); flex-shrink: 0; }
 
   /* DILEMMA SIMULATOR */
   .dilemma-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 48px; }
@@ -120,15 +121,15 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-current">5.12 â€” Ethics, Governance & Responsible AI</span>
+  <span class="nav-current">5.12 — Ethics, Governance & Responsible AI</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 5 Â· Day 2 Afternoon</div>
+  <div class="hero-badge">Session 5 · Day 2 Afternoon</div>
   <h1>Ethics, Governance & Responsible AI</h1>
-  <p>As agents gain autonomy, the stakes rise â€” explore the principles, real risks, global frameworks, and hard ethical dilemmas every builder must navigate</p>
+  <p>As agents gain autonomy, the stakes rise — explore the principles, real risks, global frameworks, and hard ethical dilemmas every builder must navigate</p>
 </div>
 
 <div class="container">
@@ -137,29 +138,29 @@
   <div class="section-title">Why Ethics Can't Be an Afterthought</div>
   <div class="why-grid">
     <div class="why-card">
-      <div class="why-icon">âš¡</div>
+      <div class="why-icon">⚡</div>
       <div class="why-title">Agents Act, Not Just Advise</div>
-      <div class="why-desc">Unlike chatbots, agents execute code, send emails, transfer files â€” ethical failures have real-world consequences</div>
+      <div class="why-desc">Unlike chatbots, agents execute code, send emails, transfer files — ethical failures have real-world consequences</div>
     </div>
     <div class="why-card">
-      <div class="why-icon">ðŸ”—</div>
+      <div class="why-icon">🔗</div>
       <div class="why-title">Multi-Agent Complexity</div>
-      <div class="why-desc">Responsibility diffuses across agent chains â€” who is accountable when 5 agents collaborate on a harmful outcome?</div>
+      <div class="why-desc">Responsibility diffuses across agent chains — who is accountable when 5 agents collaborate on a harmful outcome?</div>
     </div>
     <div class="why-card">
-      <div class="why-icon">ðŸŒ</div>
+      <div class="why-icon">🌍</div>
       <div class="why-title">Global Regulation Incoming</div>
-      <div class="why-desc">EU AI Act, US EO 14110, China's GenAI rules â€” compliance is not optional for production systems</div>
+      <div class="why-desc">EU AI Act, US EO 14110, China's GenAI rules — compliance is not optional for production systems</div>
     </div>
     <div class="why-card">
-      <div class="why-icon">ðŸ¤</div>
+      <div class="why-icon">🤝</div>
       <div class="why-title">Trust Is the Product</div>
-      <div class="why-desc">Enterprise adoption of AI agents depends entirely on demonstrable trustworthiness â€” ethics drives business</div>
+      <div class="why-desc">Enterprise adoption of AI agents depends entirely on demonstrable trustworthiness — ethics drives business</div>
     </div>
     <div class="why-card">
-      <div class="why-icon">ðŸ“ˆ</div>
+      <div class="why-icon">📈</div>
       <div class="why-title">Compounding Bias</div>
-      <div class="why-desc">Biased decisions in agentic loops compound over iterations â€” early bias amplifies into systemic discrimination</div>
+      <div class="why-desc">Biased decisions in agentic loops compound over iterations — early bias amplifies into systemic discrimination</div>
     </div>
   </div>
 
@@ -178,55 +179,55 @@
 
   <!-- DILEMMA SIMULATOR -->
   <div class="dilemma-section">
-    <div class="dilemma-title">âš–ï¸ Ethical Dilemma Simulator</div>
-    <div class="dilemma-sub">Explore real trade-offs that AI architects must navigate â€” there are no easy answers</div>
+    <div class="dilemma-title">⚖️ Ethical Dilemma Simulator</div>
+    <div class="dilemma-sub">Explore real trade-offs that AI architects must navigate — there are no easy answers</div>
     <div class="dilemma-nav" id="dilNav"></div>
     <div class="dilemma-card" id="dilCard"></div>
   </div>
 
-  <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+  <a href="index.html" class="back-btn">← Back to All Concepts</a>
 </div>
 
 <script>
 const principles = [
   {
-    id: 'fairness', name: 'Fairness', icon: 'âš–ï¸', color: '#06d6a0',
+    id: 'fairness', name: 'Fairness', icon: '⚖️', color: '#06d6a0',
     tagline: 'AI systems must treat all people equitably and not discriminate based on protected characteristics.',
     items: [
-      { title: 'Group Fairness', text: 'Equal error rates across demographic groups â€” an agent should not fail more often for one group' },
+      { title: 'Group Fairness', text: 'Equal error rates across demographic groups — an agent should not fail more often for one group' },
       { title: 'Individual Fairness', text: 'Similar individuals should receive similar decisions from the agent' },
       { title: 'Counterfactual Fairness', text: 'Decision should not change if protected attribute (race, gender) were different, all else equal' },
-      { title: 'Fairness-Accuracy Trade-off', text: 'Acknowledge that optimizing for accuracy alone often produces unfair outcomes â€” must be balanced' }
+      { title: 'Fairness-Accuracy Trade-off', text: 'Acknowledge that optimizing for accuracy alone often produces unfair outcomes — must be balanced' }
     ],
     example: { label: 'Agent Example', text: 'A hiring agent trained on historical data perpetuates gender bias by down-ranking female candidates. Fairness requires auditing outcomes by gender, not just overall accuracy.' }
   },
   {
-    id: 'transparency', name: 'Transparency', icon: 'ðŸ”', color: '#00b4d8',
+    id: 'transparency', name: 'Transparency', icon: '🔍', color: '#00b4d8',
     tagline: 'Users and stakeholders must be able to understand what AI systems do and why.',
     items: [
-      { title: 'Explainability', text: "Users should understand why an agent made a decision â€” not just what it decided" },
+      { title: 'Explainability', text: "Users should understand why an agent made a decision — not just what it decided" },
       { title: 'Disclosure', text: "Users must know they are interacting with an AI agent, not a human" },
       { title: 'Audit Trails', text: "Full trace of agent reasoning, tool calls, and data accessed must be logged and reviewable" },
       { title: 'Model Cards', text: "Document training data, intended use, limitations, and known failure modes publicly" }
     ],
-    example: { label: 'Agent Example', text: 'A loan-processing agent must explain in plain language why it recommended rejection â€” not just cite a risk score. Transparency enables contestability.' }
+    example: { label: 'Agent Example', text: 'A loan-processing agent must explain in plain language why it recommended rejection — not just cite a risk score. Transparency enables contestability.' }
   },
   {
-    id: 'accountability', name: 'Accountability', icon: 'ðŸ“‹', color: '#6c63ff',
-    tagline: 'Clear responsibility must be assigned for AI system outcomes â€” both human and organizational.',
+    id: 'accountability', name: 'Accountability', icon: '📋', color: '#6c63ff',
+    tagline: 'Clear responsibility must be assigned for AI system outcomes — both human and organizational.',
     items: [
-      { title: 'Human Oversight', text: "High-stakes decisions must have human review gates â€” agents recommend, humans confirm" },
-      { title: 'Responsibility Assignment', text: "Define who is accountable: developer, deployer, or operator â€” cannot be left ambiguous" },
+      { title: 'Human Oversight', text: "High-stakes decisions must have human review gates — agents recommend, humans confirm" },
+      { title: 'Responsibility Assignment', text: "Define who is accountable: developer, deployer, or operator — cannot be left ambiguous" },
       { title: 'Redress Mechanisms', text: "Users must have a way to appeal, correct, or challenge agent decisions that affect them" },
       { title: 'Incident Response', text: "When agents cause harm, there must be clear protocols for investigation and remedy" }
     ],
     example: { label: 'Agent Example', text: 'When a financial agent makes a bad trade, accountability chains must be clear: the firm is liable, the developer must provide logs, the operator must implement rollback.' }
   },
   {
-    id: 'privacy', name: 'Privacy', icon: 'ðŸ”’', color: '#ffd166',
+    id: 'privacy', name: 'Privacy', icon: '🔒', color: '#ffd166',
     tagline: 'AI agents must collect minimum necessary data and protect it throughout the agent lifecycle.',
     items: [
-      { title: 'Data Minimization', text: "Agents should only access and retain data strictly needed for the task â€” delete after use" },
+      { title: 'Data Minimization', text: "Agents should only access and retain data strictly needed for the task — delete after use" },
       { title: 'Purpose Limitation', text: "Data collected for one purpose must not be used for another without consent" },
       { title: 'Memory Hygiene', text: "Agent memory must have TTL (time-to-live), user deletion rights, and cross-user isolation" },
       { title: 'PII Handling', text: "Detect, mask, or refuse to process personally identifiable information in tool calls and logs" }
@@ -234,36 +235,36 @@ const principles = [
     example: { label: 'Agent Example', text: 'A medical agent must never store patient health data in persistent memory, must mask PII in logs, and must comply with HIPAA data handling requirements.' }
   },
   {
-    id: 'safety', name: 'Safety', icon: 'ðŸ›¡ï¸', color: '#ff6584',
-    tagline: 'Agents must not cause physical, psychological, financial, or societal harm â€” even when instructed to.',
+    id: 'safety', name: 'Safety', icon: '🛡️', color: '#ff6584',
+    tagline: 'Agents must not cause physical, psychological, financial, or societal harm — even when instructed to.',
     items: [
       { title: 'Harm Prevention', text: "Agents must refuse actions that could cause harm even if user or operator requests them" },
-      { title: 'Corrigibility', text: "Agents must remain correctable â€” humans must be able to stop, override, or retrain agents" },
-      { title: 'Fail-Safe Design', text: "Default to inaction (not action) when uncertain â€” ambiguity should halt, not proceed" },
-      { title: 'Red-Teaming', text: "Systematically probe agents for harmful outputs before deployment â€” not just after incidents" }
+      { title: 'Corrigibility', text: "Agents must remain correctable — humans must be able to stop, override, or retrain agents" },
+      { title: 'Fail-Safe Design', text: "Default to inaction (not action) when uncertain — ambiguity should halt, not proceed" },
+      { title: 'Red-Teaming', text: "Systematically probe agents for harmful outputs before deployment — not just after incidents" }
     ],
-    example: { label: 'Agent Example', text: 'An autonomous trading agent that detects a bug in its own strategy must halt and alert humans â€” not continue trading to "fix itself" by generating more trades.' }
+    example: { label: 'Agent Example', text: 'An autonomous trading agent that detects a bug in its own strategy must halt and alert humans — not continue trading to "fix itself" by generating more trades.' }
   }
 ];
 
 const risks = [
-  { icon: 'ðŸŽ­', name: 'Algorithmic Bias', level: 'high', desc: 'Agents trained on historical data encode and amplify societal biases â€” affecting hiring, lending, criminal justice recommendations.', mitigation: 'Audit outputs by demographic group; use fairness-aware training; implement bias monitoring in production.' },
-  { icon: 'ðŸ•³ï¸', name: 'Opacity / Black Box', level: 'high', desc: 'LLM-based agents cannot explain their reasoning in mechanistic terms â€” users and regulators cannot audit decisions.', mitigation: 'Require chain-of-thought traces; use LLM-as-Judge explanation layers; maintain audit logs of all decisions.' },
-  { icon: 'ðŸ”„', name: 'Autonomy Creep', level: 'high', desc: 'Agents given narrow autonomy gradually expand scope beyond intent â€” especially in multi-agent systems with self-directed planning.', mitigation: 'Define hard capability boundaries; require human approval for scope expansion; monitor goal drift metrics.' },
-  { icon: 'ðŸ‘¤', name: 'Privacy Erosion', level: 'high', desc: 'Agents with memory, tool access, and multi-session context can aggregate sensitive user data beyond original consent.', mitigation: 'Implement memory TTL; PII detection in tool call interceptors; zero-retention modes for sensitive domains.' },
-  { icon: 'ðŸ“£', name: 'Misinformation Amplification', level: 'med', desc: 'Hallucinating agents acting at scale can propagate false information through automated pipelines â€” emails, reports, decisions.', mitigation: 'Require source citations; implement RAG with verified corpora; add hallucination detection guardrails.' },
-  { icon: 'ðŸŽ¯', name: 'Manipulation Risk', level: 'med', desc: 'Persuasive agents optimized for engagement or conversion may manipulate users psychologically to achieve goals.', mitigation: 'Prohibit dark pattern tool calls; require transparency about persuasive intent; user override mechanisms.' },
-  { icon: 'âš¡', name: 'Flash Crash / Cascade', level: 'high', desc: 'Autonomous agents operating at machine speed in financial or infrastructure domains can cause catastrophic cascades before humans intervene.', mitigation: 'Implement circuit breakers; rate-limit consequential actions; require human-in-the-loop for high-velocity domains.' },
-  { icon: 'ðŸŒ', name: 'Accountability Gap', level: 'med', desc: 'Multi-agent chains diffuse responsibility â€” when harm occurs, no single actor accepts full accountability.', mitigation: 'Define accountability contracts per agent role; log full decision provenance; require named human accountable for each deployment.' }
+  { icon: '🎭', name: 'Algorithmic Bias', level: 'high', desc: 'Agents trained on historical data encode and amplify societal biases — affecting hiring, lending, criminal justice recommendations.', mitigation: 'Audit outputs by demographic group; use fairness-aware training; implement bias monitoring in production.' },
+  { icon: '🕳️', name: 'Opacity / Black Box', level: 'high', desc: 'LLM-based agents cannot explain their reasoning in mechanistic terms — users and regulators cannot audit decisions.', mitigation: 'Require chain-of-thought traces; use LLM-as-Judge explanation layers; maintain audit logs of all decisions.' },
+  { icon: '🔄', name: 'Autonomy Creep', level: 'high', desc: 'Agents given narrow autonomy gradually expand scope beyond intent — especially in multi-agent systems with self-directed planning.', mitigation: 'Define hard capability boundaries; require human approval for scope expansion; monitor goal drift metrics.' },
+  { icon: '👤', name: 'Privacy Erosion', level: 'high', desc: 'Agents with memory, tool access, and multi-session context can aggregate sensitive user data beyond original consent.', mitigation: 'Implement memory TTL; PII detection in tool call interceptors; zero-retention modes for sensitive domains.' },
+  { icon: '📣', name: 'Misinformation Amplification', level: 'med', desc: 'Hallucinating agents acting at scale can propagate false information through automated pipelines — emails, reports, decisions.', mitigation: 'Require source citations; implement RAG with verified corpora; add hallucination detection guardrails.' },
+  { icon: '🎯', name: 'Manipulation Risk', level: 'med', desc: 'Persuasive agents optimized for engagement or conversion may manipulate users psychologically to achieve goals.', mitigation: 'Prohibit dark pattern tool calls; require transparency about persuasive intent; user override mechanisms.' },
+  { icon: '⚡', name: 'Flash Crash / Cascade', level: 'high', desc: 'Autonomous agents operating at machine speed in financial or infrastructure domains can cause catastrophic cascades before humans intervene.', mitigation: 'Implement circuit breakers; rate-limit consequential actions; require human-in-the-loop for high-velocity domains.' },
+  { icon: '🌐', name: 'Accountability Gap', level: 'med', desc: 'Multi-agent chains diffuse responsibility — when harm occurs, no single actor accepts full accountability.', mitigation: 'Define accountability contracts per agent role; log full decision provenance; require named human accountable for each deployment.' }
 ];
 
 const frameworks = [
-  { flag: 'ðŸ‡ªðŸ‡º', name: 'EU AI Act', org: 'European Union Â· 2024', points: ['Risk-based classification (Unacceptable / High / Limited / Minimal)', 'High-risk AI requires human oversight, transparency, audit trails', 'Foundation model providers must publish training data summaries', 'Non-compliance: up to â‚¬35M or 7% global turnover'] },
-  { flag: 'ðŸ‡ºðŸ‡¸', name: 'NIST AI RMF', org: 'NIST Â· 2023', points: ['4 functions: GOVERN, MAP, MEASURE, MANAGE', 'Risk management lifecycle, not a compliance checklist', 'Profiles allow domain-specific tailoring', 'Companion playbook for LLM and generative AI systems'] },
-  { flag: 'ðŸŒ', name: 'UNESCO Recommendation', org: 'UNESCO Â· 2021 Â· 193 countries', points: ['First global normative standard on AI ethics', 'Focuses on human rights, gender equality, environmental impact', 'Non-binding but signals global consensus', 'Emphasizes indigenous and minority community protection'] },
-  { flag: 'ðŸ‡¬ðŸ‡§', name: 'UK AI Safety Institute', org: 'AISI Â· 2023', points: ['Safety evaluations for frontier models', 'Red-teaming protocols for dangerous capabilities', 'International AI Safety Report coordination', 'Focus on catastrophic and systemic risks'] },
-  { flag: 'ðŸŒ', name: 'ISO/IEC 42001', org: 'ISO Â· 2023', points: ['AI management system standard (like ISO 27001 for AI)', 'Certifiable framework for organizations deploying AI', 'Covers risk, objectives, performance evaluation', 'Increasingly required in enterprise procurement'] },
-  { flag: 'ðŸ¤', name: 'Partnership on AI', org: 'Multi-stakeholder Â· Industry + Civil Society', points: ['Responsible practices for synthetic media', 'Shared framework for facial recognition', 'Worker wellbeing and AI displacement guidance', 'Open research on fairness and accountability'] }
+  { flag: '🇪🇺', name: 'EU AI Act', org: 'European Union · 2024', points: ['Risk-based classification (Unacceptable / High / Limited / Minimal)', 'High-risk AI requires human oversight, transparency, audit trails', 'Foundation model providers must publish training data summaries', 'Non-compliance: up to €35M or 7% global turnover'] },
+  { flag: '🇺🇸', name: 'NIST AI RMF', org: 'NIST · 2023', points: ['4 functions: GOVERN, MAP, MEASURE, MANAGE', 'Risk management lifecycle, not a compliance checklist', 'Profiles allow domain-specific tailoring', 'Companion playbook for LLM and generative AI systems'] },
+  { flag: '🌍', name: 'UNESCO Recommendation', org: 'UNESCO · 2021 · 193 countries', points: ['First global normative standard on AI ethics', 'Focuses on human rights, gender equality, environmental impact', 'Non-binding but signals global consensus', 'Emphasizes indigenous and minority community protection'] },
+  { flag: '🇬🇧', name: 'UK AI Safety Institute', org: 'AISI · 2023', points: ['Safety evaluations for frontier models', 'Red-teaming protocols for dangerous capabilities', 'International AI Safety Report coordination', 'Focus on catastrophic and systemic risks'] },
+  { flag: '🌐', name: 'ISO/IEC 42001', org: 'ISO · 2023', points: ['AI management system standard (like ISO 27001 for AI)', 'Certifiable framework for organizations deploying AI', 'Covers risk, objectives, performance evaluation', 'Increasingly required in enterprise procurement'] },
+  { flag: '🤝', name: 'Partnership on AI', org: 'Multi-stakeholder · Industry + Civil Society', points: ['Responsible practices for synthetic media', 'Shared framework for facial recognition', 'Worker wellbeing and AI displacement guidance', 'Open research on fairness and accountability'] }
 ];
 
 const dilemmas = [
@@ -273,7 +274,7 @@ const dilemmas = [
     tension: 'User Autonomy & Experience vs. Financial Safety',
     sideA: { label: 'Approve Autonomously', text: 'Maximize user experience, trust the model confidence, reduce friction for legitimate cases' },
     sideB: { label: 'Require Human Review', text: 'Reduce financial fraud risk, maintain accountability, but slow resolution and frustrate legitimate users' },
-    resolution: 'Best practice: define hard monetary thresholds for autonomy. Flag for human review above threshold â€” not as punishment, but as protection for both user and business. Communicate the delay transparently.'
+    resolution: 'Best practice: define hard monetary thresholds for autonomy. Flag for human review above threshold — not as punishment, but as protection for both user and business. Communicate the delay transparently.'
   },
   {
     id: 'privacy', name: 'Personalization vs. Privacy',
@@ -281,7 +282,7 @@ const dilemmas = [
     tension: 'Performance & Personalization vs. Privacy Rights',
     sideA: { label: 'Enable Cross-Session Memory', text: '30% improvement in task completion, better user experience, competitive differentiation' },
     sideB: { label: 'Stateless Per Session', text: 'Full privacy by default, GDPR-safe, but degraded experience and repeated context re-entry' },
-    resolution: 'Privacy-by-design solution: offer opt-in memory with clear disclosure, granular controls, and deletion rights. Never enable persistent memory silently â€” consent must be explicit and withdrawable.'
+    resolution: 'Privacy-by-design solution: offer opt-in memory with clear disclosure, granular controls, and deletion rights. Never enable persistent memory silently — consent must be explicit and withdrawable.'
   },
   {
     id: 'transparency', name: 'Disclosure vs. Engagement',
@@ -289,15 +290,15 @@ const dilemmas = [
     tension: 'Business Metrics vs. Honesty & User Trust',
     sideA: { label: 'Skip Disclosure', text: '40% engagement lift, competitive pressure justifies it, users don\'t seem to mind' },
     sideB: { label: 'Disclose AI Identity', text: 'Legally required in many jurisdictions (EU AI Act), ethically required always, long-term trust preservation' },
-    resolution: 'Non-negotiable: disclose AI identity. EU AI Act makes deception about AI identity illegal. But disclosure design matters â€” transparent, friendly AI personas can achieve similar engagement without deception.'
+    resolution: 'Non-negotiable: disclose AI identity. EU AI Act makes deception about AI identity illegal. But disclosure design matters — transparent, friendly AI personas can achieve similar engagement without deception.'
   },
   {
     id: 'fairness', name: 'Fairness vs. Accuracy',
-    scenario: 'Your medical triage agent has 94% overall accuracy. But auditing reveals 87% accuracy for Black patients vs 96% for white patients â€” a 9-point disparity caused by underrepresented training data.',
+    scenario: 'Your medical triage agent has 94% overall accuracy. But auditing reveals 87% accuracy for Black patients vs 96% for white patients — a 9-point disparity caused by underrepresented training data.',
     tension: 'Overall Accuracy vs. Demographic Fairness',
     sideA: { label: 'Deploy (94% is good)', text: 'Faster deployment, good overall outcomes, costly to re-train and re-validate' },
     sideB: { label: 'Delay Until Fair', text: 'Prevents discriminatory harm, legally and ethically correct, but delays a system that does help most users' },
-    resolution: 'Delay until fair â€” especially in high-stakes medical contexts. Collecting additional training data for underrepresented groups is mandatory. Deploy with human oversight in the interim. Document known limitations.'
+    resolution: 'Delay until fair — especially in high-stakes medical contexts. Collecting additional training data for underrepresented groups is mandatory. Deploy with human oversight in the interim. Document known limitations.'
   }
 ];
 
@@ -330,7 +331,7 @@ principles.forEach((p, i) => {
         </div>`).join('')}
     </div>
     <div class="pp-example">
-      <div class="pp-example-label" style="color:${p.color}">ðŸ›ï¸ ${p.example.label}</div>
+      <div class="pp-example-label" style="color:${p.color}">🏛️ ${p.example.label}</div>
       <div class="pp-example-text">${p.example.text}</div>
     </div>`;
   panelsEl.appendChild(panel);
@@ -352,10 +353,10 @@ risks.forEach(r => {
     <div class="risk-header">
       <div class="risk-icon">${r.icon}</div>
       <div class="risk-name">${r.name}</div>
-      <div class="risk-level ${r.level}">${r.level === 'high' ? 'âš ï¸ High' : r.level === 'med' ? 'âš¡ Medium' : 'ðŸŸ¢ Low'}</div>
+      <div class="risk-level ${r.level}">${r.level === 'high' ? '⚠️ High' : r.level === 'med' ? '⚡ Medium' : '🟢 Low'}</div>
     </div>
     <div class="risk-desc">${r.desc}</div>
-    <div class="risk-mitigation"><span class="risk-mit-label">âœ… Mitigation:</span>${r.mitigation}</div>`;
+    <div class="risk-mitigation"><span class="risk-mit-label">✅ Mitigation:</span>${r.mitigation}</div>`;
   rg.appendChild(div);
 });
 
@@ -381,14 +382,14 @@ function renderDil(i) {
   dilCard.innerHTML = `
     <div class="d-scenario">${d.scenario}</div>
     <div class="d-tension">
-      <div class="d-tension-label">âš–ï¸ Core Tension: ${d.tension}</div>
+      <div class="d-tension-label">⚖️ Core Tension: ${d.tension}</div>
       <div class="d-sides">
-        <div class="d-side a"><div class="d-side-label">âœ… Option A</div><div class="d-side-text"><strong>${d.sideA.label}:</strong> ${d.sideA.text}</div></div>
-        <div class="d-side b"><div class="d-side-label">ðŸ”´ Option B</div><div class="d-side-text"><strong>${d.sideB.label}:</strong> ${d.sideB.text}</div></div>
+        <div class="d-side a"><div class="d-side-label">✅ Option A</div><div class="d-side-text"><strong>${d.sideA.label}:</strong> ${d.sideA.text}</div></div>
+        <div class="d-side b"><div class="d-side-label">🔴 Option B</div><div class="d-side-text"><strong>${d.sideB.label}:</strong> ${d.sideB.text}</div></div>
       </div>
     </div>
     <div class="d-resolution">
-      <div class="d-res-label">ðŸ’¡ Responsible Design Resolution</div>
+      <div class="d-res-label">💡 Responsible Design Resolution</div>
       <div class="d-res-text">${d.resolution}</div>
     </div>`;
 }

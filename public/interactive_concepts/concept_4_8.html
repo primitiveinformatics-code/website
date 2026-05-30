@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.8 â€” ReWOO: Reasoning Without Observation</title>
+<title>4.8 — ReWOO: Reasoning Without Observation</title>
 <style>
   :root {
     --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
@@ -117,7 +118,7 @@
   .when-box.skip .when-title { color: #ff6584; }
   .when-item { font-size: 13px; color: var(--muted); padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.5; }
   .when-item:last-child { border-bottom: none; }
-  .when-item::before { content: 'â€¢ '; color: var(--accent); }
+  .when-item::before { content: '• '; color: var(--accent); }
 
   /* BACK LINK */
   .back-row { text-align: center; margin-top: 40px; }
@@ -128,47 +129,47 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.8 â€” ReWOO: Reasoning Without Observation</span>
+  <span class="nav-cur">4.8 — ReWOO: Reasoning Without Observation</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
-  <h1>ReWOO â€” Reasoning Without Observation</h1>
-  <p>Plan everything upfront, execute in parallel â€” eliminating the expensive think-act-observe cycle</p>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>ReWOO — Reasoning Without Observation</h1>
+  <p>Plan everything upfront, execute in parallel — eliminating the expensive think-act-observe cycle</p>
   <div class="hero-stats">
-    <div class="hstat"><div class="hstat-n">3Ã—</div><div class="hstat-l">Fewer LLM Calls</div></div>
+    <div class="hstat"><div class="hstat-n">3×</div><div class="hstat-l">Fewer LLM Calls</div></div>
     <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">Modules</div></div>
     <div class="hstat"><div class="hstat-n">~60%</div><div class="hstat-l">Token Savings</div></div>
-    <div class="hstat"><div class="hstat-n">âš¡</div><div class="hstat-l">Parallel Workers</div></div>
+    <div class="hstat"><div class="hstat-n">⚡</div><div class="hstat-l">Parallel Workers</div></div>
   </div>
 </div>
 
 <div class="main">
 
   <!-- REACT vs REWOO -->
-  <div class="sec-title">ReAct vs ReWOO â€” The Core Difference</div>
+  <div class="sec-title">ReAct vs ReWOO — The Core Difference</div>
   <div class="compare-grid">
     <div class="cmp-box">
-      <div class="cmp-label react">âš  ReAct â€” Sequential, Observation-Dependent</div>
+      <div class="cmp-label react">⚠ ReAct — Sequential, Observation-Dependent</div>
       <div class="step-chain">
-        <div class="step think"><span class="step-icon">ðŸ§ </span><div><div class="step-label">Think</div><div class="step-desc">What tool should I call?</div></div></div>
-        <div class="step act"><span class="step-icon">ðŸ”§</span><div><div class="step-label">Act<span class="penalty-badge">LLM Call #1</span></div><div class="step-desc">search("CEO of OpenAI")</div></div></div>
-        <div class="step obs"><span class="step-icon">ðŸ‘</span><div><div class="step-label">Observe</div><div class="step-desc">Wait for result â†’ re-enter LLM context</div></div></div>
-        <div class="step think"><span class="step-icon">ðŸ§ </span><div><div class="step-label">Think<span class="penalty-badge">LLM Call #2</span></div><div class="step-desc">Now what? Feed result back inâ€¦</div></div></div>
-        <div class="step act"><span class="step-icon">ðŸ”§</span><div><div class="step-label">Act<span class="penalty-badge">LLM Call #3</span></div><div class="step-desc">search("Sam Altman net worth")</div></div></div>
-        <div class="step obs"><span class="step-icon">ðŸ‘</span><div><div class="step-label">Observe</div><div class="step-desc">Result appended â€” growing context!</div></div></div>
-        <div class="step think"><span class="step-icon">ðŸ§ </span><div><div class="step-label">Answer<span class="penalty-badge">LLM Call #4</span></div><div class="step-desc">Synthesize final answer with bloated context</div></div></div>
+        <div class="step think"><span class="step-icon">🧠</span><div><div class="step-label">Think</div><div class="step-desc">What tool should I call?</div></div></div>
+        <div class="step act"><span class="step-icon">🔧</span><div><div class="step-label">Act<span class="penalty-badge">LLM Call #1</span></div><div class="step-desc">search("CEO of OpenAI")</div></div></div>
+        <div class="step obs"><span class="step-icon">👁</span><div><div class="step-label">Observe</div><div class="step-desc">Wait for result → re-enter LLM context</div></div></div>
+        <div class="step think"><span class="step-icon">🧠</span><div><div class="step-label">Think<span class="penalty-badge">LLM Call #2</span></div><div class="step-desc">Now what? Feed result back in…</div></div></div>
+        <div class="step act"><span class="step-icon">🔧</span><div><div class="step-label">Act<span class="penalty-badge">LLM Call #3</span></div><div class="step-desc">search("Sam Altman net worth")</div></div></div>
+        <div class="step obs"><span class="step-icon">👁</span><div><div class="step-label">Observe</div><div class="step-desc">Result appended — growing context!</div></div></div>
+        <div class="step think"><span class="step-icon">🧠</span><div><div class="step-label">Answer<span class="penalty-badge">LLM Call #4</span></div><div class="step-desc">Synthesize final answer with bloated context</div></div></div>
       </div>
     </div>
     <div class="cmp-box rewoo">
-      <div class="cmp-label rewoo">âœ… ReWOO â€” Plan Once, Execute in Parallel</div>
+      <div class="cmp-label rewoo">✅ ReWOO — Plan Once, Execute in Parallel</div>
       <div class="step-chain">
-        <div class="step plan"><span class="step-icon">ðŸ“‹</span><div><div class="step-label">Plan<span class="gain-badge">LLM Call #1</span></div><div class="step-desc">Generate all tool calls + dependency graph upfront</div></div></div>
-        <div class="step work"><span class="step-icon">âš¡</span><div><div class="step-label">Worker: Tool 1</div><div class="step-desc">search("CEO of OpenAI") â€” runs in parallel</div></div></div>
-        <div class="step work"><span class="step-icon">âš¡</span><div><div class="step-label">Worker: Tool 2</div><div class="step-desc">search("$[1] net worth") â€” waits for dep</div></div></div>
-        <div class="step solve"><span class="step-icon">ðŸŽ¯</span><div><div class="step-label">Solve<span class="gain-badge">LLM Call #2</span></div><div class="step-desc">Compact evidence dict â†’ final answer. No bloat!</div></div></div>
+        <div class="step plan"><span class="step-icon">📋</span><div><div class="step-label">Plan<span class="gain-badge">LLM Call #1</span></div><div class="step-desc">Generate all tool calls + dependency graph upfront</div></div></div>
+        <div class="step work"><span class="step-icon">⚡</span><div><div class="step-label">Worker: Tool 1</div><div class="step-desc">search("CEO of OpenAI") — runs in parallel</div></div></div>
+        <div class="step work"><span class="step-icon">⚡</span><div><div class="step-label">Worker: Tool 2</div><div class="step-desc">search("$[1] net worth") — waits for dep</div></div></div>
+        <div class="step solve"><span class="step-icon">🎯</span><div><div class="step-label">Solve<span class="gain-badge">LLM Call #2</span></div><div class="step-desc">Compact evidence dict → final answer. No bloat!</div></div></div>
       </div>
     </div>
   </div>
@@ -177,21 +178,21 @@
   <div class="sec-title">The Three ReWOO Modules</div>
   <div class="modules-row">
     <div class="mod-card planner-c">
-      <div class="mod-icon">ðŸ§ </div>
+      <div class="mod-icon">🧠</div>
       <div class="mod-name">Planner</div>
-      <div class="mod-desc">Uses the LLM to analyze the query and produce a structured plan â€” a DAG of tool calls with variable references (#E1, #E2â€¦). Called <strong>once</strong> at the start.</div>
+      <div class="mod-desc">Uses the LLM to analyze the query and produce a structured plan — a DAG of tool calls with variable references (#E1, #E2…). Called <strong>once</strong> at the start.</div>
       <span class="mod-badge">LLM-Powered</span>
     </div>
     <div class="mod-card worker-c">
-      <div class="mod-icon">âš™ï¸</div>
+      <div class="mod-icon">⚙️</div>
       <div class="mod-name">Worker</div>
-      <div class="mod-desc">Pure execution layer â€” no LLM needed. Runs each tool call from the plan, respects dependencies, can execute independent steps in parallel.</div>
+      <div class="mod-desc">Pure execution layer — no LLM needed. Runs each tool call from the plan, respects dependencies, can execute independent steps in parallel.</div>
       <span class="mod-badge">Tool-Execution Only</span>
     </div>
     <div class="mod-card solver-c">
-      <div class="mod-icon">ðŸŽ¯</div>
+      <div class="mod-icon">🎯</div>
       <div class="mod-name">Solver</div>
-      <div class="mod-desc">Receives a compact evidence bundle (just the results, no tool-call history). Uses LLM to synthesize the final answer â€” clean, minimal context.</div>
+      <div class="mod-desc">Receives a compact evidence bundle (just the results, no tool-call history). Uses LLM to synthesize the final answer — clean, minimal context.</div>
       <span class="mod-badge">LLM-Powered</span>
     </div>
   </div>
@@ -199,47 +200,47 @@
   <!-- INTERACTIVE SIMULATOR -->
   <div class="sec-title">Live Trace Simulator</div>
   <div class="sim-box">
-    <div class="sim-title">Pick a Query â€” See ReWOO in Action</div>
+    <div class="sim-title">Pick a Query — See ReWOO in Action</div>
     <div class="sim-sub">Choose a sample query to see the Planner's dependency graph, Worker execution, and Solver output</div>
     <div class="query-btns">
-      <button class="qbtn" onclick="showQuery(0,this)">ðŸ“Š Compare Claude vs GPT-4 pricing</button>
-      <button class="qbtn" onclick="showQuery(1,this)">ðŸ¢ Who funds Anthropic & their valuation?</button>
-      <button class="qbtn" onclick="showQuery(2,this)">ðŸ”¬ Latest LangGraph release notes + use case</button>
+      <button class="qbtn" onclick="showQuery(0,this)">📊 Compare Claude vs GPT-4 pricing</button>
+      <button class="qbtn" onclick="showQuery(1,this)">🏢 Who funds Anthropic & their valuation?</button>
+      <button class="qbtn" onclick="showQuery(2,this)">🔬 Latest LangGraph release notes + use case</button>
     </div>
 
     <div id="sim0" class="sim-output">
       <div class="phases">
         <div class="phase ph1">
-          <div class="phase-label">ðŸ§  Planner Output</div>
+          <div class="phase-label">🧠 Planner Output</div>
           <div class="phase-content">
             <code>#E1</code> = search("Claude API pricing 2024")<br>
-            <div class="dep-arrow">â†“</div>
+            <div class="dep-arrow">↓</div>
             <code>#E2</code> = search("GPT-4 API pricing 2024")<br>
-            <div class="dep-arrow">â†“ (independent)</div>
+            <div class="dep-arrow">↓ (independent)</div>
             <code>#E3</code> = compare(#E1, #E2)<br>
             <br>
-            <strong style="color:#ffd166">DAG:</strong> E1 âˆ¥ E2 â†’ E3
+            <strong style="color:#ffd166">DAG:</strong> E1 ∥ E2 → E3
           </div>
           <div class="savings-bar"><div class="savings-fill" style="width:60%">60% token savings vs ReAct</div></div>
         </div>
         <div class="phase ph2">
-          <div class="phase-label">âš¡ Worker Execution</div>
+          <div class="phase-label">⚡ Worker Execution</div>
           <div class="phase-content">
             <strong>Parallel:</strong><br>
-            ðŸ” E1: "Claude 3 Haiku $0.25/MTok in, Sonnet $3/MTok inâ€¦"<br>
-            ðŸ” E2: "GPT-4o $2.50/MTok in, GPT-4 Turbo $10/MTokâ€¦"<br>
+            🔍 E1: "Claude 3 Haiku $0.25/MTok in, Sonnet $3/MTok in…"<br>
+            🔍 E2: "GPT-4o $2.50/MTok in, GPT-4 Turbo $10/MTok…"<br>
             <br>
             <strong>Sequential:</strong><br>
-            ðŸ“Š E3: Structured comparison table generated<br>
+            📊 E3: Structured comparison table generated<br>
             <br>
-            <span style="color:#06d6a0">âœ“ 0 LLM calls in Worker phase</span>
+            <span style="color:#06d6a0">✓ 0 LLM calls in Worker phase</span>
           </div>
         </div>
         <div class="phase ph3">
-          <div class="phase-label">ðŸŽ¯ Solver</div>
+          <div class="phase-label">🎯 Solver</div>
           <div class="phase-content">
             <strong>Input:</strong> Compact evidence dict {E1, E2, E3}<br><br>
-            <strong>Output:</strong> "Claude Haiku is ~10Ã— cheaper than GPT-4 Turbo for input tokens. For output-heavy workloads, Claude Sonnet and GPT-4o are comparable at ~$3â€“4/MTokâ€¦"
+            <strong>Output:</strong> "Claude Haiku is ~10× cheaper than GPT-4 Turbo for input tokens. For output-heavy workloads, Claude Sonnet and GPT-4o are comparable at ~$3–4/MTok…"
           </div>
         </div>
       </div>
@@ -248,36 +249,36 @@
     <div id="sim1" class="sim-output">
       <div class="phases">
         <div class="phase ph1">
-          <div class="phase-label">ðŸ§  Planner Output</div>
+          <div class="phase-label">🧠 Planner Output</div>
           <div class="phase-content">
             <code>#E1</code> = search("Anthropic investors funding rounds")<br>
-            <div class="dep-arrow">â†“</div>
+            <div class="dep-arrow">↓</div>
             <code>#E2</code> = search("Anthropic valuation 2024")<br>
-            <div class="dep-arrow">â†“</div>
+            <div class="dep-arrow">↓</div>
             <code>#E3</code> = extract_investors(#E1)<br>
             <br>
-            <strong style="color:#ffd166">DAG:</strong> E1 âˆ¥ E2 â†’ E3
+            <strong style="color:#ffd166">DAG:</strong> E1 ∥ E2 → E3
           </div>
           <div class="savings-bar"><div class="savings-fill" style="width:65%">65% token savings vs ReAct</div></div>
         </div>
         <div class="phase ph2">
-          <div class="phase-label">âš¡ Worker Execution</div>
+          <div class="phase-label">⚡ Worker Execution</div>
           <div class="phase-content">
             <strong>Parallel:</strong><br>
-            ðŸ” E1: Google, Amazon, Spark Capital, $7.3B raisedâ€¦<br>
-            ðŸ” E2: ~$18.4B valuation (2024)â€¦<br>
+            🔍 E1: Google, Amazon, Spark Capital, $7.3B raised…<br>
+            🔍 E2: ~$18.4B valuation (2024)…<br>
             <br>
             <strong>Sequential:</strong><br>
-            ðŸ“‹ E3: [Google, Amazon, Spark, Salesforce Ventures]<br>
+            📋 E3: [Google, Amazon, Spark, Salesforce Ventures]<br>
             <br>
-            <span style="color:#06d6a0">âœ“ 0 LLM calls in Worker phase</span>
+            <span style="color:#06d6a0">✓ 0 LLM calls in Worker phase</span>
           </div>
         </div>
         <div class="phase ph3">
-          <div class="phase-label">ðŸŽ¯ Solver</div>
+          <div class="phase-label">🎯 Solver</div>
           <div class="phase-content">
             <strong>Input:</strong> Compact {E1, E2, E3}<br><br>
-            <strong>Output:</strong> "Anthropic has raised ~$7.3B across rounds. Key investors include Google (~$2B), Amazon (~$4B), Spark Capital and Salesforce Ventures. Current valuation is approximately $18.4Bâ€¦"
+            <strong>Output:</strong> "Anthropic has raised ~$7.3B across rounds. Key investors include Google (~$2B), Amazon (~$4B), Spark Capital and Salesforce Ventures. Current valuation is approximately $18.4B…"
           </div>
         </div>
       </div>
@@ -286,34 +287,34 @@
     <div id="sim2" class="sim-output">
       <div class="phases">
         <div class="phase ph1">
-          <div class="phase-label">ðŸ§  Planner Output</div>
+          <div class="phase-label">🧠 Planner Output</div>
           <div class="phase-content">
             <code>#E1</code> = search("LangGraph latest release changelog")<br>
-            <div class="dep-arrow">â†“</div>
+            <div class="dep-arrow">↓</div>
             <code>#E2</code> = extract_version(#E1)<br>
-            <div class="dep-arrow">â†“</div>
+            <div class="dep-arrow">↓</div>
             <code>#E3</code> = search("LangGraph #E2 use cases")<br>
             <br>
-            <strong style="color:#ffd166">DAG:</strong> E1 â†’ E2 â†’ E3
+            <strong style="color:#ffd166">DAG:</strong> E1 → E2 → E3
           </div>
           <div class="savings-bar"><div class="savings-fill" style="width:55%">55% token savings vs ReAct</div></div>
         </div>
         <div class="phase ph2">
-          <div class="phase-label">âš¡ Worker Execution</div>
+          <div class="phase-label">⚡ Worker Execution</div>
           <div class="phase-content">
             <strong>Sequential (dependent chain):</strong><br>
-            ðŸ” E1: "LangGraph 0.2.x â€” streaming, subgraphsâ€¦"<br>
-            ðŸ“‹ E2: version = "0.2.28"<br>
-            ðŸ” E3: "Human-in-loop workflows, multi-agentâ€¦"<br>
+            🔍 E1: "LangGraph 0.2.x — streaming, subgraphs…"<br>
+            📋 E2: version = "0.2.28"<br>
+            🔍 E3: "Human-in-loop workflows, multi-agent…"<br>
             <br>
-            <span style="color:#06d6a0">âœ“ 0 LLM calls in Worker phase</span>
+            <span style="color:#06d6a0">✓ 0 LLM calls in Worker phase</span>
           </div>
         </div>
         <div class="phase ph3">
-          <div class="phase-label">ðŸŽ¯ Solver</div>
+          <div class="phase-label">🎯 Solver</div>
           <div class="phase-content">
             <strong>Input:</strong> Compact {E1, E2, E3}<br><br>
-            <strong>Output:</strong> "LangGraph 0.2.28 introduced enhanced streaming and subgraph support. Key use cases include human-in-the-loop approval flows, multi-agent orchestration, and stateful long-running workflowsâ€¦"
+            <strong>Output:</strong> "LangGraph 0.2.28 introduced enhanced streaming and subgraph support. Key use cases include human-in-the-loop approval flows, multi-agent orchestration, and stateful long-running workflows…"
           </div>
         </div>
       </div>
@@ -321,20 +322,20 @@
   </div>
 
   <!-- TRADEOFF TABLE -->
-  <div class="sec-title">ReWOO vs ReAct â€” Detailed Comparison</div>
+  <div class="sec-title">ReWOO vs ReAct — Detailed Comparison</div>
   <table class="tradeoff-table">
     <thead>
       <tr><th>Dimension</th><th>ReAct</th><th>ReWOO</th></tr>
     </thead>
     <tbody>
       <tr><td><strong>LLM calls per task</strong></td><td>N calls (one per thought+action)</td><td>2 calls (Planner + Solver)</td></tr>
-      <tr><td><strong>Token usage</strong></td><td>Grows with each step â€” all history in context</td><td>Compact â€” evidence dict only in Solver</td></tr>
-      <tr><td><strong>Parallelism</strong></td><td>âŒ Sequential by design</td><td>âœ… Worker steps can run in parallel</td></tr>
-      <tr><td><strong>Adaptability</strong></td><td><span class="tag good">High</span> â€” reacts to observations in real-time</td><td><span class="tag bad">Low</span> â€” plan is fixed upfront</td></tr>
+      <tr><td><strong>Token usage</strong></td><td>Grows with each step — all history in context</td><td>Compact — evidence dict only in Solver</td></tr>
+      <tr><td><strong>Parallelism</strong></td><td>❌ Sequential by design</td><td>✅ Worker steps can run in parallel</td></tr>
+      <tr><td><strong>Adaptability</strong></td><td><span class="tag good">High</span> — reacts to observations in real-time</td><td><span class="tag bad">Low</span> — plan is fixed upfront</td></tr>
       <tr><td><strong>Best for</strong></td><td>Dynamic tasks, uncertain tool results</td><td>Structured research, data aggregation</td></tr>
-      <tr><td><strong>Cost</strong></td><td><span class="tag bad">High</span> â€” repeated LLM calls with growing context</td><td><span class="tag good">Low</span> â€” ~60% cheaper on average</td></tr>
-      <tr><td><strong>Latency</strong></td><td>Sequential bottleneck</td><td><span class="tag good">Lower</span> â€” parallel worker execution</td></tr>
-      <tr><td><strong>Failure recovery</strong></td><td><span class="tag good">Good</span> â€” can observe errors and retry</td><td><span class="tag bad">Poor</span> â€” plan must be re-generated</td></tr>
+      <tr><td><strong>Cost</strong></td><td><span class="tag bad">High</span> — repeated LLM calls with growing context</td><td><span class="tag good">Low</span> — ~60% cheaper on average</td></tr>
+      <tr><td><strong>Latency</strong></td><td>Sequential bottleneck</td><td><span class="tag good">Lower</span> — parallel worker execution</td></tr>
+      <tr><td><strong>Failure recovery</strong></td><td><span class="tag good">Good</span> — can observe errors and retry</td><td><span class="tag bad">Poor</span> — plan must be re-generated</td></tr>
     </tbody>
   </table>
 
@@ -342,7 +343,7 @@
   <div class="sec-title">When to Use ReWOO</div>
   <div class="when-grid">
     <div class="when-box use">
-      <div class="when-title">âœ… Use ReWOO Whenâ€¦</div>
+      <div class="when-title">✅ Use ReWOO When…</div>
       <div class="when-item">Task requires multiple searches / tool calls that you can enumerate upfront</div>
       <div class="when-item">Tool results are predictable (e.g., web search, DB queries)</div>
       <div class="when-item">Cost and latency are primary concerns</div>
@@ -350,7 +351,7 @@
       <div class="when-item">Research, data aggregation, report generation tasks</div>
     </div>
     <div class="when-box skip">
-      <div class="when-title">âŒ Avoid ReWOO Whenâ€¦</div>
+      <div class="when-title">❌ Avoid ReWOO When…</div>
       <div class="when-item">Task outcome depends on intermediate results (deep conditional logic)</div>
       <div class="when-item">Tools can fail and require dynamic recovery</div>
       <div class="when-item">Plan cannot be determined without observing early steps</div>
@@ -360,7 +361,7 @@
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 

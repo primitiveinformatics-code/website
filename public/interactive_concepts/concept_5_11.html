@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5.11 â€” MLOps for Agents: 6 Practices</title>
+<title>5.11 — MLOps for Agents: 6 Practices</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -120,15 +121,15 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-current">5.11 â€” MLOps for Agents: 6 Practices</span>
+  <span class="nav-current">5.11 — MLOps for Agents: 6 Practices</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 5 Â· Day 2 Afternoon</div>
-  <h1>MLOps for Agents â€” 6 Practices</h1>
-  <p>Production ML operations adapted for agentic systems â€” where non-determinism, multi-hop chains, and semantic failures demand a new playbook</p>
+  <div class="hero-badge">Session 5 · Day 2 Afternoon</div>
+  <h1>MLOps for Agents — 6 Practices</h1>
+  <p>Production ML operations adapted for agentic systems — where non-determinism, multi-hop chains, and semantic failures demand a new playbook</p>
 </div>
 
 <div class="container">
@@ -136,15 +137,15 @@
   <!-- PIPELINE STRIP -->
   <div class="pipeline-strip">
     <div class="pipe-step active">Data Versioning</div>
-    <div class="pipe-arrow">â†’</div>
+    <div class="pipe-arrow">→</div>
     <div class="pipe-step">Experiment Tracking</div>
-    <div class="pipe-arrow">â†’</div>
+    <div class="pipe-arrow">→</div>
     <div class="pipe-step">Model Registry</div>
-    <div class="pipe-arrow">â†’</div>
+    <div class="pipe-arrow">→</div>
     <div class="pipe-step">Serving</div>
-    <div class="pipe-arrow">â†’</div>
+    <div class="pipe-arrow">→</div>
     <div class="pipe-step">Monitoring</div>
-    <div class="pipe-arrow">â†’</div>
+    <div class="pipe-arrow">→</div>
     <div class="pipe-step">Feedback Loop</div>
   </div>
 
@@ -181,7 +182,7 @@
       <tr>
         <td class="td-practice">Deployment</td>
         <td class="trad">Blue/green model swap</td>
-        <td class="agent">Prompt â†’ tool schema â†’ model chain rollout with rollback checkpoints</td>
+        <td class="agent">Prompt → tool schema → model chain rollout with rollback checkpoints</td>
       </tr>
       <tr>
         <td class="td-practice">Feedback</td>
@@ -204,12 +205,12 @@
 
   <!-- QUIZ -->
   <div class="quiz-section">
-    <div class="quiz-title">ðŸ§  Practice Identifier Quiz</div>
+    <div class="quiz-title">🧠 Practice Identifier Quiz</div>
     <div class="quiz-sub">Map each scenario to the correct MLOps practice</div>
     <div id="quizContainer"></div>
   </div>
 
-  <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+  <a href="index.html" class="back-btn">← Back to All Concepts</a>
 </div>
 
 <script>
@@ -217,84 +218,84 @@ const practices = [
   {
     num: 'Practice 1',
     title: 'Versioned Agent Artifacts',
-    icon: 'ðŸ“¦',
+    icon: '📦',
     color: '#06d6a0',
     tagline: 'Every deployment-worthy unit must be versioned together: model, prompt, tool schema, memory config, and guardrails.',
     items: [
-      { icon: 'ðŸ·ï¸', label: 'Artifact Bundle', text: 'Tag model checkpoint + system prompt + tool definitions + vector store snapshot as a single immutable release' },
-      { icon: 'ðŸ”„', label: 'Rollback Granularity', text: 'Roll back individual components (e.g., just the prompt) without re-deploying the full bundle' },
-      { icon: 'ðŸ“', label: 'Diff Tracking', text: 'Semantic diffs: what changed in the prompt, which tool signatures changed, which memory entries were updated' },
-      { icon: 'ðŸ”—', label: 'Lineage', text: 'Trace each production decision back to the exact artifact versions that produced it' }
+      { icon: '🏷️', label: 'Artifact Bundle', text: 'Tag model checkpoint + system prompt + tool definitions + vector store snapshot as a single immutable release' },
+      { icon: '🔄', label: 'Rollback Granularity', text: 'Roll back individual components (e.g., just the prompt) without re-deploying the full bundle' },
+      { icon: '📝', label: 'Diff Tracking', text: 'Semantic diffs: what changed in the prompt, which tool signatures changed, which memory entries were updated' },
+      { icon: '🔗', label: 'Lineage', text: 'Trace each production decision back to the exact artifact versions that produced it' }
     ],
     tools: ['DVC', 'MLflow', 'Weights & Biases', 'LangSmith', 'Git LFS']
   },
   {
     num: 'Practice 2',
     title: 'Agentic Experiment Tracking',
-    icon: 'ðŸ”¬',
+    icon: '🔬',
     color: '#00b4d8',
     tagline: 'Treat prompt variants, tool sets, planning strategies, and memory configs as hyperparameters to be systematically tracked.',
     items: [
-      { icon: 'ðŸŽ¯', label: 'Run Config', text: 'Log: model, temperature, system prompt hash, tool list, planning strategy, memory type, retrieval params' },
-      { icon: 'ðŸ“Š', label: 'Agentic Metrics', text: 'Goal completion rate, average turns to completion, tool call accuracy, hallucination rate per run' },
-      { icon: 'âš¡', label: 'A/B Prompt Testing', text: 'Compare prompt variants on identical task suites â€” not just accuracy but trajectory quality' },
-      { icon: 'ðŸ“ˆ', label: 'Reproducibility', text: 'Seed random variables, pin model versions, log exact tool call sequences for replay' }
+      { icon: '🎯', label: 'Run Config', text: 'Log: model, temperature, system prompt hash, tool list, planning strategy, memory type, retrieval params' },
+      { icon: '📊', label: 'Agentic Metrics', text: 'Goal completion rate, average turns to completion, tool call accuracy, hallucination rate per run' },
+      { icon: '⚡', label: 'A/B Prompt Testing', text: 'Compare prompt variants on identical task suites — not just accuracy but trajectory quality' },
+      { icon: '📈', label: 'Reproducibility', text: 'Seed random variables, pin model versions, log exact tool call sequences for replay' }
     ],
     tools: ['MLflow', 'W&B', 'LangSmith', 'Phoenix', 'Helicone']
   },
   {
     num: 'Practice 3',
     title: 'Continuous Evaluation Pipeline',
-    icon: 'ðŸ§ª',
+    icon: '🧪',
     color: '#ffd166',
-    tagline: 'Automated eval gates that run on every commit â€” covering unit, integration, and end-to-end agent task benchmarks.',
+    tagline: 'Automated eval gates that run on every commit — covering unit, integration, and end-to-end agent task benchmarks.',
     items: [
-      { icon: 'ðŸ”’', label: 'Unit Evals', text: 'Individual tool call correctness, single-turn response quality, guardrail trigger tests' },
-      { icon: 'ðŸ”—', label: 'Integration Evals', text: 'Multi-hop chain correctness, memory retrieval accuracy, agent-to-agent handoff fidelity' },
-      { icon: 'ðŸ', label: 'E2E Benchmarks', text: 'Full task suites: goal completion %, step efficiency, recovery from injected failures' },
-      { icon: 'ðŸš¦', label: 'Quality Gates', text: 'Block merges if goal completion drops >3%, hallucination rate exceeds threshold, or latency p95 regresses' }
+      { icon: '🔒', label: 'Unit Evals', text: 'Individual tool call correctness, single-turn response quality, guardrail trigger tests' },
+      { icon: '🔗', label: 'Integration Evals', text: 'Multi-hop chain correctness, memory retrieval accuracy, agent-to-agent handoff fidelity' },
+      { icon: '🏁', label: 'E2E Benchmarks', text: 'Full task suites: goal completion %, step efficiency, recovery from injected failures' },
+      { icon: '🚦', label: 'Quality Gates', text: 'Block merges if goal completion drops >3%, hallucination rate exceeds threshold, or latency p95 regresses' }
     ],
     tools: ['RAGAS', 'DeepEval', 'LangSmith', 'BrainTrust', 'Pytest']
   },
   {
     num: 'Practice 4',
     title: 'Shadow Deployment & Canary Rollouts',
-    icon: 'ðŸš€',
+    icon: '🚀',
     color: '#ff6584',
-    tagline: 'Deploy new agent versions in shadow mode first â€” replay real traffic, compare trajectories, then gradually shift production load.',
+    tagline: 'Deploy new agent versions in shadow mode first — replay real traffic, compare trajectories, then gradually shift production load.',
     items: [
-      { icon: 'ðŸ‘»', label: 'Shadow Mode', text: 'New agent version receives same inputs as production but output is discarded â€” compare trace quality silently' },
-      { icon: 'ðŸ¤', label: 'Canary Rollout', text: 'Start at 1% of traffic, monitor semantic metrics, auto-rollback if KPIs degrade within first 30 min' },
-      { icon: 'ðŸ”€', label: 'Traffic Splitting', text: 'Route by user cohort, task type, or risk level â€” never experiment on high-stakes workflows first' },
-      { icon: 'â†©ï¸', label: 'Automated Rollback', text: 'Define rollback triggers: error rate spike, goal completion drop, latency p99 breach' }
+      { icon: '👻', label: 'Shadow Mode', text: 'New agent version receives same inputs as production but output is discarded — compare trace quality silently' },
+      { icon: '🐤', label: 'Canary Rollout', text: 'Start at 1% of traffic, monitor semantic metrics, auto-rollback if KPIs degrade within first 30 min' },
+      { icon: '🔀', label: 'Traffic Splitting', text: 'Route by user cohort, task type, or risk level — never experiment on high-stakes workflows first' },
+      { icon: '↩️', label: 'Automated Rollback', text: 'Define rollback triggers: error rate spike, goal completion drop, latency p99 breach' }
     ],
     tools: ['Argo Rollouts', 'AWS CodeDeploy', 'Spinnaker', 'Istio', 'Flagger']
   },
   {
     num: 'Practice 5',
     title: 'Semantic Drift Monitoring',
-    icon: 'ðŸ“¡',
+    icon: '📡',
     color: '#6c63ff',
-    tagline: 'Agents degrade silently â€” monitor semantic quality, not just infrastructure metrics. Detect goal drift before users notice.',
+    tagline: 'Agents degrade silently — monitor semantic quality, not just infrastructure metrics. Detect goal drift before users notice.',
     items: [
-      { icon: 'ðŸ“‰', label: 'Semantic KPIs', text: 'Track goal completion rate, answer faithfulness score, tool call precision, and avg turns/task in production' },
-      { icon: 'ðŸŒ¡ï¸', label: 'Drift Detectors', text: 'Statistical tests on embedding distributions of agent outputs â€” alert when outputs cluster shifts' },
-      { icon: 'ðŸ”', label: 'Trace Sampling', text: 'Sample 10% of production traces for LLM-as-judge evaluation â€” score quality continuously' },
-      { icon: 'ðŸš¨', label: 'Anomaly Alerts', text: 'Alert on: loop detection (>N tool calls), repeated tool failures, memory retrieval zero-matches' }
+      { icon: '📉', label: 'Semantic KPIs', text: 'Track goal completion rate, answer faithfulness score, tool call precision, and avg turns/task in production' },
+      { icon: '🌡️', label: 'Drift Detectors', text: 'Statistical tests on embedding distributions of agent outputs — alert when outputs cluster shifts' },
+      { icon: '🔍', label: 'Trace Sampling', text: 'Sample 10% of production traces for LLM-as-judge evaluation — score quality continuously' },
+      { icon: '🚨', label: 'Anomaly Alerts', text: 'Alert on: loop detection (>N tool calls), repeated tool failures, memory retrieval zero-matches' }
     ],
     tools: ['LangSmith', 'Phoenix (Arize)', 'Helicone', 'OpenTelemetry', 'Grafana']
   },
   {
     num: 'Practice 6',
     title: 'Human-in-the-Loop Feedback Collection',
-    icon: 'ðŸ¤',
+    icon: '🤝',
     color: '#f4a261',
     tagline: 'Close the loop: capture human corrections, trajectory critiques, and preference signals to continuously improve agents.',
     items: [
-      { icon: 'âœï¸', label: 'Correction Capture', text: 'When users override agent decisions, capture the full context + correction as a training signal' },
-      { icon: 'â­', label: 'Trajectory Ratings', text: 'Internal reviewers rate full agent traces (not just final answers) â€” efficient action vs. wasteful loops' },
-      { icon: 'ðŸ”', label: 'Replay-Based Improvement', text: 'Replay failed trajectories with modified prompts/tools â€” targeted regression not full retraining' },
-      { icon: 'ðŸ“š', label: 'Fine-Tuning Triggers', text: 'Accumulate corrections until statistical significance â€” then trigger supervised fine-tune or preference dataset update' }
+      { icon: '✏️', label: 'Correction Capture', text: 'When users override agent decisions, capture the full context + correction as a training signal' },
+      { icon: '⭐', label: 'Trajectory Ratings', text: 'Internal reviewers rate full agent traces (not just final answers) — efficient action vs. wasteful loops' },
+      { icon: '🔁', label: 'Replay-Based Improvement', text: 'Replay failed trajectories with modified prompts/tools — targeted regression not full retraining' },
+      { icon: '📚', label: 'Fine-Tuning Triggers', text: 'Accumulate corrections until statistical significance — then trigger supervised fine-tune or preference dataset update' }
     ],
     tools: ['Argilla', 'Label Studio', 'LangSmith', 'BrainTrust', 'Humanloop']
   }
@@ -305,15 +306,15 @@ const maturityData = [
   { level: '1', name: 'Tracked', desc: 'Experiments logged, model registry exists, basic CI tests', color: '#ffd166', width: '35%' },
   { level: '2', name: 'Automated', desc: 'Full eval pipeline, canary deploys, semantic monitoring', color: '#00b4d8', width: '60%' },
   { level: '3', name: 'Continuous', desc: 'Human feedback loop, drift-triggered retraining, full lineage', color: '#06d6a0', width: '85%' },
-  { level: 'âˆž', name: 'Self-Improving', desc: 'Agents surface their own improvement signals automatically', color: '#6c63ff', width: '100%' }
+  { level: '∞', name: 'Self-Improving', desc: 'Agents surface their own improvement signals automatically', color: '#6c63ff', width: '100%' }
 ];
 
 const quizData = [
   {
-    scenario: 'Your production agent starts answering slightly off-topic after a model provider update â€” no error rate increase, but user satisfaction drops.',
+    scenario: 'Your production agent starts answering slightly off-topic after a model provider update — no error rate increase, but user satisfaction drops.',
     options: ['Versioned Agent Artifacts', 'Semantic Drift Monitoring', 'Shadow Deployment', 'Experiment Tracking'],
     correct: 1,
-    explain: 'Correct! This is a classic semantic drift scenario. Infrastructure metrics look fine, but quality degraded â€” only semantic monitoring catches this.'
+    explain: 'Correct! This is a classic semantic drift scenario. Infrastructure metrics look fine, but quality degraded — only semantic monitoring catches this.'
   },
   {
     scenario: 'You want to test a new planning strategy (ToT vs ReAct) across 50 task scenarios and compare goal completion rates.',
@@ -342,7 +343,7 @@ practices.forEach((p, i) => {
         <div class="pc-num" style="color:${p.color}">${p.num}</div>
         <div class="pc-title">${p.title}</div>
       </div>
-      <div class="pc-chevron">â–¾</div>
+      <div class="pc-chevron">▾</div>
     </div>
     <div class="pc-body">
       <div class="pc-content">
@@ -396,12 +397,12 @@ document.querySelectorAll('.quiz-opt').forEach(opt => {
     const fb = document.getElementById(`qf${qi}`);
     if (oi === q.correct) {
       this.classList.add('correct');
-      fb.textContent = 'âœ… ' + q.explain;
+      fb.textContent = '✅ ' + q.explain;
       fb.className = 'quiz-feedback show ok';
     } else {
       this.classList.add('wrong');
       siblings[q.correct].classList.add('correct');
-      fb.textContent = 'âŒ ' + q.explain;
+      fb.textContent = '❌ ' + q.explain;
       fb.className = 'quiz-feedback show bad';
     }
   });

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>4.4 Map-Reduce Pattern | Agentic AI</title>
 <style>
@@ -103,7 +104,7 @@ h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accen
 .pros-cons .side.cons h3 { color: #ff7eb6; }
 .pros-cons ul { list-style: none; padding: 0; }
 .pros-cons li { padding: .3rem 0; font-size: .88rem; color: var(--muted); }
-.pros-cons li::before { content: 'â€¢ '; color: var(--accent); }
+.pros-cons li::before { content: '• '; color: var(--accent); }
 .side.cons li::before { color: #ff7eb6; }
 
 /* TABLE */
@@ -142,19 +143,19 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 <body>
 
 <nav>
-  <a href="concept_4_3.html">â† Network/Swarm Pattern</a>
-  <a href="main-course.html">â˜° All Concepts</a>
-  <a href="concept_4_5.html">Choreography Pattern â†’</a>
+  <a href="concept_4_3.html">← Network/Swarm Pattern</a>
+  <a href="index.html">☰ All Concepts</a>
+  <a href="concept_4_5.html">Choreography Pattern →</a>
 </nav>
 
 <div class="hero">
   <div class="tags">
     <span class="tag accent">Session 4</span>
-    <span class="tag">Day 2 Forenoon Â· Orchestration</span>
+    <span class="tag">Day 2 Forenoon · Orchestration</span>
     <span class="tag">Concept 4.4</span>
   </div>
   <h1>Map-Reduce Pattern</h1>
-  <p class="subtitle">Fan-out parallel execution â†’ fan-in aggregation â€” the fastest way to process large workloads with agents</p>
+  <p class="subtitle">Fan-out parallel execution → fan-in aggregation — the fastest way to process large workloads with agents</p>
 </div>
 
 <main>
@@ -168,19 +169,19 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
     </blockquote>
     <div class="card-grid">
       <div class="card">
-        <h3>âœ‚ï¸ Decompose</h3>
-        <p style="color:var(--muted);font-size:.88rem;">A dispatcher breaks the input into N independent chunks â€” by document, by question, by data shard.</p>
+        <h3>✂️ Decompose</h3>
+        <p style="color:var(--muted);font-size:.88rem;">A dispatcher breaks the input into N independent chunks — by document, by question, by data shard.</p>
       </div>
       <div class="card">
-        <h3>âš¡ Parallelize (MAP)</h3>
-        <p style="color:var(--muted);font-size:.88rem;">N mapper agents process their chunks simultaneously. Total time â‰ˆ slowest mapper, not sum of all.</p>
+        <h3>⚡ Parallelize (MAP)</h3>
+        <p style="color:var(--muted);font-size:.88rem;">N mapper agents process their chunks simultaneously. Total time ≈ slowest mapper, not sum of all.</p>
       </div>
       <div class="card">
-        <h3>ðŸ”€ Aggregate (REDUCE)</h3>
+        <h3>🔀 Aggregate (REDUCE)</h3>
         <p style="color:var(--muted);font-size:.88rem;">A reducer collects all mapper outputs and synthesizes a final, coherent answer.</p>
       </div>
       <div class="card">
-        <h3>ðŸ“ˆ Linear Speedup</h3>
+        <h3>📈 Linear Speedup</h3>
         <p style="color:var(--muted);font-size:.88rem;">Processing 10 documents with 10 agents takes roughly the same time as processing 1 document with 1 agent.</p>
       </div>
     </div>
@@ -188,28 +189,28 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 
   <!-- FLOW DIAGRAM -->
   <section>
-    <h2>Visual Flow â€” Click a Node</h2>
+    <h2>Visual Flow — Click a Node</h2>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;">
       <div class="mr-flow">
         <div class="mr-row">
-          <div class="mr-node dispatch" onclick="showNode('dispatcher')">ðŸ“‹ Dispatcher</div>
+          <div class="mr-node dispatch" onclick="showNode('dispatcher')">📋 Dispatcher</div>
         </div>
-        <div class="mr-arrow">â†“ fan-out</div>
-        <div class="mr-label">MAP PHASE â€” parallel workers</div>
+        <div class="mr-arrow">↓ fan-out</div>
+        <div class="mr-label">MAP PHASE — parallel workers</div>
         <div class="mr-row">
-          <div class="mr-node mapper" onclick="showNode('mapper1')">ðŸ¤– Mapper 1</div>
-          <div class="mr-node mapper" onclick="showNode('mapper2')">ðŸ¤– Mapper 2</div>
-          <div class="mr-node mapper" onclick="showNode('mapper3')">ðŸ¤– Mapper 3</div>
-          <div class="mr-node mapper" onclick="showNode('mapperN')">ðŸ¤– Mapper N</div>
+          <div class="mr-node mapper" onclick="showNode('mapper1')">🤖 Mapper 1</div>
+          <div class="mr-node mapper" onclick="showNode('mapper2')">🤖 Mapper 2</div>
+          <div class="mr-node mapper" onclick="showNode('mapper3')">🤖 Mapper 3</div>
+          <div class="mr-node mapper" onclick="showNode('mapperN')">🤖 Mapper N</div>
         </div>
-        <div class="mr-arrow">â†“ fan-in</div>
-        <div class="mr-label">REDUCE PHASE â€” aggregation</div>
+        <div class="mr-arrow">↓ fan-in</div>
+        <div class="mr-label">REDUCE PHASE — aggregation</div>
         <div class="mr-row">
-          <div class="mr-node reducer" onclick="showNode('reducer')">ðŸ”€ Reducer</div>
+          <div class="mr-node reducer" onclick="showNode('reducer')">🔀 Reducer</div>
         </div>
-        <div class="mr-arrow">â†“</div>
+        <div class="mr-arrow">↓</div>
         <div class="mr-row">
-          <div class="mr-node output" onclick="showNode('output')">âœ… Final Output</div>
+          <div class="mr-node output" onclick="showNode('output')">✅ Final Output</div>
         </div>
       </div>
     </div>
@@ -222,10 +223,10 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
   <section>
     <h2>Use Case Deep Dives</h2>
     <div class="tab-bar">
-      <div class="tab active" onclick="showTab('t1',this)">ðŸ“„ Document Analysis</div>
-      <div class="tab" onclick="showTab('t2',this)">â“ Multi-Question QA</div>
-      <div class="tab" onclick="showTab('t3',this)">ðŸ” Parallel Search</div>
-      <div class="tab" onclick="showTab('t4',this)">ðŸ“Š Data Validation</div>
+      <div class="tab active" onclick="showTab('t1',this)">📄 Document Analysis</div>
+      <div class="tab" onclick="showTab('t2',this)">❓ Multi-Question QA</div>
+      <div class="tab" onclick="showTab('t3',this)">🔍 Parallel Search</div>
+      <div class="tab" onclick="showTab('t4',this)">📊 Data Validation</div>
     </div>
 
     <div class="tab-content active" id="t1">
@@ -245,11 +246,11 @@ async def analyse_paper(paper: str) -> dict:
     return parse_structured(result)
 
 async def map_reduce_papers(papers: list[str]) -> str:
-    # MAP â€” all papers in parallel
+    # MAP — all papers in parallel
     mapper_tasks = [analyse_paper(p) for p in papers]
     map_results = await asyncio.gather(*mapper_tasks)
 
-    # REDUCE â€” synthesise
+    # REDUCE — synthesise
     combined = json.dumps(map_results, indent=2)
     synthesis = await llm.complete(
         f"Synthesise these paper analyses into a literature review:\n{combined}"
@@ -261,7 +262,7 @@ async def map_reduce_papers(papers: list[str]) -> str:
       <h3>Answering 20 Questions from a Knowledge Base</h3>
       <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">
         Map: Each mapper gets one question, retrieves relevant context from the vector DB, and generates an answer.
-        Reduce: Answers are merged into a FAQ document. Total time â‰ˆ single question latency.
+        Reduce: Answers are merged into a FAQ document. Total time ≈ single question latency.
       </p>
       <div class="code-block">async def answer_question(q: str, kb: VectorDB) -> dict:
     """Mapper: answer one question using RAG."""
@@ -272,10 +273,10 @@ async def map_reduce_papers(papers: list[str]) -> str:
     return {"question": q, "answer": answer, "sources": context}
 
 async def build_faq(questions: list[str], kb: VectorDB) -> str:
-    # MAP â€” answer all questions concurrently
+    # MAP — answer all questions concurrently
     answers = await asyncio.gather(*[answer_question(q, kb) for q in questions])
 
-    # REDUCE â€” format as FAQ
+    # REDUCE — format as FAQ
     faq_prompt = "Format these Q&A pairs into a structured FAQ:\n" + json.dumps(answers)
     return await llm.complete(faq_prompt)</div>
     </div>
@@ -283,7 +284,7 @@ async def build_faq(questions: list[str], kb: VectorDB) -> str:
     <div class="tab-content" id="t3">
       <h3>Searching Multiple Data Sources in Parallel</h3>
       <p style="color:var(--muted);font-size:.88rem;margin-bottom:.8rem;">
-        Map: Specialized agents search different sources â€” web, internal docs, code repos, databases â€” simultaneously.
+        Map: Specialized agents search different sources — web, internal docs, code repos, databases — simultaneously.
         Reduce: Deduplication and ranking agent merges findings by relevance.
       </p>
       <div class="code-block">async def search_web(query: str) -> list: ...
@@ -292,7 +293,7 @@ async def search_codebase(query: str) -> list: ...
 async def search_slack(query: str) -> list: ...
 
 async def parallel_search(query: str) -> str:
-    # MAP â€” search all sources simultaneously
+    # MAP — search all sources simultaneously
     results = await asyncio.gather(
         search_web(query),
         search_docs(query),
@@ -303,7 +304,7 @@ async def parallel_search(query: str) -> str:
     # Filter failed searches
     valid = [r for r in results if not isinstance(r, Exception)]
 
-    # REDUCE â€” deduplicate and rank
+    # REDUCE — deduplicate and rank
     deduped = deduplicate(valid)
     return await llm.complete(f"Rank by relevance for '{query}':\n{deduped}")</div>
     </div>
@@ -328,10 +329,10 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
     # Split into batches
     batches = [records[i:i+batch_size] for i in range(0, len(records), batch_size)]
 
-    # MAP â€” validate batches in parallel
+    # MAP — validate batches in parallel
     batch_errors = await asyncio.gather(*[validate_batch(b) for b in batches])
 
-    # REDUCE â€” aggregate errors
+    # REDUCE — aggregate errors
     all_errors = [e for batch in batch_errors for e in batch]
     return f"Found {len(all_errors)} validation errors across {len(records)} records.\n{all_errors}"</div>
     </div>
@@ -343,11 +344,11 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
     <div class="sim-wrap">
       <div class="sim-top">
         <select class="sim-select" id="simTask">
-          <option value="0">ðŸ“„ Analyse 6 research papers</option>
-          <option value="1">â“ Answer 5 customer questions</option>
-          <option value="2">ðŸ” Search 4 data sources</option>
+          <option value="0">📄 Analyse 6 research papers</option>
+          <option value="1">❓ Answer 5 customer questions</option>
+          <option value="2">🔍 Search 4 data sources</option>
         </select>
-        <button class="btn" onclick="runSimulator()">â–¶ Run Simulation</button>
+        <button class="btn" onclick="runSimulator()">▶ Run Simulation</button>
       </div>
       <div id="simContent"></div>
     </div>
@@ -365,8 +366,8 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
         <tr><td>Rank &amp; Select Top-K</td><td>Score each result, keep top K by relevance or confidence</td><td>Search, recommendation</td></tr>
         <tr><td>Merge &amp; Deduplicate</td><td>Concatenate, then remove duplicates by embedding similarity</td><td>FAQ generation, entity extraction</td></tr>
         <tr><td>Vote / Majority</td><td>Take the most common answer across mappers</td><td>Classification, fact verification</td></tr>
-        <tr><td>Hierarchical Reduce</td><td>Reduce in stages â€” pairwise merge until one result remains</td><td>Very large workloads (100+ mappers)</td></tr>
-        <tr><td>Structured Merge</td><td>Merge JSON fields by key â€” take max confidence per field</td><td>Structured extraction tasks</td></tr>
+        <tr><td>Hierarchical Reduce</td><td>Reduce in stages — pairwise merge until one result remains</td><td>Very large workloads (100+ mappers)</td></tr>
+        <tr><td>Structured Merge</td><td>Merge JSON fields by key — take max confidence per field</td><td>Structured extraction tasks</td></tr>
       </tbody>
     </table>
   </section>
@@ -376,18 +377,18 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
     <h2>Strengths &amp; Limitations</h2>
     <div class="pros-cons">
       <div class="side">
-        <h3>âœ… Strengths</h3>
+        <h3>✅ Strengths</h3>
         <ul>
-          <li>Massive parallelism â€” linear speedup</li>
-          <li>Predictable structure â€” easy to reason about</li>
+          <li>Massive parallelism — linear speedup</li>
+          <li>Predictable structure — easy to reason about</li>
           <li>Individual mapper failures don't kill the job</li>
           <li>Easy to add more mappers as load grows</li>
           <li>Natural fit for batch workloads</li>
-          <li>Deterministic â€” same input â†’ same structure</li>
+          <li>Deterministic — same input → same structure</li>
         </ul>
       </div>
       <div class="side cons">
-        <h3>âš ï¸ Limitations</h3>
+        <h3>⚠️ Limitations</h3>
         <ul>
           <li>Tasks must be decomposable into independent chunks</li>
           <li>Reducer can become a bottleneck with many mappers</li>
@@ -403,7 +404,7 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
   <!-- QUIZ -->
   <div class="quiz-section">
     <div class="score-bar">
-      <h2 style="border:none;margin:0;padding:0;">ðŸ§  Knowledge Check</h2>
+      <h2 style="border:none;margin:0;padding:0;">🧠 Knowledge Check</h2>
       <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
     </div>
 
@@ -416,7 +417,7 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
         <button class="opt" onclick="answer('q1','d','c')">d) Route tasks to the correct specialist agent</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q2">
@@ -428,7 +429,7 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
         <button class="opt" onclick="answer('q2','d','b')">d) 1s (100x speedup)</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q3">
@@ -440,7 +441,7 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
         <button class="opt" onclick="answer('q3','d','d')">d) A multi-step workflow where each step depends on the previous</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q4">
@@ -452,7 +453,7 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
         <button class="opt" onclick="answer('q4','d','b')">d) Retries failed tasks automatically up to 3 times</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q5">
@@ -460,26 +461,26 @@ async def validate_all(records: list[dict], batch_size=100) -> str:
       <div class="opts">
         <button class="opt" onclick="answer('q5','a','c')">a) Run by the same LLM model</button>
         <button class="opt" onclick="answer('q5','b','c')">b) Completed within a fixed time budget</button>
-        <button class="opt" onclick="answer('q5','c','c')">c) Independent of each other â€” no inter-mapper dependencies</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) Independent of each other — no inter-mapper dependencies</button>
         <button class="opt" onclick="answer('q5','d','c')">d) Stored in the same vector database</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
 </main>
 
 <script>
-/* â”€â”€ QUIZ â”€â”€ */
+/* ── QUIZ ── */
 let score = 0;
 const answered = {};
 const msgs = {
-  q1: 'The MAP phase runs sub-tasks in parallel independently â€” the REDUCE phase aggregates.',
-  q2: 'With 10 parallel mappers the total time â‰ˆ slowest single mapper, roughly 10s.',
-  q3: 'Sequential dependent steps cannot be parallelised â€” Map-Reduce requires independent sub-tasks.',
+  q1: 'The MAP phase runs sub-tasks in parallel independently — the REDUCE phase aggregates.',
+  q2: 'With 10 parallel mappers the total time ≈ slowest single mapper, roughly 10s.',
+  q3: 'Sequential dependent steps cannot be parallelised — Map-Reduce requires independent sub-tasks.',
   q4: 'return_exceptions=True means failed coroutines return Exception objects so the gather continues.',
-  q5: 'Mapper independence is the fundamental requirement â€” dependent tasks cannot run in parallel.'
+  q5: 'Mapper independence is the fundamental requirement — dependent tasks cannot run in parallel.'
 };
 function answer(qid, chosen, correct) {
   if (answered[qid]) return;
@@ -494,11 +495,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {
@@ -511,10 +512,10 @@ function resetQ(qid) {
   fb.className = 'feedback'; fb.textContent = '';
 }
 
-/* â”€â”€ FLOW NODE DETAILS â”€â”€ */
+/* ── FLOW NODE DETAILS ── */
 const nodeData = {
   dispatcher: {
-    title: 'ðŸ“‹ Dispatcher',
+    title: '📋 Dispatcher',
     desc: 'Receives the top-level task and splits it into N independent sub-tasks. Determines how many mappers to spawn and what input each receives. May use LLM to decide decomposition strategy.',
     code: `dispatcher_prompt = """
 You have these 10 documents. Create a task list where each task
@@ -522,19 +523,19 @@ analyses one document. Return as JSON array of task objects.
 """`
   },
   mapper1: {
-    title: 'ðŸ¤– Mapper Agent',
-    desc: 'Each mapper processes its assigned chunk independently using the same prompt template. Mappers never communicate with each other â€” they only read their input and write their output.',
+    title: '🤖 Mapper Agent',
+    desc: 'Each mapper processes its assigned chunk independently using the same prompt template. Mappers never communicate with each other — they only read their input and write their output.',
     code: `# All mappers run concurrently
 async def run_mapper(task_input: str) -> dict:
     return await llm.complete(mapper_prompt + task_input)`
   },
-  mapper2: { title: 'ðŸ¤– Mapper Agent', desc: 'Same as Mapper 1 â€” independent execution on a different input chunk.', code: '# Identical mapper logic, different input shard' },
-  mapper3: { title: 'ðŸ¤– Mapper Agent', desc: 'Same as Mapper 1 â€” independent execution on a different input chunk.', code: '# asyncio.gather ensures all mappers run concurrently' },
-  mapperN: { title: 'ðŸ¤– Mapper N', desc: 'The Nth mapper processes the Nth chunk. Total mappers = number of input chunks.', code: `# Scale to any N
+  mapper2: { title: '🤖 Mapper Agent', desc: 'Same as Mapper 1 — independent execution on a different input chunk.', code: '# Identical mapper logic, different input shard' },
+  mapper3: { title: '🤖 Mapper Agent', desc: 'Same as Mapper 1 — independent execution on a different input chunk.', code: '# asyncio.gather ensures all mappers run concurrently' },
+  mapperN: { title: '🤖 Mapper N', desc: 'The Nth mapper processes the Nth chunk. Total mappers = number of input chunks.', code: `# Scale to any N
 tasks = [run_mapper(chunk) for chunk in chunks]
 results = await asyncio.gather(*tasks)` },
   reducer: {
-    title: 'ðŸ”€ Reducer Agent',
+    title: '🔀 Reducer Agent',
     desc: 'Receives ALL mapper outputs and synthesizes them into one coherent final result. May use LLM synthesis, ranking, voting, or deterministic merge logic depending on the task.',
     code: `async def reduce(mapper_outputs: list) -> str:
     combined = json.dumps(mapper_outputs)
@@ -543,7 +544,7 @@ results = await asyncio.gather(*tasks)` },
     )`
   },
   output: {
-    title: 'âœ… Final Output',
+    title: '✅ Final Output',
     desc: 'The reduced result returned to the user or downstream system. High quality because it was built from parallel deep analysis of all input chunks.',
     code: `# Return to user
 print(f"Processed {len(chunks)} chunks in parallel")
@@ -560,7 +561,7 @@ function showNode(key) {
   panel.classList.add('show');
 }
 
-/* â”€â”€ TABS â”€â”€ */
+/* ── TABS ── */
 function showTab(id, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -568,7 +569,7 @@ function showTab(id, el) {
   document.getElementById(id).classList.add('active');
 }
 
-/* â”€â”€ SIMULATOR â”€â”€ */
+/* ── SIMULATOR ── */
 const simScenarios = [
   {
     title: 'Analysing 6 Research Papers',
@@ -576,7 +577,7 @@ const simScenarios = [
     mapDurations: [2800, 3200, 2500, 3500, 2900, 3100],
     reduceDelay: 400,
     reduceDuration: 1800,
-    result: 'âœ… Literature Review Generated\n6 papers analysed in parallel (~3.5s vs ~18s sequential)\nTheme 1: Safety constraints limit agent autonomy\nTheme 2: RAG outperforms fine-tuning for dynamic knowledge\nTheme 3: Tool use reduces hallucination by 40%'
+    result: '✅ Literature Review Generated\n6 papers analysed in parallel (~3.5s vs ~18s sequential)\nTheme 1: Safety constraints limit agent autonomy\nTheme 2: RAG outperforms fine-tuning for dynamic knowledge\nTheme 3: Tool use reduces hallucination by 40%'
   },
   {
     title: 'Answering 5 Customer Questions',
@@ -584,7 +585,7 @@ const simScenarios = [
     mapDurations: [1800, 2100, 1600, 2400, 1900],
     reduceDelay: 300,
     reduceDuration: 1200,
-    result: 'âœ… FAQ Document Generated\n5 questions answered in parallel (~2.4s vs ~10s sequential)\nAll answers include source citations from knowledge base\nConfidence: Q1:0.96, Q2:0.94, Q3:0.91, Q4:0.88, Q5:0.93'
+    result: '✅ FAQ Document Generated\n5 questions answered in parallel (~2.4s vs ~10s sequential)\nAll answers include source citations from knowledge base\nConfidence: Q1:0.96, Q2:0.94, Q3:0.91, Q4:0.88, Q5:0.93'
   },
   {
     title: 'Searching 4 Data Sources',
@@ -592,7 +593,7 @@ const simScenarios = [
     mapDurations: [2200, 1500, 3000, 1800],
     reduceDelay: 300,
     reduceDuration: 1400,
-    result: 'âœ… Unified Search Results\n4 sources searched in parallel (~3.0s vs ~8.5s sequential)\n12 unique results after deduplication\nTop result: Internal Docs (relevance: 0.94)\nSlack: 2 relevant threads from #engineering channel'
+    result: '✅ Unified Search Results\n4 sources searched in parallel (~3.0s vs ~8.5s sequential)\n12 unique results after deduplication\nTop result: Internal Docs (relevance: 0.94)\nSlack: 2 relevant threads from #engineering channel'
   }
 ];
 
@@ -604,9 +605,9 @@ function runSimulator() {
   const container = document.getElementById('simContent');
 
   container.innerHTML = `
-    <div class="phase-label map">âš¡ MAP PHASE â€” running ${sc.mappers.length} mappers in parallel</div>
+    <div class="phase-label map">⚡ MAP PHASE — running ${sc.mappers.length} mappers in parallel</div>
     <div class="worker-row" id="workerRow"></div>
-    <div class="phase-label reduce" id="reduceLabel" style="display:none;">ðŸ”€ REDUCE PHASE â€” aggregating results</div>
+    <div class="phase-label reduce" id="reduceLabel" style="display:none;">🔀 REDUCE PHASE — aggregating results</div>
     <div id="reduceBar" style="display:none;">
       <div class="worker-card running" style="max-width:300px;">
         <div class="worker-name">Reducer Agent</div>
@@ -653,7 +654,7 @@ function runSimulator() {
 
     setTimeout(() => {
       card.className = 'worker-card done';
-      status.textContent = 'âœ“ Done';
+      status.textContent = '✓ Done';
       doneFlags[i] = true;
       checkAllDone();
     }, dur);
@@ -679,7 +680,7 @@ function runSimulator() {
       }, 80);
 
       setTimeout(() => {
-        reduceStatus.textContent = 'âœ“ Reduction complete';
+        reduceStatus.textContent = '✓ Reduction complete';
         document.querySelector('#reduceBar .worker-card').className = 'worker-card done';
         const rb = document.getElementById('resultBox');
         rb.textContent = sc.result;

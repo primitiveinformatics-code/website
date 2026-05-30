@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5.1 â€” Why Agent Observability Is Different</title>
+<title>5.1 — Why Agent Observability Is Different</title>
 <style>
   :root {
     --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
@@ -49,7 +50,7 @@
   .compare-row .label { color: var(--muted); min-width: 90px; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
   .compare-row .val { color: var(--text); }
 
-  /* OBSERVABLE DIMENSIONS â€” TABS */
+  /* OBSERVABLE DIMENSIONS — TABS */
   .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
   .tab { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
   .tab.active { background: rgba(6,214,160,0.15); border-color: var(--accent); color: var(--accent); }
@@ -119,15 +120,15 @@
 <body>
 
 <nav>
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">5.1 â€” Why Agent Observability Is Different</span>
+  <span class="nav-cur">5.1 — Why Agent Observability Is Different</span>
 </nav>
 
 <div class="hero">
-  <div class="badge">Session 5 Â· Day 2 Afternoon</div>
+  <div class="badge">Session 5 · Day 2 Afternoon</div>
   <h1>Why Agent Observability Is Different</h1>
-  <p>Traditional monitoring watches fixed flows. Agents make decisions, branch unpredictably, spawn sub-agents, and fail in ways that don't show up in logs â€” until it's too late.</p>
+  <p>Traditional monitoring watches fixed flows. Agents make decisions, branch unpredictably, spawn sub-agents, and fail in ways that don't show up in logs — until it's too late.</p>
 </div>
 
 <div class="main">
@@ -136,26 +137,26 @@
   <div class="section-title">Traditional vs Agent Observability</div>
   <div class="compare-grid" style="margin-bottom:48px">
     <div class="compare-card old">
-      <h3>ðŸ”§ Traditional Systems</h3>
-      <div class="compare-row"><span class="icon">ðŸ“</span><div><span class="label">Flow</span><span class="val"> Deterministic â€” same input â†’ same path</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸ“Š</span><div><span class="label">Errors</span><span class="val"> Crash logs, HTTP status codes, exceptions</span></div></div>
-      <div class="compare-row"><span class="icon">â±ï¸</span><div><span class="label">Latency</span><span class="val"> Single request latency in ms</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸ”</span><div><span class="label">Debug</span><span class="val"> Stack traces â†’ pinpoint line number</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸŽ¯</span><div><span class="label">Success</span><span class="val"> Binary: 200 OK vs error</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸ”—</span><div><span class="label">Scope</span><span class="val"> Single service or microservice boundary</span></div></div>
+      <h3>🔧 Traditional Systems</h3>
+      <div class="compare-row"><span class="icon">📐</span><div><span class="label">Flow</span><span class="val"> Deterministic — same input → same path</span></div></div>
+      <div class="compare-row"><span class="icon">📊</span><div><span class="label">Errors</span><span class="val"> Crash logs, HTTP status codes, exceptions</span></div></div>
+      <div class="compare-row"><span class="icon">⏱️</span><div><span class="label">Latency</span><span class="val"> Single request latency in ms</span></div></div>
+      <div class="compare-row"><span class="icon">🔍</span><div><span class="label">Debug</span><span class="val"> Stack traces → pinpoint line number</span></div></div>
+      <div class="compare-row"><span class="icon">🎯</span><div><span class="label">Success</span><span class="val"> Binary: 200 OK vs error</span></div></div>
+      <div class="compare-row"><span class="icon">🔗</span><div><span class="label">Scope</span><span class="val"> Single service or microservice boundary</span></div></div>
     </div>
     <div class="compare-card new">
-      <h3>ðŸ¤– Agentic Systems</h3>
-      <div class="compare-row"><span class="icon">ðŸŒ€</span><div><span class="label">Flow</span><span class="val"> Non-deterministic â€” LLM decisions branch unpredictably</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸ§ </span><div><span class="label">Errors</span><span class="val"> Hallucinations, wrong tool choices, silent drift</span></div></div>
-      <div class="compare-row"><span class="icon">â›“ï¸</span><div><span class="label">Latency</span><span class="val"> Multi-hop chains; 1 slow tool tanks the whole run</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸ•µï¸</span><div><span class="label">Debug</span><span class="val"> Reason trace: WHY did the agent take that path?</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸŽ­</span><div><span class="label">Success</span><span class="val"> Fuzzy: did the agent achieve the goal semantically?</span></div></div>
-      <div class="compare-row"><span class="icon">ðŸŒ</span><div><span class="label">Scope</span><span class="val"> Multi-agent graphs; cross-system side effects</span></div></div>
+      <h3>🤖 Agentic Systems</h3>
+      <div class="compare-row"><span class="icon">🌀</span><div><span class="label">Flow</span><span class="val"> Non-deterministic — LLM decisions branch unpredictably</span></div></div>
+      <div class="compare-row"><span class="icon">🧠</span><div><span class="label">Errors</span><span class="val"> Hallucinations, wrong tool choices, silent drift</span></div></div>
+      <div class="compare-row"><span class="icon">⛓️</span><div><span class="label">Latency</span><span class="val"> Multi-hop chains; 1 slow tool tanks the whole run</span></div></div>
+      <div class="compare-row"><span class="icon">🕵️</span><div><span class="label">Debug</span><span class="val"> Reason trace: WHY did the agent take that path?</span></div></div>
+      <div class="compare-row"><span class="icon">🎭</span><div><span class="label">Success</span><span class="val"> Fuzzy: did the agent achieve the goal semantically?</span></div></div>
+      <div class="compare-row"><span class="icon">🌐</span><div><span class="label">Scope</span><span class="val"> Multi-agent graphs; cross-system side effects</span></div></div>
     </div>
   </div>
 
-  <!-- 5 UNIQUE CHALLENGES â€” TABS -->
+  <!-- 5 UNIQUE CHALLENGES — TABS -->
   <div class="section-title">The 5 Unique Observability Challenges</div>
   <div class="tabs" id="dimTabs">
     <button class="tab active" onclick="switchDim(0)">Non-Determinism</button>
@@ -179,48 +180,48 @@
   <!-- CHALLENGE QUIZ -->
   <div class="section-title">Scenario Challenge</div>
   <div class="challenge">
-    <h3>ðŸŽ¯ Diagnose the Failure</h3>
-    <p>Your agent runs nightly. Yesterday it "completed successfully" â€” but the output was wrong. Which observability gap explains this?</p>
+    <h3>🎯 Diagnose the Failure</h3>
+    <p>Your agent runs nightly. Yesterday it "completed successfully" — but the output was wrong. Which observability gap explains this?</p>
     <div class="scenario-box">
-      <strong>Evidence:</strong> HTTP 200 from all tool calls. No exception thrown. Agent returned a response. Customer says the email it drafted contained hallucinated data â€” wrong date, wrong customer name. Zero alerts fired.
+      <strong>Evidence:</strong> HTTP 200 from all tool calls. No exception thrown. Agent returned a response. Customer says the email it drafted contained hallucinated data — wrong date, wrong customer name. Zero alerts fired.
     </div>
     <div class="options-grid">
-      <button class="opt-btn" onclick="checkAnswer(this, false)">A) Latency spike â€” the LLM was slow and returned a degraded response</button>
-      <button class="opt-btn" onclick="checkAnswer(this, false)">B) Tool crash â€” one of the API calls failed silently</button>
-      <button class="opt-btn" onclick="checkAnswer(this, true)">C) Semantic failure â€” technical success but goal not achieved; no semantic metric caught it</button>
-      <button class="opt-btn" onclick="checkAnswer(this, false)">D) Token overflow â€” context window exceeded and response was truncated</button>
+      <button class="opt-btn" onclick="checkAnswer(this, false)">A) Latency spike — the LLM was slow and returned a degraded response</button>
+      <button class="opt-btn" onclick="checkAnswer(this, false)">B) Tool crash — one of the API calls failed silently</button>
+      <button class="opt-btn" onclick="checkAnswer(this, true)">C) Semantic failure — technical success but goal not achieved; no semantic metric caught it</button>
+      <button class="opt-btn" onclick="checkAnswer(this, false)">D) Token overflow — context window exceeded and response was truncated</button>
     </div>
     <div class="feedback-box" id="quizFeedback"></div>
   </div>
 
   <!-- TRACE DEMO -->
-  <div class="section-title">Live Trace Simulator â€” What Good Agent Logs Look Like</div>
+  <div class="section-title">Live Trace Simulator — What Good Agent Logs Look Like</div>
   <div class="trace-demo">
     <h3>Agent Execution Trace</h3>
     <p>Select a scenario to see how observability signals differ between healthy runs, silent failures, and semantic drift.</p>
     <div class="trace-controls">
-      <button class="trace-btn active-t" onclick="setTrace('healthy',this)">âœ… Healthy Run</button>
-      <button class="trace-btn" onclick="setTrace('silent',this)">âš ï¸ Silent Failure</button>
-      <button class="trace-btn" onclick="setTrace('drift',this)">ðŸŒ€ Semantic Drift</button>
+      <button class="trace-btn active-t" onclick="setTrace('healthy',this)">✅ Healthy Run</button>
+      <button class="trace-btn" onclick="setTrace('silent',this)">⚠️ Silent Failure</button>
+      <button class="trace-btn" onclick="setTrace('drift',this)">🌀 Semantic Drift</button>
     </div>
     <div class="trace-log" id="traceLog"></div>
-    <button class="run-btn" onclick="replayTrace()">â–¶ Replay Trace</button>
+    <button class="run-btn" onclick="replayTrace()">▶ Replay Trace</button>
   </div>
 
   <!-- KEY INSIGHTS -->
   <div class="section-title">Key Insights</div>
-  <div class="insight-bar"><strong>Insight 1:</strong> "No exceptions" does not mean "correct behaviour." Agents can succeed technically while failing semantically â€” you need semantic evaluation metrics alongside system metrics.</div>
+  <div class="insight-bar"><strong>Insight 1:</strong> "No exceptions" does not mean "correct behaviour." Agents can succeed technically while failing semantically — you need semantic evaluation metrics alongside system metrics.</div>
   <div class="insight-bar"><strong>Insight 2:</strong> Standard distributed tracing (Zipkin, Jaeger) captures spans, but not <em>why</em> the agent made a decision. You need reasoning traces with LLM prompt/response capture.</div>
-  <div class="insight-bar"><strong>Insight 3:</strong> Goal drift accumulates silently across long runs. Observability must include <em>goal tracking</em> â€” not just "what happened" but "are we still on track to the original objective?"</div>
-  <div class="insight-bar"><strong>Insight 4:</strong> Side effects are often irreversible (sent email, booked slot, deleted record). You need pre-action audit logging â€” not just post-action monitoring.</div>
+  <div class="insight-bar"><strong>Insight 3:</strong> Goal drift accumulates silently across long runs. Observability must include <em>goal tracking</em> — not just "what happened" but "are we still on track to the original objective?"</div>
+  <div class="insight-bar"><strong>Insight 4:</strong> Side effects are often irreversible (sent email, booked slot, deleted record). You need pre-action audit logging — not just post-action monitoring.</div>
 
 </div>
 
 <script>
 const dims = [
   {
-    icon: 'ðŸŒ€', title: 'Non-Determinism', sub: 'Same input, different execution path every time',
-    body: 'LLMs are probabilistic. Even with the same task, an agent may choose different tools, different orderings, or different reasoning steps on consecutive runs. Traditional monitoring assumes replay-ability â€” if it worked yesterday it will work today. Agents break this assumption fundamentally.',
+    icon: '🌀', title: 'Non-Determinism', sub: 'Same input, different execution path every time',
+    body: 'LLMs are probabilistic. Even with the same task, an agent may choose different tools, different orderings, or different reasoning steps on consecutive runs. Traditional monitoring assumes replay-ability — if it worked yesterday it will work today. Agents break this assumption fundamentally.',
     signals: [
       { name: 'Run Fingerprint', desc: 'Hash of tool-call sequence per run to detect drift across identical inputs' },
       { name: 'Decision Entropy', desc: 'Measure variance in tool selection across repeated runs of the same task' },
@@ -229,8 +230,8 @@ const dims = [
     ]
   },
   {
-    icon: 'ðŸŽ­', title: 'Semantic Failure', sub: 'Technically correct, semantically wrong',
-    body: 'An agent can return HTTP 200, make all tool calls, and produce a response â€” yet the output is completely wrong. A hallucinated name, outdated fact, or misunderstood task. Standard error monitoring captures none of this. You need semantic evaluation: did the output actually answer the question correctly?',
+    icon: '🎭', title: 'Semantic Failure', sub: 'Technically correct, semantically wrong',
+    body: 'An agent can return HTTP 200, make all tool calls, and produce a response — yet the output is completely wrong. A hallucinated name, outdated fact, or misunderstood task. Standard error monitoring captures none of this. You need semantic evaluation: did the output actually answer the question correctly?',
     signals: [
       { name: 'LLM-as-Judge', desc: 'Use a secondary LLM to score output quality against the original goal' },
       { name: 'Faithfulness Score', desc: 'Measure how closely the answer is grounded in retrieved context' },
@@ -239,8 +240,8 @@ const dims = [
     ]
   },
   {
-    icon: 'â›“ï¸', title: 'Multi-Hop Chains', sub: 'Errors compound across tool call sequences',
-    body: 'A 10-step agent chain where step 3 returns slightly wrong data will silently corrupt every downstream step. By step 10, the answer is completely wrong â€” but each individual step "succeeded." You need span-level tracing across the entire chain, with data lineage tracking.',
+    icon: '⛓️', title: 'Multi-Hop Chains', sub: 'Errors compound across tool call sequences',
+    body: 'A 10-step agent chain where step 3 returns slightly wrong data will silently corrupt every downstream step. By step 10, the answer is completely wrong — but each individual step "succeeded." You need span-level tracing across the entire chain, with data lineage tracking.',
     signals: [
       { name: 'Span Tree', desc: 'Full parent-child trace of every LLM call, tool call, and sub-agent invocation' },
       { name: 'Data Lineage', desc: 'Track which pieces of retrieved data were used in which downstream steps' },
@@ -249,8 +250,8 @@ const dims = [
     ]
   },
   {
-    icon: 'ðŸŽ¯', title: 'Goal Drift', sub: 'The agent subtly wanders away from the original objective',
-    body: 'Over a long multi-turn or multi-step run, agents can drift from the original goal â€” especially with ambiguous instructions. Each micro-decision seems reasonable, but the cumulative effect is an agent pursuing a subtly different objective. You need to track the original goal and compare it to the current plan at each step.',
+    icon: '🎯', title: 'Goal Drift', sub: 'The agent subtly wanders away from the original objective',
+    body: 'Over a long multi-turn or multi-step run, agents can drift from the original goal — especially with ambiguous instructions. Each micro-decision seems reasonable, but the cumulative effect is an agent pursuing a subtly different objective. You need to track the original goal and compare it to the current plan at each step.',
     signals: [
       { name: 'Goal Embedding', desc: 'Embed the original task and compare with agent\'s current sub-goal at each step' },
       { name: 'Plan Delta', desc: 'Alert when the agent rewrites its plan in a direction inconsistent with the goal' },
@@ -259,11 +260,11 @@ const dims = [
     ]
   },
   {
-    icon: 'ðŸ’¥', title: 'Side Effects', sub: 'Agents act on the world â€” often irreversibly',
-    body: 'Agents with write-access tools (email, calendar, database, APIs) create real-world side effects. Unlike a read-only service where you can re-query, a sent email or deleted record cannot be un-done. Observability must include pre-action audit trails and post-action reconciliation â€” not just logs of what happened.',
+    icon: '💥', title: 'Side Effects', sub: 'Agents act on the world — often irreversibly',
+    body: 'Agents with write-access tools (email, calendar, database, APIs) create real-world side effects. Unlike a read-only service where you can re-query, a sent email or deleted record cannot be un-done. Observability must include pre-action audit trails and post-action reconciliation — not just logs of what happened.',
     signals: [
       { name: 'Pre-Action Audit', desc: 'Log intent + full parameters BEFORE executing any write/send/delete action' },
-      { name: 'Write Census', desc: 'Count and categorise all write operations per run â€” detect unexpected side effects' },
+      { name: 'Write Census', desc: 'Count and categorise all write operations per run — detect unexpected side effects' },
       { name: 'Reconciliation Log', desc: 'Verify post-action state matches expected state after each write' },
       { name: 'Rollback Readiness', desc: 'Track which actions are reversible and which require human intervention' },
     ]
@@ -308,11 +309,11 @@ function renderGaps() {
   container.innerHTML = gaps.map(g => `
     <div style="margin-bottom:6px;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px">${g.label}</div>
     <div class="gap-row" style="margin-bottom:4px">
-      <div class="gap-label" style="font-size:11px">ðŸ”§ Traditional</div>
+      <div class="gap-label" style="font-size:11px">🔧 Traditional</div>
       <div class="gap-bar-bg"><div class="gap-bar" style="width:${g.trad}%;background:linear-gradient(90deg,#6c63ff,#00d2ff)">${g.trad}%</div></div>
     </div>
     <div class="gap-row" style="margin-bottom:16px">
-      <div class="gap-label" style="font-size:11px">ðŸ¤– Agent-Aware</div>
+      <div class="gap-label" style="font-size:11px">🤖 Agent-Aware</div>
       <div class="gap-bar-bg"><div class="gap-bar" style="width:${g.agent}%;background:linear-gradient(90deg,#06d6a0,#00d2ff)">${g.agent}%</div></div>
       <span class="gap-badge ${g.diff==='Hard'?'hard':g.diff==='Medium'?'medium':'easy'}">${g.diff}</span>
     </div>
@@ -326,8 +327,8 @@ function checkAnswer(btn, correct) {
   if (!correct) document.querySelectorAll('.opt-btn')[2].classList.add('correct');
   const fb = document.getElementById('quizFeedback');
   fb.innerHTML = correct
-    ? 'âœ… <strong>Correct!</strong> This is a classic <em>semantic failure</em>. The system was technically healthy â€” all HTTP calls succeeded, no exceptions. But no semantic evaluation was in place to verify the output content. This is why agent observability needs LLM-as-judge scoring and hallucination detection, not just infrastructure metrics.'
-    : 'âŒ <strong>Not quite.</strong> The correct answer is <strong>C â€” Semantic Failure</strong>. No tool crashed, there was no token issue or latency spike. The agent produced a technically valid response that was semantically wrong. Standard monitoring is blind to this class of failure.';
+    ? '✅ <strong>Correct!</strong> This is a classic <em>semantic failure</em>. The system was technically healthy — all HTTP calls succeeded, no exceptions. But no semantic evaluation was in place to verify the output content. This is why agent observability needs LLM-as-judge scoring and hallucination detection, not just infrastructure metrics.'
+    : '❌ <strong>Not quite.</strong> The correct answer is <strong>C — Semantic Failure</strong>. No tool crashed, there was no token issue or latency spike. The agent produced a technically valid response that was semantically wrong. Standard monitoring is blind to this class of failure.';
   fb.className = 'feedback-box show';
 }
 
@@ -335,32 +336,32 @@ function checkAnswer(btn, correct) {
 const traces = {
   healthy: [
     { cls: 'span', t: '00:00.000', msg: '[TRACE] run_id=a3f9 task="draft_customer_email" started' },
-    { cls: 'span', t: '00:00.032', msg: '[SPAN] lookup_customer tool called â€” customer_id=C-882' },
+    { cls: 'span', t: '00:00.032', msg: '[SPAN] lookup_customer tool called — customer_id=C-882' },
     { cls: 'ok',   t: '00:00.210', msg: '[RESULT] customer: {name:"Priya Nair", plan:"Pro", renewal:"2026-09-01"}' },
-    { cls: 'span', t: '00:00.215', msg: '[SPAN] get_usage_stats tool called â€” customer_id=C-882' },
+    { cls: 'span', t: '00:00.215', msg: '[SPAN] get_usage_stats tool called — customer_id=C-882' },
     { cls: 'ok',   t: '00:00.401', msg: '[RESULT] usage: {api_calls:12400, overage:false}' },
-    { cls: 'span', t: '00:00.403', msg: '[LLM] drafting email â€” context_tokens=820 / 4000' },
-    { cls: 'ok',   t: '00:01.120', msg: '[LLM] response generated â€” output_tokens=310' },
+    { cls: 'span', t: '00:00.403', msg: '[LLM] drafting email — context_tokens=820 / 4000' },
+    { cls: 'ok',   t: '00:01.120', msg: '[LLM] response generated — output_tokens=310' },
     { cls: 'ok',   t: '00:01.122', msg: '[SEMANTIC] LLM-judge score=0.94 (faithful, on-task)' },
-    { cls: 'ok',   t: '00:01.125', msg: '[TRACE] run complete â€” status=SUCCESS duration=1.125s' },
+    { cls: 'ok',   t: '00:01.125', msg: '[TRACE] run complete — status=SUCCESS duration=1.125s' },
   ],
   silent: [
     { cls: 'span', t: '00:00.000', msg: '[TRACE] run_id=b7e2 task="draft_customer_email" started' },
-    { cls: 'span', t: '00:00.031', msg: '[SPAN] lookup_customer tool called â€” customer_id=C-882' },
-    { cls: 'warn', t: '00:00.209', msg: '[WARN] DB timeout â€” fallback to cache. Cache age=72h âš ï¸' },
+    { cls: 'span', t: '00:00.031', msg: '[SPAN] lookup_customer tool called — customer_id=C-882' },
+    { cls: 'warn', t: '00:00.209', msg: '[WARN] DB timeout — fallback to cache. Cache age=72h ⚠️' },
     { cls: 'info', t: '00:00.211', msg: '[RESULT] customer: {name:"Priya Nair", plan:"Starter", renewal:"2025-03-01"} [STALE]' },
-    { cls: 'span', t: '00:00.213', msg: '[LLM] drafting email â€” using stale customer data (undetected)' },
-    { cls: 'ok',   t: '00:01.018', msg: '[LLM] HTTP 200 â€” no exception thrown' },
-    { cls: 'info', t: '00:01.020', msg: '[TRACE] run complete â€” status=SUCCESS â† WRONG! Stale data used, hallucinated plan/date' },
+    { cls: 'span', t: '00:00.213', msg: '[LLM] drafting email — using stale customer data (undetected)' },
+    { cls: 'ok',   t: '00:01.018', msg: '[LLM] HTTP 200 — no exception thrown' },
+    { cls: 'info', t: '00:01.020', msg: '[TRACE] run complete — status=SUCCESS ← WRONG! Stale data used, hallucinated plan/date' },
     { cls: 'error', t: '00:01.021', msg: '[MISSING] No semantic check, no data-freshness validation, no goal verification' },
   ],
   drift: [
     { cls: 'span', t: '00:00.000', msg: '[TRACE] run_id=c1a5 task="summarise_quarterly_report" started' },
     { cls: 'span', t: '00:00.044', msg: '[LLM] initial plan: [fetch_report, extract_kpis, write_summary]' },
-    { cls: 'span', t: '00:00.610', msg: '[LLM] step 2 plan update: adding competitor_search â€” "seems relevant"' },
-    { cls: 'warn', t: '00:01.200', msg: '[GOAL CHECK] âš ï¸ Original task: quarterly summary. Current subtask: web scraping competitors' },
+    { cls: 'span', t: '00:00.610', msg: '[LLM] step 2 plan update: adding competitor_search — "seems relevant"' },
+    { cls: 'warn', t: '00:01.200', msg: '[GOAL CHECK] ⚠️ Original task: quarterly summary. Current subtask: web scraping competitors' },
     { cls: 'span', t: '00:02.800', msg: '[LLM] step 4 plan update: "should also check CEO LinkedIn for context"' },
-    { cls: 'error', t: '00:03.900', msg: '[GOAL DRIFT] Cosine similarity(goal, current_plan)=0.41 â€” THRESHOLD 0.75 breached!' },
+    { cls: 'error', t: '00:03.900', msg: '[GOAL DRIFT] Cosine similarity(goal, current_plan)=0.41 — THRESHOLD 0.75 breached!' },
     { cls: 'error', t: '00:03.902', msg: '[ALERT] Agent has drifted from original task. 7 unrelated tool calls made. Halting.' },
     { cls: 'warn', t: '00:03.905', msg: '[MISSING] Without goal-embedding check, this would run to completion and deliver wrong report' },
   ]

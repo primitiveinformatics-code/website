@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.9 â€” 7-Layer System Prompt Architecture</title>
+<title>Concept 3.9 — 7-Layer System Prompt Architecture</title>
 <style>
   :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -43,7 +44,7 @@
   .ldp-tips{margin-top:14px;background:var(--surface2);border-radius:8px;padding:12px 14px;}
   .ldp-tips h5{font-size:.78rem;font-weight:700;color:var(--accent2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
   .ldp-tips ul{list-style:none;font-size:.8rem;color:var(--muted);line-height:1.7;}
-  .ldp-tips ul li::before{content:'â†’ ';}
+  .ldp-tips ul li::before{content:'→ ';}
 
   /* FULL TEMPLATE */
   .template-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
@@ -90,26 +91,26 @@
 <body>
 <nav>
   <div class="nav-links">
-    <a href="concept_3_8.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_10.html">Next â†’</a>
+    <a href="concept_3_8.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_10.html">Next →</a>
   </div>
-  <span class="title">3.9 â€” 7-Layer System Prompt Architecture</span>
+  <span class="title">3.9 — 7-Layer System Prompt Architecture</span>
 </nav>
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>7-Layer System Prompt Architecture</h1>
-  <p>A structured framework for writing production-grade agent system prompts â€” every layer has a job, and missing one causes predictable failures.</p>
+  <p>A structured framework for writing production-grade agent system prompts — every layer has a job, and missing one causes predictable failures.</p>
 </div>
 <div class="content">
 
   <!-- LAYER EXPLORER -->
   <div class="section">
-    <h2>Layer Explorer â€” Click a Layer</h2>
+    <h2>Layer Explorer — Click a Layer</h2>
     <div class="explorer">
       <div class="layer-list" id="layerList"></div>
       <div class="layer-detail-panel" id="layerDetail">
-        <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.9rem;">â† Select a layer to explore it</div>
+        <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.9rem;">← Select a layer to explore it</div>
       </div>
     </div>
   </div>
@@ -118,7 +119,7 @@
   <div class="section">
     <h2>Full Annotated System Prompt Template</h2>
     <div class="template-box">
-      <h3>ðŸŽ¨ Color-coded by layer</h3>
+      <h3>🎨 Color-coded by layer</h3>
       <div class="tpl-output" id="tplOutput"></div>
       <div class="tpl-legend">
         <div class="tpl-dot"><span style="background:#c678dd;"></span>Layer 1: Identity</div>
@@ -137,25 +138,25 @@
     <h2>Common Layer Mistakes</h2>
     <div class="mistakes-grid">
       <div class="mistake-card">
-        <div class="m-icon">ðŸŽ­</div>
+        <div class="m-icon">🎭</div>
         <h4>Missing Identity (Layer 1)</h4>
-        <p>Agent has no defined role â€” behaves like a general chatbot, gives overly broad answers outside its domain.</p>
+        <p>Agent has no defined role — behaves like a general chatbot, gives overly broad answers outside its domain.</p>
         <div class="fix">Fix: Always start with a clear professional role + context sentence.</div>
       </div>
       <div class="mistake-card">
-        <div class="m-icon">ðŸš§</div>
+        <div class="m-icon">🚧</div>
         <h4>No Constraints (Layer 3)</h4>
-        <p>Agent will attempt anything asked â€” sends emails without confirmation, deletes data, accesses unauthorized resources.</p>
+        <p>Agent will attempt anything asked — sends emails without confirmation, deletes data, accesses unauthorized resources.</p>
         <div class="fix">Fix: Explicit NEVER/ALWAYS rules. Most critical layer to get right.</div>
       </div>
       <div class="mistake-card">
-        <div class="m-icon">ðŸ“</div>
+        <div class="m-icon">📐</div>
         <h4>Missing Output Format (Layer 5)</h4>
         <p>Agent returns free-form text. Downstream parsing breaks. Pipeline fails silently or crashes with JSON decode errors.</p>
         <div class="fix">Fix: Specify exact JSON schema. Add "never wrap in markdown" if needed.</div>
       </div>
       <div class="mistake-card">
-        <div class="m-icon">ðŸ</div>
+        <div class="m-icon">🏁</div>
         <h4>No Fallback Rules (Layer 7)</h4>
         <p>Agent hallucinates when it can't find information, or loops indefinitely trying different tools before giving up.</p>
         <div class="fix">Fix: Define explicit "I don't know" and max-retry behaviors.</div>
@@ -165,7 +166,7 @@
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -174,10 +175,10 @@
     <div class="quiz-card">
       <h3>Q1. Which layer of the system prompt prevents an agent from sending emails without user confirmation?</h3>
       <div class="options" id="q1">
-        <button class="opt" onclick="answer('q1','a','b')">A) Layer 2 â€” Capabilities</button>
-        <button class="opt" onclick="answer('q1','b','b')">B) Layer 3 â€” Constraints</button>
-        <button class="opt" onclick="answer('q1','c','b')">C) Layer 4 â€” Tool Usage</button>
-        <button class="opt" onclick="answer('q1','d','b')">D) Layer 7 â€” Fallbacks</button>
+        <button class="opt" onclick="answer('q1','a','b')">A) Layer 2 — Capabilities</button>
+        <button class="opt" onclick="answer('q1','b','b')">B) Layer 3 — Constraints</button>
+        <button class="opt" onclick="answer('q1','c','b')">C) Layer 4 — Tool Usage</button>
+        <button class="opt" onclick="answer('q1','d','b')">D) Layer 7 — Fallbacks</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
       <button class="reset-btn" onclick="resetQ('q1')">Reset</button>
@@ -186,10 +187,10 @@
     <div class="quiz-card">
       <h3>Q2. A downstream pipeline is failing because the agent sometimes wraps JSON in markdown code fences. Which layer fix addresses this?</h3>
       <div class="options" id="q2">
-        <button class="opt" onclick="answer('q2','a','c')">A) Layer 1 â€” redefine the agent identity</button>
-        <button class="opt" onclick="answer('q2','b','c')">B) Layer 3 â€” add a constraint to avoid markdown</button>
-        <button class="opt" onclick="answer('q2','c','c')">C) Layer 5 â€” specify the exact output schema and explicitly state "never wrap in markdown code blocks"</button>
-        <button class="opt" onclick="answer('q2','d','c')">D) Layer 6 â€” provide better context about the downstream system</button>
+        <button class="opt" onclick="answer('q2','a','c')">A) Layer 1 — redefine the agent identity</button>
+        <button class="opt" onclick="answer('q2','b','c')">B) Layer 3 — add a constraint to avoid markdown</button>
+        <button class="opt" onclick="answer('q2','c','c')">C) Layer 5 — specify the exact output schema and explicitly state "never wrap in markdown code blocks"</button>
+        <button class="opt" onclick="answer('q2','d','c')">D) Layer 6 — provide better context about the downstream system</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
       <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
@@ -199,7 +200,7 @@
       <h3>Q3. What is the purpose of Layer 6 (Context Injection) in the system prompt?</h3>
       <div class="options" id="q3">
         <button class="opt" onclick="answer('q3','a','b')">A) To define what tools the agent can call</button>
-        <button class="opt" onclick="answer('q3','b','b')">B) To provide dynamic, run-time information â€” current date, user profile, session state â€” that personalizes the agent's behavior for each invocation</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) To provide dynamic, run-time information — current date, user profile, session state — that personalizes the agent's behavior for each invocation</button>
         <button class="opt" onclick="answer('q3','c','b')">C) To specify the JSON output format</button>
         <button class="opt" onclick="answer('q3','d','b')">D) To list what the agent is not allowed to do</button>
       </div>
@@ -211,7 +212,7 @@
       <h3>Q4. Why should Layer 1 (Identity) come first in the system prompt rather than at the end?</h3>
       <div class="options" id="q4">
         <button class="opt" onclick="answer('q4','a','b')">A) JSON schema requires identity fields first</button>
-        <button class="opt" onclick="answer('q4','b','b')">B) LLMs use early context to frame everything that follows â€” identity first primes the model's entire response style, vocabulary, and decision-making before it reads the rules</button>
+        <button class="opt" onclick="answer('q4','b','b')">B) LLMs use early context to frame everything that follows — identity first primes the model's entire response style, vocabulary, and decision-making before it reads the rules</button>
         <button class="opt" onclick="answer('q4','c','b')">C) Identity must be parsed before tool definitions can be loaded</button>
         <button class="opt" onclick="answer('q4','d','b')">D) It's just a convention with no technical effect</button>
       </div>
@@ -222,10 +223,10 @@
     <div class="quiz-card">
       <h3>Q5. An agent keeps hallucinating answers when it can't find information via tools, rather than admitting uncertainty. Which layer is missing or weak?</h3>
       <div class="options" id="q5">
-        <button class="opt" onclick="answer('q5','a','d')">A) Layer 2 â€” Capabilities not defined broadly enough</button>
-        <button class="opt" onclick="answer('q5','b','d')">B) Layer 4 â€” Tool usage instructions incomplete</button>
-        <button class="opt" onclick="answer('q5','c','d')">C) Layer 5 â€” Output format too flexible</button>
-        <button class="opt" onclick="answer('q5','d','d')">D) Layer 7 â€” Fallback rules missing: the agent has no instruction for what to do when it genuinely doesn't know</button>
+        <button class="opt" onclick="answer('q5','a','d')">A) Layer 2 — Capabilities not defined broadly enough</button>
+        <button class="opt" onclick="answer('q5','b','d')">B) Layer 4 — Tool usage instructions incomplete</button>
+        <button class="opt" onclick="answer('q5','c','d')">C) Layer 5 — Output format too flexible</button>
+        <button class="opt" onclick="answer('q5','d','d')">D) Layer 7 — Fallback rules missing: the agent has no instruction for what to do when it genuinely doesn't know</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
       <button class="reset-btn" onclick="resetQ('q5')">Reset</button>
@@ -237,12 +238,12 @@
 const layers = [
   {
     num:1, label:'Identity & Role', color:'#c678dd',
-    purpose:'Define WHO the agent is â€” professional role, employer, domain expertise, and operating context. This primes the LLM\'s entire response mode before any rules are read.',
+    purpose:'Define WHO the agent is — professional role, employer, domain expertise, and operating context. This primes the LLM\'s entire response mode before any rules are read.',
     example:`You are a Senior Research Analyst Agent at Acme Corp.
 You specialize in competitive intelligence and market analysis.
 You work exclusively with publicly available information.
 Your output is consumed by the VP of Product.`,
-    tips:['Be specific â€” "Senior Data Analyst at Acme" > "helpful assistant"','Include domain specialty to constrain topic scope','Mention who consumes output â€” it affects tone and depth']
+    tips:['Be specific — "Senior Data Analyst at Acme" > "helpful assistant"','Include domain specialty to constrain topic scope','Mention who consumes output — it affects tone and depth']
   },
   {
     num:2, label:'Capabilities', color:'#00d2ff',
@@ -253,18 +254,18 @@ Your output is consumed by the VP of Product.`,
 - Generate charts and data visualizations
 - Write and execute Python code in a sandbox
 - Summarize documents up to 50,000 tokens`,
-    tips:['List capabilities positively â€” what it CAN do','Be specific about scope (read-only, sandbox, etc.)','Helps orchestrators route tasks to the right agent']
+    tips:['List capabilities positively — what it CAN do','Be specific about scope (read-only, sandbox, etc.)','Helps orchestrators route tasks to the right agent']
   },
   {
     num:3, label:'Constraints & Limits', color:'#ff6584',
     purpose:'Hard rules about what the agent MUST NOT do. The most critical layer for safety. Without it, agents will attempt anything in the spirit of being helpful.',
-    example:`CONSTRAINTS â€” NEVER violate these:
+    example:`CONSTRAINTS — NEVER violate these:
 - NEVER send emails without explicit user confirmation
 - NEVER execute DELETE, DROP, or TRUNCATE SQL
 - NEVER access files outside /workspace/data/
 - NEVER make more than 10 tool calls per turn
 - NEVER state uncertain information as fact`,
-    tips:['Use NEVER/ALWAYS â€” not "try to avoid"','Put most dangerous constraints first','These are non-negotiable hard stops, not guidelines']
+    tips:['Use NEVER/ALWAYS — not "try to avoid"','Put most dangerous constraints first','These are non-negotiable hard stops, not guidelines']
   },
   {
     num:4, label:'Tool Usage Rules', color:'#ffd166',
@@ -279,8 +280,8 @@ Your output is consumed by the VP of Product.`,
   },
   {
     num:5, label:'Output Format', color:'#06d6a0',
-    purpose:'Exact schema for the agent\'s response. Critical for machine-to-machine pipelines â€” format drift breaks downstream parsers silently.',
-    example:`OUTPUT FORMAT â€” always return valid JSON:
+    purpose:'Exact schema for the agent\'s response. Critical for machine-to-machine pipelines — format drift breaks downstream parsers silently.',
+    example:`OUTPUT FORMAT — always return valid JSON:
 {
   "status": "success" | "error" | "needs_input",
   "summary": "1-2 sentence plain English summary",
@@ -294,7 +295,7 @@ Never wrap JSON in markdown code fences.`,
   },
   {
     num:6, label:'Context Injection', color:'#e5c07b',
-    purpose:'Dynamic run-time information injected per session â€” current date, user profile, session state, active permissions. Personalizes behavior without changing the core prompt.',
+    purpose:'Dynamic run-time information injected per session — current date, user profile, session state, active permissions. Personalizes behavior without changing the core prompt.',
     example:`CURRENT CONTEXT:
 - Date: {{current_date}}
 - User: {{user_name}} (Role: {{user_role}})
@@ -302,19 +303,19 @@ Never wrap JSON in markdown code fences.`,
 - User permissions: {{permissions_list}}
 - Session ID: {{session_id}}
 - Previous task summary: {{last_task_summary}}`,
-    tips:['Use template variables filled at runtime','Keeps the static prompt reusable across users','Include date â€” prevents agents acting on stale training knowledge']
+    tips:['Use template variables filled at runtime','Keeps the static prompt reusable across users','Include date — prevents agents acting on stale training knowledge']
   },
   {
     num:7, label:'Fallback Behaviors', color:'#8b949e',
-    purpose:'What to do when the agent hits an edge case â€” can\'t find information, reaches tool call limits, encounters an error. Without fallbacks, agents hallucinate or loop.',
+    purpose:'What to do when the agent hits an edge case — can\'t find information, reaches tool call limits, encounters an error. Without fallbacks, agents hallucinate or loop.',
     example:`FALLBACK RULES:
 - If you cannot find information after 3 tool attempts:
   respond with status:"needs_input", explain what's missing
 - If a tool call fails twice in a row: stop, report error
 - If asked about topics outside your domain: decline politely
-- NEVER guess or fabricate data â€” say "I don't know"
+- NEVER guess or fabricate data — say "I don't know"
 - If uncertain about an action's scope: ask before doing`,
-    tips:['Define explicit "I don\'t know" behavior â€” critical','Set max retry limits per tool','Include scope-uncertainty escalation to human']
+    tips:['Define explicit "I don\'t know" behavior — critical','Set max retry limits per tool','Include scope-uncertainty escalation to human']
   }
 ];
 
@@ -354,13 +355,13 @@ showLayer(0);
 const tpl = document.getElementById('tplOutput');
 const colors = ['#c678dd','#00d2ff','#ff6584','#ffd166','#06d6a0','#e5c07b','#8b949e'];
 const blocks = [
-  `# â”€â”€ LAYER 1: IDENTITY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nYou are a Senior Research Analyst Agent at Acme Corp.\nYou specialize in competitive intelligence.\nYour output is read by the VP of Product.`,
-  `\n\n# â”€â”€ LAYER 2: CAPABILITIES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nCAPABILITIES:\n- Search web for current information\n- Query internal analytics DB (read-only)\n- Execute Python in sandbox environment`,
-  `\n\n# â”€â”€ LAYER 3: CONSTRAINTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nCONSTRAINTS â€” NEVER violate:\n- NEVER send emails without user confirmation\n- NEVER run destructive SQL queries\n- NEVER make more than 10 tool calls per turn`,
-  `\n\n# â”€â”€ LAYER 4: TOOL RULES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nTOOL RULES:\n- Use web_search ONLY for post-2024 information\n- Use db_query for ALL internal data questions\n- Verify numbers with code_executor`,
-  `\n\n# â”€â”€ LAYER 5: OUTPUT FORMAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nOUTPUT: Always return valid JSON:\n{ "status": "success"|"error", "summary": "...",\n  "data": {...}, "sources": [], "confidence": 0.0-1.0 }\nNever wrap in markdown code fences.`,
-  `\n\n# â”€â”€ LAYER 6: CONTEXT (injected at runtime) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nDate: {{current_date}}\nUser: {{user_name}} | Role: {{user_role}}\nOrg: {{org_name}} | Permissions: {{permissions}}`,
-  `\n\n# â”€â”€ LAYER 7: FALLBACK BEHAVIORS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\nFALLBACK RULES:\n- After 3 failed tool attempts: report status:"needs_input"\n- If tool fails twice: stop and report the error\n- If uncertain about scope: ask before acting\n- NEVER fabricate data â€” say "I don't know"`
+  `# ── LAYER 1: IDENTITY ──────────────────────────────────\nYou are a Senior Research Analyst Agent at Acme Corp.\nYou specialize in competitive intelligence.\nYour output is read by the VP of Product.`,
+  `\n\n# ── LAYER 2: CAPABILITIES ──────────────────────────────\nCAPABILITIES:\n- Search web for current information\n- Query internal analytics DB (read-only)\n- Execute Python in sandbox environment`,
+  `\n\n# ── LAYER 3: CONSTRAINTS ────────────────────────────────\nCONSTRAINTS — NEVER violate:\n- NEVER send emails without user confirmation\n- NEVER run destructive SQL queries\n- NEVER make more than 10 tool calls per turn`,
+  `\n\n# ── LAYER 4: TOOL RULES ─────────────────────────────────\nTOOL RULES:\n- Use web_search ONLY for post-2024 information\n- Use db_query for ALL internal data questions\n- Verify numbers with code_executor`,
+  `\n\n# ── LAYER 5: OUTPUT FORMAT ──────────────────────────────\nOUTPUT: Always return valid JSON:\n{ "status": "success"|"error", "summary": "...",\n  "data": {...}, "sources": [], "confidence": 0.0-1.0 }\nNever wrap in markdown code fences.`,
+  `\n\n# ── LAYER 6: CONTEXT (injected at runtime) ──────────────\nDate: {{current_date}}\nUser: {{user_name}} | Role: {{user_role}}\nOrg: {{org_name}} | Permissions: {{permissions}}`,
+  `\n\n# ── LAYER 7: FALLBACK BEHAVIORS ─────────────────────────\nFALLBACK RULES:\n- After 3 failed tool attempts: report status:"needs_input"\n- If tool fails twice: stop and report the error\n- If uncertain about scope: ask before acting\n- NEVER fabricate data — say "I don't know"`
 ];
 tpl.innerHTML = blocks.map((b,i) => `<span style="color:${colors[i]}">${b}</span>`).join('');
 
@@ -380,18 +381,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
-      q1:'Layer 3 (Constraints) contains the hard NEVER rules. "NEVER send emails without explicit user confirmation" is a constraint â€” not a capability, tool rule, or fallback.',
+      q1:'Layer 3 (Constraints) contains the hard NEVER rules. "NEVER send emails without explicit user confirmation" is a constraint — not a capability, tool rule, or fallback.',
       q2:'Layer 5 (Output Format) is where you specify the exact JSON schema and explicitly state "never wrap in markdown code blocks." This is the source of the parsing failure.',
-      q3:'Layer 6 injects dynamic per-session context â€” current date, user profile, permissions, session state. This personalizes the agent without changing the reusable static prompt layers.',
-      q4:'LLMs use early context to frame everything that follows. Identity first means the entire prompt is interpreted through that professional lens â€” constraints, tool rules, and output format all feel natural within that role.',
-      q5:'Layer 7 (Fallback Behaviors) defines what to do when the agent hits dead ends. Without "NEVER guess â€” say I don\'t know," the model fills information gaps with plausible-sounding hallucinations.'
+      q3:'Layer 6 injects dynamic per-session context — current date, user profile, permissions, session state. This personalizes the agent without changing the reusable static prompt layers.',
+      q4:'LLMs use early context to frame everything that follows. Identity first means the entire prompt is interpreted through that professional lens — constraints, tool rules, and output format all feel natural within that role.',
+      q5:'Layer 7 (Fallback Behaviors) defines what to do when the agent hits dead ends. Without "NEVER guess — say I don\'t know," the model fills information gaps with plausible-sounding hallucinations.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {

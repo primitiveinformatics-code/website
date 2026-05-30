@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.8 â€” Prompt Engineering for Agents</title>
+<title>Concept 3.8 — Prompt Engineering for Agents</title>
 <style>
   :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#ff6584;--accent2:#ffd166;--accent3:#06d6a0;--accent4:#6c63ff;--accent5:#00d2ff;--correct:#06d6a0;--wrong:#ff6584;--radius:10px;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -86,16 +87,16 @@
 <body>
 <nav>
   <div class="nav-links">
-    <a href="concept_3_7.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_9.html">Next â†’</a>
+    <a href="concept_3_7.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_9.html">Next →</a>
   </div>
-  <span class="title">3.8 â€” Prompt Engineering for Agents</span>
+  <span class="title">3.8 — Prompt Engineering for Agents</span>
 </nav>
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>Prompt Engineering for Agents</h1>
-  <p>Agent prompts aren't chatbot prompts. They define identity, constrain behavior, specify tool usage, and shape output â€” learn the techniques that make the difference.</p>
+  <p>Agent prompts aren't chatbot prompts. They define identity, constrain behavior, specify tool usage, and shape output — learn the techniques that make the difference.</p>
 </div>
 <div class="content">
 
@@ -106,25 +107,25 @@
     <div class="acc">
       <div class="acc-h" onclick="toggleAcc('persona')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸŽ­</span> Persona & Role Definition
+          <span class="acc-icon">🎭</span> Persona & Role Definition
           <span class="acc-impact" style="background:rgba(6,214,160,.1);color:var(--accent3);">High Impact</span>
-        </div><span class="chevron">â–¼</span>
+        </div><span class="chevron">▼</span>
       </div>
       <div class="acc-body" id="acc-persona">
         <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Give the agent a clear professional identity. This primes the LLM's output style, vocabulary, confidence level, and how it handles edge cases.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div style="background:#090d12;border:1px solid var(--wrong);border-radius:8px;padding:14px;">
-            <div style="font-size:.72rem;font-weight:700;color:var(--wrong);margin-bottom:8px;">âŒ WEAK</div>
+            <div style="font-size:.72rem;font-weight:700;color:var(--wrong);margin-bottom:8px;">❌ WEAK</div>
             <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--muted);white-space:pre-wrap;">You are a helpful assistant.
 Answer questions and help users.</pre>
           </div>
           <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
-            <div style="font-size:.72rem;font-weight:700;color:var(--correct);margin-bottom:8px;">âœ“ STRONG</div>
+            <div style="font-size:.72rem;font-weight:700;color:var(--correct);margin-bottom:8px;">✓ STRONG</div>
             <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">You are a Senior Data Analyst agent
 at Acme Corp's analytics platform.
 You specialize in SQL query generation,
 trend analysis, and executive summaries.
-You never guess at data â€” you query it.</pre>
+You never guess at data — you query it.</pre>
           </div>
         </div>
       </div>
@@ -133,33 +134,33 @@ You never guess at data â€” you query it.</pre>
     <div class="acc">
       <div class="acc-h" onclick="toggleAcc('constraints')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸš§</span> Explicit Constraints
+          <span class="acc-icon">🚧</span> Explicit Constraints
           <span class="acc-impact" style="background:rgba(255,101,132,.1);color:var(--wrong);">Critical</span>
-        </div><span class="chevron">â–¼</span>
+        </div><span class="chevron">▼</span>
       </div>
       <div class="acc-body" id="acc-constraints">
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Tell the agent explicitly what it MUST NOT do. LLMs try to be helpful by default â€” without hard constraints they will improvise.</p>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Tell the agent explicitly what it MUST NOT do. LLMs try to be helpful by default — without hard constraints they will improvise.</p>
         <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
           <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">CONSTRAINTS:
 - NEVER execute destructive SQL (DELETE, DROP, TRUNCATE)
 - NEVER send emails without explicit user confirmation
 - NEVER access file paths outside /workspace/data/
 - NEVER make more than 5 tool calls per user turn
-- If unsure about scope, ASK â€” do not assume</pre>
+- If unsure about scope, ASK — do not assume</pre>
         </div>
-        <p style="font-size:.82rem;color:var(--muted);margin-top:12px;">ðŸ’¡ Use numbered lists or clear headings like "CONSTRAINTS:" â€” easier for the model to parse than buried inline text.</p>
+        <p style="font-size:.82rem;color:var(--muted);margin-top:12px;">💡 Use numbered lists or clear headings like "CONSTRAINTS:" — easier for the model to parse than buried inline text.</p>
       </div>
     </div>
 
     <div class="acc">
       <div class="acc-h" onclick="toggleAcc('tools')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸ”§</span> Tool Usage Instructions
+          <span class="acc-icon">🔧</span> Tool Usage Instructions
           <span class="acc-impact" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
-        </div><span class="chevron">â–¼</span>
+        </div><span class="chevron">▼</span>
       </div>
       <div class="acc-body" id="acc-tools">
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Tell the agent WHEN to use each tool â€” not just that they exist. Without guidance, agents either under-use or over-use tools.</p>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Tell the agent WHEN to use each tool — not just that they exist. Without guidance, agents either under-use or over-use tools.</p>
         <div style="background:#090d12;border:1px solid var(--correct);border-radius:8px;padding:14px;">
           <pre style="font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent3);white-space:pre-wrap;">TOOL USAGE RULES:
 - Use web_search ONLY for information published after 2024
@@ -175,9 +176,9 @@ You never guess at data â€” you query it.</pre>
     <div class="acc">
       <div class="acc-h" onclick="toggleAcc('output')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸ“</span> Output Format Specification
+          <span class="acc-icon">📐</span> Output Format Specification
           <span class="acc-impact" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
-        </div><span class="chevron">â–¼</span>
+        </div><span class="chevron">▼</span>
       </div>
       <div class="acc-body" id="acc-output">
         <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Agents often feed results to downstream systems. Consistent structured output prevents parsing failures in automated pipelines.</p>
@@ -199,9 +200,9 @@ Never wrap JSON in markdown code blocks.</pre>
     <div class="acc">
       <div class="acc-h" onclick="toggleAcc('cot')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸ§ </span> Chain-of-Thought Guidance
+          <span class="acc-icon">🧠</span> Chain-of-Thought Guidance
           <span class="acc-impact" style="background:rgba(6,214,160,.1);color:var(--accent3);">High Impact</span>
-        </div><span class="chevron">â–¼</span>
+        </div><span class="chevron">▼</span>
       </div>
       <div class="acc-body" id="acc-cot">
         <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Instruct the agent to reason step-by-step before acting. This dramatically improves accuracy on multi-step tasks and reduces hallucinated tool calls.</p>
@@ -225,9 +226,9 @@ Think step-by-step. Do NOT skip steps.</pre>
     <div class="acc">
       <div class="acc-h" onclick="toggleAcc('termination')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸ</span> Termination Conditions
+          <span class="acc-icon">🏁</span> Termination Conditions
           <span class="acc-impact" style="background:rgba(255,101,132,.1);color:var(--wrong);">Critical</span>
-        </div><span class="chevron">â–¼</span>
+        </div><span class="chevron">▼</span>
       </div>
       <div class="acc-body" id="acc-termination">
         <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Without explicit stopping rules, agents can loop indefinitely. Define DONE conditions clearly to prevent infinite tool call loops.</p>
@@ -259,11 +260,11 @@ NEVER:
       </div>
       <div class="ba-panels">
         <div class="ba-panel before">
-          <div class="ba-panel-header">âŒ Before â€” Weak Prompt</div>
+          <div class="ba-panel-header">❌ Before — Weak Prompt</div>
           <pre id="ba-before"></pre>
         </div>
         <div class="ba-panel after">
-          <div class="ba-panel-header">âœ“ After â€” Production Prompt</div>
+          <div class="ba-panel-header">✓ After — Production Prompt</div>
           <pre id="ba-after"></pre>
         </div>
       </div>
@@ -273,7 +274,7 @@ NEVER:
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -284,7 +285,7 @@ NEVER:
       <div class="options" id="q1">
         <button class="opt" onclick="answer('q1','a','c')">A) Agents have a shorter context window than chatbots</button>
         <button class="opt" onclick="answer('q1','b','c')">B) LLMs forget their instructions after 10 tool calls</button>
-        <button class="opt" onclick="answer('q1','c','c')">C) Agents can loop indefinitely calling tools â€” without explicit stopping rules they have no natural end signal like a user turn does</button>
+        <button class="opt" onclick="answer('q1','c','c')">C) Agents can loop indefinitely calling tools — without explicit stopping rules they have no natural end signal like a user turn does</button>
         <button class="opt" onclick="answer('q1','d','c')">D) Termination conditions are only needed when using external APIs</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
@@ -304,7 +305,7 @@ NEVER:
     </div>
 
     <div class="quiz-card">
-      <h3>Q3. Why should tool usage instructions specify WHEN to use each tool â€” not just list them?</h3>
+      <h3>Q3. Why should tool usage instructions specify WHEN to use each tool — not just list them?</h3>
       <div class="options" id="q3">
         <button class="opt" onclick="answer('q3','a','b')">A) The LLM doesn't know which tools are available unless told</button>
         <button class="opt" onclick="answer('q3','b','b')">B) Without guidance, agents either under-use tools (relying on training data) or over-use them (calling tools for things they already know)</button>
@@ -318,10 +319,10 @@ NEVER:
     <div class="quiz-card">
       <h3>Q4. An agent is generating reports consumed by a downstream data pipeline. Which prompting technique is MOST critical?</h3>
       <div class="options" id="q4">
-        <button class="opt" onclick="answer('q4','a','c')">A) Persona definition â€” so reports have consistent tone</button>
-        <button class="opt" onclick="answer('q4','b','c')">B) Chain-of-thought â€” so reasoning is visible</button>
-        <button class="opt" onclick="answer('q4','c','c')">C) Output format specification â€” so downstream JSON parsing doesn't break</button>
-        <button class="opt" onclick="answer('q4','d','c')">D) Termination conditions â€” so the agent doesn't run too long</button>
+        <button class="opt" onclick="answer('q4','a','c')">A) Persona definition — so reports have consistent tone</button>
+        <button class="opt" onclick="answer('q4','b','c')">B) Chain-of-thought — so reasoning is visible</button>
+        <button class="opt" onclick="answer('q4','c','c')">C) Output format specification — so downstream JSON parsing doesn't break</button>
+        <button class="opt" onclick="answer('q4','d','c')">D) Termination conditions — so the agent doesn't run too long</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
       <button class="reset-btn" onclick="resetQ('q4')">Reset</button>
@@ -342,7 +343,7 @@ NEVER:
 
 </div>
 <script>
-// â”€â”€ ACCORDION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── ACCORDION ────────────────────────────────────────────────────
 function toggleAcc(id) {
   const body = document.getElementById('acc-' + id);
   const header = body.previousElementSibling;
@@ -350,7 +351,7 @@ function toggleAcc(id) {
   header.classList.toggle('open');
 }
 
-// â”€â”€ BEFORE/AFTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── BEFORE/AFTER ─────────────────────────────────────────────────
 const baData = [
   {
     before: `You are a research assistant.
@@ -380,7 +381,7 @@ You have access to the Postgres analytics DB.
 
 TOOL RULES:
 - ALWAYS query the DB for factual questions about data
-- NEVER guess metrics â€” query them
+- NEVER guess metrics — query them
 - Only run SELECT queries (reads only)
 - Limit results to 1000 rows unless asked for more
 
@@ -400,8 +401,8 @@ Use the code executor tool.`,
 You write Python code, run it, and fix it.
 
 REASONING:
-1. Read the task carefully â€” identify edge cases
-2. Write code incrementally â€” test small pieces first
+1. Read the task carefully — identify edge cases
+2. Write code incrementally — test small pieces first
 3. Run code before declaring it correct
 4. If execution fails, read error, fix, retry (max 3x)
 
@@ -425,7 +426,7 @@ function showBA(idx, btn) {
 }
 showBA(0, document.querySelector('.ba-btn.active'));
 
-// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── QUIZ ─────────────────────────────────────────────────────────
 let score = 0;
 const answered = {};
 function answer(qid, chosen, correct) {
@@ -441,18 +442,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
-      q1: 'In a chatbot, the user\'s next message acts as a natural break. Agents run autonomously calling tools in loops â€” without explicit stopping rules (max calls, done conditions), they can loop indefinitely costing money and time.',
-      q2: 'Chain-of-thought forces the model to reason before acting â€” checking what it knows, what it needs, which tool to use. This dramatically reduces hallucinated tool calls and improves accuracy on complex multi-step tasks.',
+      q1: 'In a chatbot, the user\'s next message acts as a natural break. Agents run autonomously calling tools in loops — without explicit stopping rules (max calls, done conditions), they can loop indefinitely costing money and time.',
+      q2: 'Chain-of-thought forces the model to reason before acting — checking what it knows, what it needs, which tool to use. This dramatically reduces hallucinated tool calls and improves accuracy on complex multi-step tasks.',
       q3: 'LLMs by default may call web search for things they already know (wasting budget) or fail to call the DB for things they should (returning stale training data). Explicit rules like "use DB for all internal data" guide behavior correctly.',
       q4: 'For machine-to-machine pipelines, output format is critical. If the agent suddenly wraps JSON in a markdown code block or changes field names, the downstream parser breaks. Consistent schema specification prevents this.',
       q5: 'Agent prompts must address: tool selection logic, usage constraints, loop prevention/termination, and output schemas for automated consumption. These concerns don\'t exist in conversational chatbot prompts where a human reads free-form text.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {

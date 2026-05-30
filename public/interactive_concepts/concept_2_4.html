@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The BDI Rationality Loop | Agentic AI Course</title>
 <style>
@@ -76,21 +77,21 @@
 </head>
 <body>
 <nav>
-  <div class="brand">Agentic AI Course Â· <span>Session 2</span></div>
+  <div class="brand">Agentic AI Course · <span>Session 2</span></div>
   <div class="nav-links">
-    <a href="concept_2_3.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_2_5.html">Next â†’</a>
+    <a href="concept_2_3.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_2_5.html">Next →</a>
   </div>
 </nav>
 <div class="hero">
-  <div class="session-tag">Session 2 Â· Concept 2.4</div>
+  <div class="session-tag">Session 2 · Concept 2.4</div>
   <h1>The BDI <span>Rationality Loop</span></h1>
-  <p>How a BDI agent cycles through perception, reasoning, and commitment â€” the heartbeat of rational agent behaviour.</p>
+  <p>How a BDI agent cycles through perception, reasoning, and commitment — the heartbeat of rational agent behaviour.</p>
 </div>
 
 <section>
-  <div class="section-title">The 5-Step Rationality Loop â€” Click Each Step</div>
+  <div class="section-title">The 5-Step Rationality Loop — Click Each Step</div>
   <div class="loop-container">
     <p style="color:var(--muted);font-size:.88rem;margin-bottom:20px">The BDI Rationality Loop is the continuous cycle that governs how a rational agent perceives its world, updates its mental state, and decides what to do. Click each step to explore it.</p>
     <div class="loop-steps">
@@ -99,11 +100,11 @@
           <div class="step-num">1</div>
           <div class="step-content">
             <div class="step-title">Perceive Environment</div>
-            <div class="step-brief">Sense inputs from the world â€” messages, tool results, sensor data</div>
+            <div class="step-brief">Sense inputs from the world — messages, tool results, sensor data</div>
             <div class="step-detail" id="s1">
-              <p>The agent reads its environment: incoming messages, tool results, API responses, sensor readings, or any external information stream. This is the agent's window to the world â€” it forms the raw material for belief updates.</p>
+              <p>The agent reads its environment: incoming messages, tool results, API responses, sensor readings, or any external information stream. This is the agent's window to the world — it forms the raw material for belief updates.</p>
               <p style="margin-top:8px"><strong>In code:</strong> This is where observation tokens enter the context window. The agent's context now contains new information it didn't have before.</p>
-              <span class="bdi-tag tag-b">â†’ Feeds Belief Update</span>
+              <span class="bdi-tag tag-b">→ Feeds Belief Update</span>
             </div>
           </div>
         </div>
@@ -116,7 +117,7 @@
             <div class="step-title">Update Beliefs</div>
             <div class="step-brief">Revise the agent's world model based on new perceptions</div>
             <div class="step-detail" id="s2">
-              <p>Based on what was perceived, the agent updates its Beliefs â€” its internal model of the world's current state. Old beliefs that are contradicted by new evidence are revised. New facts are added.</p>
+              <p>Based on what was perceived, the agent updates its Beliefs — its internal model of the world's current state. Old beliefs that are contradicted by new evidence are revised. New facts are added.</p>
               <p style="margin-top:8px"><strong>Example:</strong> Agent believed file X existed. Perception says file not found. Belief updated: file X does NOT exist; plan must change.</p>
               <span class="bdi-tag tag-b">Belief State Updated</span>
             </div>
@@ -131,8 +132,8 @@
             <div class="step-title">Generate / Revise Options (Desires)</div>
             <div class="step-brief">What could the agent do? Generate candidate goals and sub-goals</div>
             <div class="step-detail" id="s3">
-              <p>Given its updated Beliefs, the agent generates a set of possible desires â€” things it could pursue. These are candidate goals, not yet committed to. The agent evaluates which desires are achievable and relevant given the current world state.</p>
-              <p style="margin-top:8px"><strong>Example:</strong> "Could retry with alternative API" and "Could skip this document and continue" and "Could ask user for help" â€” all generated as options.</p>
+              <p>Given its updated Beliefs, the agent generates a set of possible desires — things it could pursue. These are candidate goals, not yet committed to. The agent evaluates which desires are achievable and relevant given the current world state.</p>
+              <p style="margin-top:8px"><strong>Example:</strong> "Could retry with alternative API" and "Could skip this document and continue" and "Could ask user for help" — all generated as options.</p>
               <span class="bdi-tag tag-d">Desires Evaluated</span>
             </div>
           </div>
@@ -144,10 +145,10 @@
           <div class="step-num">4</div>
           <div class="step-content">
             <div class="step-title">Select Intention (Commit)</div>
-            <div class="step-brief">Choose ONE option to commit to â€” becoming an Intention</div>
+            <div class="step-brief">Choose ONE option to commit to — becoming an Intention</div>
             <div class="step-detail" id="s4">
-              <p>The agent commits to one desire, turning it into an Intention. This is the most critical step in the rational agent loop â€” selecting WHAT to pursue drives all subsequent actions. The committed intention remains stable unless the world changes dramatically.</p>
-              <p style="margin-top:8px"><strong>Key insight:</strong> Intentions are resistant to change â€” they provide motivational stability. An agent that abandons intentions too easily wastes resources replanning constantly.</p>
+              <p>The agent commits to one desire, turning it into an Intention. This is the most critical step in the rational agent loop — selecting WHAT to pursue drives all subsequent actions. The committed intention remains stable unless the world changes dramatically.</p>
+              <p style="margin-top:8px"><strong>Key insight:</strong> Intentions are resistant to change — they provide motivational stability. An agent that abandons intentions too easily wastes resources replanning constantly.</p>
               <span class="bdi-tag tag-i">Intention Committed</span>
             </div>
           </div>
@@ -161,9 +162,9 @@
             <div class="step-title">Execute Action</div>
             <div class="step-brief">Carry out the chosen intention, then loop back to Perceive</div>
             <div class="step-detail" id="s5">
-              <p>The agent executes its intention â€” calling a tool, sending a message, writing to memory, or taking any other action. The result of this action becomes input to the next perception cycle, closing the loop.</p>
-              <p style="margin-top:8px"><strong>Loop continuation:</strong> After execution, the agent returns to Step 1 â€” perceiving the result of its own action. This is what makes it a loop, not a one-shot process.</p>
-              <span class="bdi-tag" style="background:rgba(0,210,255,.15);color:var(--accent)">â†’ Loop Restarts at Step 1</span>
+              <p>The agent executes its intention — calling a tool, sending a message, writing to memory, or taking any other action. The result of this action becomes input to the next perception cycle, closing the loop.</p>
+              <p style="margin-top:8px"><strong>Loop continuation:</strong> After execution, the agent returns to Step 1 — perceiving the result of its own action. This is what makes it a loop, not a one-shot process.</p>
+              <span class="bdi-tag" style="background:rgba(0,210,255,.15);color:var(--accent)">→ Loop Restarts at Step 1</span>
             </div>
           </div>
         </div>
@@ -179,9 +180,9 @@
       <h3>Follow the BDI Rationality Loop through real agent scenarios</h3>
     </div>
     <div class="scenario-nav">
-      <button class="sc-btn active" onclick="showScenario(0,this)">ðŸ“§ Email Agent</button>
-      <button class="sc-btn" onclick="showScenario(1,this)">ðŸ”¬ Research Agent</button>
-      <button class="sc-btn" onclick="showScenario(2,this)">ðŸ›’ E-commerce Agent</button>
+      <button class="sc-btn active" onclick="showScenario(0,this)">📧 Email Agent</button>
+      <button class="sc-btn" onclick="showScenario(1,this)">🔬 Research Agent</button>
+      <button class="sc-btn" onclick="showScenario(2,this)">🛒 E-commerce Agent</button>
     </div>
     <div id="scenarioDisplay" style="margin-top:20px"></div>
   </div>
@@ -199,70 +200,70 @@
       <div class="q-num">Question 1 of 5</div>
       <div class="q-text">In the BDI Rationality Loop, what happens to Beliefs when a tool returns an unexpected result?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">âœ—</span>a) Beliefs are ignored â€” only Intentions matter</div>
-        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">âœ“</span>b) Beliefs are updated to reflect the new reality, which may trigger new Desires and a new Intention</div>
-        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">âœ—</span>c) The loop halts until a human provides new beliefs</div>
-        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">âœ—</span>d) The agent retries the same action until it succeeds</div>
+        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">✗</span>a) Beliefs are ignored — only Intentions matter</div>
+        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">✓</span>b) Beliefs are updated to reflect the new reality, which may trigger new Desires and a new Intention</div>
+        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">✗</span>c) The loop halts until a human provides new beliefs</div>
+        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">✗</span>d) The agent retries the same action until it succeeds</div>
       </div>
-      <div class="feedback correct-fb" id="q1-correct">âœ“ Right. The rationality loop's power is this cascading update: Perception â†’ Belief Update â†’ new Desire options â†’ potentially a new Intention. When a tool returns an error, the agent updates its belief ("the API is down"), generates new desires ("retry with backup API", "skip and log"), selects one, and commits. No human intervention required.</div>
-      <div class="feedback wrong-fb" id="q1-wrong">âœ— The whole point of the rationality loop is autonomous adaptation. When perception brings unexpected results, Beliefs are updated first â€” then Desires are regenerated based on the new beliefs â€” then a new Intention is selected. The agent doesn't ignore it, halt, or blindly retry. It updates its world model and reasons anew.</div>
-      <button class="q-reset" onclick="resetQ('q1')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q1-correct">✓ Right. The rationality loop's power is this cascading update: Perception → Belief Update → new Desire options → potentially a new Intention. When a tool returns an error, the agent updates its belief ("the API is down"), generates new desires ("retry with backup API", "skip and log"), selects one, and commits. No human intervention required.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">✗ The whole point of the rationality loop is autonomous adaptation. When perception brings unexpected results, Beliefs are updated first — then Desires are regenerated based on the new beliefs — then a new Intention is selected. The agent doesn't ignore it, halt, or blindly retry. It updates its world model and reasons anew.</div>
+      <button class="q-reset" onclick="resetQ('q1')">↺ Try again</button>
     </div>
 
     <div class="q-block" id="q2">
       <div class="q-num">Question 2 of 5</div>
       <div class="q-text">Why are Intentions described as "resistant to change" in the BDI model?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">âœ—</span>a) Because the agent's code prevents changing intentions at runtime</div>
-        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">âœ—</span>b) Because intentions are stored in long-term memory and are permanent</div>
-        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">âœ“</span>c) Because constant replanning wastes resources â€” stability in commitments is computationally efficient</div>
-        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">âœ—</span>d) Because changing intentions requires human approval</div>
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">✗</span>a) Because the agent's code prevents changing intentions at runtime</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">✗</span>b) Because intentions are stored in long-term memory and are permanent</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">✓</span>c) Because constant replanning wastes resources — stability in commitments is computationally efficient</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">✗</span>d) Because changing intentions requires human approval</div>
       </div>
-      <div class="feedback correct-fb" id="q2-correct">âœ“ Exactly. Motivational stability is a core BDI design principle. An agent that abandons its intentions the moment a slightly better option appears will spend all its resources replanning and never executing. Intentions should persist unless the world changes dramatically enough to make them unachievable or no longer relevant. This is called the "commitment strategy."</div>
-      <div class="feedback wrong-fb" id="q2-wrong">âœ— It's not about code constraints or permanent storage. The BDI model deliberately makes intentions "sticky" because constant replanning is computationally wasteful. If an agent reconsiders its plan at every perception cycle, it spends more time deliberating than acting. Intentions are meant to be stable commitments that provide a stable direction for action â€” changed only when the world changes significantly.</div>
-      <button class="q-reset" onclick="resetQ('q2')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q2-correct">✓ Exactly. Motivational stability is a core BDI design principle. An agent that abandons its intentions the moment a slightly better option appears will spend all its resources replanning and never executing. Intentions should persist unless the world changes dramatically enough to make them unachievable or no longer relevant. This is called the "commitment strategy."</div>
+      <div class="feedback wrong-fb" id="q2-wrong">✗ It's not about code constraints or permanent storage. The BDI model deliberately makes intentions "sticky" because constant replanning is computationally wasteful. If an agent reconsiders its plan at every perception cycle, it spends more time deliberating than acting. Intentions are meant to be stable commitments that provide a stable direction for action — changed only when the world changes significantly.</div>
+      <button class="q-reset" onclick="resetQ('q2')">↺ Try again</button>
     </div>
 
     <div class="q-block" id="q3">
       <div class="q-num">Question 3 of 5</div>
       <div class="q-text">At which step does an agent move from "what I could do" to "what I will do"?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q3','a','c')"><span class="opt-icon">âœ—</span>a) Step 2 â€” Update Beliefs</div>
-        <div class="opt" onclick="answer('q3','b','c')"><span class="opt-icon">âœ—</span>b) Step 3 â€” Generate Options (Desires)</div>
-        <div class="opt" onclick="answer('q3','c','c')"><span class="opt-icon">âœ“</span>c) Step 4 â€” Select Intention (Commit)</div>
-        <div class="opt" onclick="answer('q3','d','c')"><span class="opt-icon">âœ—</span>d) Step 5 â€” Execute Action</div>
+        <div class="opt" onclick="answer('q3','a','c')"><span class="opt-icon">✗</span>a) Step 2 — Update Beliefs</div>
+        <div class="opt" onclick="answer('q3','b','c')"><span class="opt-icon">✗</span>b) Step 3 — Generate Options (Desires)</div>
+        <div class="opt" onclick="answer('q3','c','c')"><span class="opt-icon">✓</span>c) Step 4 — Select Intention (Commit)</div>
+        <div class="opt" onclick="answer('q3','d','c')"><span class="opt-icon">✗</span>d) Step 5 — Execute Action</div>
       </div>
-      <div class="feedback correct-fb" id="q3-correct">âœ“ Step 4 is the commitment moment â€” where the agent narrows from a set of candidate Desires to a single committed Intention. "What I could do" = Desires (multiple options). "What I will do" = Intention (singular commitment). Step 5 is just execution of the already-decided intention.</div>
-      <div class="feedback wrong-fb" id="q3-wrong">âœ— Step 3 generates multiple candidate options (Desires = what the agent could do). Step 5 executes after the decision is made. The transition from "could do" to "will do" happens at Step 4 â€” Select Intention â€” when the agent commits to one option from among its desires. This commitment is the defining act of rational choice in the BDI model.</div>
-      <button class="q-reset" onclick="resetQ('q3')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q3-correct">✓ Step 4 is the commitment moment — where the agent narrows from a set of candidate Desires to a single committed Intention. "What I could do" = Desires (multiple options). "What I will do" = Intention (singular commitment). Step 5 is just execution of the already-decided intention.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">✗ Step 3 generates multiple candidate options (Desires = what the agent could do). Step 5 executes after the decision is made. The transition from "could do" to "will do" happens at Step 4 — Select Intention — when the agent commits to one option from among its desires. This commitment is the defining act of rational choice in the BDI model.</div>
+      <button class="q-reset" onclick="resetQ('q3')">↺ Try again</button>
     </div>
 
     <div class="q-block" id="q4">
       <div class="q-num">Question 4 of 5</div>
       <div class="q-text">How does the BDI Rationality Loop differ from a simple ReAct loop?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q4','a','b')"><span class="opt-icon">âœ—</span>a) ReAct has more steps</div>
-        <div class="opt" onclick="answer('q4','b','b')"><span class="opt-icon">âœ“</span>b) BDI explicitly models mental states (Beliefs, Desires, Intentions) as separate components; ReAct is a prompt-level trace pattern</div>
-        <div class="opt" onclick="answer('q4','c','b')"><span class="opt-icon">âœ—</span>c) BDI is newer than ReAct</div>
-        <div class="opt" onclick="answer('q4','d','b')"><span class="opt-icon">âœ—</span>d) They are identical â€” BDI is just a renamed version of ReAct</div>
+        <div class="opt" onclick="answer('q4','a','b')"><span class="opt-icon">✗</span>a) ReAct has more steps</div>
+        <div class="opt" onclick="answer('q4','b','b')"><span class="opt-icon">✓</span>b) BDI explicitly models mental states (Beliefs, Desires, Intentions) as separate components; ReAct is a prompt-level trace pattern</div>
+        <div class="opt" onclick="answer('q4','c','b')"><span class="opt-icon">✗</span>c) BDI is newer than ReAct</div>
+        <div class="opt" onclick="answer('q4','d','b')"><span class="opt-icon">✗</span>d) They are identical — BDI is just a renamed version of ReAct</div>
       </div>
-      <div class="feedback correct-fb" id="q4-correct">âœ“ Correct distinction. ReAct (Reason+Act) is a prompting strategy â€” a structured thought/action/observation trace pattern used with LLMs. BDI is an agent architecture theory from academic AI (Bratman, 1987) that explicitly defines three separate mental state types and how they interact. Modern LLM agents implement ReAct-style traces that approximate BDI reasoning, but they're different abstraction levels.</div>
-      <div class="feedback wrong-fb" id="q4-wrong">âœ— BDI (from 1980s AI theory) is an architectural model that explicitly defines Beliefs, Desires, and Intentions as separate cognitive components with defined relationships. ReAct is a 2022 prompting technique that structures LLM output as Thoughtâ†’Actionâ†’Observation traces. BDI is a theoretical framework; ReAct is a practical implementation pattern. They're not the same â€” but modern agents often implement BDI principles via ReAct-style traces.</div>
-      <button class="q-reset" onclick="resetQ('q4')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q4-correct">✓ Correct distinction. ReAct (Reason+Act) is a prompting strategy — a structured thought/action/observation trace pattern used with LLMs. BDI is an agent architecture theory from academic AI (Bratman, 1987) that explicitly defines three separate mental state types and how they interact. Modern LLM agents implement ReAct-style traces that approximate BDI reasoning, but they're different abstraction levels.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">✗ BDI (from 1980s AI theory) is an architectural model that explicitly defines Beliefs, Desires, and Intentions as separate cognitive components with defined relationships. ReAct is a 2022 prompting technique that structures LLM output as Thought→Action→Observation traces. BDI is a theoretical framework; ReAct is a practical implementation pattern. They're not the same — but modern agents often implement BDI principles via ReAct-style traces.</div>
+      <button class="q-reset" onclick="resetQ('q4')">↺ Try again</button>
     </div>
 
     <div class="q-block" id="q5">
       <div class="q-num">Question 5 of 5</div>
       <div class="q-text">What triggers the BDI loop to RECONSIDER an existing Intention rather than just executing it?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q5','a','c')"><span class="opt-icon">âœ—</span>a) A timer expiry after a fixed interval</div>
-        <div class="opt" onclick="answer('q5','b','c')"><span class="opt-icon">âœ—</span>b) User sends a new message</div>
-        <div class="opt" onclick="answer('q5','c','c')"><span class="opt-icon">âœ“</span>c) A significant change in Beliefs that makes the current Intention unachievable or irrelevant</div>
-        <div class="opt" onclick="answer('q5','d','c')"><span class="opt-icon">âœ—</span>d) The agent always reconsiders at every loop iteration</div>
+        <div class="opt" onclick="answer('q5','a','c')"><span class="opt-icon">✗</span>a) A timer expiry after a fixed interval</div>
+        <div class="opt" onclick="answer('q5','b','c')"><span class="opt-icon">✗</span>b) User sends a new message</div>
+        <div class="opt" onclick="answer('q5','c','c')"><span class="opt-icon">✓</span>c) A significant change in Beliefs that makes the current Intention unachievable or irrelevant</div>
+        <div class="opt" onclick="answer('q5','d','c')"><span class="opt-icon">✗</span>d) The agent always reconsiders at every loop iteration</div>
       </div>
-      <div class="feedback correct-fb" id="q5-correct">âœ“ Exactly. Intention reconsideration is triggered by Belief changes â€” specifically when the world has changed enough that the current intention is either (a) no longer achievable, or (b) no longer relevant to the agent's goals. Minor environmental noise doesn't trigger reconsideration (that would be computationally wasteful). Only significant belief updates â€” like "the target resource no longer exists" â€” warrant abandoning and re-selecting an intention.</div>
-      <div class="feedback wrong-fb" id="q5-wrong">âœ— Timers are an external mechanism, not intrinsic to BDI. User messages are one form of perception but not the only trigger. The agent does NOT always reconsider at every cycle â€” that's the commitment stability problem. The BDI trigger for reconsideration is a significant belief update that makes the current intention either unachievable (world has changed) or irrelevant (goal already achieved or superseded).</div>
-      <button class="q-reset" onclick="resetQ('q5')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q5-correct">✓ Exactly. Intention reconsideration is triggered by Belief changes — specifically when the world has changed enough that the current intention is either (a) no longer achievable, or (b) no longer relevant to the agent's goals. Minor environmental noise doesn't trigger reconsideration (that would be computationally wasteful). Only significant belief updates — like "the target resource no longer exists" — warrant abandoning and re-selecting an intention.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">✗ Timers are an external mechanism, not intrinsic to BDI. User messages are one form of perception but not the only trigger. The agent does NOT always reconsider at every cycle — that's the commitment stability problem. The BDI trigger for reconsideration is a significant belief update that makes the current intention either unachievable (world has changed) or irrelevant (goal already achieved or superseded).</div>
+      <button class="q-reset" onclick="resetQ('q5')">↺ Try again</button>
     </div>
   </div>
 </section>
@@ -272,33 +273,33 @@
 
   const scenarios=[
     {
-      title:'ðŸ“§ Email Agent â€” Drafting a Response',
+      title:'📧 Email Agent — Drafting a Response',
       steps:[
         {cls:'b',label:'Perceive',text:'New email arrives: "Can you schedule a meeting with the product team for next week?"'},
         {cls:'b',label:'Belief Update',text:'User wants a meeting. Product team exists. My calendar access tool is available. Next week = Mon-Fri May 26-30.'},
         {cls:'d',label:'Desires (Options)',text:'Option A: Check calendars and propose times. Option B: Ask user for preferred time first. Option C: Create a meeting invite directly.'},
-        {cls:'i',label:'Intention (Commit)',text:'Commit to Option A â€” check all relevant calendars first to find overlapping free slots before proposing.'},
-        {cls:'act',label:'Execute',text:'Call calendar_check tool for user + product team â†’ receive availability data â†’ loop back to perceive the results.'}
+        {cls:'i',label:'Intention (Commit)',text:'Commit to Option A — check all relevant calendars first to find overlapping free slots before proposing.'},
+        {cls:'act',label:'Execute',text:'Call calendar_check tool for user + product team → receive availability data → loop back to perceive the results.'}
       ]
     },
     {
-      title:'ðŸ”¬ Research Agent â€” Literature Review',
+      title:'🔬 Research Agent — Literature Review',
       steps:[
         {cls:'b',label:'Perceive',text:'User goal: "Summarise the latest research on transformer attention mechanisms."'},
         {cls:'b',label:'Belief Update',text:'Topic is transformer attention. I need recent papers (2022-2024). Search tools available. No papers loaded yet in context.'},
         {cls:'d',label:'Desires (Options)',text:'Option A: Search arXiv for recent papers. Option B: Search Google Scholar. Option C: Check pre-loaded knowledge only.'},
-        {cls:'i',label:'Intention (Commit)',text:'Commit to arXiv search â€” most reliable source for cutting-edge ML research. Start with recent papers on attention.'},
-        {cls:'act',label:'Execute',text:'Call search_arxiv("transformer attention 2023 2024") â†’ perceive results â†’ update beliefs with paper list â†’ next loop: read top papers.'}
+        {cls:'i',label:'Intention (Commit)',text:'Commit to arXiv search — most reliable source for cutting-edge ML research. Start with recent papers on attention.'},
+        {cls:'act',label:'Execute',text:'Call search_arxiv("transformer attention 2023 2024") → perceive results → update beliefs with paper list → next loop: read top papers.'}
       ]
     },
     {
-      title:'ðŸ›’ E-commerce Agent â€” Order Processing',
+      title:'🛒 E-commerce Agent — Order Processing',
       steps:[
         {cls:'b',label:'Perceive',text:'New order #4521: Customer wants 3x Product A. Payment: confirmed. Shipping address: London.'},
         {cls:'b',label:'Belief Update',text:'Order received and paid. Need to verify inventory. Need to calculate shipping. Product A stock level unknown.'},
         {cls:'d',label:'Desires (Options)',text:'Option A: Check inventory then process. Option B: Process immediately (assume in stock). Option C: Flag for human review.'},
-        {cls:'i',label:'Intention (Commit)',text:'Commit to Option A â€” check inventory first to avoid overselling. Customer experience depends on accurate availability.'},
-        {cls:'act',label:'Execute',text:'Call check_inventory("Product-A", qty=3) â†’ Perceive result: "In stock: 12 units" â†’ Update belief â†’ Next loop: proceed to shipping calculation.'}
+        {cls:'i',label:'Intention (Commit)',text:'Commit to Option A — check inventory first to avoid overselling. Customer experience depends on accurate availability.'},
+        {cls:'act',label:'Execute',text:'Call check_inventory("Product-A", qty=3) → Perceive result: "In stock: 12 units" → Update belief → Next loop: proceed to shipping calculation.'}
       ]
     }
   ];

@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.6 LangGraph â€” Agents as State Machines | Agentic AI</title>
+<title>4.6 LangGraph — Agents as State Machines | Agentic AI</title>
 <style>
 :root {
   --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
@@ -124,19 +125,19 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 <body>
 
 <nav>
-  <a href="concept_4_5.html">â† Choreography Pattern</a>
-  <a href="main-course.html">â˜° All Concepts</a>
-  <a href="concept_4_7.html">Durable Execution â†’</a>
+  <a href="concept_4_5.html">← Choreography Pattern</a>
+  <a href="index.html">☰ All Concepts</a>
+  <a href="concept_4_7.html">Durable Execution →</a>
 </nav>
 
 <div class="hero">
   <div class="tags">
     <span class="tag accent">Session 4</span>
-    <span class="tag">Day 2 Forenoon Â· Orchestration</span>
+    <span class="tag">Day 2 Forenoon · Orchestration</span>
     <span class="tag">Concept 4.6</span>
   </div>
-  <h1>LangGraph â€” Agents as State Machines</h1>
-  <p class="subtitle">Model agent logic as a directed graph of nodes, edges, and shared state â€” with cycles, checkpointing, and human-in-the-loop</p>
+  <h1>LangGraph — Agents as State Machines</h1>
+  <p class="subtitle">Model agent logic as a directed graph of nodes, edges, and shared state — with cycles, checkpointing, and human-in-the-loop</p>
 </div>
 
 <main>
@@ -145,38 +146,38 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
   <section>
     <h2>Why LangGraph?</h2>
     <blockquote style="border-left:3px solid var(--accent);padding:.8rem 1.2rem;background:var(--surface);border-radius:0 8px 8px 0;font-style:italic;color:var(--muted);margin-bottom:1rem;">
-      "LangChain sequences are linear â€” they break when agents need to loop, branch conditionally, or pause
+      "LangChain sequences are linear — they break when agents need to loop, branch conditionally, or pause
       for human input. LangGraph models agent flow as a graph, enabling cycles, conditional routing, and
       persistent state checkpointing."
     </blockquote>
     <div class="concept-grid" id="whyGrid">
       <div class="concept-card" onclick="showConcept('nodes')">
-        <div class="concept-icon">ðŸ”µ</div>
+        <div class="concept-icon">🔵</div>
         <h3>Nodes</h3>
-        <p>Python functions â€” each is one agent action step</p>
+        <p>Python functions — each is one agent action step</p>
       </div>
       <div class="concept-card" onclick="showConcept('edges')">
-        <div class="concept-icon">âž¡ï¸</div>
+        <div class="concept-icon">➡️</div>
         <h3>Edges</h3>
-        <p>Connections between nodes â€” can be conditional</p>
+        <p>Connections between nodes — can be conditional</p>
       </div>
       <div class="concept-card" onclick="showConcept('state')">
-        <div class="concept-icon">ðŸ“¦</div>
+        <div class="concept-icon">📦</div>
         <h3>State</h3>
-        <p>TypedDict shared across all nodes â€” the memory</p>
+        <p>TypedDict shared across all nodes — the memory</p>
       </div>
       <div class="concept-card" onclick="showConcept('cycles')">
-        <div class="concept-icon">ðŸ”„</div>
+        <div class="concept-icon">🔄</div>
         <h3>Cycles</h3>
-        <p>Unlike chains â€” graphs can loop back and retry</p>
+        <p>Unlike chains — graphs can loop back and retry</p>
       </div>
       <div class="concept-card" onclick="showConcept('checkpoints')">
-        <div class="concept-icon">ðŸ’¾</div>
+        <div class="concept-icon">💾</div>
         <h3>Checkpoints</h3>
         <p>Persist state to resume after failure or pause</p>
       </div>
       <div class="concept-card" onclick="showConcept('hitl')">
-        <div class="concept-icon">ðŸ§‘â€ðŸ’»</div>
+        <div class="concept-icon">🧑‍💻</div>
         <h3>Human-in-Loop</h3>
         <p>Pause at any node, await human approval, resume</p>
       </div>
@@ -189,14 +190,14 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
     <h2>ReAct Agent as a State Machine</h2>
     <div class="sm-wrap">
       <p style="color:var(--muted);font-size:.85rem;margin-bottom:.8rem;">
-        Classic ReAct loop (Reason â†’ Act â†’ Observe) implemented as a LangGraph state machine. Click Run to animate.
+        Classic ReAct loop (Reason → Act → Observe) implemented as a LangGraph state machine. Click Run to animate.
       </p>
       <div class="sm-nodes" id="smNodes">
-        <div class="sm-node start" id="sn_start">â–¶ START</div>
-        <div class="sm-node idle" id="sn_reason">ðŸ§  Reason</div>
-        <div class="sm-node idle" id="sn_act">âš™ï¸ Act</div>
-        <div class="sm-node idle" id="sn_observe">ðŸ‘ Observe</div>
-        <div class="sm-node end" id="sn_end">âœ… END</div>
+        <div class="sm-node start" id="sn_start">▶ START</div>
+        <div class="sm-node idle" id="sn_reason">🧠 Reason</div>
+        <div class="sm-node idle" id="sn_act">⚙️ Act</div>
+        <div class="sm-node idle" id="sn_observe">👁 Observe</div>
+        <div class="sm-node end" id="sn_end">✅ END</div>
       </div>
       <div style="color:var(--muted);font-size:.78rem;margin-bottom:.5rem;">Current State:</div>
       <div class="sm-state-box" id="smStateBox">{
@@ -206,8 +207,8 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
   "iterations": 0
 }</div>
       <div style="margin-top:.8rem;display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button class="btn primary" onclick="runSM()">â–¶ Run ReAct Loop</button>
-        <button class="btn" onclick="resetSM()">â†º Reset</button>
+        <button class="btn primary" onclick="runSM()">▶ Run ReAct Loop</button>
+        <button class="btn" onclick="resetSM()">↺ Reset</button>
       </div>
     </div>
   </section>
@@ -228,36 +229,36 @@ tr:nth-child(even) td { background: rgba(255,255,255,.02); }
   <section>
     <h2>Graph Execution Traces</h2>
     <div class="sm-btns">
-      <button class="btn" onclick="runTrace(0)">ðŸ” Research + Write (2 loops)</button>
-      <button class="btn" onclick="runTrace(1)">âœ… Code Review (Human Approval)</button>
-      <button class="btn" onclick="runTrace(2)">ðŸ”„ Self-Correcting Agent</button>
+      <button class="btn" onclick="runTrace(0)">🔍 Research + Write (2 loops)</button>
+      <button class="btn" onclick="runTrace(1)">✅ Code Review (Human Approval)</button>
+      <button class="btn" onclick="runTrace(2)">🔄 Self-Correcting Agent</button>
     </div>
     <div class="trace-box" id="traceBox"><span style="color:var(--muted);">Select a trace above...</span></div>
   </section>
 
   <!-- CHECKPOINTING -->
   <section>
-    <h2>Checkpointing â€” Durable Agent Memory</h2>
+    <h2>Checkpointing — Durable Agent Memory</h2>
     <div class="checkpoint-grid">
       <div class="cp-card">
-        <div class="cp-icon">ðŸ’¾</div>
+        <div class="cp-icon">💾</div>
         <h3>In-Memory Saver</h3>
         <p>Default. Fast but lost on process restart. Good for development and short tasks.</p>
       </div>
       <div class="cp-card">
-        <div class="cp-icon">ðŸ—„ï¸</div>
+        <div class="cp-icon">🗄️</div>
         <h3>SQLite Saver</h3>
         <p>Persists to local SQLite file. Survives process restarts. Good for single-server deployments.</p>
       </div>
       <div class="cp-card">
-        <div class="cp-icon">ðŸŒ</div>
+        <div class="cp-icon">🌐</div>
         <h3>PostgreSQL Saver</h3>
         <p>Production-grade. Distributed, concurrent, durable. Used in LangGraph Cloud.</p>
       </div>
       <div class="cp-card">
-        <div class="cp-icon">â¸ï¸</div>
+        <div class="cp-icon">⏸️</div>
         <h3>Human-in-the-Loop</h3>
-        <p>Graph pauses at `interrupt_before=["approve"]`. Human reviews state, resumes with `graph.invoke(None, config)` â€” continues from exact pause point.</p>
+        <p>Graph pauses at `interrupt_before=["approve"]`. Human reviews state, resumes with `graph.invoke(None, config)` — continues from exact pause point.</p>
       </div>
     </div>
     <div class="code-block" style="margin-top:1rem;">from langgraph.checkpoint.sqlite import SqliteSaver
@@ -287,13 +288,13 @@ with SqliteSaver.from_conn_string("checkpoints.db") as memory:
         <tr><th>Capability</th><th>LangChain</th><th>LangGraph</th><th>Raw Python</th></tr>
       </thead>
       <tbody>
-        <tr><td>Linear pipelines</td><td>âœ“ Native (LCEL)</td><td>âœ“ Supported</td><td>âœ“ Easy</td></tr>
-        <tr><td>Conditional branching</td><td>Limited</td><td>âœ“ Native (conditional edges)</td><td>âœ“ Easy (if/else)</td></tr>
-        <tr><td>Cycles / loops</td><td>âœ— Not supported</td><td>âœ“ Native (graph cycles)</td><td>âœ“ Easy (while loops)</td></tr>
-        <tr><td>Shared state</td><td>Partial (context vars)</td><td>âœ“ TypedDict state</td><td>âœ“ Manual</td></tr>
-        <tr><td>Checkpointing</td><td>âœ— Manual</td><td>âœ“ Built-in savers</td><td>âœ— Build yourself</td></tr>
-        <tr><td>Human-in-loop</td><td>âœ—</td><td>âœ“ interrupt_before/after</td><td>Manual input()</td></tr>
-        <tr><td>Streaming steps</td><td>âœ“ LCEL streaming</td><td>âœ“ astream_events</td><td>Manual generators</td></tr>
+        <tr><td>Linear pipelines</td><td>✓ Native (LCEL)</td><td>✓ Supported</td><td>✓ Easy</td></tr>
+        <tr><td>Conditional branching</td><td>Limited</td><td>✓ Native (conditional edges)</td><td>✓ Easy (if/else)</td></tr>
+        <tr><td>Cycles / loops</td><td>✗ Not supported</td><td>✓ Native (graph cycles)</td><td>✓ Easy (while loops)</td></tr>
+        <tr><td>Shared state</td><td>Partial (context vars)</td><td>✓ TypedDict state</td><td>✓ Manual</td></tr>
+        <tr><td>Checkpointing</td><td>✗ Manual</td><td>✓ Built-in savers</td><td>✗ Build yourself</td></tr>
+        <tr><td>Human-in-loop</td><td>✗</td><td>✓ interrupt_before/after</td><td>Manual input()</td></tr>
+        <tr><td>Streaming steps</td><td>✓ LCEL streaming</td><td>✓ astream_events</td><td>Manual generators</td></tr>
       </tbody>
     </table>
   </section>
@@ -301,7 +302,7 @@ with SqliteSaver.from_conn_string("checkpoints.db") as memory:
   <!-- QUIZ -->
   <div class="quiz-section">
     <div class="score-bar">
-      <h2 style="border:none;margin:0;padding:0;">ðŸ§  Knowledge Check</h2>
+      <h2 style="border:none;margin:0;padding:0;">🧠 Knowledge Check</h2>
       <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
     </div>
 
@@ -314,7 +315,7 @@ with SqliteSaver.from_conn_string("checkpoints.db") as memory:
         <button class="opt" onclick="answer('q1','d','b')">d) A supervisor agent that routes tasks</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q2">
@@ -322,11 +323,11 @@ with SqliteSaver.from_conn_string("checkpoints.db") as memory:
       <div class="opts">
         <button class="opt" onclick="answer('q2','a','c')">a) Runs two nodes in parallel</button>
         <button class="opt" onclick="answer('q2','b','c')">b) Persists the current state to the database</button>
-        <button class="opt" onclick="answer('q2','c','c')">c) Routes to different next nodes based on state values â€” enables branching</button>
+        <button class="opt" onclick="answer('q2','c','c')">c) Routes to different next nodes based on state values — enables branching</button>
         <button class="opt" onclick="answer('q2','d','c')">d) Stops the graph when the task is complete</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q3">
@@ -338,7 +339,7 @@ with SqliteSaver.from_conn_string("checkpoints.db") as memory:
         <button class="opt" onclick="answer('q3','d','d')">d) LangChain LCEL is DAG-only; LangGraph represents flow as a general directed graph that allows back edges</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q4">
@@ -350,7 +351,7 @@ with SqliteSaver.from_conn_string("checkpoints.db") as memory:
         <button class="opt" onclick="answer('q4','d','b')">d) The state is cleared and re-initialized</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q5">
@@ -362,21 +363,21 @@ with SqliteSaver.from_conn_string("checkpoints.db") as memory:
         <button class="opt" onclick="answer('q5','d','c')">d) State is stored in a global variable accessed via LangChain's memory module</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
 </main>
 
 <script>
-/* â”€â”€ QUIZ â”€â”€ */
+/* ── QUIZ ── */
 let score = 0;
 const answered = {};
 const msgs = {
   q1: 'A LangGraph node is a Python function that receives the shared state, does work, and returns state updates.',
   q2: 'A conditional edge calls a routing function on the current state to decide which next node to go to.',
   q3: 'LangChain LCEL is DAG-based (no cycles); LangGraph uses a general directed graph that allows back edges.',
-  q4: 'invoke(None, config) resumes from the saved checkpoint â€” all prior state is restored automatically.',
+  q4: 'invoke(None, config) resumes from the saved checkpoint — all prior state is restored automatically.',
   q5: 'All nodes share one TypedDict state; each node returns a dict of keys to update (merge semantics).'
 };
 function answer(qid, chosen, correct) {
@@ -392,11 +393,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {
@@ -409,19 +410,19 @@ function resetQ(qid) {
   fb.className = 'feedback'; fb.textContent = '';
 }
 
-/* â”€â”€ CONCEPT DETAIL â”€â”€ */
+/* ── CONCEPT DETAIL ── */
 const conceptData = {
   nodes: {
-    title: 'ðŸ”µ Nodes â€” Agent Action Steps',
-    desc: 'Every step in your agent is a node â€” a Python function. It receives the current state, does work (calls LLM, runs a tool, etc.) and returns a partial state update.',
+    title: '🔵 Nodes — Agent Action Steps',
+    desc: 'Every step in your agent is a node — a Python function. It receives the current state, does work (calls LLM, runs a tool, etc.) and returns a partial state update.',
     code: `def reason_node(state: AgentState) -> AgentState:
     """Node: ask the LLM what to do next."""
     response = llm.invoke(state["messages"])
     return {"messages": [response], "iterations": state["iterations"] + 1}`
   },
   edges: {
-    title: 'âž¡ï¸ Edges â€” Flow Control',
-    desc: 'Normal edges always go to the same next node. Conditional edges call a routing function that inspects state and returns the name of the next node â€” enabling branching.',
+    title: '➡️ Edges — Flow Control',
+    desc: 'Normal edges always go to the same next node. Conditional edges call a routing function that inspects state and returns the name of the next node — enabling branching.',
     code: `# Normal edge
 builder.add_edge("reason", "act")
 
@@ -434,8 +435,8 @@ def route_after_act(state: AgentState) -> str:
 builder.add_conditional_edges("act", route_after_act)`
   },
   state: {
-    title: 'ðŸ“¦ State â€” Shared Memory',
-    desc: 'State is a TypedDict that all nodes can read and update. LangGraph merges partial updates using reducer functions â€” e.g., lists use add_messages to append rather than replace.',
+    title: '📦 State — Shared Memory',
+    desc: 'State is a TypedDict that all nodes can read and update. LangGraph merges partial updates using reducer functions — e.g., lists use add_messages to append rather than replace.',
     code: `from typing import TypedDict, Annotated
 from langgraph.graph.message import add_messages
 
@@ -446,28 +447,28 @@ class AgentState(TypedDict):
     next_action: str | None`
   },
   cycles: {
-    title: 'ðŸ”„ Cycles â€” Loops and Retries',
-    desc: 'LangGraph\'s biggest advantage over LangChain. A conditional edge can route BACK to an earlier node â€” enabling ReAct loops, retry-on-error, refinement loops, and self-correction.',
+    title: '🔄 Cycles — Loops and Retries',
+    desc: 'LangGraph\'s biggest advantage over LangChain. A conditional edge can route BACK to an earlier node — enabling ReAct loops, retry-on-error, refinement loops, and self-correction.',
     code: `# Conditional edge that loops back
 def should_continue(state: AgentState) -> str:
     last_msg = state["messages"][-1]
     if hasattr(last_msg, "tool_calls") and last_msg.tool_calls:
-        return "tools"   # call tools â†’ back to reason
-    return END           # no tool calls â†’ done
+        return "tools"   # call tools → back to reason
+    return END           # no tool calls → done
 
 builder.add_conditional_edges("reason", should_continue,
     {"tools": "act", END: END})`
   },
   checkpoints: {
-    title: 'ðŸ’¾ Checkpointing â€” Durable State',
-    desc: 'Every node execution can save state to a checkpointer. If the process crashes or you need to pause, the graph resumes from the exact last saved state â€” no work is lost.',
+    title: '💾 Checkpointing — Durable State',
+    desc: 'Every node execution can save state to a checkpointer. If the process crashes or you need to pause, the graph resumes from the exact last saved state — no work is lost.',
     code: `from langgraph.checkpoint.sqlite import SqliteSaver
 
 with SqliteSaver.from_conn_string(":memory:") as mem:
     graph = builder.compile(checkpointer=mem)
     config = {"configurable": {"thread_id": "run_42"}}
 
-    # Run â€” state saved after each node
+    # Run — state saved after each node
     result = graph.invoke({"messages": [...]}, config)
 
     # Retrieve any past state
@@ -475,8 +476,8 @@ with SqliteSaver.from_conn_string(":memory:") as mem:
     print(snapshot.values["iterations"])`
   },
   hitl: {
-    title: 'ðŸ§‘â€ðŸ’» Human-in-the-Loop',
-    desc: 'Specify interrupt_before=["node_name"] to pause execution and await human input. The human can inspect state, modify it, or just approve â€” then resume the graph.',
+    title: '🧑‍💻 Human-in-the-Loop',
+    desc: 'Specify interrupt_before=["node_name"] to pause execution and await human input. The human can inspect state, modify it, or just approve — then resume the graph.',
     code: `graph = builder.compile(
     checkpointer=memory,
     interrupt_before=["submit_pr"]  # pause before submitting
@@ -484,7 +485,7 @@ with SqliteSaver.from_conn_string(":memory:") as mem:
 
 # Run until interrupt
 state = graph.invoke(input_state, config)
-# â†’ Graph pauses, state saved
+# → Graph pauses, state saved
 
 # Developer reviews the PR diff...
 print(state["pr_diff"])
@@ -505,7 +506,7 @@ function showConcept(key) {
   panel.classList.add('show');
 }
 
-/* â”€â”€ STATE MACHINE ANIMATION â”€â”€ */
+/* ── STATE MACHINE ANIMATION ── */
 const smStates = [
   { node: 'sn_reason', label: 'Reason',
     state: `{\n  "messages": ["User: Find the capital of France"],\n  "next_action": null,\n  "iterations": 1\n}` },
@@ -514,7 +515,7 @@ const smStates = [
   { node: 'sn_observe', label: 'Observe',
     state: `{\n  "messages": ["Tool result: Paris is the capital of France"],\n  "tool_results": [{"query":"capital France","result":"Paris"}],\n  "iterations": 1\n}` },
   { node: 'sn_reason', label: 'Reason (loop)',
-    state: `{\n  "messages": ["I have the answer â€” no more tools needed"],\n  "next_action": null,\n  "iterations": 2\n}`,
+    state: `{\n  "messages": ["I have the answer — no more tools needed"],\n  "next_action": null,\n  "iterations": 2\n}`,
     cycle: true },
   { node: 'sn_end', label: 'END',
     state: `{\n  "messages": ["Final: The capital of France is Paris."],\n  "tool_results": [...],\n  "iterations": 2\n}` }
@@ -549,13 +550,13 @@ function resetSM() {
   document.getElementById('smStateBox').textContent = `{\n  "messages": [],\n  "next_action": null,\n  "tool_results": [],\n  "iterations": 0\n}`;
 }
 
-/* â”€â”€ CODE TABS â”€â”€ */
+/* ── CODE TABS ── */
 const codeTabs = [
 `from typing import TypedDict, Annotated
 from langgraph.graph.message import add_messages
 
 class AgentState(TypedDict):
-    # Annotated with add_messages reducer â€” appends, not replaces
+    # Annotated with add_messages reducer — appends, not replaces
     messages: Annotated[list, add_messages]
     tool_results: list
     iterations: int
@@ -584,15 +585,15 @@ builder.add_node("final", final_node)
 
 builder.set_entry_point("reason")
 
-# Conditional routing â€” loop or end
+# Conditional routing — loop or end
 def route(state: AgentState) -> str:
     last = state["messages"][-1]
     if hasattr(last, "tool_calls") and last.tool_calls:
-        return "tools"   # agent wants to call tools â†’ loop
-    return "final"       # agent has answer â†’ done
+        return "tools"   # agent wants to call tools → loop
+    return "final"       # agent has answer → done
 
 builder.add_conditional_edges("reason", route)
-builder.add_edge("tools", "reason")   # â† cycle back
+builder.add_edge("tools", "reason")   # ← cycle back
 builder.add_edge("final", END)`,
 
 `from langgraph.checkpoint.sqlite import SqliteSaver
@@ -620,55 +621,55 @@ function showCodeTab(idx, btn) {
 // Init
 showCodeTab(0, document.querySelector('#codeTabBtns .btn'));
 
-/* â”€â”€ TRACES â”€â”€ */
+/* ── TRACES ── */
 const traces = [
   [
-    {cls:'system', t:0,    txt:'â”€â”€ Research + Write agent (2 tool loops) â”€â”€'},
+    {cls:'system', t:0,    txt:'── Research + Write agent (2 tool loops) ──'},
     {cls:'node',   t:200,  txt:'[reason]  LLM: I need to search for quantum computing trends'},
-    {cls:'edge',   t:500,  txt:'[edge]    route() â†’ "tools" (tool_calls detected)'},
+    {cls:'edge',   t:500,  txt:'[edge]    route() → "tools" (tool_calls detected)'},
     {cls:'node',   t:700,  txt:'[tools]   Executing: web_search("quantum computing 2024 trends")'},
     {cls:'state',  t:1000, txt:'[state]   tool_results = [{"source":"Nature","snippet":"..."}]'},
-    {cls:'edge',   t:1200, txt:'[edge]    tools â†’ reason (cycle back)'},
+    {cls:'edge',   t:1200, txt:'[edge]    tools → reason (cycle back)'},
     {cls:'node',   t:1400, txt:'[reason]  LLM: Good data found. Also need to search for market size'},
-    {cls:'edge',   t:1700, txt:'[edge]    route() â†’ "tools" (second tool call)'},
+    {cls:'edge',   t:1700, txt:'[edge]    route() → "tools" (second tool call)'},
     {cls:'node',   t:1900, txt:'[tools]   Executing: web_search("quantum computing market 2024")'},
     {cls:'state',  t:2200, txt:'[state]   tool_results = [..., {"source":"McKinsey","snippet":"..."}]'},
-    {cls:'edge',   t:2400, txt:'[edge]    tools â†’ reason (cycle back)'},
+    {cls:'edge',   t:2400, txt:'[edge]    tools → reason (cycle back)'},
     {cls:'node',   t:2600, txt:'[reason]  LLM: Sufficient data. Writing final answer.'},
-    {cls:'edge',   t:2900, txt:'[edge]    route() â†’ "final" (no tool calls)'},
+    {cls:'edge',   t:2900, txt:'[edge]    route() → "final" (no tool calls)'},
     {cls:'node',   t:3100, txt:'[final]   Generating structured report...'},
-    {cls:'system', t:3400, txt:'â”€â”€ Complete. 2 tool loop cycles, 3 LLM calls â”€â”€'},
+    {cls:'system', t:3400, txt:'── Complete. 2 tool loop cycles, 3 LLM calls ──'},
   ],
   [
-    {cls:'system', t:0,    txt:'â”€â”€ Code Review with Human Approval (interrupt_before=["submit_pr"]) â”€â”€'},
+    {cls:'system', t:0,    txt:'── Code Review with Human Approval (interrupt_before=["submit_pr"]) ──'},
     {cls:'node',   t:200,  txt:'[analyse] Reading diff: 147 lines changed in auth module'},
     {cls:'node',   t:600,  txt:'[analyse] Issues found: 2 potential SQL injections, 1 missing null check'},
     {cls:'node',   t:1000, txt:'[suggest] Generating fix suggestions...'},
     {cls:'state',  t:1300, txt:'[state]   pr_diff = "...", issues = [...], suggestions = [...]'},
-    {cls:'edge',   t:1500, txt:'[checkpoint] â¸ INTERRUPT before "submit_pr" â€” state saved'},
-    {cls:'system', t:1700, txt:'â”€â”€ Graph paused. Awaiting human review... â”€â”€'},
+    {cls:'edge',   t:1500, txt:'[checkpoint] ⏸ INTERRUPT before "submit_pr" — state saved'},
+    {cls:'system', t:1700, txt:'── Graph paused. Awaiting human review... ──'},
     {cls:'cycle',  t:2500, txt:'[human]   Reviewed: approved 2/3 suggestions, rejected SQL injection fix'},
     {cls:'state',  t:2700, txt:'[update_state] approved = True, final_suggestions = [2 of 3]'},
-    {cls:'edge',   t:2900, txt:'[resume]  graph.invoke(None, config) â†’ resuming from checkpoint'},
+    {cls:'edge',   t:2900, txt:'[resume]  graph.invoke(None, config) → resuming from checkpoint'},
     {cls:'node',   t:3100, txt:'[submit_pr] Creating PR with approved suggestions...'},
-    {cls:'system', t:3400, txt:'â”€â”€ PR submitted. Human approved 2 of 3 changes â”€â”€'},
+    {cls:'system', t:3400, txt:'── PR submitted. Human approved 2 of 3 changes ──'},
   ],
   [
-    {cls:'system', t:0,    txt:'â”€â”€ Self-Correcting Agent (cycle on validation failure) â”€â”€'},
+    {cls:'system', t:0,    txt:'── Self-Correcting Agent (cycle on validation failure) ──'},
     {cls:'node',   t:200,  txt:'[generate] LLM: Generating Python function for task...'},
-    {cls:'node',   t:600,  txt:'[validate] Running tests... âœ— 2 tests failed (edge cases)'},
+    {cls:'node',   t:600,  txt:'[validate] Running tests... ✗ 2 tests failed (edge cases)'},
     {cls:'state',  t:900,  txt:'[state]   test_failures = ["test_empty_input", "test_max_int"], attempts = 1'},
-    {cls:'edge',   t:1100, txt:'[edge]    route() â†’ "generate" (failures > 0, attempts < 3)'},
-    {cls:'cycle',  t:1300, txt:'[cycle]   â†© Looping back to generation with failure context'},
+    {cls:'edge',   t:1100, txt:'[edge]    route() → "generate" (failures > 0, attempts < 3)'},
+    {cls:'cycle',  t:1300, txt:'[cycle]   ↩ Looping back to generation with failure context'},
     {cls:'node',   t:1600, txt:'[generate] LLM: Fixing edge cases from test failures...'},
-    {cls:'node',   t:2000, txt:'[validate] Running tests... âœ— 1 test still failing'},
+    {cls:'node',   t:2000, txt:'[validate] Running tests... ✗ 1 test still failing'},
     {cls:'state',  t:2300, txt:'[state]   test_failures = ["test_max_int"], attempts = 2'},
-    {cls:'edge',   t:2500, txt:'[edge]    route() â†’ "generate" (still failing, attempt 2 of 3)'},
-    {cls:'cycle',  t:2700, txt:'[cycle]   â†© Looping back again'},
+    {cls:'edge',   t:2500, txt:'[edge]    route() → "generate" (still failing, attempt 2 of 3)'},
+    {cls:'cycle',  t:2700, txt:'[cycle]   ↩ Looping back again'},
     {cls:'node',   t:3000, txt:'[generate] LLM: Adding int overflow guard...'},
-    {cls:'node',   t:3400, txt:'[validate] Running tests... âœ“ All 5 tests passing!'},
-    {cls:'edge',   t:3700, txt:'[edge]    route() â†’ END (all tests pass)'},
-    {cls:'system', t:4000, txt:'â”€â”€ Code correct after 3 self-correction cycles â”€â”€'},
+    {cls:'node',   t:3400, txt:'[validate] Running tests... ✓ All 5 tests passing!'},
+    {cls:'edge',   t:3700, txt:'[edge]    route() → END (all tests pass)'},
+    {cls:'system', t:4000, txt:'── Code correct after 3 self-correction cycles ──'},
   ]
 ];
 

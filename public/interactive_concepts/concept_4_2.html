@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>4.2 Hierarchical Pattern | Agentic AI</title>
 <style>
@@ -109,8 +110,8 @@
   .pc-box.pros h4 { color: var(--green); } .pc-box.cons h4 { color: var(--red); }
   .pc-box ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
   .pc-box ul li { font-size: 0.85rem; color: var(--muted); padding-left: 18px; position: relative; line-height: 1.5; }
-  .pc-box.pros ul li::before { content: 'âœ“'; color: var(--green); position: absolute; left: 0; }
-  .pc-box.cons ul li::before { content: 'âœ—'; color: var(--red); position: absolute; left: 0; }
+  .pc-box.pros ul li::before { content: '✓'; color: var(--green); position: absolute; left: 0; }
+  .pc-box.cons ul li::before { content: '✗'; color: var(--red); position: absolute; left: 0; }
 
   /* CODE */
   pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 16px;
@@ -146,16 +147,16 @@
 <body>
 
 <nav>
-  <a href="concept_4_1.html">â† Why Orchestration?</a>
-  <span>Session 4 Â· Concept 4.2</span>
-  <a href="concept_4_3.html">Network/Swarm Pattern â†’</a>
+  <a href="concept_4_1.html">← Why Orchestration?</a>
+  <span>Session 4 · Concept 4.2</span>
+  <a href="concept_4_3.html">Network/Swarm Pattern →</a>
 </nav>
 <nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
-  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
 </nav>
 
 <div class="hero">
-  <div class="tag">Session 4 Â· Concept 4.2</div>
+  <div class="tag">Session 4 · Concept 4.2</div>
   <h1>Hierarchical Pattern: <span>Supervisor-Worker</span></h1>
   <p>The most widely used multi-agent architecture. A supervisor orchestrates specialized workers to tackle complex goals that exceed any single agent's reach.</p>
 </div>
@@ -169,37 +170,37 @@
     <div class="arch-diagram">
       <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
         <div class="arch-node supervisor-node" onclick="showNode('supervisor')">
-          <h4>ðŸ‘” Supervisor Agent</h4>
-          <p>Plans Â· Delegates Â· Synthesizes</p>
+          <h4>👔 Supervisor Agent</h4>
+          <p>Plans · Delegates · Synthesizes</p>
         </div>
         <div class="arch-connector">
           <div class="arch-line"></div>
-          <div style="color:var(--muted); font-size:0.75rem; margin: 2px 0;">delegates tasks â†“ &nbsp;|&nbsp; â†‘ returns results</div>
+          <div style="color:var(--muted); font-size:0.75rem; margin: 2px 0;">delegates tasks ↓ &nbsp;|&nbsp; ↑ returns results</div>
           <div class="arch-line"></div>
         </div>
         <div class="arch-workers">
           <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
             <div class="arch-node worker-node" onclick="showNode('worker-research')">
-              <h4>ðŸ” Research Agent</h4>
-              <p>Web search Â· RAG</p>
+              <h4>🔍 Research Agent</h4>
+              <p>Web search · RAG</p>
             </div>
           </div>
           <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
             <div class="arch-node worker-node" onclick="showNode('worker-code')">
-              <h4>ðŸ’» Code Agent</h4>
-              <p>Write Â· Execute Â· Debug</p>
+              <h4>💻 Code Agent</h4>
+              <p>Write · Execute · Debug</p>
             </div>
           </div>
           <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
             <div class="arch-node worker-node" onclick="showNode('worker-review')">
-              <h4>âœ… Review Agent</h4>
-              <p>Validate Â· Critique</p>
+              <h4>✅ Review Agent</h4>
+              <p>Validate · Critique</p>
             </div>
           </div>
           <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
             <div class="arch-node worker-node" onclick="showNode('worker-write')">
-              <h4>âœï¸ Write Agent</h4>
-              <p>Summarize Â· Format</p>
+              <h4>✍️ Write Agent</h4>
+              <p>Summarize · Format</p>
             </div>
           </div>
         </div>
@@ -219,7 +220,7 @@
         <div class="step-icon sup-icon">1</div>
         <div class="step-body">
           <div class="step-tag sup-tag">Supervisor</div>
-          <p><strong>Receive goal</strong> â€” User sends high-level task: "Produce a competitive analysis of our top 3 rivals."</p>
+          <p><strong>Receive goal</strong> — User sends high-level task: "Produce a competitive analysis of our top 3 rivals."</p>
         </div>
       </div>
       <div class="flow-connector"></div>
@@ -227,7 +228,7 @@
         <div class="step-icon sup-icon">2</div>
         <div class="step-body">
           <div class="step-tag sup-tag">Supervisor</div>
-          <p><strong>Decompose</strong> â€” Break goal into subtasks: [research each competitor] [analyze positioning] [write comparison table] [review for accuracy]</p>
+          <p><strong>Decompose</strong> — Break goal into subtasks: [research each competitor] [analyze positioning] [write comparison table] [review for accuracy]</p>
         </div>
       </div>
       <div class="flow-connector"></div>
@@ -235,7 +236,7 @@
         <div class="step-icon work-icon">3</div>
         <div class="step-body">
           <div class="step-tag work-tag">Workers (parallel or sequential)</div>
-          <p><strong>Execute subtasks</strong> â€” Research Agent scrapes competitor sites. Simultaneously, a context-building agent fetches our own product docs.</p>
+          <p><strong>Execute subtasks</strong> — Research Agent scrapes competitor sites. Simultaneously, a context-building agent fetches our own product docs.</p>
         </div>
       </div>
       <div class="flow-connector"></div>
@@ -243,7 +244,7 @@
         <div class="step-icon work-icon">4</div>
         <div class="step-body">
           <div class="step-tag work-tag">Workers return results</div>
-          <p><strong>Report back to supervisor</strong> â€” Each worker returns structured output: <code>{"task_id": "research_rivalA", "result": {...}, "status": "completed"}</code></p>
+          <p><strong>Report back to supervisor</strong> — Each worker returns structured output: <code>{"task_id": "research_rivalA", "result": {...}, "status": "completed"}</code></p>
         </div>
       </div>
       <div class="flow-connector"></div>
@@ -251,7 +252,7 @@
         <div class="step-icon sup-icon">5</div>
         <div class="step-body">
           <div class="step-tag sup-tag">Supervisor</div>
-          <p><strong>Check &amp; route</strong> â€” Did all workers succeed? If a worker failed, should we retry or reassign? Are all inputs ready for the next step?</p>
+          <p><strong>Check &amp; route</strong> — Did all workers succeed? If a worker failed, should we retry or reassign? Are all inputs ready for the next step?</p>
         </div>
       </div>
       <div class="flow-connector"></div>
@@ -259,7 +260,7 @@
         <div class="step-icon work-icon">6</div>
         <div class="step-body">
           <div class="step-tag work-tag">Write Agent + Review Agent</div>
-          <p><strong>Second wave</strong> â€” Write Agent composes the analysis. Review Agent validates facts and flags issues. Both receive the research results as context.</p>
+          <p><strong>Second wave</strong> — Write Agent composes the analysis. Review Agent validates facts and flags issues. Both receive the research results as context.</p>
         </div>
       </div>
       <div class="flow-connector"></div>
@@ -267,7 +268,7 @@
         <div class="step-icon sup-icon">7</div>
         <div class="step-body">
           <div class="step-tag sup-tag">Supervisor</div>
-          <p><strong>Synthesize &amp; return</strong> â€” Assemble all worker outputs into the final competitive analysis document. Return to the user.</p>
+          <p><strong>Synthesize &amp; return</strong> — Assemble all worker outputs into the final competitive analysis document. Return to the user.</p>
         </div>
       </div>
     </div>
@@ -283,8 +284,8 @@
         <button class="trace-scenario" onclick="setScenario(2, this)">Worker Failure + Retry</button>
       </div>
       <div class="trace-controls">
-        <button class="trace-btn primary" onclick="runTrace()">â–¶ Run</button>
-        <button class="trace-btn" onclick="clearTrace()">âœ• Clear</button>
+        <button class="trace-btn primary" onclick="runTrace()">▶ Run</button>
+        <button class="trace-btn" onclick="clearTrace()">✕ Clear</button>
       </div>
       <div class="trace-log" id="trace-log">
         <span style="color:var(--muted);">// Select a scenario and click Run to trace the supervisor-worker execution</span>
@@ -297,36 +298,36 @@
     <div class="section-title">Real-World Examples</div>
     <div class="examples-grid">
       <div class="example-card">
-        <h4>ðŸ“° Research Report Generator</h4>
+        <h4>📰 Research Report Generator</h4>
         <div class="e-sup">Supervisor: Report Orchestrator</div>
         <div class="e-workers">Workers:
-          <span>â†’ Web Search Agent (find sources)</span>
-          <span>â†’ RAG Agent (search internal docs)</span>
-          <span>â†’ Analysis Agent (extract insights)</span>
-          <span>â†’ Writing Agent (draft report)</span>
-          <span>â†’ Citation Agent (add references)</span>
+          <span>→ Web Search Agent (find sources)</span>
+          <span>→ RAG Agent (search internal docs)</span>
+          <span>→ Analysis Agent (extract insights)</span>
+          <span>→ Writing Agent (draft report)</span>
+          <span>→ Citation Agent (add references)</span>
         </div>
       </div>
       <div class="example-card">
-        <h4>ðŸ› ï¸ Software Development Agent</h4>
+        <h4>🛠️ Software Development Agent</h4>
         <div class="e-sup">Supervisor: Dev Orchestrator</div>
         <div class="e-workers">Workers:
-          <span>â†’ Planner Agent (architecture)</span>
-          <span>â†’ Coder Agent (write code)</span>
-          <span>â†’ Tester Agent (run tests)</span>
-          <span>â†’ Reviewer Agent (code review)</span>
-          <span>â†’ Doc Agent (write documentation)</span>
+          <span>→ Planner Agent (architecture)</span>
+          <span>→ Coder Agent (write code)</span>
+          <span>→ Tester Agent (run tests)</span>
+          <span>→ Reviewer Agent (code review)</span>
+          <span>→ Doc Agent (write documentation)</span>
         </div>
       </div>
       <div class="example-card">
-        <h4>ðŸŽ¯ Sales Intelligence System</h4>
+        <h4>🎯 Sales Intelligence System</h4>
         <div class="e-sup">Supervisor: Sales Analyst</div>
         <div class="e-workers">Workers:
-          <span>â†’ LinkedIn Scraper Agent</span>
-          <span>â†’ News Monitor Agent</span>
-          <span>â†’ CRM Data Agent</span>
-          <span>â†’ Email Draft Agent</span>
-          <span>â†’ Scoring Agent (lead priority)</span>
+          <span>→ LinkedIn Scraper Agent</span>
+          <span>→ News Monitor Agent</span>
+          <span>→ CRM Data Agent</span>
+          <span>→ Email Draft Agent</span>
+          <span>→ Scoring Agent (lead priority)</span>
         </div>
       </div>
     </div>
@@ -339,9 +340,9 @@
       <div class="pc-box pros">
         <h4>Strengths</h4>
         <ul>
-          <li>Clear separation of concerns â€” each agent has one job</li>
+          <li>Clear separation of concerns — each agent has one job</li>
           <li>Specialization: purpose-built prompts and tools per worker</li>
-          <li>Partial parallelism â€” independent workers can run simultaneously</li>
+          <li>Partial parallelism — independent workers can run simultaneously</li>
           <li>Failure isolation: one worker failure doesn't abort others</li>
           <li>Easy to scale: add more workers without changing the supervisor</li>
           <li>Debuggable: each worker's I/O is traceable independently</li>
@@ -351,9 +352,9 @@
       <div class="pc-box cons">
         <h4>Limitations</h4>
         <ul>
-          <li>Supervisor is a single point of failure â€” if it hallucinates a bad plan, all workers suffer</li>
-          <li>Supervisor must have enough context to evaluate worker outputs â€” large context requirement</li>
-          <li>Sequential waves add latency (research â†’ write â†’ review can't all run at once)</li>
+          <li>Supervisor is a single point of failure — if it hallucinates a bad plan, all workers suffer</li>
+          <li>Supervisor must have enough context to evaluate worker outputs — large context requirement</li>
+          <li>Sequential waves add latency (research → write → review can't all run at once)</li>
           <li>Worker outputs must be structured for the supervisor to parse them reliably</li>
           <li>Difficult to handle deeply recursive goals without nested supervisors</li>
           <li>Coordination overhead: each worker call = one additional LLM round-trip</li>
@@ -411,7 +412,7 @@ client = <span class="cls">Anthropic</span>()
   <!-- QUIZ -->
   <div class="section">
     <div class="quiz-header">
-      <h3>ðŸ§  Knowledge Check</h3>
+      <h3>🧠 Knowledge Check</h3>
       <div class="score-display" id="scoreDisplay">0 / 5</div>
     </div>
 
@@ -424,31 +425,31 @@ client = <span class="cls">Anthropic</span>()
         <button class="opt" onclick="answer('q1','d','c')">d) Store intermediate results in shared memory for all workers to access</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="question" id="q2">
       <p>2. Why is it common to use a powerful (expensive) model for the supervisor but a smaller (cheaper) model for workers?</p>
       <div class="options">
-        <button class="opt" onclick="answer('q2','a','b')">a) Workers don't need to understand language â€” they only process structured data</button>
+        <button class="opt" onclick="answer('q2','a','b')">a) Workers don't need to understand language — they only process structured data</button>
         <button class="opt" onclick="answer('q2','b','b')">b) Planning, reasoning, and synthesis require more capability; workers do narrow, well-defined tasks where a smaller model is sufficient</button>
         <button class="opt" onclick="answer('q2','c','b')">c) Smaller models are faster at reading long documents, which workers need to do</button>
         <button class="opt" onclick="answer('q2','d','b')">d) The supervisor must parse all worker outputs simultaneously, requiring more context</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="question" id="q3">
       <p>3. What is the key vulnerability of the Hierarchical pattern?</p>
       <div class="options">
         <button class="opt" onclick="answer('q3','a','b')">a) Workers can communicate with each other and bypass the supervisor</button>
-        <button class="opt" onclick="answer('q3','b','b')">b) The supervisor is a single point of failure â€” a bad decomposition or synthesis error corrupts the entire output</button>
+        <button class="opt" onclick="answer('q3','b','b')">b) The supervisor is a single point of failure — a bad decomposition or synthesis error corrupts the entire output</button>
         <button class="opt" onclick="answer('q3','c','b')">c) The pattern doesn't support more than 3 worker agents</button>
         <button class="opt" onclick="answer('q3','d','b')">d) Workers can only execute tools, not call other LLMs</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="question" id="q4">
@@ -457,10 +458,10 @@ client = <span class="cls">Anthropic</span>()
         <button class="opt" onclick="answer('q4','a','d')">a) Answering a simple factual question from a knowledge base</button>
         <button class="opt" onclick="answer('q4','b','d')">b) Classifying a batch of customer emails into categories</button>
         <button class="opt" onclick="answer('q4','c','d')">c) Summarizing a single short document</button>
-        <button class="opt" onclick="answer('q4','d','d')">d) Building a software feature end-to-end: plan â†’ code â†’ test â†’ document â†’ review</button>
+        <button class="opt" onclick="answer('q4','d','d')">d) Building a software feature end-to-end: plan → code → test → document → review</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="question" id="q5">
@@ -468,11 +469,11 @@ client = <span class="cls">Anthropic</span>()
       <div class="options">
         <button class="opt" onclick="answer('q5','a','c')">a) The supervisor's context window cannot handle plain text responses</button>
         <button class="opt" onclick="answer('q5','b','c')">b) JSON responses are automatically stored in shared memory</button>
-        <button class="opt" onclick="answer('q5','c','c')">c) The supervisor needs to reliably parse and route each worker's output â€” structured data removes ambiguity and parsing errors</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) The supervisor needs to reliably parse and route each worker's output — structured data removes ambiguity and parsing errors</button>
         <button class="opt" onclick="answer('q5','d','c')">d) Free text responses cause workers to go into an infinite loop</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
@@ -482,24 +483,24 @@ client = <span class="cls">Anthropic</span>()
 // NODE DETAILS
 const nodeData = {
   supervisor: {
-    title: 'ðŸ‘” Supervisor Agent â€” The Orchestrator',
+    title: '👔 Supervisor Agent — The Orchestrator',
     body: 'The supervisor is the "brain" of the system. It receives the high-level user goal, reasons about how to break it down into subtasks, decides which worker agent should handle each task, passes the right context to each worker, evaluates the results when they come back, routes to the next wave of workers if needed, and finally synthesizes all outputs into the user-facing response. Uses a powerful model (GPT-4o, Claude Opus) because planning and synthesis require strong reasoning.'
   },
   'worker-research': {
-    title: 'ðŸ” Research Agent â€” Information Retrieval Specialist',
-    body: 'A narrow specialist: its only job is to find and return relevant information. Given a specific search query or topic, it runs web searches, queries RAG knowledge bases, or fetches URLs. Returns structured data with findings and sources. Has no awareness of the broader goal â€” it only knows its specific task. Typically runs with a smaller, faster model since the task is well-defined.'
+    title: '🔍 Research Agent — Information Retrieval Specialist',
+    body: 'A narrow specialist: its only job is to find and return relevant information. Given a specific search query or topic, it runs web searches, queries RAG knowledge bases, or fetches URLs. Returns structured data with findings and sources. Has no awareness of the broader goal — it only knows its specific task. Typically runs with a smaller, faster model since the task is well-defined.'
   },
   'worker-code': {
-    title: 'ðŸ’» Code Agent â€” Engineering Specialist',
-    body: 'Writes, executes, and debugs code. Can run a Python interpreter tool, read/write files, run tests. Returns structured output: code produced, test results, errors encountered. Does not decide what to build (that\'s the supervisor\'s job) â€” it only executes a specific coding task received as a clear specification.'
+    title: '💻 Code Agent — Engineering Specialist',
+    body: 'Writes, executes, and debugs code. Can run a Python interpreter tool, read/write files, run tests. Returns structured output: code produced, test results, errors encountered. Does not decide what to build (that\'s the supervisor\'s job) — it only executes a specific coding task received as a clear specification.'
   },
   'worker-review': {
-    title: 'âœ… Review Agent â€” Quality Gate',
+    title: '✅ Review Agent — Quality Gate',
     body: 'Receives output from another worker (a written draft, code, a plan) and validates it against specific criteria: factual accuracy, logical consistency, completeness, style guidelines. Returns a structured review: pass/fail per criterion, specific issues found, suggested fixes. The supervisor decides whether to route back for revision or move to final synthesis.'
   },
   'worker-write': {
-    title: 'âœï¸ Write Agent â€” Content Production Specialist',
-    body: 'Takes structured research or data and produces human-readable content: reports, summaries, emails, documentation. Receives a specific content brief from the supervisor (what to write, what format, what audience). Optimized with a system prompt for clarity, tone, and structure. Does not search for information â€” that\'s the Research Agent\'s job.'
+    title: '✍️ Write Agent — Content Production Specialist',
+    body: 'Takes structured research or data and produces human-readable content: reports, summaries, emails, documentation. Receives a specific content brief from the supervisor (what to write, what format, what audience). Optimized with a system prompt for clarity, tone, and structure. Does not search for information — that\'s the Research Agent\'s job.'
   }
 };
 
@@ -515,51 +516,51 @@ const scenarios = [
   [
     {cls:'b-sys', tag:'SYSTEM', msg:'Goal received: "Produce competitive analysis of Rival A, B, C"', c:'t-m'},
     {cls:'b-sup', tag:'SUPERVISOR', msg:'Decomposing goal into 5 subtasks...', c:'t-sup'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'Task 1 â†’ ResearchAgent: scrape rival_A.com product page', c:'t-sup'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'Task 2 â†’ ResearchAgent: scrape rival_B.com product page', c:'t-sup'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'Task 3 â†’ ResearchAgent: scrape rival_C.com product page', c:'t-sup'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'Task 1 → ResearchAgent: scrape rival_A.com product page', c:'t-sup'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'Task 2 → ResearchAgent: scrape rival_B.com product page', c:'t-sup'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'Task 3 → ResearchAgent: scrape rival_C.com product page', c:'t-sup'},
     {cls:'b-wk', tag:'RESEARCH-A', msg:'Searching rival_A.com... Retrieved 4 product pages', c:'t-wk'},
     {cls:'b-wk', tag:'RESEARCH-B', msg:'Searching rival_B.com... Retrieved 6 product pages', c:'t-wk'},
     {cls:'b-wk', tag:'RESEARCH-C', msg:'Searching rival_C.com... Retrieved 3 product pages', c:'t-wk'},
-    {cls:'b-wk', tag:'RESEARCH-A', msg:'âœ“ Done â€” {pricing: "$49/mo", key_features: [...], target_market: "SMB"}', c:'t-ok'},
-    {cls:'b-wk', tag:'RESEARCH-B', msg:'âœ“ Done â€” {pricing: "$99/mo", key_features: [...], target_market: "Enterprise"}', c:'t-ok'},
-    {cls:'b-wk', tag:'RESEARCH-C', msg:'âœ“ Done â€” {pricing: "Free + $29/mo", key_features: [...], target_market: "Startups"}', c:'t-ok'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'All research complete. Dispatching â†’ WriteAgent', c:'t-sup'},
+    {cls:'b-wk', tag:'RESEARCH-A', msg:'✓ Done — {pricing: "$49/mo", key_features: [...], target_market: "SMB"}', c:'t-ok'},
+    {cls:'b-wk', tag:'RESEARCH-B', msg:'✓ Done — {pricing: "$99/mo", key_features: [...], target_market: "Enterprise"}', c:'t-ok'},
+    {cls:'b-wk', tag:'RESEARCH-C', msg:'✓ Done — {pricing: "Free + $29/mo", key_features: [...], target_market: "Startups"}', c:'t-ok'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'All research complete. Dispatching → WriteAgent', c:'t-sup'},
     {cls:'b-wk', tag:'WRITE', msg:'Composing comparative analysis (1,847 tokens)...', c:'t-wk'},
-    {cls:'b-wk', tag:'WRITE', msg:'âœ“ Draft ready â€” comparison table + positioning analysis', c:'t-ok'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'Dispatching draft â†’ ReviewAgent', c:'t-sup'},
+    {cls:'b-wk', tag:'WRITE', msg:'✓ Draft ready — comparison table + positioning analysis', c:'t-ok'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'Dispatching draft → ReviewAgent', c:'t-sup'},
     {cls:'b-wk', tag:'REVIEW', msg:'Checking: factual accuracy, citation coverage, format...', c:'t-wk'},
-    {cls:'b-wk', tag:'REVIEW', msg:'âœ“ Approved â€” no factual issues found', c:'t-ok'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'âœ“ Synthesis complete. Returning final report to user.', c:'t-ok'},
+    {cls:'b-wk', tag:'REVIEW', msg:'✓ Approved — no factual issues found', c:'t-ok'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'✓ Synthesis complete. Returning final report to user.', c:'t-ok'},
   ],
   [
-    {cls:'b-sys', tag:'SYSTEM', msg:'Goal: "Review PR #247 â€” auth middleware rewrite"', c:'t-m'},
+    {cls:'b-sys', tag:'SYSTEM', msg:'Goal: "Review PR #247 — auth middleware rewrite"', c:'t-m'},
     {cls:'b-sup', tag:'SUPERVISOR', msg:'Dispatching 3 specialized review tasks in parallel...', c:'t-sup'},
     {cls:'b-wk', tag:'SECURITY-AGENT', msg:'Checking: injection, auth bypass, token handling...', c:'t-wk'},
     {cls:'b-wk', tag:'PERF-AGENT', msg:'Checking: N+1 queries, blocking I/O, memory leaks...', c:'t-wk'},
     {cls:'b-wk', tag:'STYLE-AGENT', msg:'Checking: naming, docstrings, test coverage, typing...', c:'t-wk'},
-    {cls:'b-wk', tag:'SECURITY-AGENT', msg:'âš  ISSUE: JWT secret hardcoded in config.py line 47', c:'t-err'},
-    {cls:'b-wk', tag:'PERF-AGENT', msg:'âœ“ No performance issues found', c:'t-ok'},
-    {cls:'b-wk', tag:'STYLE-AGENT', msg:'âš  3 functions missing type hints; test coverage 61% (target: 80%)', c:'t-err'},
+    {cls:'b-wk', tag:'SECURITY-AGENT', msg:'⚠ ISSUE: JWT secret hardcoded in config.py line 47', c:'t-err'},
+    {cls:'b-wk', tag:'PERF-AGENT', msg:'✓ No performance issues found', c:'t-ok'},
+    {cls:'b-wk', tag:'STYLE-AGENT', msg:'⚠ 3 functions missing type hints; test coverage 61% (target: 80%)', c:'t-err'},
     {cls:'b-sup', tag:'SUPERVISOR', msg:'Received all reviews. Aggregating findings...', c:'t-sup'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'STATUS: âŒ Changes Required', c:'t-err'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'STATUS: ❌ Changes Required', c:'t-err'},
     {cls:'b-sup', tag:'SUPERVISOR', msg:'Critical: Hardcoded JWT secret must be env variable', c:'t-err'},
     {cls:'b-sup', tag:'SUPERVISOR', msg:'Required: Add type hints + increase test coverage to >80%', c:'t-m'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'âœ“ Review summary delivered to PR author.', c:'t-ok'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'✓ Review summary delivered to PR author.', c:'t-ok'},
   ],
   [
     {cls:'b-sys', tag:'SYSTEM', msg:'Goal: "Summarize Q4 2024 financial reports from 3 sources"', c:'t-m'},
     {cls:'b-sup', tag:'SUPERVISOR', msg:'Dispatching research tasks to 3 workers...', c:'t-sup'},
-    {cls:'b-wk', tag:'WORKER-1', msg:'Fetching SEC 10-Q filing... âœ“ (2.4s)', c:'t-ok'},
-    {cls:'b-wk', tag:'WORKER-2', msg:'Fetching earnings press release... âœ“ (1.1s)', c:'t-ok'},
-    {cls:'b-wk', tag:'WORKER-3', msg:'Fetching analyst report... âš  429 Too Many Requests', c:'t-err'},
+    {cls:'b-wk', tag:'WORKER-1', msg:'Fetching SEC 10-Q filing... ✓ (2.4s)', c:'t-ok'},
+    {cls:'b-wk', tag:'WORKER-2', msg:'Fetching earnings press release... ✓ (1.1s)', c:'t-ok'},
+    {cls:'b-wk', tag:'WORKER-3', msg:'Fetching analyst report... ⚠ 429 Too Many Requests', c:'t-err'},
     {cls:'b-sup', tag:'SUPERVISOR', msg:'Worker-3 failed with rate limit. Scheduling retry in 5s...', c:'t-sup'},
-    {cls:'b-wk', tag:'WORKER-3', msg:'Retry 1/3... Fetching analyst report... âš  429 still', c:'t-err'},
-    {cls:'b-wk', tag:'WORKER-3', msg:'Retry 2/3... Fetching analyst report... âœ“ Success (3.2s)', c:'t-ok'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'All 3 workers succeeded. Dispatching â†’ SummaryAgent', c:'t-sup'},
+    {cls:'b-wk', tag:'WORKER-3', msg:'Retry 1/3... Fetching analyst report... ⚠ 429 still', c:'t-err'},
+    {cls:'b-wk', tag:'WORKER-3', msg:'Retry 2/3... Fetching analyst report... ✓ Success (3.2s)', c:'t-ok'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'All 3 workers succeeded. Dispatching → SummaryAgent', c:'t-sup'},
     {cls:'b-wk', tag:'SUMMARY', msg:'Synthesizing 3 financial reports into unified Q4 summary...', c:'t-wk'},
-    {cls:'b-wk', tag:'SUMMARY', msg:'âœ“ Q4 summary complete â€” revenue, margins, guidance', c:'t-ok'},
-    {cls:'b-sup', tag:'SUPERVISOR', msg:'âœ“ Final summary delivered. Total time: 11.3s (with retry)', c:'t-ok'},
+    {cls:'b-wk', tag:'SUMMARY', msg:'✓ Q4 summary complete — revenue, margins, guidance', c:'t-ok'},
+    {cls:'b-sup', tag:'SUPERVISOR', msg:'✓ Final summary delivered. Total time: 11.3s (with retry)', c:'t-ok'},
   ]
 ];
 
@@ -603,11 +604,11 @@ function runTrace() {
 let score = 0;
 const answered = {};
 const msgs = {
-  q1: 'The supervisor\'s job is: decompose the goal â†’ delegate to workers â†’ synthesize all outputs. It\'s the coordinator, not a task executor.',
-  q2: 'Workers do narrow, well-specified tasks where a smaller model is sufficient. The supervisor handles complex reasoning and synthesis â€” worth the cost.',
+  q1: 'The supervisor\'s job is: decompose the goal → delegate to workers → synthesize all outputs. It\'s the coordinator, not a task executor.',
+  q2: 'Workers do narrow, well-specified tasks where a smaller model is sufficient. The supervisor handles complex reasoning and synthesis — worth the cost.',
   q3: 'The supervisor is the single point of failure. Bad planning or synthesis at the supervisor level corrupts everything downstream.',
-  q4: 'The software feature pipeline has genuinely different specializations (plan/code/test/doc/review) â€” the perfect fit for specialized workers under one supervisor.',
-  q5: 'Structured output removes ambiguity. The supervisor needs to programmatically route and assemble worker outputs â€” free text parsing is fragile and error-prone.'
+  q4: 'The software feature pipeline has genuinely different specializations (plan/code/test/doc/review) — the perfect fit for specialized workers under one supervisor.',
+  q5: 'Structured output removes ambiguity. The supervisor needs to programmatically route and assemble worker outputs — free text parsing is fragile and error-prone.'
 };
 
 function answer(qid, chosen, correct) {
@@ -623,11 +624,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 

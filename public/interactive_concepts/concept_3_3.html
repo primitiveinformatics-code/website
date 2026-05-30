@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.3 â€” MCP in Production</title>
+<title>Concept 3.3 — MCP in Production</title>
 <style>
   :root {
     --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
@@ -119,17 +120,17 @@
 
 <nav>
   <div class="nav-links">
-    <a href="concept_3_2.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_4.html">Next â†’</a>
+    <a href="concept_3_2.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_4.html">Next →</a>
   </div>
-  <span class="title">3.3 â€” MCP in Production</span>
+  <span class="title">3.3 — MCP in Production</span>
 </nav>
 
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>MCP in Production</h1>
-  <p>Auth, versioning, error handling, rate limits, and observability â€” everything you need before shipping an MCP-powered agent to real users.</p>
+  <p>Auth, versioning, error handling, rate limits, and observability — everything you need before shipping an MCP-powered agent to real users.</p>
 </div>
 
 <div class="content">
@@ -141,11 +142,11 @@
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAcc('auth')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸ”</span>
+          <span class="acc-icon">🔐</span>
           Authentication & Authorization
           <span class="acc-tag" style="background:rgba(108,99,255,.15);color:var(--accent4);">Critical</span>
         </div>
-        <span class="chevron">â–¼</span>
+        <span class="chevron">▼</span>
       </div>
       <div class="accordion-body" id="acc-auth">
         <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">MCP servers must verify WHO is calling them and WHAT they're allowed to do. Two separate concerns.</p>
@@ -155,7 +156,7 @@
             <ul>
               <li>OAuth 2.0 Bearer tokens in Authorization header</li>
               <li>API keys passed as custom headers or query params</li>
-              <li>mTLS for server-to-server (hub â†’ downstream server)</li>
+              <li>mTLS for server-to-server (hub → downstream server)</li>
               <li>JWT validation with expiry checks</li>
             </ul>
           </div>
@@ -172,7 +173,7 @@
             <h5>Pitfalls</h5>
             <ul>
               <li>Hardcoded API keys in server config (use secrets manager)</li>
-              <li>No token expiry validation â†’ stale creds stay valid</li>
+              <li>No token expiry validation → stale creds stay valid</li>
               <li>Trusting agent-provided identity without server verification</li>
             </ul>
           </div>
@@ -190,11 +191,11 @@ X-Scope: tools.read, fs.read</pre>
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAcc('version')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸ“¦</span>
+          <span class="acc-icon">📦</span>
           Versioning & Compatibility
           <span class="acc-tag" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
         </div>
-        <span class="chevron">â–¼</span>
+        <span class="chevron">▼</span>
       </div>
       <div class="accordion-body" id="acc-version">
         <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Protocol and tool schema versions can drift. Handle this gracefully.</p>
@@ -211,8 +212,8 @@ X-Scope: tools.read, fs.read</pre>
           <div class="detail-card info">
             <h5>Tool Schema Versioning</h5>
             <ul>
-              <li>Add new optional params â€” always backward compatible</li>
-              <li>Rename/remove params â†’ breaking change â†’ bump version</li>
+              <li>Add new optional params — always backward compatible</li>
+              <li>Rename/remove params → breaking change → bump version</li>
               <li>Use tool name versioning: <code>search_v2</code> alongside <code>search</code></li>
               <li>Deprecate old tools with <code>deprecated: true</code> in schema</li>
             </ul>
@@ -238,11 +239,11 @@ X-Scope: tools.read, fs.read</pre>
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAcc('errors')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸš¨</span>
+          <span class="acc-icon">🚨</span>
           Error Handling & Retries
           <span class="acc-tag" style="background:rgba(255,101,132,.1);color:var(--wrong);">Critical</span>
         </div>
-        <span class="chevron">â–¼</span>
+        <span class="chevron">▼</span>
       </div>
       <div class="accordion-body" id="acc-errors">
         <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">MCP errors come in two flavors: protocol errors and tool execution errors. Handle them differently.</p>
@@ -269,23 +270,23 @@ Codes: -32700 Parse Error
   }]
 }}
 Note: isError:true still returns
-HTTP 200 â€” it's app-level error</pre>
+HTTP 200 — it's app-level error</pre>
           </div>
           <div class="detail-card solution">
             <h5>Retry Strategy</h5>
             <ul>
               <li>Retry on: network timeout, 503, -32603 (transient)</li>
               <li>Do NOT retry: -32601, -32602 (logic errors)</li>
-              <li>Exponential backoff: 1s â†’ 2s â†’ 4s â†’ 8s â†’ give up</li>
+              <li>Exponential backoff: 1s → 2s → 4s → 8s → give up</li>
               <li>Max 3 retries. Log each attempt with request ID.</li>
             </ul>
           </div>
           <div class="detail-card solution">
             <h5>Graceful Degradation</h5>
             <ul>
-              <li>Tool timeout â†’ return error to LLM context, let it decide</li>
-              <li>Server down â†’ agent falls back to cached data or skip step</li>
-              <li>Never silently swallow errors â€” always put them in context</li>
+              <li>Tool timeout → return error to LLM context, let it decide</li>
+              <li>Server down → agent falls back to cached data or skip step</li>
+              <li>Never silently swallow errors — always put them in context</li>
               <li>Circuit breaker: stop calling after 5 consecutive failures</li>
             </ul>
           </div>
@@ -296,11 +297,11 @@ HTTP 200 â€” it's app-level error</pre>
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAcc('ratelimits')">
         <div class="acc-title">
-          <span class="acc-icon">âš¡</span>
+          <span class="acc-icon">⚡</span>
           Rate Limiting & Cost Control
           <span class="acc-tag" style="background:rgba(255,209,102,.1);color:var(--accent2);">Important</span>
         </div>
-        <span class="chevron">â–¼</span>
+        <span class="chevron">▼</span>
       </div>
       <div class="accordion-body" id="acc-ratelimits">
         <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Agents can exhaust APIs and budgets quickly. Rate limiting is a first-class production concern.</p>
@@ -311,7 +312,7 @@ HTTP 200 â€” it's app-level error</pre>
               <li>Per-agent limits: agent-A max 100 req/min to web.*</li>
               <li>Per-tool limits: code.run_python max 20 exec/min</li>
               <li>Global limits: all agents share 1000 req/min total</li>
-              <li>Token bucket algorithm â€” allows short bursts</li>
+              <li>Token bucket algorithm — allows short bursts</li>
             </ul>
           </div>
           <div class="detail-card warn">
@@ -330,14 +331,14 @@ Retry-After: 12
               <li>Track cost-per-tool-call (API costs vary widely)</li>
               <li>Set hard budget limits per agent per hour</li>
               <li>Alert when 80% of budget consumed</li>
-              <li>Expensive tools (e.g., GPT-4 Vision) â†’ require explicit unlock</li>
+              <li>Expensive tools (e.g., GPT-4 Vision) → require explicit unlock</li>
             </ul>
           </div>
           <div class="detail-card danger">
             <h5>Runaway Cost Pattern</h5>
             <ul>
               <li>Agent loops calling expensive tool repeatedly</li>
-              <li>No loop detection â†’ tool budget exhausted in minutes</li>
+              <li>No loop detection → tool budget exhausted in minutes</li>
               <li>Fix: max_tool_calls_per_run limit + cost alerting</li>
               <li>Circuit breaker on cost threshold breach</li>
             </ul>
@@ -349,11 +350,11 @@ Retry-After: 12
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAcc('obs')">
         <div class="acc-title">
-          <span class="acc-icon">ðŸ“Š</span>
+          <span class="acc-icon">📊</span>
           Observability & Monitoring
           <span class="acc-tag" style="background:rgba(6,214,160,.1);color:var(--accent3);">Required</span>
         </div>
-        <span class="chevron">â–¼</span>
+        <span class="chevron">▼</span>
       </div>
       <div class="accordion-body" id="acc-obs">
         <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">You can't debug what you can't see. Every MCP call should be traced end-to-end.</p>
@@ -383,7 +384,7 @@ Retry-After: 12
           <div class="detail-card solution">
             <h5>Distributed Tracing</h5>
             <ul>
-              <li>Propagate <code>trace_id</code> from agent â†’ hub â†’ server</li>
+              <li>Propagate <code>trace_id</code> from agent → hub → server</li>
               <li>Each hop adds a span with timing + metadata</li>
               <li>Use OpenTelemetry for vendor-neutral tracing</li>
               <li>Visualize in Jaeger or Grafana Tempo</li>
@@ -392,10 +393,10 @@ Retry-After: 12
           <div class="detail-card warn">
             <h5>Alerting Rules</h5>
             <ul>
-              <li>Error rate > 5% on any tool â†’ page on-call</li>
-              <li>p99 latency > 10s â†’ investigate server</li>
-              <li>Agent run > 50 steps â†’ possible loop â†’ alert</li>
-              <li>Cost > $50/hour per agent â†’ hard stop</li>
+              <li>Error rate > 5% on any tool → page on-call</li>
+              <li>p99 latency > 10s → investigate server</li>
+              <li>Agent run > 50 steps → possible loop → alert</li>
+              <li>Cost > $50/hour per agent → hard stop</li>
             </ul>
           </div>
         </div>
@@ -414,42 +415,42 @@ Retry-After: 12
       </div>
 
       <div class="checklist-section">
-        <h4 class="sec-auth">ðŸ” Authentication & Authorization</h4>
+        <h4 class="sec-auth">🔐 Authentication & Authorization</h4>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">OAuth 2.0 or API key auth enabled on all remote MCP servers</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Tool-level ACLs defined â€” agents only access tools they need</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Tool-level ACLs defined — agents only access tools they need</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Secrets stored in a secrets manager (not hardcoded in config)</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Token expiry validation implemented with refresh flow</span></div>
       </div>
 
       <div class="checklist-section">
-        <h4 class="sec-err">ðŸš¨ Error Handling</h4>
+        <h4 class="sec-err">🚨 Error Handling</h4>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Exponential backoff with max 3 retries on transient errors</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Circuit breaker pattern on each downstream server</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">isError:true responses handled â€” passed to LLM context, not silently dropped</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">isError:true responses handled — passed to LLM context, not silently dropped</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Timeout set on all tool calls (recommended: 30s max)</span></div>
       </div>
 
       <div class="checklist-section">
-        <h4 class="sec-perf">âš¡ Rate Limits & Cost</h4>
+        <h4 class="sec-perf">⚡ Rate Limits & Cost</h4>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Per-agent and per-tool rate limits configured</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Hard budget cap per agent per hour â€” auto-stop on breach</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Hard budget cap per agent per hour — auto-stop on breach</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">max_tool_calls_per_run limit prevents infinite loops</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">429 responses handled with Retry-After respected</span></div>
       </div>
 
       <div class="checklist-section">
-        <h4 class="sec-obs">ðŸ“Š Observability</h4>
+        <h4 class="sec-obs">📊 Observability</h4>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Structured logging with trace_id, agent_id, tool, latency, status</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Distributed tracing (OpenTelemetry) propagating across hub â†’ servers</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Distributed tracing (OpenTelemetry) propagating across hub → servers</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Error rate and latency dashboards set up</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Alerts configured for error rate > 5% and p99 > 10s</span></div>
       </div>
 
       <div class="checklist-section">
-        <h4 class="sec-sec">ðŸ”’ Security & Versioning</h4>
+        <h4 class="sec-sec">🔒 Security & Versioning</h4>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Tool input schema validation before execution (prevent injection)</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Sandboxed execution for code/shell tools (Docker or equivalent)</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Backward-compatible versioning policy â€” no silent breaking changes</span></div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Backward-compatible versioning policy — no silent breaking changes</span></div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="checkbox"></div><span class="check-text">Canary deployment strategy before full rollout of server changes</span></div>
       </div>
     </div>
@@ -462,10 +463,10 @@ Retry-After: 12
       <div class="scenario-card">
         <div class="scenario-header">
           <h4>Stale Auth Token</h4>
-          <div class="scenario-tag">âš ï¸ Auth Failure</div>
+          <div class="scenario-tag">⚠️ Auth Failure</div>
         </div>
         <div class="scenario-body">
-          <p>Agent starts a long multi-step task. 45 minutes in, the OAuth token expires. Tool calls start returning 401. Agent has no recovery path â€” the run fails silently after retries exhaust.</p>
+          <p>Agent starts a long multi-step task. 45 minutes in, the OAuth token expires. Tool calls start returning 401. Agent has no recovery path — the run fails silently after retries exhaust.</p>
           <div class="fix-label">Fix</div>
           <div class="fix-text">Implement token refresh before expiry. Check <code>exp</code> claim before each tool call. Use short-lived tokens (15m) + refresh tokens so the MCP client can renew without user interaction.</div>
         </div>
@@ -473,18 +474,18 @@ Retry-After: 12
       <div class="scenario-card">
         <div class="scenario-header">
           <h4>Cascading Tool Failures</h4>
-          <div class="scenario-tag">âš ï¸ Error Propagation</div>
+          <div class="scenario-tag">⚠️ Error Propagation</div>
         </div>
         <div class="scenario-body">
           <p>The database MCP server goes down. The agent retries 3x, exhausting its retry budget, then tries alternative tools. Without a circuit breaker, subsequent tool calls still route to the down server, stalling all agents.</p>
           <div class="fix-label">Fix</div>
-          <div class="fix-text">Implement circuit breaker per server. After 5 failures in 60s, mark server as "open circuit" â€” immediately fail calls for 30s before trying again. Let agents degrade gracefully to cached data.</div>
+          <div class="fix-text">Implement circuit breaker per server. After 5 failures in 60s, mark server as "open circuit" — immediately fail calls for 30s before trying again. Let agents degrade gracefully to cached data.</div>
         </div>
       </div>
       <div class="scenario-card">
         <div class="scenario-header">
           <h4>Runaway Cost Incident</h4>
-          <div class="scenario-tag">âš ï¸ Budget Breach</div>
+          <div class="scenario-tag">⚠️ Budget Breach</div>
         </div>
         <div class="scenario-body">
           <p>An agent enters a loop calling a paid web search API 400 times in 3 minutes. No rate limit or cost cap was set for this agent type. $800 in API costs in one hour before a human noticed.</p>
@@ -495,10 +496,10 @@ Retry-After: 12
       <div class="scenario-card">
         <div class="scenario-header">
           <h4>Silent Schema Breakage</h4>
-          <div class="scenario-tag">âš ï¸ Versioning Failure</div>
+          <div class="scenario-tag">⚠️ Versioning Failure</div>
         </div>
         <div class="scenario-body">
-          <p>A developer renames a required parameter in the <code>db.query</code> tool from <code>sql</code> to <code>query_string</code>. Existing agents still send <code>sql</code>. Server rejects with -32602 Invalid Params. Agents fail silently â€” no alert fires.</p>
+          <p>A developer renames a required parameter in the <code>db.query</code> tool from <code>sql</code> to <code>query_string</code>. Existing agents still send <code>sql</code>. Server rejects with -32602 Invalid Params. Agents fail silently — no alert fires.</p>
           <div class="fix-label">Fix</div>
           <div class="fix-text">Never rename required fields without a version bump. Run a contract test suite before any server deploy. Alert on any increase in -32602 errors. Support both old and new param names during a deprecation window.</div>
         </div>
@@ -508,7 +509,7 @@ Retry-After: 12
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -529,10 +530,10 @@ Retry-After: 12
     <div class="quiz-card">
       <h3>Q2. What makes renaming a required parameter in an MCP tool schema a "breaking change"?</h3>
       <div class="options" id="q2">
-        <button class="opt" onclick="answer('q2','a','b')">A) MCP doesn't support renaming â€” it requires deleting the old tool</button>
-        <button class="opt" onclick="answer('q2','b','b')">B) Existing clients still send the old name and the server returns -32602 Invalid Params â€” silently breaking all callers</button>
+        <button class="opt" onclick="answer('q2','a','b')">A) MCP doesn't support renaming — it requires deleting the old tool</button>
+        <button class="opt" onclick="answer('q2','b','b')">B) Existing clients still send the old name and the server returns -32602 Invalid Params — silently breaking all callers</button>
         <button class="opt" onclick="answer('q2','c','b')">C) It resets the protocol version negotiation</button>
-        <button class="opt" onclick="answer('q2','d','b')">D) It's not a breaking change â€” MCP ignores unknown fields</button>
+        <button class="opt" onclick="answer('q2','d','b')">D) It's not a breaking change — MCP ignores unknown fields</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
       <button class="reset-btn" onclick="resetQ('q2')">Reset</button>
@@ -554,7 +555,7 @@ Retry-After: 12
       <h3>Q4. What is the purpose of a circuit breaker in the context of MCP server connections?</h3>
       <div class="options" id="q4">
         <button class="opt" onclick="answer('q4','a','b')">A) It physically disconnects the server when CPU usage is too high</button>
-        <button class="opt" onclick="answer('q4','b','b')">B) After a threshold of failures, it stops routing calls to a down server immediately â€” preventing cascading delays across all agents</button>
+        <button class="opt" onclick="answer('q4','b','b')">B) After a threshold of failures, it stops routing calls to a down server immediately — preventing cascading delays across all agents</button>
         <button class="opt" onclick="answer('q4','c','b')">C) It limits how many tool calls the LLM can make per token</button>
         <button class="opt" onclick="answer('q4','d','b')">D) It encrypts traffic when a server's cert is expired</button>
       </div>
@@ -578,7 +579,7 @@ Retry-After: 12
 </div>
 
 <script>
-// â”€â”€ ACCORDION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── ACCORDION ────────────────────────────────────────────────────
 function toggleAcc(id) {
   const body = document.getElementById('acc-' + id);
   const header = body.previousElementSibling;
@@ -587,20 +588,20 @@ function toggleAcc(id) {
   header.classList.toggle('open', !isOpen);
 }
 
-// â”€â”€ CHECKLIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CHECKLIST ────────────────────────────────────────────────────
 const TOTAL = 20;
 let checked = 0;
 function toggleCheck(el) {
   const wasChecked = el.classList.contains('checked');
   el.classList.toggle('checked');
-  el.querySelector('.checkbox').textContent = wasChecked ? '' : 'âœ“';
+  el.querySelector('.checkbox').textContent = wasChecked ? '' : '✓';
   checked += wasChecked ? -1 : 1;
   document.getElementById('checkCount').textContent = checked;
   document.getElementById('progressFill').style.width = (checked / TOTAL * 100) + '%';
   document.getElementById('progressLabel').textContent = `${checked} of ${TOTAL} completed`;
 }
 
-// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── QUIZ ─────────────────────────────────────────────────────────
 let score = 0;
 const answered = {};
 function answer(qid, chosen, correct) {
@@ -616,18 +617,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
-      q1: 'isError:true is an application-level error â€” the JSON-RPC call itself succeeded. Pass the error to the LLM so it can decide to retry, use a different tool, or ask for clarification.',
-      q2: 'Old clients still send the old parameter name. The server rejects with -32602. All callers break silently â€” that\'s why it\'s a breaking change requiring a version bump.',
-      q3: '-32601 (Method Not Found) and -32602 (Invalid Params) are logic errors in the client â€” retrying the same call will always fail. Only retry transient errors like timeouts and 503s.',
-      q4: 'A circuit breaker stops routing calls to a failing server immediately after a threshold â€” preventing agents from waiting on timeouts and cascading slowdowns across the system.',
-      q5: 'trace_id is propagated through every hop (agent â†’ hub â†’ server) and lets you reconstruct the full causal chain of what the agent decided and what tools were called as a result.'
+      q1: 'isError:true is an application-level error — the JSON-RPC call itself succeeded. Pass the error to the LLM so it can decide to retry, use a different tool, or ask for clarification.',
+      q2: 'Old clients still send the old parameter name. The server rejects with -32602. All callers break silently — that\'s why it\'s a breaking change requiring a version bump.',
+      q3: '-32601 (Method Not Found) and -32602 (Invalid Params) are logic errors in the client — retrying the same call will always fail. Only retry transient errors like timeouts and 503s.',
+      q4: 'A circuit breaker stops routing calls to a failing server immediately after a threshold — preventing agents from waiting on timeouts and cascading slowdowns across the system.',
+      q5: 'trace_id is propagated through every hop (agent → hub → server) and lets you reconstruct the full causal chain of what the agent decided and what tools were called as a result.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {

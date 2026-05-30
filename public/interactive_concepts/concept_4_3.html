@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>4.3 Network/Swarm Pattern | Agentic AI</title>
 <style>
@@ -65,7 +66,7 @@ h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--accen
 .pros-cons .side.cons h3 { color: #ff7eb6; }
 .pros-cons ul { list-style: none; padding: 0; }
 .pros-cons li { padding: .3rem 0; font-size: .88rem; color: var(--muted); }
-.pros-cons li::before { content: 'â€¢ '; color: var(--accent); }
+.pros-cons li::before { content: '• '; color: var(--accent); }
 .side.cons li::before { color: #ff7eb6; }
 
 /* COMPARE TABLE */
@@ -137,19 +138,19 @@ td.check { text-align: center; }
 <body>
 
 <nav>
-  <a href="concept_4_2.html">â† Hierarchical Pattern</a>
-  <a href="main-course.html">â˜° All Concepts</a>
-  <a href="concept_4_4.html">Map-Reduce Pattern â†’</a>
+  <a href="concept_4_2.html">← Hierarchical Pattern</a>
+  <a href="index.html">☰ All Concepts</a>
+  <a href="concept_4_4.html">Map-Reduce Pattern →</a>
 </nav>
 
 <div class="hero">
   <div class="tags">
     <span class="tag accent">Session 4</span>
-    <span class="tag">Day 2 Forenoon Â· Orchestration</span>
+    <span class="tag">Day 2 Forenoon · Orchestration</span>
     <span class="tag">Concept 4.3</span>
   </div>
   <h1>Network / Swarm Pattern</h1>
-  <p class="subtitle">Peer-to-peer agent collaboration â€” no central controller, emergent coordination through direct messaging</p>
+  <p class="subtitle">Peer-to-peer agent collaboration — no central controller, emergent coordination through direct messaging</p>
 </div>
 
 <main>
@@ -163,19 +164,19 @@ td.check { text-align: center; }
     </blockquote>
     <div class="card-grid">
       <div class="card">
-        <h3>ðŸ•¸ï¸ Peer-to-Peer</h3>
+        <h3>🕸️ Peer-to-Peer</h3>
         <p style="color:var(--muted);font-size:.88rem;">Agents send messages directly to other agents. No supervisor routes or approves communication.</p>
       </div>
       <div class="card">
-        <h3>ðŸ“¡ Broadcast &amp; Subscribe</h3>
+        <h3>📡 Broadcast &amp; Subscribe</h3>
         <p style="color:var(--muted);font-size:.88rem;">Agents publish findings to a shared bus. Other agents subscribe to relevant topics and react.</p>
       </div>
       <div class="card">
-        <h3>ðŸŒ± Emergent Behavior</h3>
-        <p style="color:var(--muted);font-size:.88rem;">Complex outcomes arise from simple local rules â€” no agent has the full picture, yet the system solves hard problems.</p>
+        <h3>🌱 Emergent Behavior</h3>
+        <p style="color:var(--muted);font-size:.88rem;">Complex outcomes arise from simple local rules — no agent has the full picture, yet the system solves hard problems.</p>
       </div>
       <div class="card">
-        <h3>ðŸ”„ Dynamic Membership</h3>
+        <h3>🔄 Dynamic Membership</h3>
         <p style="color:var(--muted);font-size:.88rem;">Agents can join or leave the swarm mid-task. The system self-heals around failures.</p>
       </div>
     </div>
@@ -196,19 +197,19 @@ td.check { text-align: center; }
     <h2>Communication Modes</h2>
     <div class="card-grid" id="commCards">
       <div class="card clickable" onclick="showComm('direct')">
-        <h3>ðŸ“¨ Direct Message</h3>
+        <h3>📨 Direct Message</h3>
         <p style="color:var(--muted);font-size:.85rem;">Agent A sends a task or result directly to Agent B by ID. Point-to-point, low latency.</p>
       </div>
       <div class="card clickable" onclick="showComm('broadcast')">
-        <h3>ðŸ“¢ Broadcast</h3>
+        <h3>📢 Broadcast</h3>
         <p style="color:var(--muted);font-size:.85rem;">Agent publishes a message to all peers. Useful for sharing discoveries or requesting help.</p>
       </div>
       <div class="card clickable" onclick="showComm('topic')">
-        <h3>ðŸ“Œ Topic/Channel</h3>
+        <h3>📌 Topic/Channel</h3>
         <p style="color:var(--muted);font-size:.85rem;">Agents subscribe to named channels (e.g., "vulnerabilities", "market-data"). Decoupled pub-sub.</p>
       </div>
       <div class="card clickable" onclick="showComm('blackboard')">
-        <h3>ðŸ—’ï¸ Blackboard</h3>
+        <h3>🗒️ Blackboard</h3>
         <p style="color:var(--muted);font-size:.85rem;">Shared memory store. Agents write findings; others read and act on them asynchronously.</p>
       </div>
     </div>
@@ -219,9 +220,9 @@ td.check { text-align: center; }
   <section>
     <h2>Swarm Trace Simulator</h2>
     <div class="trace-btns">
-      <button class="btn" onclick="runTrace(0)">ðŸ” Threat Intelligence Swarm</button>
-      <button class="btn" onclick="runTrace(1)">ðŸ“Š Market Research Swarm</button>
-      <button class="btn" onclick="runTrace(2)">ðŸ› Bug Triage Swarm</button>
+      <button class="btn" onclick="runTrace(0)">🔍 Threat Intelligence Swarm</button>
+      <button class="btn" onclick="runTrace(1)">📊 Market Research Swarm</button>
+      <button class="btn" onclick="runTrace(2)">🐛 Bug Triage Swarm</button>
     </div>
     <div class="trace-box" id="traceBox"><span style="color:var(--muted);">Select a scenario above...</span></div>
   </section>
@@ -236,11 +237,11 @@ td.check { text-align: center; }
       <tbody>
         <tr><td>Control structure</td><td>Decentralized peers</td><td>Supervisor + workers</td></tr>
         <tr><td>Coordination overhead</td><td>Low (direct comms)</td><td>Medium (routing via supervisor)</td></tr>
-        <tr><td>Predictability</td><td class="no">Lower â€” emergent</td><td class="yes">Higher â€” deterministic</td></tr>
-        <tr><td>Fault tolerance</td><td class="yes">High â€” no single point</td><td class="partial">Medium â€” supervisor is SPOF</td></tr>
+        <tr><td>Predictability</td><td class="no">Lower — emergent</td><td class="yes">Higher — deterministic</td></tr>
+        <tr><td>Fault tolerance</td><td class="yes">High — no single point</td><td class="partial">Medium — supervisor is SPOF</td></tr>
         <tr><td>Task decomposition</td><td>Implicit / self-organized</td><td>Explicit by supervisor</td></tr>
         <tr><td>Best for</td><td>Exploration, security scans, creative tasks</td><td>Structured pipelines, known workflows</td></tr>
-        <tr><td>Debugging difficulty</td><td class="no">Hard â€” emergent paths</td><td class="yes">Easier â€” clear audit trail</td></tr>
+        <tr><td>Debugging difficulty</td><td class="no">Hard — emergent paths</td><td class="yes">Easier — clear audit trail</td></tr>
       </tbody>
     </table>
   </section>
@@ -250,22 +251,22 @@ td.check { text-align: center; }
     <h2>Real-World Use Cases</h2>
     <div class="usecase-grid">
       <div class="usecase-card">
-        <div class="usecase-icon">ðŸ›¡ï¸</div>
+        <div class="usecase-icon">🛡️</div>
         <h3>Cybersecurity Threat Hunt</h3>
-        <p>Scanner agents, analyst agents, and remediation agents communicate directly â€” scanners broadcast IOCs, analysts correlate, remediators patch in parallel.</p>
+        <p>Scanner agents, analyst agents, and remediation agents communicate directly — scanners broadcast IOCs, analysts correlate, remediators patch in parallel.</p>
       </div>
       <div class="usecase-card">
-        <div class="usecase-icon">ðŸ’¹</div>
+        <div class="usecase-icon">💹</div>
         <h3>Algorithmic Trading</h3>
-        <p>Sentiment agents, technical analysis agents, and risk agents share signals via topic channels. No single agent has authority â€” consensus drives trades.</p>
+        <p>Sentiment agents, technical analysis agents, and risk agents share signals via topic channels. No single agent has authority — consensus drives trades.</p>
       </div>
       <div class="usecase-card">
-        <div class="usecase-icon">ðŸŽ¨</div>
+        <div class="usecase-icon">🎨</div>
         <h3>Creative Content Generation</h3>
         <p>Idea agents, writer agents, critic agents, and editor agents iterate with direct peer feedback. Emergent quality through local critique loops.</p>
       </div>
       <div class="usecase-card">
-        <div class="usecase-icon">ðŸ”¬</div>
+        <div class="usecase-icon">🔬</div>
         <h3>Scientific Literature Review</h3>
         <p>Domain specialist agents broadcast relevant findings to a shared blackboard. Synthesis agents monitor and build the final report incrementally.</p>
       </div>
@@ -277,10 +278,10 @@ td.check { text-align: center; }
     <h2>Strengths &amp; Limitations</h2>
     <div class="pros-cons">
       <div class="side">
-        <h3>âœ… Strengths</h3>
+        <h3>✅ Strengths</h3>
         <ul>
           <li>No single point of failure</li>
-          <li>Scales horizontally â€” add agents freely</li>
+          <li>Scales horizontally — add agents freely</li>
           <li>Low coordination latency</li>
           <li>Emergent problem-solving for fuzzy tasks</li>
           <li>Dynamic task rebalancing</li>
@@ -288,9 +289,9 @@ td.check { text-align: center; }
         </ul>
       </div>
       <div class="side cons">
-        <h3>âš ï¸ Limitations</h3>
+        <h3>⚠️ Limitations</h3>
         <ul>
-          <li>Hard to debug â€” non-deterministic paths</li>
+          <li>Hard to debug — non-deterministic paths</li>
           <li>Potential message storms / loops</li>
           <li>Consensus is expensive to guarantee</li>
           <li>Result quality depends on emergent dynamics</li>
@@ -327,7 +328,7 @@ writer_agent = Agent(
     functions=[format_report]
 )
 
-# Swarm routes based on handoff functions â€” no supervisor needed
+# Swarm routes based on handoff functions — no supervisor needed
 response = client.run(
     agent=research_agent,
     messages=[{"role": "user", "content": "Research LLM security vulnerabilities in 2024"}]
@@ -337,7 +338,7 @@ response = client.run(
   <!-- QUIZ -->
   <div class="quiz-section">
     <div class="score-bar">
-      <h2 style="border:none;margin:0;padding:0;">ðŸ§  Knowledge Check</h2>
+      <h2 style="border:none;margin:0;padding:0;">🧠 Knowledge Check</h2>
       <div class="score-badge">Score: <span class="score-num" id="scoreDisplay">0</span> / 5</div>
     </div>
 
@@ -347,10 +348,10 @@ response = client.run(
         <button class="opt" onclick="answer('q1','a','d')">a) A dedicated supervisor agent</button>
         <button class="opt" onclick="answer('q1','b','d')">b) A load balancer</button>
         <button class="opt" onclick="answer('q1','c','d')">c) A shared queue manager</button>
-        <button class="opt" onclick="answer('q1','d','d')">d) No central router â€” agents self-route</button>
+        <button class="opt" onclick="answer('q1','d','d')">d) No central router — agents self-route</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q2">
@@ -362,7 +363,7 @@ response = client.run(
         <button class="opt" onclick="answer('q2','d','b')">d) Behavior is pre-programmed in a workflow config</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q3">
@@ -374,7 +375,7 @@ response = client.run(
         <button class="opt" onclick="answer('q3','d','c')">d) A logging system for debugging</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q4">
@@ -386,7 +387,7 @@ response = client.run(
         <button class="opt" onclick="answer('q4','d','d')">d) Exploratory cybersecurity threat hunting across unknown attack surface</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="q-block" id="q5">
@@ -398,18 +399,18 @@ response = client.run(
         <button class="opt" onclick="answer('q5','d','b')">d) Only works with OpenAI models</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
 </main>
 
 <script>
-/* â”€â”€ QUIZ â”€â”€ */
+/* ── QUIZ ── */
 let score = 0;
 const answered = {};
 const msgs = {
-  q1: 'In the swarm pattern agents self-route via handoff functions â€” there is no central router.',
+  q1: 'In the swarm pattern agents self-route via handoff functions — there is no central router.',
   q2: 'Emergent behavior means complex global outcomes arise purely from simple local rules.',
   q3: 'A blackboard is a shared memory store all agents can read from and write to asynchronously.',
   q4: 'Open-ended exploration like threat hunting benefits from swarm autonomy; structured workflows suit hierarchical.',
@@ -428,11 +429,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {
@@ -445,10 +446,10 @@ function resetQ(qid) {
   fb.className = 'feedback'; fb.textContent = '';
 }
 
-/* â”€â”€ NETWORK CANVAS â”€â”€ */
+/* ── NETWORK CANVAS ── */
 const agents = [
   { id: 0, x: 390, y: 170, label: 'Coordinator', color: '#ffd166',
-    role: 'Optional soft-coordinator â€” nudges agents but does not command.',
+    role: 'Optional soft-coordinator — nudges agents but does not command.',
     code: 'coordinator.broadcast("Start threat scan on target: 10.0.0.0/24")' },
   { id: 1, x: 160, y:  80, label: 'Scanner A', color: '#58a6ff',
     role: 'Port and service scanner. Broadcasts open ports to the blackboard.',
@@ -533,7 +534,7 @@ canvas.addEventListener('click', e => {
   if (hit) {
     selectedAgent = hit.id;
     drawNetwork(hit.id);
-    panel.innerHTML = `<h3 style="color:${hit.color};margin-bottom:.5rem;">ðŸ¤– ${hit.label}</h3>
+    panel.innerHTML = `<h3 style="color:${hit.color};margin-bottom:.5rem;">🤖 ${hit.label}</h3>
       <p>${hit.role}</p>
       <div class="code-block">${hit.code}</div>`;
     panel.classList.add('show');
@@ -544,10 +545,10 @@ canvas.addEventListener('click', e => {
   }
 });
 
-/* â”€â”€ COMMUNICATION MODES â”€â”€ */
+/* ── COMMUNICATION MODES ── */
 const commData = {
   direct: {
-    title: 'ðŸ“¨ Direct Message',
+    title: '📨 Direct Message',
     desc: 'Agent A explicitly addresses Agent B by name or ID. Best for targeted task handoffs where the sender knows who should handle next. Low latency, high coupling.',
     code: `# Direct handoff in OpenAI Swarm
 def handoff_to_analyst():
@@ -560,7 +561,7 @@ scanner_agent = Agent(
 )`
   },
   broadcast: {
-    title: 'ðŸ“¢ Broadcast',
+    title: '📢 Broadcast',
     desc: 'An agent publishes a message to ALL peers simultaneously. Useful for broadcasting discovered facts, requesting help, or announcing completion. Can cause message storms if not rate-limited.',
     code: `# Broadcasting to all agents
 async def broadcast_discovery(finding: str):
@@ -572,8 +573,8 @@ async def broadcast_discovery(finding: str):
         })`
   },
   topic: {
-    title: 'ðŸ“Œ Topic / Channel',
-    desc: 'Agents subscribe to named topics. Publishers send to a topic; only subscribed agents receive it. Loosely coupled â€” publishers don\'t know who listens. Ideal for event-driven swarms.',
+    title: '📌 Topic / Channel',
+    desc: 'Agents subscribe to named topics. Publishers send to a topic; only subscribed agents receive it. Loosely coupled — publishers don\'t know who listens. Ideal for event-driven swarms.',
     code: `# Topic-based pub-sub
 bus = MessageBus()
 
@@ -586,8 +587,8 @@ async def on_vulnerability(msg):
     await correlate_with_threat_intel(msg)`
   },
   blackboard: {
-    title: 'ðŸ—’ï¸ Blackboard (Shared Memory)',
-    desc: 'A central shared state store all agents can read and write. Agents don\'t message each other â€” they react to changes in shared state. Classic AI pattern from expert systems era.',
+    title: '🗒️ Blackboard (Shared Memory)',
+    desc: 'A central shared state store all agents can read and write. Agents don\'t message each other — they react to changes in shared state. Classic AI pattern from expert systems era.',
     code: `# Blackboard pattern
 blackboard = SharedState()
 
@@ -611,46 +612,46 @@ function showComm(key) {
   panel.classList.add('show');
 }
 
-/* â”€â”€ TRACE SIMULATOR â”€â”€ */
+/* ── TRACE SIMULATOR ── */
 const traces = [
   [ // Threat Intelligence Swarm
-    {cls:'system', t:0,   txt:'â”€â”€ Threat Intelligence Swarm starting â”€â”€'},
-    {cls:'broadcast', t:200, txt:'[Coordinator] â†’ BROADCAST: "Scan target 10.0.0.0/24 for vulnerabilities"'},
-    {cls:'worker',    t:500, txt:'[Scanner-A]   â†’ Blackboard.write("open_ports", [22,80,443,8080])'},
-    {cls:'worker',    t:800, txt:'[Scanner-B]   â†’ Blackboard.read("open_ports") â†’ scanning for CVEs...'},
-    {cls:'worker',    t:1100,txt:'[Scanner-B]   â†’ Blackboard.write("cves", [CVE-2024-1234 (9.1), CVE-2024-5678 (7.3)])'},
-    {cls:'peer',      t:1400,txt:'[Analyst]     â†’ Blackboard.read("cves") â†’ correlating with threat feeds...'},
-    {cls:'peer',      t:1700,txt:'[Analyst]     â†’ Direct.send(Remediate, {cve:"CVE-2024-1234", action:"patch"})'},
-    {cls:'worker',    t:2000,txt:'[Remediate]   â†’ Applying patch for CVE-2024-1234... success'},
-    {cls:'peer',      t:2300,txt:'[Analyst]     â†’ Direct.send(Reporter, {confirmed_threats: 2, mitigated: 1})'},
-    {cls:'broadcast', t:2600,txt:'[Reporter]    â†’ BROADCAST: "Threat report ready: 2 critical, 1 patched"'},
-    {cls:'system',    t:2900,txt:'â”€â”€ Swarm task complete â”€â”€'},
+    {cls:'system', t:0,   txt:'── Threat Intelligence Swarm starting ──'},
+    {cls:'broadcast', t:200, txt:'[Coordinator] → BROADCAST: "Scan target 10.0.0.0/24 for vulnerabilities"'},
+    {cls:'worker',    t:500, txt:'[Scanner-A]   → Blackboard.write("open_ports", [22,80,443,8080])'},
+    {cls:'worker',    t:800, txt:'[Scanner-B]   → Blackboard.read("open_ports") → scanning for CVEs...'},
+    {cls:'worker',    t:1100,txt:'[Scanner-B]   → Blackboard.write("cves", [CVE-2024-1234 (9.1), CVE-2024-5678 (7.3)])'},
+    {cls:'peer',      t:1400,txt:'[Analyst]     → Blackboard.read("cves") → correlating with threat feeds...'},
+    {cls:'peer',      t:1700,txt:'[Analyst]     → Direct.send(Remediate, {cve:"CVE-2024-1234", action:"patch"})'},
+    {cls:'worker',    t:2000,txt:'[Remediate]   → Applying patch for CVE-2024-1234... success'},
+    {cls:'peer',      t:2300,txt:'[Analyst]     → Direct.send(Reporter, {confirmed_threats: 2, mitigated: 1})'},
+    {cls:'broadcast', t:2600,txt:'[Reporter]    → BROADCAST: "Threat report ready: 2 critical, 1 patched"'},
+    {cls:'system',    t:2900,txt:'── Swarm task complete ──'},
   ],
   [ // Market Research Swarm
-    {cls:'system',    t:0,   txt:'â”€â”€ Market Research Swarm starting â”€â”€'},
-    {cls:'broadcast', t:200, txt:'[Initiator]   â†’ BROADCAST: "Research topic: AI chip market Q4 2024"'},
-    {cls:'worker',    t:500, txt:'[NewsAgent]   â†’ Blackboard.write("news", [Reuters: NVIDIA Q4 revenue +94%...])'},
-    {cls:'worker',    t:800, txt:'[FinAgent]    â†’ Blackboard.write("financials", [NVDA: $35B rev, AMD: $6.8B...])'},
-    {cls:'peer',      t:1100,txt:'[SentAgent]   â†’ Blackboard.read("news") â†’ sentiment score: +0.82 (bullish)'},
-    {cls:'peer',      t:1400,txt:'[SentAgent]   â†’ Blackboard.write("sentiment", {score:0.82, drivers:["AI demand"]})'},
-    {cls:'worker',    t:1700,txt:'[TrendAgent]  â†’ Blackboard.read_all() â†’ synthesising market thesis...'},
-    {cls:'broadcast', t:2000,txt:'[TrendAgent]  â†’ BROADCAST: "Thesis ready â€” AI chip supercycle confirmed"'},
-    {cls:'peer',      t:2300,txt:'[Reporter]    â†’ Aggregating all blackboard entries â†’ generating report'},
-    {cls:'system',    t:2600,txt:'â”€â”€ Research complete: 4 agents, 0 supervisor calls â”€â”€'},
+    {cls:'system',    t:0,   txt:'── Market Research Swarm starting ──'},
+    {cls:'broadcast', t:200, txt:'[Initiator]   → BROADCAST: "Research topic: AI chip market Q4 2024"'},
+    {cls:'worker',    t:500, txt:'[NewsAgent]   → Blackboard.write("news", [Reuters: NVIDIA Q4 revenue +94%...])'},
+    {cls:'worker',    t:800, txt:'[FinAgent]    → Blackboard.write("financials", [NVDA: $35B rev, AMD: $6.8B...])'},
+    {cls:'peer',      t:1100,txt:'[SentAgent]   → Blackboard.read("news") → sentiment score: +0.82 (bullish)'},
+    {cls:'peer',      t:1400,txt:'[SentAgent]   → Blackboard.write("sentiment", {score:0.82, drivers:["AI demand"]})'},
+    {cls:'worker',    t:1700,txt:'[TrendAgent]  → Blackboard.read_all() → synthesising market thesis...'},
+    {cls:'broadcast', t:2000,txt:'[TrendAgent]  → BROADCAST: "Thesis ready — AI chip supercycle confirmed"'},
+    {cls:'peer',      t:2300,txt:'[Reporter]    → Aggregating all blackboard entries → generating report'},
+    {cls:'system',    t:2600,txt:'── Research complete: 4 agents, 0 supervisor calls ──'},
   ],
   [ // Bug Triage Swarm
-    {cls:'system',    t:0,   txt:'â”€â”€ Bug Triage Swarm starting â”€â”€'},
-    {cls:'broadcast', t:200, txt:'[Ingest]      â†’ BROADCAST: "New critical bug: NPE in AuthService.login()"'},
-    {cls:'worker',    t:500, txt:'[Reproducer]  â†’ Running test suite... reproduced on JDK 17+ âœ“'},
-    {cls:'worker',    t:800, txt:'[Reproducer]  â†’ Blackboard.write("repro", {jdk:"17+", rate:"100%"})'},
-    {cls:'peer',      t:1100,txt:'[Bisector]    â†’ Git bisect running... narrowed to commit abc123f'},
-    {cls:'peer',      t:1400,txt:'[Bisector]    â†’ Direct.send(Fixer, {commit:"abc123f", file:"AuthService.java:142"})'},
-    {cls:'worker',    t:1700,txt:'[Fixer]       â†’ Generating patch... null-check added at AuthService.java:142'},
-    {cls:'peer',      t:2000,txt:'[Fixer]       â†’ Direct.send(Reviewer, {patch: diff_content})'},
-    {cls:'peer',      t:2300,txt:'[Reviewer]    â†’ Patch approved. Direct.send(Deployer, {patch, env:"staging"})'},
-    {cls:'worker',    t:2600,txt:'[Deployer]    â†’ Deployed to staging. All tests passing âœ“'},
-    {cls:'broadcast', t:2900,txt:'[Deployer]    â†’ BROADCAST: "Bug fixed and deployed â€” incident resolved"'},
-    {cls:'system',    t:3200,txt:'â”€â”€ Bug resolved in 32s with 5 peer agents, 0 supervisor â”€â”€'},
+    {cls:'system',    t:0,   txt:'── Bug Triage Swarm starting ──'},
+    {cls:'broadcast', t:200, txt:'[Ingest]      → BROADCAST: "New critical bug: NPE in AuthService.login()"'},
+    {cls:'worker',    t:500, txt:'[Reproducer]  → Running test suite... reproduced on JDK 17+ ✓'},
+    {cls:'worker',    t:800, txt:'[Reproducer]  → Blackboard.write("repro", {jdk:"17+", rate:"100%"})'},
+    {cls:'peer',      t:1100,txt:'[Bisector]    → Git bisect running... narrowed to commit abc123f'},
+    {cls:'peer',      t:1400,txt:'[Bisector]    → Direct.send(Fixer, {commit:"abc123f", file:"AuthService.java:142"})'},
+    {cls:'worker',    t:1700,txt:'[Fixer]       → Generating patch... null-check added at AuthService.java:142'},
+    {cls:'peer',      t:2000,txt:'[Fixer]       → Direct.send(Reviewer, {patch: diff_content})'},
+    {cls:'peer',      t:2300,txt:'[Reviewer]    → Patch approved. Direct.send(Deployer, {patch, env:"staging"})'},
+    {cls:'worker',    t:2600,txt:'[Deployer]    → Deployed to staging. All tests passing ✓'},
+    {cls:'broadcast', t:2900,txt:'[Deployer]    → BROADCAST: "Bug fixed and deployed — incident resolved"'},
+    {cls:'system',    t:3200,txt:'── Bug resolved in 32s with 5 peer agents, 0 supervisor ──'},
   ]
 ];
 

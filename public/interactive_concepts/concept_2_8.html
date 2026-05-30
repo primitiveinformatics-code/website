@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The ReAct Loop â€” Full Technical Detail | Agentic AI Course</title>
+<title>The ReAct Loop — Full Technical Detail | Agentic AI Course</title>
 <style>
   :root{--bg:#0f1117;--card:#21263a;--card2:#1a1f30;--text:#e8eaf6;--muted:#8892b0;--accent:#00d2ff;--border:rgba(0,210,255,.18);--radius:12px;--thought:#b57bee;--action:#ffd166;--obs:#06d6a0;--correct:#06d6a0;--wrong:#ef476f}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -79,27 +80,27 @@
 </head>
 <body>
 <nav>
-  <div class="brand">Agentic AI Course Â· <span>Session 2</span></div>
+  <div class="brand">Agentic AI Course · <span>Session 2</span></div>
   <div class="nav-links">
-    <a href="concept_2_7.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_2_9.html">Next â†’</a>
+    <a href="concept_2_7.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_2_9.html">Next →</a>
   </div>
 </nav>
 <div class="hero">
-  <div class="session-tag">Session 2 Â· Concept 2.8</div>
-  <h1>The ReAct Loop â€” <span>Full Technical Detail</span></h1>
-  <p>Inside the Thought â†’ Action â†’ Observation cycle: raw traces, tool call anatomy, error handling, and production failure modes.</p>
+  <div class="session-tag">Session 2 · Concept 2.8</div>
+  <h1>The ReAct Loop — <span>Full Technical Detail</span></h1>
+  <p>Inside the Thought → Action → Observation cycle: raw traces, tool call anatomy, error handling, and production failure modes.</p>
 </div>
 
 <section>
-  <div class="section-title">Live Trace Viewer â€” Annotated ReAct Traces</div>
+  <div class="section-title">Live Trace Viewer — Annotated ReAct Traces</div>
   <div class="trace-container">
     <p style="color:var(--muted);font-size:.87rem;margin-bottom:16px">Real ReAct traces showing exactly what the LLM produces at each step. Select a scenario.</p>
     <div class="trace-tabs">
-      <button class="ttab active" onclick="switchTrace('t1',this)">ðŸ” Web Research</button>
-      <button class="ttab" onclick="switchTrace('t2',this)">ðŸ› Error Recovery</button>
-      <button class="ttab" onclick="switchTrace('t3',this)">ðŸ“Š Multi-step Calc</button>
+      <button class="ttab active" onclick="switchTrace('t1',this)">🔍 Web Research</button>
+      <button class="ttab" onclick="switchTrace('t2',this)">🐛 Error Recovery</button>
+      <button class="ttab" onclick="switchTrace('t3',this)">📊 Multi-step Calc</button>
     </div>
     <div class="trace-content active" id="t1">
       <div class="iter-label">Iteration 1</div>
@@ -122,15 +123,15 @@
         <div class="trace-line action"><span class="tl-tag">Action</span><span class="tl-text">read_file(path="sales_data.csv")</span></div>
         <div class="trace-line error"><span class="tl-tag">Error</span><span class="tl-text">FileNotFoundError: sales_data.csv does not exist in the current directory.</span></div>
       </div>
-      <div class="iter-label">Iteration 2 â€” Error Recovery</div>
+      <div class="iter-label">Iteration 2 — Error Recovery</div>
       <div class="trace-block">
         <div class="trace-line thought"><span class="tl-tag">Thought</span><span class="tl-text">File wasn't found. It might have a different name or location. Let me list the directory to find the correct file.</span></div>
         <div class="trace-line action"><span class="tl-tag">Action</span><span class="tl-text">list_directory(path=".")</span></div>
         <div class="trace-line obs"><span class="tl-tag">Observation</span><span class="tl-text">["README.md", "data/", "src/", "sales_report_2024.csv", "config.yaml"]</span></div>
       </div>
-      <div class="iter-label">Iteration 3 â€” Corrected Path</div>
+      <div class="iter-label">Iteration 3 — Corrected Path</div>
       <div class="trace-block">
-        <div class="trace-line thought"><span class="tl-tag">Thought</span><span class="tl-text">I see "sales_report_2024.csv" â€” that's the file. Reading it now with the correct filename.</span></div>
+        <div class="trace-line thought"><span class="tl-tag">Thought</span><span class="tl-text">I see "sales_report_2024.csv" — that's the file. Reading it now with the correct filename.</span></div>
         <div class="trace-line action"><span class="tl-tag">Action</span><span class="tl-text">read_file(path="sales_report_2024.csv")</span></div>
         <div class="trace-line obs"><span class="tl-tag">Observation</span><span class="tl-text">date,product,revenue\n2024-01,Widget A,45000\n2024-01,Widget B,32000\n2024-02,Widget A,51000\n...</span></div>
       </div>
@@ -147,18 +148,18 @@
     <div class="trace-content" id="t3">
       <div class="iter-label">Iteration 1</div>
       <div class="trace-block">
-        <div class="trace-line thought"><span class="tl-tag">Thought</span><span class="tl-text">Task: compound interest on Â£10,000 at 7% for 15 years. Formula A=P(1+r)^t. I'll use code execution to avoid arithmetic errors.</span></div>
-        <div class="trace-line action"><span class="tl-tag">Action</span><span class="tl-text">execute_python(code="P=10000;r=0.07;t=15;A=P*(1+r)**t;print(f'Final: Â£{A:.2f}, Gain: Â£{A-P:.2f}')")</span></div>
-        <div class="trace-line obs"><span class="tl-tag">Observation</span><span class="tl-text">Final: Â£27,590.32, Gain: Â£17,590.32</span></div>
+        <div class="trace-line thought"><span class="tl-tag">Thought</span><span class="tl-text">Task: compound interest on £10,000 at 7% for 15 years. Formula A=P(1+r)^t. I'll use code execution to avoid arithmetic errors.</span></div>
+        <div class="trace-line action"><span class="tl-tag">Action</span><span class="tl-text">execute_python(code="P=10000;r=0.07;t=15;A=P*(1+r)**t;print(f'Final: £{A:.2f}, Gain: £{A-P:.2f}')")</span></div>
+        <div class="trace-line obs"><span class="tl-tag">Observation</span><span class="tl-text">Final: £27,590.32, Gain: £17,590.32</span></div>
       </div>
-      <div class="iter-label">Iteration 2 â€” Enriching the answer</div>
+      <div class="iter-label">Iteration 2 — Enriching the answer</div>
       <div class="trace-block">
         <div class="trace-line thought"><span class="tl-tag">Thought</span><span class="tl-text">I have the result. I'll also compute a year-by-year breakdown to make the answer more useful.</span></div>
-        <div class="trace-line action"><span class="tl-tag">Action</span><span class="tl-text">execute_python(code="P=10000;r=0.07\nfor y in [1,5,10,15]:print(f'Year {y}: Â£{P*(1+r)**y:,.2f}')")</span></div>
-        <div class="trace-line obs"><span class="tl-tag">Observation</span><span class="tl-text">Year 1: Â£10,700.00\nYear 5: Â£14,025.52\nYear 10: Â£19,671.51\nYear 15: Â£27,590.32</span></div>
+        <div class="trace-line action"><span class="tl-tag">Action</span><span class="tl-text">execute_python(code="P=10000;r=0.07\nfor y in [1,5,10,15]:print(f'Year {y}: £{P*(1+r)**y:,.2f}')")</span></div>
+        <div class="trace-line obs"><span class="tl-tag">Observation</span><span class="tl-text">Year 1: £10,700.00\nYear 5: £14,025.52\nYear 10: £19,671.51\nYear 15: £27,590.32</span></div>
       </div>
       <div class="trace-block">
-        <div class="trace-line final"><span class="tl-tag">Final Answer</span><span class="tl-text">Â£10,000 at 7% compound interest for 15 years = Â£27,590.32 (gain: Â£17,590.32 / 175.9%). Doubles in ~10.2 years (Rule of 72: 72Ã·7).</span></div>
+        <div class="trace-line final"><span class="tl-tag">Final Answer</span><span class="tl-text">£10,000 at 7% compound interest for 15 years = £27,590.32 (gain: £17,590.32 / 175.9%). Doubles in ~10.2 years (Rule of 72: 72÷7).</span></div>
       </div>
     </div>
   </div>
@@ -170,7 +171,7 @@
     <p style="color:var(--muted);font-size:.88rem">Every tool call has a precise structure. The LLM generates the request; the executor returns a structured result. Both must be well-formed.</p>
     <div class="anatomy-cols">
       <div class="anat-col req">
-        <h4>ðŸ“¤ Tool Call Request (LLM â†’ Tool)</h4>
+        <h4>📤 Tool Call Request (LLM → Tool)</h4>
         <pre><span class="jk">{
   "type"</span>: <span class="js">"tool_call"</span>,
   <span class="jk">"id"</span>: <span class="js">"call_abc123"</span>,
@@ -181,10 +182,10 @@
     <span class="jk">"include_snippets"</span>: <span class="jb">true</span>
   }
 <span class="jk">}</span></pre>
-        <p style="font-size:.75rem;color:var(--muted);margin-top:10px">The <code style="color:var(--action)">id</code> links the call to its result â€” critical for parallel tool execution.</p>
+        <p style="font-size:.75rem;color:var(--muted);margin-top:10px">The <code style="color:var(--action)">id</code> links the call to its result — critical for parallel tool execution.</p>
       </div>
       <div class="anat-col res">
-        <h4>ðŸ“¥ Tool Result (Tool â†’ LLM)</h4>
+        <h4>📥 Tool Result (Tool → LLM)</h4>
         <pre><span class="jk">{
   "type"</span>: <span class="js">"tool_result"</span>,
   <span class="jk">"tool_call_id"</span>: <span class="js">"call_abc123"</span>,
@@ -202,54 +203,54 @@
 </section>
 
 <section>
-  <div class="section-title">Production Failure Modes â€” Click to Diagnose</div>
+  <div class="section-title">Production Failure Modes — Click to Diagnose</div>
   <div class="failures-grid">
     <div class="fail-card" onclick="this.classList.toggle('open')">
-      <div class="fail-title">ðŸ” Infinite Loop</div>
+      <div class="fail-title">🔁 Infinite Loop</div>
       <div class="fail-brief">Agent keeps calling the same tool without progress</div>
       <div class="fail-detail">
         <div class="cause"><strong>Root Cause:</strong> No termination condition, or agent keeps getting the same null/error result and retries without breaking the pattern.</div>
-        <div class="fix">âœ“ Fix: max_iterations hard limit. Add "same action twice" detector â€” if action N == action N-1, force a different path or escalate.</div>
+        <div class="fix">✓ Fix: max_iterations hard limit. Add "same action twice" detector — if action N == action N-1, force a different path or escalate.</div>
       </div>
     </div>
     <div class="fail-card" onclick="this.classList.toggle('open')">
-      <div class="fail-title">ðŸ‘» Silent Tool Failure</div>
+      <div class="fail-title">👻 Silent Tool Failure</div>
       <div class="fail-brief">Tool returns empty result; agent reasons as if it got real data</div>
       <div class="fail-detail">
         <div class="cause"><strong>Root Cause:</strong> Tool returns {} or null without an error flag. LLM interprets empty observation as "no results" and fabricates an answer.</div>
-        <div class="fix">âœ“ Fix: All tools must return explicit status fields. Never return raw nulls. Use {"status":"no_results","query":"..."} and validate before injecting into context.</div>
+        <div class="fix">✓ Fix: All tools must return explicit status fields. Never return raw nulls. Use {"status":"no_results","query":"..."} and validate before injecting into context.</div>
       </div>
     </div>
     <div class="fail-card" onclick="this.classList.toggle('open')">
-      <div class="fail-title">ðŸ“œ Context Overflow</div>
+      <div class="fail-title">📜 Context Overflow</div>
       <div class="fail-brief">Long loops fill the context; early reasoning is truncated silently</div>
       <div class="fail-detail">
-        <div class="cause"><strong>Root Cause:</strong> Each iteration appends T+A+O to context. After 10â€“20 iterations, older content is truncated â€” agent forgets its goal and contradicts itself.</div>
-        <div class="fix">âœ“ Fix: Summarise older iterations. Use external memory for completed sub-tasks. Set token budgets per tool result. Trigger compression at 60% context usage.</div>
+        <div class="cause"><strong>Root Cause:</strong> Each iteration appends T+A+O to context. After 10–20 iterations, older content is truncated — agent forgets its goal and contradicts itself.</div>
+        <div class="fix">✓ Fix: Summarise older iterations. Use external memory for completed sub-tasks. Set token budgets per tool result. Trigger compression at 60% context usage.</div>
       </div>
     </div>
     <div class="fail-card" onclick="this.classList.toggle('open')">
-      <div class="fail-title">ðŸŽ­ Hallucinated Tool Call</div>
+      <div class="fail-title">🎭 Hallucinated Tool Call</div>
       <div class="fail-brief">Agent calls a tool that doesn't exist in its registry</div>
       <div class="fail-detail">
         <div class="cause"><strong>Root Cause:</strong> LLM generates a tool name it imagines exists ("fetch_stock_price" when only "search_web" is registered), producing a "tool not found" error cascade.</div>
-        <div class="fix">âœ“ Fix: Validate all tool calls against the registered registry before execution. Return structured error: {"error":"unknown_tool","available_tools":[...]} as feedback for self-correction.</div>
+        <div class="fix">✓ Fix: Validate all tool calls against the registered registry before execution. Return structured error: {"error":"unknown_tool","available_tools":[...]} as feedback for self-correction.</div>
       </div>
     </div>
     <div class="fail-card" onclick="this.classList.toggle('open')">
-      <div class="fail-title">ðŸ’¸ Runaway Cost</div>
+      <div class="fail-title">💸 Runaway Cost</div>
       <div class="fail-brief">Agent makes hundreds of calls, burning budget unexpectedly</div>
       <div class="fail-detail">
-        <div class="cause"><strong>Root Cause:</strong> Open-ended tasks with no scope boundary. Agent searches â†’ finds more queries â†’ searches more. Compounds exponentially without a ceiling.</div>
-        <div class="fix">âœ“ Fix: Per-session token budgets and tool call count limits. Track cost in every loop. Add scope check in Thought: if near budget, summarise and finish rather than expanding.</div>
+        <div class="cause"><strong>Root Cause:</strong> Open-ended tasks with no scope boundary. Agent searches → finds more queries → searches more. Compounds exponentially without a ceiling.</div>
+        <div class="fix">✓ Fix: Per-session token budgets and tool call count limits. Track cost in every loop. Add scope check in Thought: if near budget, summarise and finish rather than expanding.</div>
       </div>
     </div>
     <div class="fail-card" onclick="this.classList.toggle('open')">
-      <div class="fail-title">ðŸ”€ Observation Poisoning</div>
+      <div class="fail-title">🔀 Observation Poisoning</div>
       <div class="fail-brief">Malicious content in tool results hijacks reasoning</div>
       <div class="fail-detail">
-        <div class="cause"><strong>Root Cause:</strong> Agent reads a web page containing "Ignore your previous instructions..." â€” a prompt injection delivered via tool result that the LLM treats as trusted context.</div>
-        <div class="fix">âœ“ Fix: Treat all tool results as untrusted input. Apply input guardrails to observations before context injection. Never merge "tool result" role with "user" role in the prompt template.</div>
+        <div class="cause"><strong>Root Cause:</strong> Agent reads a web page containing "Ignore your previous instructions..." — a prompt injection delivered via tool result that the LLM treats as trusted context.</div>
+        <div class="fix">✓ Fix: Treat all tool results as untrusted input. Apply input guardrails to observations before context injection. Never merge "tool result" role with "user" role in the prompt template.</div>
       </div>
     </div>
   </div>
@@ -266,66 +267,66 @@
       <div class="q-num">Question 1 of 5</div>
       <div class="q-text">In a ReAct trace, what is the purpose of the "Thought" step?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">âœ—</span>a) It's just formatting â€” the LLM doesn't actually reason there</div>
-        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">âœ“</span>b) It externalises the LLM's reasoning chain, making decisions auditable and improving action quality via chain-of-thought</div>
-        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">âœ—</span>c) It's where tools are called</div>
-        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">âœ—</span>d) It stores results in memory</div>
+        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">✗</span>a) It's just formatting — the LLM doesn't actually reason there</div>
+        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">✓</span>b) It externalises the LLM's reasoning chain, making decisions auditable and improving action quality via chain-of-thought</div>
+        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">✗</span>c) It's where tools are called</div>
+        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">✗</span>d) It stores results in memory</div>
       </div>
-      <div class="feedback correct-fb" id="q1-correct">âœ“ The Thought step is critical for two reasons: (1) Chain-of-thought â€” making the LLM explicitly reason before acting improves decision quality by 20â€“40% on complex tasks. (2) Auditability â€” in production debugging, the Thought trace shows you exactly WHY the agent did what it did. Tools are called in Action; Memory writes happen in the Loop.</div>
-      <div class="feedback wrong-fb" id="q1-wrong">âœ— The Thought step is genuinely where the LLM reasons â€” forcing it to articulate "I need to do X because Y" before acting dramatically improves both action quality AND gives you an audit trail. Tools = Action step. Memory writes = Loop. The Thought step is chain-of-thought externalisation â€” a fundamental technique that turns one-shot calls into structured deliberation.</div>
-      <button class="q-reset" onclick="resetQ('q1')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q1-correct">✓ The Thought step is critical for two reasons: (1) Chain-of-thought — making the LLM explicitly reason before acting improves decision quality by 20–40% on complex tasks. (2) Auditability — in production debugging, the Thought trace shows you exactly WHY the agent did what it did. Tools are called in Action; Memory writes happen in the Loop.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">✗ The Thought step is genuinely where the LLM reasons — forcing it to articulate "I need to do X because Y" before acting dramatically improves both action quality AND gives you an audit trail. Tools = Action step. Memory writes = Loop. The Thought step is chain-of-thought externalisation — a fundamental technique that turns one-shot calls into structured deliberation.</div>
+      <button class="q-reset" onclick="resetQ('q1')">↺ Try again</button>
     </div>
     <div class="q-block" id="q2">
       <div class="q-num">Question 2 of 5</div>
-      <div class="q-text">What connects a tool call request to its result in the ReAct protocol â€” and why does this matter?</div>
+      <div class="q-text">What connects a tool call request to its result in the ReAct protocol — and why does this matter?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q2','a','b')"><span class="opt-icon">âœ—</span>a) Message order â€” request always immediately precedes result</div>
-        <div class="opt" onclick="answer('q2','b','b')"><span class="opt-icon">âœ“</span>b) A matching ID: "id" in the request matches "tool_call_id" in the result â€” enabling correct attribution even in parallel execution</div>
-        <div class="opt" onclick="answer('q2','c','b')"><span class="opt-icon">âœ—</span>c) The tool name is repeated in the result</div>
-        <div class="opt" onclick="answer('q2','d','b')"><span class="opt-icon">âœ—</span>d) A timestamp comparison</div>
+        <div class="opt" onclick="answer('q2','a','b')"><span class="opt-icon">✗</span>a) Message order — request always immediately precedes result</div>
+        <div class="opt" onclick="answer('q2','b','b')"><span class="opt-icon">✓</span>b) A matching ID: "id" in the request matches "tool_call_id" in the result — enabling correct attribution even in parallel execution</div>
+        <div class="opt" onclick="answer('q2','c','b')"><span class="opt-icon">✗</span>c) The tool name is repeated in the result</div>
+        <div class="opt" onclick="answer('q2','d','b')"><span class="opt-icon">✗</span>d) A timestamp comparison</div>
       </div>
-      <div class="feedback correct-fb" id="q2-correct">âœ“ The ID mechanism is critical for parallel tool calls. When an agent calls multiple tools simultaneously, results may return out of order. The tool_call_id links each result unambiguously to its request â€” the LLM knows "this result belongs to my search_web call, not my read_file call." Without IDs, parallel tool execution would be impossible to correlate correctly.</div>
-      <div class="feedback wrong-fb" id="q2-wrong">âœ— Position-based matching breaks with parallel tool calls (results return in any order). The ID mechanism â€” tool call "id" matched by result's "tool_call_id" â€” is what enables reliable result attribution in parallel execution. This is a core part of the tool call protocol used by all major LLM providers (OpenAI, Anthropic, etc.).</div>
-      <button class="q-reset" onclick="resetQ('q2')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q2-correct">✓ The ID mechanism is critical for parallel tool calls. When an agent calls multiple tools simultaneously, results may return out of order. The tool_call_id links each result unambiguously to its request — the LLM knows "this result belongs to my search_web call, not my read_file call." Without IDs, parallel tool execution would be impossible to correlate correctly.</div>
+      <div class="feedback wrong-fb" id="q2-wrong">✗ Position-based matching breaks with parallel tool calls (results return in any order). The ID mechanism — tool call "id" matched by result's "tool_call_id" — is what enables reliable result attribution in parallel execution. This is a core part of the tool call protocol used by all major LLM providers (OpenAI, Anthropic, etc.).</div>
+      <button class="q-reset" onclick="resetQ('q2')">↺ Try again</button>
     </div>
     <div class="q-block" id="q3">
       <div class="q-num">Question 3 of 5</div>
       <div class="q-text">An agent on iteration 18 of 20 has completed 80% of its task but can't finish with available tools. What should it do?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q3','a','c')"><span class="opt-icon">âœ—</span>a) Keep trying until the limit, then fail silently</div>
-        <div class="opt" onclick="answer('q3','b','c')"><span class="opt-icon">âœ—</span>b) Restart from the beginning with a different strategy</div>
-        <div class="opt" onclick="answer('q3','c','c')"><span class="opt-icon">âœ“</span>c) Return a partial result with clear indication of what was done and what couldn't be completed</div>
-        <div class="opt" onclick="answer('q3','d','c')"><span class="opt-icon">âœ—</span>d) Hallucinate the remaining 20% to return a complete-looking answer</div>
+        <div class="opt" onclick="answer('q3','a','c')"><span class="opt-icon">✗</span>a) Keep trying until the limit, then fail silently</div>
+        <div class="opt" onclick="answer('q3','b','c')"><span class="opt-icon">✗</span>b) Restart from the beginning with a different strategy</div>
+        <div class="opt" onclick="answer('q3','c','c')"><span class="opt-icon">✓</span>c) Return a partial result with clear indication of what was done and what couldn't be completed</div>
+        <div class="opt" onclick="answer('q3','d','c')"><span class="opt-icon">✗</span>d) Hallucinate the remaining 20% to return a complete-looking answer</div>
       </div>
-      <div class="feedback correct-fb" id="q3-correct">âœ“ Graceful partial completion is the production best practice. A partial result with honest status is infinitely more valuable than a silent failure or fabricated completion. Use the remaining iterations to summarise what was accomplished, state what couldn't be done and why, and surface partial results. "Fail loudly with partial results" â€” users can act on 80% completion; they cannot make good decisions based on hallucinated completions.</div>
-      <div class="feedback wrong-fb" id="q3-wrong">âœ— Silent failure and hallucination are the worst options â€” both leave the user with no actionable information. Restarting discards 80% of completed work. The correct production pattern: return everything successfully completed, explicitly state what the agent couldn't finish and why, let the user decide next steps. Partial honest results always beat complete fabricated results.</div>
-      <button class="q-reset" onclick="resetQ('q3')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q3-correct">✓ Graceful partial completion is the production best practice. A partial result with honest status is infinitely more valuable than a silent failure or fabricated completion. Use the remaining iterations to summarise what was accomplished, state what couldn't be done and why, and surface partial results. "Fail loudly with partial results" — users can act on 80% completion; they cannot make good decisions based on hallucinated completions.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">✗ Silent failure and hallucination are the worst options — both leave the user with no actionable information. Restarting discards 80% of completed work. The correct production pattern: return everything successfully completed, explicitly state what the agent couldn't finish and why, let the user decide next steps. Partial honest results always beat complete fabricated results.</div>
+      <button class="q-reset" onclick="resetQ('q3')">↺ Try again</button>
     </div>
     <div class="q-block" id="q4">
       <div class="q-num">Question 4 of 5</div>
       <div class="q-text">Why is context overflow particularly dangerous compared to other ReAct failure modes?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">âœ—</span>a) It causes the agent to crash immediately and visibly</div>
-        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">âœ—</span>b) It only affects very long conversations of 100+ iterations</div>
-        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">âœ“</span>c) It's a silent failure â€” the agent continues confidently but with corrupted reasoning from truncated context</div>
-        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">âœ—</span>d) It triggers an automatic model restart</div>
+        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">✗</span>a) It causes the agent to crash immediately and visibly</div>
+        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">✗</span>b) It only affects very long conversations of 100+ iterations</div>
+        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">✓</span>c) It's a silent failure — the agent continues confidently but with corrupted reasoning from truncated context</div>
+        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">✗</span>d) It triggers an automatic model restart</div>
       </div>
-      <div class="feedback correct-fb" id="q4-correct">âœ“ Silent failures are the most dangerous. When context overflows, the LLM doesn't say "I've forgotten earlier context." It reasons from whatever is in its window â€” which may be missing the original goal, earlier sub-results, or critical constraints. The agent produces confident-sounding outputs that contradict what it did earlier. Especially insidious in tasks with many steps or large tool outputs.</div>
-      <div class="feedback wrong-fb" id="q4-wrong">âœ— Context overflow doesn't crash the agent â€” that's what makes it dangerous. It silently truncates older content. The LLM doesn't know what it's forgotten â€” it just reasons from what it can see, potentially contradicting earlier decisions or forgetting the original goal entirely while generating confident output. It typically kicks in well before 100 iterations with large tool responses.</div>
-      <button class="q-reset" onclick="resetQ('q4')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q4-correct">✓ Silent failures are the most dangerous. When context overflows, the LLM doesn't say "I've forgotten earlier context." It reasons from whatever is in its window — which may be missing the original goal, earlier sub-results, or critical constraints. The agent produces confident-sounding outputs that contradict what it did earlier. Especially insidious in tasks with many steps or large tool outputs.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">✗ Context overflow doesn't crash the agent — that's what makes it dangerous. It silently truncates older content. The LLM doesn't know what it's forgotten — it just reasons from what it can see, potentially contradicting earlier decisions or forgetting the original goal entirely while generating confident output. It typically kicks in well before 100 iterations with large tool responses.</div>
+      <button class="q-reset" onclick="resetQ('q4')">↺ Try again</button>
     </div>
     <div class="q-block" id="q5">
       <div class="q-num">Question 5 of 5</div>
       <div class="q-text">In the error recovery trace, the agent uses a FileNotFoundError to find the correct filename. What reasoning pattern is this?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q5','a','c')"><span class="opt-icon">âœ—</span>a) Memorisation â€” recalled the correct path from training data</div>
-        <div class="opt" onclick="answer('q5','b','c')"><span class="opt-icon">âœ—</span>b) Hallucination â€” invented a plausible filename</div>
-        <div class="opt" onclick="answer('q5','c','c')"><span class="opt-icon">âœ“</span>c) Reactive adaptation â€” using error feedback to update beliefs, generate a corrective action, and self-recover</div>
-        <div class="opt" onclick="answer('q5','d','c')"><span class="opt-icon">âœ—</span>d) Planning â€” it had a backup plan from the start</div>
+        <div class="opt" onclick="answer('q5','a','c')"><span class="opt-icon">✗</span>a) Memorisation — recalled the correct path from training data</div>
+        <div class="opt" onclick="answer('q5','b','c')"><span class="opt-icon">✗</span>b) Hallucination — invented a plausible filename</div>
+        <div class="opt" onclick="answer('q5','c','c')"><span class="opt-icon">✓</span>c) Reactive adaptation — using error feedback to update beliefs, generate a corrective action, and self-recover</div>
+        <div class="opt" onclick="answer('q5','d','c')"><span class="opt-icon">✗</span>d) Planning — it had a backup plan from the start</div>
       </div>
-      <div class="feedback correct-fb" id="q5-correct">âœ“ This is Reactivity + BDI in action. The agent: (1) perceives the error, (2) updates belief ("file isn't where I assumed"), (3) generates new desire ("find where it actually is"), (4) executes corrective action (list_directory), (5) uses the result to correct course. Treating every observation â€” including errors â€” as information is what makes ReAct agents resilient. Errors are feedback signals, not just failures.</div>
-      <div class="feedback wrong-fb" id="q5-wrong">âœ— It didn't use training data (path was unknown), didn't hallucinate, and had no pre-planned backup. This is reactive adaptation â€” the agent used the error as an information signal to update its world model, generate a diagnostic action, and self-correct. Every error in a ReAct loop is valuable information if the reasoning chain treats it as such rather than as a terminal failure.</div>
-      <button class="q-reset" onclick="resetQ('q5')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q5-correct">✓ This is Reactivity + BDI in action. The agent: (1) perceives the error, (2) updates belief ("file isn't where I assumed"), (3) generates new desire ("find where it actually is"), (4) executes corrective action (list_directory), (5) uses the result to correct course. Treating every observation — including errors — as information is what makes ReAct agents resilient. Errors are feedback signals, not just failures.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">✗ It didn't use training data (path was unknown), didn't hallucinate, and had no pre-planned backup. This is reactive adaptation — the agent used the error as an information signal to update its world model, generate a diagnostic action, and self-correct. Every error in a ReAct loop is valuable information if the reasoning chain treats it as such rather than as a terminal failure.</div>
+      <button class="q-reset" onclick="resetQ('q5')">↺ Try again</button>
     </div>
   </div>
 </section>

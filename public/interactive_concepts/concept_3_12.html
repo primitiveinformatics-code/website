@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3.12 RAG Foundations: Why RAG? | Agentic AI</title>
 <style>
@@ -35,7 +36,7 @@
   .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* PROBLEM CARDS â€” interactive */
+  /* PROBLEM CARDS — interactive */
   .problem-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
   @media (max-width: 640px) { .problem-row { grid-template-columns: 1fr; } }
   .prob-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.2s; }
@@ -127,18 +128,18 @@
 <body>
 
 <nav>
-  <a href="concept_3_11.html">â† Structured Outputs</a>
-  <span>Session 3 Â· Concept 3.12</span>
-  <a href="concept_3_13.html">RAG Architecture â†’</a>
+  <a href="concept_3_11.html">← Structured Outputs</a>
+  <span>Session 3 · Concept 3.12</span>
+  <a href="concept_3_13.html">RAG Architecture →</a>
 </nav>
 <nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
-  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
 </nav>
 
 <div class="hero">
-  <div class="tag">Session 3 Â· Concept 3.12</div>
+  <div class="tag">Session 3 · Concept 3.12</div>
   <h1>RAG Foundations: <span>Why RAG?</span></h1>
-  <p>The four knowledge problems that LLMs cannot solve alone â€” and why Retrieval-Augmented Generation is the standard answer.</p>
+  <p>The four knowledge problems that LLMs cannot solve alone — and why Retrieval-Augmented Generation is the standard answer.</p>
 </div>
 
 <div class="container">
@@ -147,17 +148,17 @@
   <div class="section">
     <div class="section-title">The Core Idea</div>
     <div class="info-box">
-      <strong>RAG in one sentence:</strong> Instead of asking the model to know everything, give it a search engine â€” retrieve relevant documents at query time, inject them into the context window, then generate a response grounded in those documents.<br><br>
+      <strong>RAG in one sentence:</strong> Instead of asking the model to know everything, give it a search engine — retrieve relevant documents at query time, inject them into the context window, then generate a response grounded in those documents.<br><br>
       <strong>The formula:</strong> RAG = Retrieval (find relevant docs) + Augmentation (add to prompt) + Generation (LLM answers from them)
     </div>
-    <pre><span class="cm"># The RAG pattern â€” simplified</span>
+    <pre><span class="cm"># The RAG pattern — simplified</span>
 <span class="kw">def</span> <span class="fn">rag_query</span>(user_question: str) -> str:
-    <span class="cm"># 1. RETRIEVE â€” find relevant chunks from your knowledge base</span>
+    <span class="cm"># 1. RETRIEVE — find relevant chunks from your knowledge base</span>
     relevant_docs = vector_db.<span class="fn">search</span>(
         query=user_question, top_k=<span class="num">5</span>
     )
 
-    <span class="cm"># 2. AUGMENT â€” inject retrieved docs into the prompt</span>
+    <span class="cm"># 2. AUGMENT — inject retrieved docs into the prompt</span>
     augmented_prompt = f<span class="str">"""
     Context from knowledge base:
     {chr(10).join(doc.text for doc in relevant_docs)}
@@ -166,7 +167,7 @@
     Answer based only on the above context.
     """</span>
 
-    <span class="cm"># 3. GENERATE â€” LLM answers from retrieved context</span>
+    <span class="cm"># 3. GENERATE — LLM answers from retrieved context</span>
     <span class="kw">return</span> llm.<span class="fn">call</span>(augmented_prompt)</pre>
   </div>
 
@@ -176,27 +177,27 @@
     <p style="color:var(--muted); font-size:0.88rem; margin-bottom:20px;">Click each problem to see how RAG addresses it.</p>
     <div class="problem-row">
       <div class="prob-card" onclick="showSolution(0, this)">
-        <div class="prob-icon">ðŸ“…</div>
+        <div class="prob-icon">📅</div>
         <h4>1. Knowledge Cutoff</h4>
-        <p>LLMs have a training cutoff date. They cannot answer questions about events after their last training run â€” no matter how you ask.</p>
+        <p>LLMs have a training cutoff date. They cannot answer questions about events after their last training run — no matter how you ask.</p>
         <div class="prob-tag">temporal staleness</div>
       </div>
       <div class="prob-card" onclick="showSolution(1, this)">
-        <div class="prob-icon">ðŸ¢</div>
+        <div class="prob-icon">🏢</div>
         <h4>2. Private / Proprietary Data</h4>
         <p>Your company's internal docs, Confluence pages, Jira tickets, and product specs were never in the training set. The model simply doesn't know them.</p>
         <div class="prob-tag">domain gap</div>
       </div>
       <div class="prob-card" onclick="showSolution(2, this)">
-        <div class="prob-icon">ðŸ”</div>
+        <div class="prob-icon">🔍</div>
         <h4>3. Grounding & Citations</h4>
         <p>Without source documents, the model cannot cite where an answer came from. You can't audit hallucinations or verify accuracy.</p>
         <div class="prob-tag">traceability</div>
       </div>
       <div class="prob-card" onclick="showSolution(3, this)">
-        <div class="prob-icon">ðŸ’¾</div>
+        <div class="prob-icon">💾</div>
         <h4>4. Context Window Limits</h4>
-        <p>You can't stuff an entire knowledge base into the context window. A 100k-document corpus at 500 tokens each = 50M tokens â€” far beyond any model's limit.</p>
+        <p>You can't stuff an entire knowledge base into the context window. A 100k-document corpus at 500 tokens each = 50M tokens — far beyond any model's limit.</p>
         <div class="prob-tag">scale</div>
       </div>
     </div>
@@ -222,27 +223,27 @@
         <tbody>
           <tr>
             <td><strong>Knowledge update</strong></td>
-            <td><span class="tag-good">Real-time</span> â€” update the vector DB, not the model</td>
-            <td><span class="tag-bad">Hoursâ€“days</span> to retrain and redeploy</td>
-            <td><span class="tag-good">Instant</span> â€” just change the prompt</td>
+            <td><span class="tag-good">Real-time</span> — update the vector DB, not the model</td>
+            <td><span class="tag-bad">Hours–days</span> to retrain and redeploy</td>
+            <td><span class="tag-good">Instant</span> — just change the prompt</td>
           </tr>
           <tr>
             <td><strong>Knowledge scale</strong></td>
-            <td><span class="tag-good">Unlimited</span> â€” billions of docs in vector DB</td>
+            <td><span class="tag-good">Unlimited</span> — billions of docs in vector DB</td>
             <td><span class="tag-med">Limited</span> by training data size / cost</td>
             <td><span class="tag-bad">Context window only</span> (e.g., ~200K tokens)</td>
           </tr>
           <tr>
             <td><strong>Traceability</strong></td>
-            <td><span class="tag-good">High</span> â€” can return source chunks with answer</td>
-            <td><span class="tag-bad">None</span> â€” knowledge baked into weights opaquely</td>
-            <td><span class="tag-good">Full</span> â€” you put the docs there yourself</td>
+            <td><span class="tag-good">High</span> — can return source chunks with answer</td>
+            <td><span class="tag-bad">None</span> — knowledge baked into weights opaquely</td>
+            <td><span class="tag-good">Full</span> — you put the docs there yourself</td>
           </tr>
           <tr>
             <td><strong>Cost</strong></td>
-            <td><span class="tag-med">Medium</span> â€” embedding + vector DB + inference</td>
-            <td><span class="tag-bad">High</span> â€” GPU hours for each training run</td>
-            <td><span class="tag-good">Low</span> â€” just inference (but bigger context = more tokens)</td>
+            <td><span class="tag-med">Medium</span> — embedding + vector DB + inference</td>
+            <td><span class="tag-bad">High</span> — GPU hours for each training run</td>
+            <td><span class="tag-good">Low</span> — just inference (but bigger context = more tokens)</td>
           </tr>
           <tr>
             <td><strong>Best for</strong></td>
@@ -252,9 +253,9 @@
           </tr>
           <tr>
             <td><strong>Hallucination risk</strong></td>
-            <td><span class="tag-good">Lower</span> â€” answer is grounded in retrieved text</td>
-            <td><span class="tag-med">Medium</span> â€” model generalizes from training</td>
-            <td><span class="tag-med">Medium</span> â€” depends on quality of in-context docs</td>
+            <td><span class="tag-good">Lower</span> — answer is grounded in retrieved text</td>
+            <td><span class="tag-med">Medium</span> — model generalizes from training</td>
+            <td><span class="tag-med">Medium</span> — depends on quality of in-context docs</td>
           </tr>
         </tbody>
       </table>
@@ -267,8 +268,8 @@
     <p style="color:var(--muted); font-size:0.88rem; margin-bottom:20px;">Select a scenario to see which knowledge approach fits best.</p>
     <div class="matcher-wrapper">
       <div class="matcher-header">
-        <div>ðŸ“‹ Scenario</div>
-        <div>âœ… Recommended Approach</div>
+        <div>📋 Scenario</div>
+        <div>✅ Recommended Approach</div>
       </div>
       <div class="matcher-grid">
         <div class="matcher-left">
@@ -297,7 +298,7 @@
         </div>
         <div class="matcher-right">
           <div class="answer-box" id="answer-box">
-            <div style="color:var(--muted); font-size:0.9rem;">â† Select a scenario to see the recommendation</div>
+            <div style="color:var(--muted); font-size:0.9rem;">← Select a scenario to see the recommendation</div>
           </div>
         </div>
       </div>
@@ -307,13 +308,13 @@
   <!-- RAG ANATOMY OVERVIEW -->
   <div class="section">
     <div class="section-title">How RAG Works: The 5 Steps</div>
-    <div class="info-box">This is the high-level flow. The next concept (3.13) dives deep into each of the two pipelines â€” Indexing and Retrieval.</div>
+    <div class="info-box">This is the high-level flow. The next concept (3.13) dives deep into each of the two pipelines — Indexing and Retrieval.</div>
     <div class="anatomy-row">
       <div class="anatomy-step">
         <div class="step-num">1</div>
         <div class="step-body">
           <h4>Ingest &amp; Chunk</h4>
-          <p>Source documents (PDFs, wikis, Confluence, code) are split into overlapping chunks â€” typically 256â€“512 tokens each. Overlap ensures context isn't lost at chunk boundaries.</p>
+          <p>Source documents (PDFs, wikis, Confluence, code) are split into overlapping chunks — typically 256–512 tokens each. Overlap ensures context isn't lost at chunk boundaries.</p>
         </div>
       </div>
       <div class="connector"></div>
@@ -354,7 +355,7 @@
   <!-- QUIZ -->
   <div class="section">
     <div class="quiz-header">
-      <h3>ðŸ§  Knowledge Check</h3>
+      <h3>🧠 Knowledge Check</h3>
       <div class="score-display" id="scoreDisplay">0 / 5</div>
     </div>
 
@@ -367,19 +368,19 @@
         <button class="opt" onclick="answer('q1','d','b')">d) Fine-tuning is required before any document can be used</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="question" id="q2">
       <p>2. You need to build a chatbot over a 500,000-document product catalog that updates daily. Which approach is most appropriate?</p>
       <div class="options">
         <button class="opt" onclick="answer('q2','a','b')">a) Fine-tune the model daily on the new catalog</button>
-        <button class="opt" onclick="answer('q2','b','b')">b) RAG â€” index the catalog in a vector DB and retrieve relevant products at query time</button>
-        <button class="opt" onclick="answer('q2','c','b')">c) In-context learning â€” paste the full catalog into each prompt</button>
+        <button class="opt" onclick="answer('q2','b','b')">b) RAG — index the catalog in a vector DB and retrieve relevant products at query time</button>
+        <button class="opt" onclick="answer('q2','c','b')">c) In-context learning — paste the full catalog into each prompt</button>
         <button class="opt" onclick="answer('q2','d','b')">d) Use a larger context window model and load the full catalog once</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="question" id="q3">
@@ -391,19 +392,19 @@
         <button class="opt" onclick="answer('q3','d','c')">d) It eliminates the need for embedding models entirely</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="question" id="q4">
       <p>4. Why is fine-tuning <em>not</em> a good solution for keeping an LLM up to date with rapidly changing information?</p>
       <div class="options">
         <button class="opt" onclick="answer('q4','a','b')">a) Fine-tuned models cannot use external tools</button>
-        <button class="opt" onclick="answer('q4','b','b')">b) Retraining takes hours to days and is expensive â€” you can't do it every time data changes</button>
+        <button class="opt" onclick="answer('q4','b','b')">b) Retraining takes hours to days and is expensive — you can't do it every time data changes</button>
         <button class="opt" onclick="answer('q4','c','b')">c) Fine-tuning only works on classification tasks</button>
         <button class="opt" onclick="answer('q4','d','b')">d) Fine-tuned models have smaller context windows</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="question" id="q5">
@@ -415,7 +416,7 @@
         <button class="opt" onclick="answer('q5','d','c')">d) To compress documents to fit within the context window</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
@@ -425,20 +426,20 @@
 // 4 PROBLEMS
 const solutions = [
   {
-    title: 'âœ“ RAG Solution: Real-Time Retrieval from Updated Index',
-    body: 'RAG completely sidesteps the training cutoff by retrieving from a live index. When new articles or events are published, you simply <code>embed</code> and <code>upsert</code> them into the vector DB. The model never needs to be retrained â€” its knowledge is as fresh as your indexing pipeline. Pair with a web search tool for true real-time access.'
+    title: '✓ RAG Solution: Real-Time Retrieval from Updated Index',
+    body: 'RAG completely sidesteps the training cutoff by retrieving from a live index. When new articles or events are published, you simply <code>embed</code> and <code>upsert</code> them into the vector DB. The model never needs to be retrained — its knowledge is as fresh as your indexing pipeline. Pair with a web search tool for true real-time access.'
   },
   {
-    title: 'âœ“ RAG Solution: Private Document Indexing',
-    body: 'Index your internal documents â€” Confluence, Notion, SharePoint, Jira, Slack threads, PDF manuals â€” in a private vector DB. The model retrieves only the relevant passages when asked. No proprietary data leaves your infrastructure, and no data is exposed via training. Access control can be enforced at retrieval time using namespace filtering or metadata filters.'
+    title: '✓ RAG Solution: Private Document Indexing',
+    body: 'Index your internal documents — Confluence, Notion, SharePoint, Jira, Slack threads, PDF manuals — in a private vector DB. The model retrieves only the relevant passages when asked. No proprietary data leaves your infrastructure, and no data is exposed via training. Access control can be enforced at retrieval time using namespace filtering or metadata filters.'
   },
   {
-    title: 'âœ“ RAG Solution: Source Chunks as Citations',
-    body: 'When the LLM answers, you can return the retrieved <code>source_chunks</code> alongside the generated text. The answer is literally constructed from specific passages, so you can show the user: "This answer is based on: [Document X, Section 3]." This dramatically reduces hallucination risk and makes the system auditable â€” if an answer is wrong, you can trace exactly which document chunk led to it.'
+    title: '✓ RAG Solution: Source Chunks as Citations',
+    body: 'When the LLM answers, you can return the retrieved <code>source_chunks</code> alongside the generated text. The answer is literally constructed from specific passages, so you can show the user: "This answer is based on: [Document X, Section 3]." This dramatically reduces hallucination risk and makes the system auditable — if an answer is wrong, you can trace exactly which document chunk led to it.'
   },
   {
-    title: 'âœ“ RAG Solution: Selective Retrieval = Efficient Context Use',
-    body: 'Instead of loading all 100k documents, RAG retrieves only the top 3â€“10 most relevant chunks (~1,500â€“5,000 tokens) at query time. The vector DB does the heavy lifting with approximate nearest-neighbor (ANN) search across millions of vectors in milliseconds. You get the benefit of a massive knowledge base with the efficiency of a small context window call.'
+    title: '✓ RAG Solution: Selective Retrieval = Efficient Context Use',
+    body: 'Instead of loading all 100k documents, RAG retrieves only the top 3–10 most relevant chunks (~1,500–5,000 tokens) at query time. The vector DB does the heavy lifting with approximate nearest-neighbor (ANN) search across millions of vectors in milliseconds. You get the benefit of a massive knowledge base with the efficiency of a small context window call.'
   }
 ];
 
@@ -465,35 +466,35 @@ const scenarios = [
     badge: 'badge-rag',
     title: 'RAG is the right choice',
     reason: 'The knowledge base (HR policies, product docs) updates frequently and is private. RAG lets you index new documents without retraining. The model can cite exact policy sections in its answers, giving employees a reliable, auditable source.',
-    caveat: 'âš  Use metadata filters to enforce access control â€” employees shouldn\'t see each other\'s performance docs.'
+    caveat: '⚠ Use metadata filters to enforce access control — employees shouldn\'t see each other\'s performance docs.'
   },
   {
     method: 'Fine-Tuning',
     badge: 'badge-ft',
     title: 'Fine-Tuning is likely better here',
     reason: 'When the requirement is about behavioral style and output format consistency (not just knowledge), fine-tuning is stronger. Legal tone and firm-specific formatting are best encoded into the model weights. RAG can supplement with current case law, but the style adherence needs fine-tuning.',
-    caveat: 'âš  Consider RAG + Fine-Tuning together: fine-tune for style, RAG for current precedents.'
+    caveat: '⚠ Consider RAG + Fine-Tuning together: fine-tune for style, RAG for current precedents.'
   },
   {
     method: 'In-Context',
     badge: 'badge-ic',
     title: 'In-Context Learning is simplest here',
     reason: 'You have a fixed, small dataset (5 emails) and a rubric. Just paste them into the prompt with a few-shot classification example. No vector DB or training required. This is the fastest and cheapest option for one-off tasks.',
-    caveat: 'âš  If the volume grows to hundreds of emails regularly, migrate to RAG for scalable semantic routing.'
+    caveat: '⚠ If the volume grows to hundreds of emails regularly, migrate to RAG for scalable semantic routing.'
   },
   {
     method: 'RAG',
     badge: 'badge-rag',
     title: 'RAG is the right choice',
-    reason: 'Breaking news changes by the minute â€” fine-tuning is impossible to keep current. In-context learning can\'t fit hours of news. RAG with a live ingestion pipeline (news API â†’ chunk â†’ embed â†’ upsert) enables the model to answer about articles published minutes ago.',
-    caveat: 'âš  Set chunk TTL (time-to-live) to expire old news from the index to avoid stale context.'
+    reason: 'Breaking news changes by the minute — fine-tuning is impossible to keep current. In-context learning can\'t fit hours of news. RAG with a live ingestion pipeline (news API → chunk → embed → upsert) enables the model to answer about articles published minutes ago.',
+    caveat: '⚠ Set chunk TTL (time-to-live) to expire old news from the index to avoid stale context.'
   },
   {
     method: 'Fine-Tuning',
     badge: 'badge-ft',
     title: 'Fine-Tuning is likely better here',
-    reason: 'ICD-10 has 72,000+ codes with complex hierarchical rules. The model needs deep, internalized knowledge of the coding system â€” not just retrieval. Fine-tuning on annotated clinical coding examples teaches the model the pattern recognition needed for accurate code suggestion.',
-    caveat: 'âš  RAG can still help â€” use it to retrieve code descriptions as context when the model is uncertain.'
+    reason: 'ICD-10 has 72,000+ codes with complex hierarchical rules. The model needs deep, internalized knowledge of the coding system — not just retrieval. Fine-tuning on annotated clinical coding examples teaches the model the pattern recognition needed for accurate code suggestion.',
+    caveat: '⚠ RAG can still help — use it to retrieve code descriptions as context when the model is uncertain.'
   }
 ];
 
@@ -513,11 +514,11 @@ function pickScenario(idx, el) {
 let score = 0;
 const answered = {};
 const msgs = {
-  q1: 'Private internal docs were never in the training set â€” this is the "private/proprietary data" knowledge gap that RAG solves.',
+  q1: 'Private internal docs were never in the training set — this is the "private/proprietary data" knowledge gap that RAG solves.',
   q2: 'RAG is designed for exactly this: large, dynamic catalogs where daily updates make fine-tuning impractical and in-context impossible.',
-  q3: 'Grounding comes from generating answers based on specific retrieved source passages â€” which can be cited and audited.',
-  q4: 'Fine-tuning requires expensive GPU training runs taking hours to days â€” it cannot keep up with rapidly changing information.',
-  q5: 'Embedding models convert text to dense vectors for semantic similarity search â€” the foundation of the retrieval step in RAG.'
+  q3: 'Grounding comes from generating answers based on specific retrieved source passages — which can be cited and audited.',
+  q4: 'Fine-tuning requires expensive GPU training runs taking hours to days — it cannot keep up with rapidly changing information.',
+  q5: 'Embedding models convert text to dense vectors for semantic similarity search — the foundation of the retrieval step in RAG.'
 };
 
 function answer(qid, chosen, correct) {
@@ -533,11 +534,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3.13 RAG Architecture: Two Pipelines | Agentic AI</title>
 <style>
@@ -145,18 +146,18 @@
 <body>
 
 <nav>
-  <a href="concept_3_12.html">â† RAG Foundations</a>
-  <span>Session 3 Â· Concept 3.13</span>
-  <a href="main-course.html">All Concepts â†’</a>
+  <a href="concept_3_12.html">← RAG Foundations</a>
+  <span>Session 3 · Concept 3.13</span>
+  <a href="index.html">All Concepts →</a>
 </nav>
 <nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
-  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
 </nav>
 
 <div class="hero">
-  <div class="tag">Session 3 Â· Concept 3.13</div>
+  <div class="tag">Session 3 · Concept 3.13</div>
   <h1>RAG Architecture: <span>Two Pipelines</span></h1>
-  <p>The Indexing Pipeline (offline, runs once) and the Retrieval Pipeline (online, runs per query) â€” click through every step and component.</p>
+  <p>The Indexing Pipeline (offline, runs once) and the Retrieval Pipeline (online, runs per query) — click through every step and component.</p>
 </div>
 
 <div class="container">
@@ -165,12 +166,12 @@
   <div class="section">
     <div class="section-title">The Two-Pipeline Model</div>
     <div class="info-box">
-      <strong>Mental model:</strong> RAG is two completely separate systems. The <strong style="color:var(--yellow);">Indexing Pipeline</strong> runs offline â€” it's a batch process that transforms raw documents into searchable vectors. The <strong style="color:var(--blue);">Retrieval Pipeline</strong> runs online â€” it handles live user queries in real time. Each has different performance characteristics, failure modes, and optimization strategies.
+      <strong>Mental model:</strong> RAG is two completely separate systems. The <strong style="color:var(--yellow);">Indexing Pipeline</strong> runs offline — it's a batch process that transforms raw documents into searchable vectors. The <strong style="color:var(--blue);">Retrieval Pipeline</strong> runs online — it handles live user queries in real time. Each has different performance characteristics, failure modes, and optimization strategies.
     </div>
     <div class="pipelines-grid">
       <div class="pipeline-card indexing">
-        <h3>ðŸ“¦ Indexing Pipeline</h3>
-        <div class="when">â± Runs: offline / on document change</div>
+        <h3>📦 Indexing Pipeline</h3>
+        <div class="when">⏱ Runs: offline / on document change</div>
         <div class="steps-mini">
           <div class="mini-step"><div class="dot dot-y"></div>Load & parse source documents</div>
           <div class="mini-step"><div class="dot dot-y"></div>Split into overlapping chunks</div>
@@ -179,13 +180,13 @@
         </div>
       </div>
       <div class="pipeline-card retrieval">
-        <h3>ðŸ” Retrieval Pipeline</h3>
-        <div class="when">âš¡ Runs: every user query, real-time</div>
+        <h3>🔍 Retrieval Pipeline</h3>
+        <div class="when">⚡ Runs: every user query, real-time</div>
         <div class="steps-mini">
           <div class="mini-step"><div class="dot dot-b"></div>Receive & optionally rewrite query</div>
           <div class="mini-step"><div class="dot dot-b"></div>Embed query with same model</div>
           <div class="mini-step"><div class="dot dot-b"></div>Search + rerank retrieved chunks</div>
-          <div class="mini-step"><div class="dot dot-b"></div>Augment prompt â†’ LLM generates</div>
+          <div class="mini-step"><div class="dot dot-b"></div>Augment prompt → LLM generates</div>
         </div>
       </div>
     </div>
@@ -196,26 +197,26 @@
     <div class="section-title">Step-by-Step Explorer</div>
     <div class="pipeline-wrapper">
       <div class="pipeline-tabs">
-        <button class="pipeline-tab active-idx" id="tab-idx" onclick="switchPipeline('idx')">ðŸ“¦ Indexing Pipeline</button>
-        <button class="pipeline-tab" id="tab-ret" onclick="switchPipeline('ret')">ðŸ” Retrieval Pipeline</button>
+        <button class="pipeline-tab active-idx" id="tab-idx" onclick="switchPipeline('idx')">📦 Indexing Pipeline</button>
+        <button class="pipeline-tab" id="tab-ret" onclick="switchPipeline('ret')">🔍 Retrieval Pipeline</button>
       </div>
 
       <!-- INDEXING STEPS -->
       <div id="pipe-idx">
         <div class="step-flow">
           <div class="step-node idx-node active" onclick="showStep('idx',0,this)">Load Sources</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node idx-node" onclick="showStep('idx',1,this)">Parse &amp; Clean</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node idx-node" onclick="showStep('idx',2,this)">Chunk Text</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node idx-node" onclick="showStep('idx',3,this)">Embed Chunks</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node idx-node" onclick="showStep('idx',4,this)">Store Vectors</div>
         </div>
         <div class="step-detail" id="idx-detail">
           <h4 style="color:var(--yellow);">Step 1: Load Sources</h4>
-          <p>Connect to your document sources â€” PDFs, Word files, Confluence pages, Notion, GitHub repos, web URLs. Each source type requires a dedicated loader that handles authentication and format conversion. LlamaIndex and LangChain both provide a rich ecosystem of <code>DocumentLoader</code> classes for 50+ source types.</p>
+          <p>Connect to your document sources — PDFs, Word files, Confluence pages, Notion, GitHub repos, web URLs. Each source type requires a dedicated loader that handles authentication and format conversion. LlamaIndex and LangChain both provide a rich ecosystem of <code>DocumentLoader</code> classes for 50+ source types.</p>
           <div class="detail-code"><span style="color:var(--purple);">from</span> llama_index.readers <span style="color:var(--purple);">import</span> ConfluenceReader, PDFReader<br>
 docs = ConfluenceReader(base_url=<span style="color:var(--blue);">"..."</span>).load_data(space_key=<span style="color:var(--blue);">"PROD"</span>)</div>
         </div>
@@ -225,15 +226,15 @@ docs = ConfluenceReader(base_url=<span style="color:var(--blue);">"..."</span>).
       <div id="pipe-ret" style="display:none;">
         <div class="step-flow">
           <div class="step-node ret-node active" onclick="showStep('ret',0,this)">Receive Query</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node ret-node" onclick="showStep('ret',1,this)">Query Rewrite</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node ret-node" onclick="showStep('ret',2,this)">Embed Query</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node ret-node" onclick="showStep('ret',3,this)">ANN Search</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node ret-node" onclick="showStep('ret',4,this)">Rerank</div>
-          <div class="step-arrow">â†’</div>
+          <div class="step-arrow">→</div>
           <div class="step-node ret-node" onclick="showStep('ret',5,this)">Augment &amp; Generate</div>
         </div>
         <div class="step-detail" id="ret-detail">
@@ -290,7 +291,7 @@ docs = ConfluenceReader(base_url=<span style="color:var(--blue);">"..."</span>).
           <span class="example-tag cloud">Confluence API</span>
           <span class="example-tag oss">PyMuPDF (PDF)</span>
         </div>
-        <div class="tradeoff">âš  Bottleneck: PDF extraction is lossy. Tables, figures, and footnotes are often mangled. Use dedicated table extractors for structured documents.</div>
+        <div class="tradeoff">⚠ Bottleneck: PDF extraction is lossy. Tables, figures, and footnotes are often mangled. Use dedicated table extractors for structured documents.</div>
       </div>
     </div>
   </div>
@@ -304,8 +305,8 @@ docs = ConfluenceReader(base_url=<span style="color:var(--blue);">"..."</span>).
         <option value="1">Query: "Summarize last quarter's product roadmap changes"</option>
         <option value="2">Query: "How do I configure SSO for the admin panel?"</option>
       </select>
-      <button class="sim-btn primary" onclick="runTrace()">â–¶ Run Trace</button>
-      <button class="sim-btn" onclick="clearTrace()">âœ• Clear</button>
+      <button class="sim-btn primary" onclick="runTrace()">▶ Run Trace</button>
+      <button class="sim-btn" onclick="clearTrace()">✕ Clear</button>
     </div>
     <div class="trace-log" id="trace-log">
       <span style="color:var(--muted);">// Select a query and click Run Trace to see the full RAG pipeline execution</span>
@@ -314,20 +315,20 @@ docs = ConfluenceReader(base_url=<span style="color:var(--blue);">"..."</span>).
 
   <!-- CHUNKING STRATEGIES -->
   <div class="section">
-    <div class="section-title">Chunking Strategies â€” The Critical Decision</div>
+    <div class="section-title">Chunking Strategies — The Critical Decision</div>
     <div class="info-box">
-      <strong>Why chunking matters:</strong> Chunk too large â†’ retrieval is imprecise, you get irrelevant context. Chunk too small â†’ you lose the context needed to understand a passage. The right strategy depends on your document type.
+      <strong>Why chunking matters:</strong> Chunk too large → retrieval is imprecise, you get irrelevant context. Chunk too small → you lose the context needed to understand a passage. The right strategy depends on your document type.
     </div>
-    <pre><span class="cm"># Fixed-size chunking â€” simplest, least aware of content</span>
+    <pre><span class="cm"># Fixed-size chunking — simplest, least aware of content</span>
 <span class="kw">from</span> langchain.text_splitter <span class="kw">import</span> RecursiveCharacterTextSplitter
 
 splitter = <span class="cls">RecursiveCharacterTextSplitter</span>(
     chunk_size=<span class="num">512</span>,          <span class="cm"># target tokens per chunk</span>
     chunk_overlap=<span class="num">64</span>,        <span class="cm"># overlap to preserve context at boundaries</span>
-    separators=[<span class="str">"\n\n"</span>, <span class="str">"\n"</span>, <span class="str">" "</span>, <span class="str">""</span>]  <span class="cm"># try paragraph â†’ sentence â†’ word</span>
+    separators=[<span class="str">"\n\n"</span>, <span class="str">"\n"</span>, <span class="str">" "</span>, <span class="str">""</span>]  <span class="cm"># try paragraph → sentence → word</span>
 )
 
-<span class="cm"># Semantic chunking â€” groups sentences by meaning, variable size</span>
+<span class="cm"># Semantic chunking — groups sentences by meaning, variable size</span>
 <span class="kw">from</span> llama_index.node_parser <span class="kw">import</span> SemanticSplitterNodeParser
 
 semantic_splitter = <span class="cls">SemanticSplitterNodeParser</span>(
@@ -336,15 +337,15 @@ semantic_splitter = <span class="cls">SemanticSplitterNodeParser</span>(
     embed_model=embed_model
 )
 
-<span class="cm"># Parent-child chunking â€” stores large parent chunks, retrieves on small child chunks</span>
-<span class="cm"># Parent (2048 tokens) â†’ stored as context to inject</span>
-<span class="cm"># Child (128 tokens) â†’ used for retrieval (higher precision)</span></pre>
+<span class="cm"># Parent-child chunking — stores large parent chunks, retrieves on small child chunks</span>
+<span class="cm"># Parent (2048 tokens) → stored as context to inject</span>
+<span class="cm"># Child (128 tokens) → used for retrieval (higher precision)</span></pre>
   </div>
 
   <!-- QUIZ -->
   <div class="section">
     <div class="quiz-header">
-      <h3>ðŸ§  Knowledge Check</h3>
+      <h3>🧠 Knowledge Check</h3>
       <div class="score-display" id="scoreDisplay">0 / 5</div>
     </div>
 
@@ -353,11 +354,11 @@ semantic_splitter = <span class="cls">SemanticSplitterNodeParser</span>(
       <div class="options">
         <button class="opt" onclick="answer('q1','a','b')">a) Indexing runs per user query; retrieval runs offline in batch</button>
         <button class="opt" onclick="answer('q1','b','b')">b) Indexing is an offline batch process; retrieval runs in real time per query</button>
-        <button class="opt" onclick="answer('q1','c','b')">c) Both pipelines run at the same time â€” they are two threads of the same process</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) Both pipelines run at the same time — they are two threads of the same process</button>
         <button class="opt" onclick="answer('q1','d','b')">d) The indexing pipeline is only needed when fine-tuning the LLM</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="question" id="q2">
@@ -369,7 +370,7 @@ semantic_splitter = <span class="cls">SemanticSplitterNodeParser</span>(
         <button class="opt" onclick="answer('q2','d','c')">d) It allows the same embedding model to be used for both indexing and retrieval</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="question" id="q3">
@@ -381,7 +382,7 @@ semantic_splitter = <span class="cls">SemanticSplitterNodeParser</span>(
         <button class="opt" onclick="answer('q3','d','d')">d) It re-scores ANN search results using a more accurate cross-encoder model to improve relevance ranking</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="question" id="q4">
@@ -393,7 +394,7 @@ semantic_splitter = <span class="cls">SemanticSplitterNodeParser</span>(
         <button class="opt" onclick="answer('q4','d','a')">d) Child chunks are compressed versions of parent chunks to save vector DB storage</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="question" id="q5">
@@ -405,7 +406,7 @@ semantic_splitter = <span class="cls">SemanticSplitterNodeParser</span>(
         <button class="opt" onclick="answer('q5','d','c')">d) Using different models would cause the LLM to hallucinate during generation</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
 
   </div>
@@ -423,7 +424,7 @@ function switchPipeline(type) {
 // STEP DATA
 const idxSteps = [
   { title: 'Step 1: Load Sources', color: 'var(--yellow)',
-    body: 'Connect to your document sources â€” PDFs, Word files, Confluence pages, Notion, GitHub repos, web URLs. Each source type requires a dedicated loader that handles authentication and format conversion. LlamaIndex and LangChain provide 50+ DocumentLoader implementations.',
+    body: 'Connect to your document sources — PDFs, Word files, Confluence pages, Notion, GitHub repos, web URLs. Each source type requires a dedicated loader that handles authentication and format conversion. LlamaIndex and LangChain provide 50+ DocumentLoader implementations.',
     code: 'from llama_index.readers import ConfluenceReader\ndocs = ConfluenceReader(base_url="...").load_data(space_key="PROD")'
   },
   { title: 'Step 2: Parse & Clean', color: 'var(--yellow)',
@@ -431,15 +432,15 @@ const idxSteps = [
     code: 'import pymupdf4llm\nmd_text = pymupdf4llm.to_markdown("report.pdf")  # Preserves tables'
   },
   { title: 'Step 3: Chunk Text', color: 'var(--yellow)',
-    body: 'Split documents into smaller, overlapping passages. Typical sizes: 256â€“512 tokens with 32â€“64 token overlap. The overlap prevents important context from being lost at chunk boundaries. Semantic chunking groups sentences by meaning rather than fixed size.',
+    body: 'Split documents into smaller, overlapping passages. Typical sizes: 256–512 tokens with 32–64 token overlap. The overlap prevents important context from being lost at chunk boundaries. Semantic chunking groups sentences by meaning rather than fixed size.',
     code: 'splitter = RecursiveCharacterTextSplitter(\n    chunk_size=512, chunk_overlap=64\n)\nchunks = splitter.split_documents(docs)'
   },
   { title: 'Step 4: Embed Chunks', color: 'var(--yellow)',
-    body: 'Pass each chunk through an embedding model to get a dense vector (typically 768â€“3072 dimensions). This is often the slowest and most expensive step at scale. Batch your embedding calls and cache results â€” if a document hasn\'t changed, you don\'t need to re-embed it.',
+    body: 'Pass each chunk through an embedding model to get a dense vector (typically 768–3072 dimensions). This is often the slowest and most expensive step at scale. Batch your embedding calls and cache results — if a document hasn\'t changed, you don\'t need to re-embed it.',
     code: 'embeddings = embed_model.encode(\n    [chunk.text for chunk in chunks],\n    batch_size=64, show_progress_bar=True\n)'
   },
   { title: 'Step 5: Store Vectors', color: 'var(--yellow)',
-    body: 'Upsert each (vector, text, metadata) triple into the vector database. Metadata (source URL, timestamp, section title) enables filtered retrieval â€” e.g., "only search documents from the last 30 days." Use namespaces or collections to separate different document corpora.',
+    body: 'Upsert each (vector, text, metadata) triple into the vector database. Metadata (source URL, timestamp, section title) enables filtered retrieval — e.g., "only search documents from the last 30 days." Use namespaces or collections to separate different document corpora.',
     code: 'index.upsert(vectors=[\n    (id, embedding, {"text": chunk.text,\n                    "source": chunk.metadata["url"],\n                    "date": chunk.metadata["updated"]})\n    for id, embedding, chunk in zip(ids, embeddings, chunks)\n])'
   }
 ];
@@ -450,23 +451,23 @@ const retSteps = [
     code: '# Add conversation context for follow-up questions\nif is_followup(query):\n    query = f"{history[-1].q}\\n{query}"'
   },
   { title: 'Step 2: Query Rewrite (optional)', color: 'var(--blue)',
-    body: 'Improve retrieval by rewriting the query before embedding. Techniques: HyDE (Hypothetical Document Embeddings) â€” ask the LLM to write a hypothetical answer, then embed that; query expansion â€” generate multiple phrasings of the same question; step-back prompting â€” restate as a more general question.',
+    body: 'Improve retrieval by rewriting the query before embedding. Techniques: HyDE (Hypothetical Document Embeddings) — ask the LLM to write a hypothetical answer, then embed that; query expansion — generate multiple phrasings of the same question; step-back prompting — restate as a more general question.',
     code: '# HyDE: embed a hypothetical answer for better semantic match\nhypothetical_doc = llm.generate(f"Write a short passage answering: {query}")\nquery_vector = embed_model.encode(hypothetical_doc)'
   },
   { title: 'Step 3: Embed Query', color: 'var(--blue)',
-    body: 'Convert the (possibly rewritten) query into a vector using the SAME embedding model used during indexing. This is critical â€” vectors are only comparable within the same vector space. A query embedded with model A and docs embedded with model B will produce meaningless similarity scores.',
-    code: 'query_vector = embed_model.encode(query)\n# âš  MUST be the same model used during indexing!'
+    body: 'Convert the (possibly rewritten) query into a vector using the SAME embedding model used during indexing. This is critical — vectors are only comparable within the same vector space. A query embedded with model A and docs embedded with model B will produce meaningless similarity scores.',
+    code: 'query_vector = embed_model.encode(query)\n# ⚠ MUST be the same model used during indexing!'
   },
   { title: 'Step 4: ANN Search', color: 'var(--blue)',
-    body: 'Query the vector DB with the query vector to find the top-k most similar document chunks. Most production vector DBs use Approximate Nearest Neighbor (ANN) algorithms (HNSW, IVF) that trade a small accuracy drop for massive speed gains â€” searching millions of vectors in milliseconds.',
+    body: 'Query the vector DB with the query vector to find the top-k most similar document chunks. Most production vector DBs use Approximate Nearest Neighbor (ANN) algorithms (HNSW, IVF) that trade a small accuracy drop for massive speed gains — searching millions of vectors in milliseconds.',
     code: 'results = vector_db.query(\n    vector=query_vector,\n    top_k=20,           # Retrieve more than you need (for reranking)\n    filter={"date": {"$gte": "2024-01-01"}},\n    include_metadata=True\n)'
   },
   { title: 'Step 5: Rerank', color: 'var(--blue)',
-    body: 'ANN search trades precision for speed â€” it returns good candidates, not the best ones. A cross-encoder reranker (e.g., Cohere Rerank, bge-reranker) re-scores each candidate by attending to both the query and the chunk together. This is slower but much more accurate. Rerank from top-20 down to top-5.',
+    body: 'ANN search trades precision for speed — it returns good candidates, not the best ones. A cross-encoder reranker (e.g., Cohere Rerank, bge-reranker) re-scores each candidate by attending to both the query and the chunk together. This is slower but much more accurate. Rerank from top-20 down to top-5.',
     code: 'reranked = cohere.rerank(\n    query=query,\n    documents=[r.text for r in results],\n    top_n=5,\n    model="rerank-english-v3.0"\n)'
   },
   { title: 'Step 6: Augment & Generate', color: 'var(--blue)',
-    body: 'Build the final prompt by injecting the top-k reranked chunks as context. Instruct the model to answer from the provided context only â€” this reduces hallucination. Return source references alongside the answer for traceability and user trust.',
+    body: 'Build the final prompt by injecting the top-k reranked chunks as context. Instruct the model to answer from the provided context only — this reduces hallucination. Return source references alongside the answer for traceability and user trust.',
     code: 'context = "\\n\\n".join([c.text for c in reranked])\nprompt = f"""Answer based only on the context below.\nContext: {context}\n\nQuestion: {query}\nAnswer:"""\nanswer = llm.call(prompt)\n# Return answer + source_chunks for citations'
   }
 ];
@@ -488,49 +489,49 @@ const compData = [
     desc: 'Connects to source systems and converts documents into plain text + metadata. Handles authentication, pagination, and format-specific parsing (PDF text extraction, HTML stripping, DOCX parsing).',
     detail: 'Key decision: how to trigger re-ingestion. Webhook on document change is best for freshness; scheduled polling is simpler but lags. Manual ingestion is only acceptable for static corpora.',
     examples: [['LlamaIndex Readers', 'cloud'], ['LangChain Loaders', 'oss'], ['Unstructured.io', 'oss'], ['PyMuPDF', 'local']],
-    tradeoff: 'âš  PDF extraction is lossy â€” tables and figures often get mangled. Use specialized table extractors (Camelot, pdfplumber) for structured documents.'
+    tradeoff: '⚠ PDF extraction is lossy — tables and figures often get mangled. Use specialized table extractors (Camelot, pdfplumber) for structured documents.'
   },
   {
     title: 'Text Splitter',
     desc: 'Splits documents into smaller, overlapping passages suitable for embedding. The chunk size and overlap are critical hyperparameters that directly affect retrieval quality.',
-    detail: 'Fixed-size (recursive character) splitting is a good default. Semantic splitting (groups by meaning) improves cohesion but is slower. Parent-child splitting combines both â€” small chunks for retrieval, large parents for generation.',
+    detail: 'Fixed-size (recursive character) splitting is a good default. Semantic splitting (groups by meaning) improves cohesion but is slower. Parent-child splitting combines both — small chunks for retrieval, large parents for generation.',
     examples: [['RecursiveCharacterSplitter', 'oss'], ['SemanticSplitter', 'oss'], ['MarkdownSplitter', 'local'], ['HTMLSplitter', 'local']],
-    tradeoff: 'âš  Chunk size is a tradeoff: larger = more context per chunk but less precise retrieval. Start at 512 tokens with 64 overlap and iterate based on retrieval quality metrics.'
+    tradeoff: '⚠ Chunk size is a tradeoff: larger = more context per chunk but less precise retrieval. Start at 512 tokens with 64 overlap and iterate based on retrieval quality metrics.'
   },
   {
     title: 'Embedding Model',
-    desc: 'Converts text (both document chunks and user queries) into dense vectors. MUST be the same model for both operations â€” vectors are only comparable within the same vector space.',
+    desc: 'Converts text (both document chunks and user queries) into dense vectors. MUST be the same model for both operations — vectors are only comparable within the same vector space.',
     detail: 'OpenAI text-embedding-3-small (1536 dims, fast, cheap) is a great default. For air-gapped or cost-sensitive deployments, nomic-embed-text or bge-m3 run locally. Dimension matters: higher = more expressive but slower search.',
     examples: [['text-embedding-3-small', 'cloud'], ['text-embedding-3-large', 'cloud'], ['nomic-embed-text', 'local'], ['bge-m3', 'local'], ['Cohere Embed', 'cloud']],
-    tradeoff: 'âš  Never mix embedding models in the same index. If you switch models, you must re-embed the entire corpus â€” there is no partial migration.'
+    tradeoff: '⚠ Never mix embedding models in the same index. If you switch models, you must re-embed the entire corpus — there is no partial migration.'
   },
   {
     title: 'Vector Store',
     desc: 'Stores and indexes the (vector, metadata) pairs. Provides fast approximate nearest-neighbor (ANN) search across millions of vectors using algorithms like HNSW or IVF.',
     detail: 'pgvector is the simplest option if you already use PostgreSQL. Pinecone is fully managed with no infra overhead. Chroma and Qdrant are great for local/self-hosted. Weaviate adds hybrid search (dense + keyword) out of the box.',
     examples: [['Pinecone', 'cloud'], ['Weaviate', 'cloud'], ['Qdrant', 'oss'], ['Chroma', 'local'], ['pgvector', 'oss']],
-    tradeoff: 'âš  Always store the original chunk text as metadata â€” you will need it to build the LLM prompt. Vector-only storage loses the source text.'
+    tradeoff: '⚠ Always store the original chunk text as metadata — you will need it to build the LLM prompt. Vector-only storage loses the source text.'
   },
   {
     title: 'Retriever',
     desc: 'Takes the embedded query and issues the ANN search against the vector store. Can use dense search (vector similarity), sparse search (BM25 keyword), or hybrid (both combined).',
     detail: 'Hybrid retrieval combining dense + sparse (BM25) consistently outperforms either alone, especially for queries with specific keywords (product names, error codes). Most modern vector stores (Qdrant, Weaviate, Elasticsearch) support hybrid retrieval natively.',
     examples: [['Dense (cosine similarity)', 'oss'], ['Sparse (BM25)', 'oss'], ['Hybrid (RRF fusion)', 'oss']],
-    tradeoff: 'âš  Retrieve more candidates (top-20) than you intend to send to the LLM (top-5) â€” the extra candidates are for the reranker to filter down to the highest quality results.'
+    tradeoff: '⚠ Retrieve more candidates (top-20) than you intend to send to the LLM (top-5) — the extra candidates are for the reranker to filter down to the highest quality results.'
   },
   {
     title: 'Reranker',
     desc: 'A cross-encoder model that re-scores the ANN search candidates by reading both the query and each chunk together. Significantly improves precision over vector similarity alone.',
-    detail: 'ANN search is optimized for speed (milliseconds across millions of vectors) but sacrifices precision. A cross-encoder reranker processes query+document pairs together, attending to fine-grained relevance signals. The extra 50â€“200ms latency is almost always worth it.',
+    detail: 'ANN search is optimized for speed (milliseconds across millions of vectors) but sacrifices precision. A cross-encoder reranker processes query+document pairs together, attending to fine-grained relevance signals. The extra 50–200ms latency is almost always worth it.',
     examples: [['Cohere Rerank v3', 'cloud'], ['bge-reranker-v2', 'local'], ['JinaAI Reranker', 'cloud'], ['FlashRank', 'local']],
-    tradeoff: 'âš  Reranking adds latency (50â€“200ms). For latency-critical applications, profile whether the accuracy gain justifies the cost before adding it to the pipeline.'
+    tradeoff: '⚠ Reranking adds latency (50–200ms). For latency-critical applications, profile whether the accuracy gain justifies the cost before adding it to the pipeline.'
   },
   {
     title: 'LLM (Generator)',
     desc: 'The final generation step. The LLM receives the augmented prompt (system instructions + retrieved context + user query) and produces the final answer grounded in the retrieved passages.',
-    detail: 'Instruct the model to "answer only from the provided context" to minimize hallucination. Ask it to cite sources by reference number. If no relevant context was retrieved, the model should say so rather than guess â€” build explicit "no context" handling.',
+    detail: 'Instruct the model to "answer only from the provided context" to minimize hallucination. Ask it to cite sources by reference number. If no relevant context was retrieved, the model should say so rather than guess — build explicit "no context" handling.',
     examples: [['GPT-4o / o3', 'cloud'], ['Claude 3.7 Sonnet', 'cloud'], ['Gemini 2.0 Flash', 'cloud'], ['Llama 3.3 70B', 'local']],
-    tradeoff: 'âš  The LLM can still hallucinate even with good context â€” especially if it "knows" the answer from training and ignores the retrieved docs. Enforce strict grounding in your system prompt.'
+    tradeoff: '⚠ The LLM can still hallucinate even with good context — especially if it "knows" the answer from training and ignores the retrieved docs. Enforce strict grounding in your system prompt.'
   }
 ];
 
@@ -552,57 +553,57 @@ function showComp(idx, el) {
 const traces = [
   [
     {t:'00:00.001', stage:'QUERY', cls:'t-query', msg:'Received: "What\'s our refund policy for enterprise customers?"'},
-    {t:'00:00.003', stage:'REWRITE', cls:'t-query', msg:'Query appears specific â€” no rewrite needed'},
+    {t:'00:00.003', stage:'REWRITE', cls:'t-query', msg:'Query appears specific — no rewrite needed'},
     {t:'00:00.004', stage:'EMBED', cls:'t-embed', msg:'Embedding query with text-embedding-3-small...'},
-    {t:'00:00.047', stage:'EMBED', cls:'t-embed', msg:'Query vector: [1536-dim] âœ“'},
+    {t:'00:00.047', stage:'EMBED', cls:'t-embed', msg:'Query vector: [1536-dim] ✓'},
     {t:'00:00.048', stage:'SEARCH', cls:'t-query', msg:'ANN search: top_k=20, filter={doc_type: "policy"}'},
     {t:'00:00.071', stage:'SEARCH', cls:'t-query', msg:'Retrieved 20 candidates in 23ms'},
-    {t:'00:00.072', stage:'SEARCH', cls:'t-ok', msg:'  â†’ "Enterprise Refund Policy v2.pdf" â€” score: 0.94'},
-    {t:'00:00.073', stage:'SEARCH', cls:'t-ok', msg:'  â†’ "Billing FAQ Section 4" â€” score: 0.89'},
-    {t:'00:00.074', stage:'SEARCH', cls:'t-ok', msg:'  â†’ "Customer Success Handbook Ch.7" â€” score: 0.81'},
+    {t:'00:00.072', stage:'SEARCH', cls:'t-ok', msg:'  → "Enterprise Refund Policy v2.pdf" — score: 0.94'},
+    {t:'00:00.073', stage:'SEARCH', cls:'t-ok', msg:'  → "Billing FAQ Section 4" — score: 0.89'},
+    {t:'00:00.074', stage:'SEARCH', cls:'t-ok', msg:'  → "Customer Success Handbook Ch.7" — score: 0.81'},
     {t:'00:00.075', stage:'RERANK', cls:'t-rerank', msg:'Reranking top-20 with cohere-rerank-v3...'},
-    {t:'00:00.198', stage:'RERANK', cls:'t-rerank', msg:'Reranked in 123ms â€” top-5 selected'},
-    {t:'00:00.199', stage:'RERANK', cls:'t-ok', msg:'  #1: "Enterprise Refund Policy v2.pdf" (paragraph 3) â€” cross-score: 0.98'},
-    {t:'00:00.200', stage:'RERANK', cls:'t-ok', msg:'  #2: "Enterprise SLA Agreement" (Section 8.2) â€” cross-score: 0.92'},
+    {t:'00:00.198', stage:'RERANK', cls:'t-rerank', msg:'Reranked in 123ms — top-5 selected'},
+    {t:'00:00.199', stage:'RERANK', cls:'t-ok', msg:'  #1: "Enterprise Refund Policy v2.pdf" (paragraph 3) — cross-score: 0.98'},
+    {t:'00:00.200', stage:'RERANK', cls:'t-ok', msg:'  #2: "Enterprise SLA Agreement" (Section 8.2) — cross-score: 0.92'},
     {t:'00:00.201', stage:'GEN', cls:'t-gen', msg:'Building augmented prompt (1,847 tokens)'},
     {t:'00:00.202', stage:'GEN', cls:'t-gen', msg:'Calling claude-3-5-sonnet-20241022...'},
     {t:'00:01.431', stage:'GEN', cls:'t-ok', msg:'Response generated (312 tokens) in 1.23s'},
-    {t:'00:01.432', stage:'GEN', cls:'t-ok', msg:'Sources: ["Enterprise Refund Policy v2.pdf Â§3", "Enterprise SLA Â§8.2"]'},
-    {t:'00:01.433', stage:'DONE', cls:'t-ok', msg:'âœ“ Complete â€” total latency: 1.433s'},
+    {t:'00:01.432', stage:'GEN', cls:'t-ok', msg:'Sources: ["Enterprise Refund Policy v2.pdf §3", "Enterprise SLA §8.2"]'},
+    {t:'00:01.433', stage:'DONE', cls:'t-ok', msg:'✓ Complete — total latency: 1.433s'},
   ],
   [
     {t:'00:00.001', stage:'QUERY', cls:'t-query', msg:'Received: "Summarize last quarter\'s product roadmap changes"'},
-    {t:'00:00.003', stage:'REWRITE', cls:'t-query', msg:'Temporal query detected â€” applying date filter: Q1 2025'},
+    {t:'00:00.003', stage:'REWRITE', cls:'t-query', msg:'Temporal query detected — applying date filter: Q1 2025'},
     {t:'00:00.005', stage:'EMBED', cls:'t-embed', msg:'Embedding query...'},
-    {t:'00:00.049', stage:'EMBED', cls:'t-embed', msg:'Query vector ready âœ“'},
+    {t:'00:00.049', stage:'EMBED', cls:'t-embed', msg:'Query vector ready ✓'},
     {t:'00:00.050', stage:'SEARCH', cls:'t-query', msg:'ANN search: top_k=20, filter={date: ">= 2025-01-01", doc_type: "roadmap"}'},
     {t:'00:00.068', stage:'SEARCH', cls:'t-query', msg:'Retrieved 12 candidates (date filter reduced result set)'},
-    {t:'00:00.069', stage:'SEARCH', cls:'t-ok', msg:'  â†’ "Q1 2025 Roadmap Review.pdf" â€” score: 0.96'},
-    {t:'00:00.070', stage:'SEARCH', cls:'t-ok', msg:'  â†’ "Sprint 14-16 Planning Notes" â€” score: 0.87'},
+    {t:'00:00.069', stage:'SEARCH', cls:'t-ok', msg:'  → "Q1 2025 Roadmap Review.pdf" — score: 0.96'},
+    {t:'00:00.070', stage:'SEARCH', cls:'t-ok', msg:'  → "Sprint 14-16 Planning Notes" — score: 0.87'},
     {t:'00:00.071', stage:'RERANK', cls:'t-rerank', msg:'Reranking 12 candidates...'},
     {t:'00:00.165', stage:'RERANK', cls:'t-rerank', msg:'Top-5 after rerank'},
-    {t:'00:00.166', stage:'GEN', cls:'t-gen', msg:'Building prompt (2,104 tokens) â€” 5 roadmap chunks injected'},
+    {t:'00:00.166', stage:'GEN', cls:'t-gen', msg:'Building prompt (2,104 tokens) — 5 roadmap chunks injected'},
     {t:'00:00.167', stage:'GEN', cls:'t-gen', msg:'Calling LLM with summarization instruction...'},
-    {t:'00:01.890', stage:'GEN', cls:'t-ok', msg:'Summary generated (428 tokens) âœ“'},
-    {t:'00:01.891', stage:'DONE', cls:'t-ok', msg:'âœ“ Complete â€” total latency: 1.891s'},
+    {t:'00:01.890', stage:'GEN', cls:'t-ok', msg:'Summary generated (428 tokens) ✓'},
+    {t:'00:01.891', stage:'DONE', cls:'t-ok', msg:'✓ Complete — total latency: 1.891s'},
   ],
   [
     {t:'00:00.001', stage:'QUERY', cls:'t-query', msg:'Received: "How do I configure SSO for the admin panel?"'},
-    {t:'00:00.003', stage:'REWRITE', cls:'t-query', msg:'Technical how-to query â€” generating HyDE for better semantic match'},
+    {t:'00:00.003', stage:'REWRITE', cls:'t-query', msg:'Technical how-to query — generating HyDE for better semantic match'},
     {t:'00:00.004', stage:'REWRITE', cls:'t-query', msg:'HyDE: asking LLM for hypothetical answer passage...'},
     {t:'00:00.312', stage:'REWRITE', cls:'t-ok', msg:'HyDE passage generated: "To configure SSO, navigate to Admin > Security..."'},
     {t:'00:00.313', stage:'EMBED', cls:'t-embed', msg:'Embedding HyDE passage (not original query)...'},
-    {t:'00:00.358', stage:'EMBED', cls:'t-embed', msg:'HyDE vector ready âœ“'},
+    {t:'00:00.358', stage:'EMBED', cls:'t-embed', msg:'HyDE vector ready ✓'},
     {t:'00:00.359', stage:'SEARCH', cls:'t-query', msg:'ANN search: top_k=20, namespace="product-docs"'},
     {t:'00:00.381', stage:'SEARCH', cls:'t-query', msg:'Retrieved 20 candidates'},
-    {t:'00:00.382', stage:'SEARCH', cls:'t-ok', msg:'  â†’ "Admin Panel Setup Guide Â§4.2" â€” score: 0.97'},
-    {t:'00:00.383', stage:'SEARCH', cls:'t-ok', msg:'  â†’ "SAML 2.0 Integration Guide" â€” score: 0.91'},
-    {t:'00:00.384', stage:'SEARCH', cls:'t-err', msg:'  âš  "Legacy SSO Docs 2021" â€” score 0.78 (old, flagged for rerank filtering)'},
+    {t:'00:00.382', stage:'SEARCH', cls:'t-ok', msg:'  → "Admin Panel Setup Guide §4.2" — score: 0.97'},
+    {t:'00:00.383', stage:'SEARCH', cls:'t-ok', msg:'  → "SAML 2.0 Integration Guide" — score: 0.91'},
+    {t:'00:00.384', stage:'SEARCH', cls:'t-err', msg:'  ⚠ "Legacy SSO Docs 2021" — score 0.78 (old, flagged for rerank filtering)'},
     {t:'00:00.385', stage:'RERANK', cls:'t-rerank', msg:'Cross-encoder reranking 20 candidates...'},
-    {t:'00:00.501', stage:'RERANK', cls:'t-ok', msg:'  Legacy docs down-ranked to #18 âœ“'},
-    {t:'00:00.502', stage:'GEN', cls:'t-gen', msg:'Prompt built â€” 3 relevant chunks, 1,623 tokens'},
-    {t:'00:01.744', stage:'GEN', cls:'t-ok', msg:'Step-by-step SSO guide generated âœ“'},
-    {t:'00:01.745', stage:'DONE', cls:'t-ok', msg:'âœ“ Complete â€” total latency: 1.745s'},
+    {t:'00:00.501', stage:'RERANK', cls:'t-ok', msg:'  Legacy docs down-ranked to #18 ✓'},
+    {t:'00:00.502', stage:'GEN', cls:'t-gen', msg:'Prompt built — 3 relevant chunks, 1,623 tokens'},
+    {t:'00:01.744', stage:'GEN', cls:'t-ok', msg:'Step-by-step SSO guide generated ✓'},
+    {t:'00:01.745', stage:'DONE', cls:'t-ok', msg:'✓ Complete — total latency: 1.745s'},
   ]
 ];
 
@@ -641,10 +642,10 @@ let score = 0;
 const answered = {};
 const msgs = {
   q1: 'Indexing is a batch offline process (runs when documents change). Retrieval is the real-time per-query pipeline.',
-  q2: 'Overlap preserves context at boundaries â€” without it, a sentence split across two chunks loses meaning in both halves.',
+  q2: 'Overlap preserves context at boundaries — without it, a sentence split across two chunks loses meaning in both halves.',
   q3: 'The reranker re-scores ANN candidates with a more accurate cross-encoder model that reads query+document together.',
   q4: 'Small children retrieve precisely; large parents give the LLM enough context to generate a high-quality answer.',
-  q5: 'Cosine similarity is only meaningful between vectors in the same vector space â€” produced by the same model.'
+  q5: 'Cosine similarity is only meaningful between vectors in the same vector space — produced by the same model.'
 };
 
 function answer(qid, chosen, correct) {
@@ -660,11 +661,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 

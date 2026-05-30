@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>4.1 Why Orchestration? | Agentic AI</title>
 <style>
@@ -80,8 +81,8 @@
   .decide-box.yes h4 { color: var(--green); } .decide-box.no h4 { color: var(--red); }
   .decide-box ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
   .decide-box ul li { font-size: 0.85rem; color: var(--muted); padding-left: 18px; position: relative; line-height: 1.5; }
-  .decide-box.yes ul li::before { content: 'âœ“'; color: var(--green); position: absolute; left: 0; }
-  .decide-box.no ul li::before { content: 'âœ—'; color: var(--red); position: absolute; left: 0; }
+  .decide-box.yes ul li::before { content: '✓'; color: var(--green); position: absolute; left: 0; }
+  .decide-box.no ul li::before { content: '✗'; color: var(--red); position: absolute; left: 0; }
 
   /* COMPLEXITY SPECTRUM */
   .spectrum { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
@@ -127,19 +128,19 @@
 <body>
 
 <nav>
-  <a href="concept_3_16.html">â† Vector Databases</a>
-  <span>Session 4 Â· Concept 4.1</span>
-  <a href="concept_4_2.html">Hierarchical Pattern â†’</a>
+  <a href="concept_3_16.html">← Vector Databases</a>
+  <span>Session 4 · Concept 4.1</span>
+  <a href="concept_4_2.html">Hierarchical Pattern →</a>
 </nav>
 <nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
-  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
 </nav>
 
 <div class="hero">
   <div class="tag">Session 4</div>
-  <span class="session-tag">Day 2 Forenoon Â· Orchestration, Memory &amp; Advanced RAG</span>
+  <span class="session-tag">Day 2 Forenoon · Orchestration, Memory &amp; Advanced RAG</span>
   <h1>Why <span>Orchestration?</span></h1>
-  <p>When a single agent isn't enough â€” the limits that force you to build multi-agent systems, and the four patterns that solve them.</p>
+  <p>When a single agent isn't enough — the limits that force you to build multi-agent systems, and the four patterns that solve them.</p>
 </div>
 
 <div class="container">
@@ -149,34 +150,34 @@
     <div class="section-title">The 5 Limits of a Single Agent</div>
     <div class="limits-grid">
       <div class="limit-card">
-        <div class="icon">ðŸ§ </div>
+        <div class="icon">🧠</div>
         <h4>Context Window Overflow</h4>
-        <p>A complex multi-step task accumulates thousands of tokens â€” tool outputs, intermediate results, prior reasoning. Eventually it exceeds the context limit and the agent loses earlier context.</p>
-        <div class="solution">â†’ Orchestration keeps each sub-agent's context small and focused.</div>
+        <p>A complex multi-step task accumulates thousands of tokens — tool outputs, intermediate results, prior reasoning. Eventually it exceeds the context limit and the agent loses earlier context.</p>
+        <div class="solution">→ Orchestration keeps each sub-agent's context small and focused.</div>
       </div>
       <div class="limit-card">
-        <div class="icon">âš¡</div>
+        <div class="icon">⚡</div>
         <h4>Serial Bottleneck</h4>
-        <p>A single agent does everything sequentially: research â†’ write â†’ review â†’ format. Each step waits for the previous one â€” no parallelism, even when tasks are independent.</p>
-        <div class="solution">â†’ Orchestration fans out independent tasks to run simultaneously.</div>
+        <p>A single agent does everything sequentially: research → write → review → format. Each step waits for the previous one — no parallelism, even when tasks are independent.</p>
+        <div class="solution">→ Orchestration fans out independent tasks to run simultaneously.</div>
       </div>
       <div class="limit-card">
-        <div class="icon">ðŸ”§</div>
+        <div class="icon">🔧</div>
         <h4>Specialization Gap</h4>
-        <p>One generalist agent prompted to do everything â€” research, code, summarize, validate â€” performs worse than specialized agents with purpose-built system prompts and tool sets.</p>
-        <div class="solution">â†’ Orchestration routes tasks to expert sub-agents with specialized prompts.</div>
+        <p>One generalist agent prompted to do everything — research, code, summarize, validate — performs worse than specialized agents with purpose-built system prompts and tool sets.</p>
+        <div class="solution">→ Orchestration routes tasks to expert sub-agents with specialized prompts.</div>
       </div>
       <div class="limit-card">
-        <div class="icon">ðŸ”</div>
+        <div class="icon">🔁</div>
         <h4>Error Propagation</h4>
         <p>If one step fails in a monolithic agent, the entire pipeline fails. There's no isolation, no retry-at-step, no partial recovery. One bad tool call can corrupt all subsequent reasoning.</p>
-        <div class="solution">â†’ Orchestration isolates failures: one worker fails, others continue.</div>
+        <div class="solution">→ Orchestration isolates failures: one worker fails, others continue.</div>
       </div>
       <div class="limit-card">
-        <div class="icon">ðŸ“Š</div>
+        <div class="icon">📊</div>
         <h4>Observability Black Box</h4>
-        <p>A single long-running agent is opaque â€” you can see the final output but not what happened at step 7 of 20. Debugging requires replaying the entire run.</p>
-        <div class="solution">â†’ Orchestration gives you discrete, traceable units with their own logs.</div>
+        <p>A single long-running agent is opaque — you can see the final output but not what happened at step 7 of 20. Debugging requires replaying the entire run.</p>
+        <div class="solution">→ Orchestration gives you discrete, traceable units with their own logs.</div>
       </div>
     </div>
   </div>
@@ -185,7 +186,7 @@
   <div class="section">
     <div class="section-title">What Is Agent Orchestration?</div>
     <div class="orch-def">
-      <blockquote>"Agent orchestration is the design of <strong>how multiple AI agents coordinate</strong> â€” who decides what task goes to which agent, how results flow between agents, how failures are handled, and how the overall goal is achieved from a set of specialized parts."</blockquote>
+      <blockquote>"Agent orchestration is the design of <strong>how multiple AI agents coordinate</strong> — who decides what task goes to which agent, how results flow between agents, how failures are handled, and how the overall goal is achieved from a set of specialized parts."</blockquote>
       <div class="orch-components">
         <div class="orch-comp"><div class="comp-label">Who decides</div><div class="comp-val">Coordinator / Supervisor</div></div>
         <div class="orch-comp"><div class="comp-label">Who executes</div><div class="comp-val">Worker / Sub-agents</div></div>
@@ -198,30 +199,30 @@
   <!-- 4 PATTERNS OVERVIEW -->
   <div class="section">
     <div class="section-title">The 4 Orchestration Patterns</div>
-    <div class="info-box"><strong>Preview:</strong> Each pattern is covered in depth in concepts 4.2â€“4.5. This is your map of the territory.</div>
+    <div class="info-box"><strong>Preview:</strong> Each pattern is covered in depth in concepts 4.2–4.5. This is your map of the territory.</div>
     <div class="patterns-grid">
       <div class="pattern-card pc1">
-        <div class="p-num">Pattern 1 Â· Concept 4.2</div>
+        <div class="p-num">Pattern 1 · Concept 4.2</div>
         <h4>Hierarchical (Supervisor-Worker)</h4>
         <p>A supervisor agent breaks a complex goal into subtasks and dispatches each to a specialist worker agent. Workers report back; supervisor synthesizes the final output. Clear chain of command.</p>
         <span class="use-tag">Research pipelines, report generation, multi-step planning</span>
       </div>
       <div class="pattern-card pc2">
-        <div class="p-num">Pattern 2 Â· Concept 4.3</div>
+        <div class="p-num">Pattern 2 · Concept 4.3</div>
         <h4>Network / Swarm (Peer-to-Peer)</h4>
-        <p>Agents communicate directly with each other â€” no central coordinator. Each agent decides who to hand work to next based on local rules. Emergent coordination from simple agent-to-agent interactions.</p>
+        <p>Agents communicate directly with each other — no central coordinator. Each agent decides who to hand work to next based on local rules. Emergent coordination from simple agent-to-agent interactions.</p>
         <span class="use-tag">Distributed problem-solving, market simulations, debate loops</span>
       </div>
       <div class="pattern-card pc3">
-        <div class="p-num">Pattern 3 Â· Concept 4.4</div>
+        <div class="p-num">Pattern 3 · Concept 4.4</div>
         <h4>Map-Reduce (Fan-Out / Fan-In)</h4>
         <p>A coordinator fans out identical or similar tasks to N workers in parallel (Map). When all complete, a reducer agent aggregates their outputs into a final result (Reduce).</p>
         <span class="use-tag">Batch document processing, parallel web research, code review at scale</span>
       </div>
       <div class="pattern-card pc4">
-        <div class="p-num">Pattern 4 Â· Concept 4.5</div>
+        <div class="p-num">Pattern 4 · Concept 4.5</div>
         <h4>Choreography (Rule-Based Flow)</h4>
-        <p>No central coordinator. Each agent knows its trigger conditions and output targets. Agents react to events or messages â€” the workflow emerges from the rules embedded in each agent.</p>
+        <p>No central coordinator. Each agent knows its trigger conditions and output targets. Agents react to events or messages — the workflow emerges from the rules embedded in each agent.</p>
         <span class="use-tag">Event-driven pipelines, data enrichment chains, ETL workflows</span>
       </div>
     </div>
@@ -232,7 +233,7 @@
     <div class="section-title">When to Orchestrate vs When to Use a Single Agent</div>
     <div class="decide-grid">
       <div class="decide-box yes">
-        <h4>âœ“ Use Multi-Agent Orchestration when...</h4>
+        <h4>✓ Use Multi-Agent Orchestration when...</h4>
         <ul>
           <li>The task has genuinely independent subtasks that can run in parallel</li>
           <li>Different steps require radically different skills or tools</li>
@@ -244,12 +245,12 @@
         </ul>
       </div>
       <div class="decide-box no">
-        <h4>âœ— Avoid orchestration (use single agent) when...</h4>
+        <h4>✗ Avoid orchestration (use single agent) when...</h4>
         <ul>
           <li>The task is simple and fits in one context window</li>
-          <li>Each step depends heavily on all prior steps â€” parallelism is impossible</li>
+          <li>Each step depends heavily on all prior steps — parallelism is impossible</li>
           <li>Orchestration overhead (coordination, latency, cost) exceeds the benefit</li>
-          <li>You're prototyping â€” start simple, add orchestration when needed</li>
+          <li>You're prototyping — start simple, add orchestration when needed</li>
           <li>A single, clear, linear reasoning chain is all that's required</li>
           <li>Debugging complexity would outweigh the performance gain</li>
         </ul>
@@ -261,20 +262,20 @@
   <div class="section">
     <div class="section-title">The Complexity Spectrum</div>
     <div class="spectrum">
-      <div style="font-size:0.88rem; color:var(--muted); margin-bottom:8px;">Agent system complexity â†’</div>
+      <div style="font-size:0.88rem; color:var(--muted); margin-bottom:8px;">Agent system complexity →</div>
       <div class="spectrum-bar"></div>
       <div class="spectrum-labels"><span>Simple / Lean</span><span>Balanced</span><span>Complex / Heavy</span></div>
       <div class="spectrum-items">
         <div class="spec-item s1">
           <h4>Single LLM Call</h4>
-          <p>One prompt â†’ one response. No tools, no memory. Appropriate for summarization, classification, simple Q&A.</p>
+          <p>One prompt → one response. No tools, no memory. Appropriate for summarization, classification, simple Q&A.</p>
         </div>
         <div class="spec-item s1">
           <h4>ReAct Single Agent</h4>
-          <p>One agent with tools: Reason â†’ Act â†’ Observe loop. Handles multi-step tasks within one context window.</p>
+          <p>One agent with tools: Reason → Act → Observe loop. Handles multi-step tasks within one context window.</p>
         </div>
         <div class="spec-item s2">
-          <h4>Supervisor + 2â€“3 Workers</h4>
+          <h4>Supervisor + 2–3 Workers</h4>
           <p>First orchestration level. Supervisor delegates, workers execute, supervisor synthesizes. Good starting point.</p>
         </div>
         <div class="spec-item s2">
@@ -292,20 +293,20 @@
   <!-- QUIZ -->
   <div class="section">
     <div class="quiz-header">
-      <h3>ðŸ§  Knowledge Check</h3>
+      <h3>🧠 Knowledge Check</h3>
       <div class="score-display" id="scoreDisplay">0 / 5</div>
     </div>
 
     <div class="question" id="q1">
       <p>1. A single research agent is asked to simultaneously analyze 50 company earnings reports and produce a comparative summary. Which single-agent limitation does this primarily hit?</p>
       <div class="options">
-        <button class="opt" onclick="answer('q1','a','b')">a) Specialization gap â€” the agent can't do financial analysis</button>
-        <button class="opt" onclick="answer('q1','b','b')">b) Serial bottleneck + context window overflow â€” 50 reports sequentially saturates the context</button>
-        <button class="opt" onclick="answer('q1','c','b')">c) Error propagation â€” too many tool calls will cause failures</button>
-        <button class="opt" onclick="answer('q1','d','b')">d) Observability black box â€” can't trace which report caused which output</button>
+        <button class="opt" onclick="answer('q1','a','b')">a) Specialization gap — the agent can't do financial analysis</button>
+        <button class="opt" onclick="answer('q1','b','b')">b) Serial bottleneck + context window overflow — 50 reports sequentially saturates the context</button>
+        <button class="opt" onclick="answer('q1','c','b')">c) Error propagation — too many tool calls will cause failures</button>
+        <button class="opt" onclick="answer('q1','d','b')">d) Observability black box — can't trace which report caused which output</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="question" id="q2">
@@ -317,7 +318,7 @@
         <button class="opt" onclick="answer('q2','d','c')">d) Supervisors run in parallel; workers run sequentially</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="question" id="q3">
@@ -329,19 +330,19 @@
         <button class="opt" onclick="answer('q3','d','d')">d) Choreography (Rule-Based Flow)</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="question" id="q4">
       <p>4. You need to build a code review system that checks 200 pull requests for security vulnerabilities. Each PR is independent. Which pattern is the best fit?</p>
       <div class="options">
-        <button class="opt" onclick="answer('q4','a','c')">a) Hierarchical â€” use a supervisor to review them one by one</button>
-        <button class="opt" onclick="answer('q4','b','c')">b) Choreography â€” chain the reviews in a sequential event-driven pipeline</button>
-        <button class="opt" onclick="answer('q4','c','c')">c) Map-Reduce â€” fan out 200 worker agents in parallel, reduce results into a report</button>
-        <button class="opt" onclick="answer('q4','d','c')">d) Network / Swarm â€” let agents debate which PRs are risky</button>
+        <button class="opt" onclick="answer('q4','a','c')">a) Hierarchical — use a supervisor to review them one by one</button>
+        <button class="opt" onclick="answer('q4','b','c')">b) Choreography — chain the reviews in a sequential event-driven pipeline</button>
+        <button class="opt" onclick="answer('q4','c','c')">c) Map-Reduce — fan out 200 worker agents in parallel, reduce results into a report</button>
+        <button class="opt" onclick="answer('q4','d','c')">d) Network / Swarm — let agents debate which PRs are risky</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="question" id="q5">
@@ -353,7 +354,7 @@
         <button class="opt" onclick="answer('q5','d','b')">d) When the task involves external API calls</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
@@ -363,9 +364,9 @@
 let score = 0;
 const answered = {};
 const msgs = {
-  q1: '50 sequential reports would overflow any context window, and each waiting for the prior one creates a serial bottleneck â€” both problems at once.',
+  q1: '50 sequential reports would overflow any context window, and each waiting for the prior one creates a serial bottleneck — both problems at once.',
   q2: 'Supervisors are coordinators: they plan, assign work, and synthesize results. Workers are executors: they focus on one specific subtask and report back.',
-  q3: 'Choreography has no central coordinator â€” each agent reacts to inputs/events based on its own rules, with no agent in overall control.',
+  q3: 'Choreography has no central coordinator — each agent reacts to inputs/events based on its own rules, with no agent in overall control.',
   q4: 'Map-Reduce is purpose-built for N independent tasks: fan out 200 parallel workers (Map), then a reducer synthesizes the summary (Reduce).',
   q5: 'Orchestration adds latency, cost, and debugging complexity. When one agent can handle the task within a single context, keep it simple.'
 };
@@ -383,11 +384,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 

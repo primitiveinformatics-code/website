@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3.15 Embeddings | Agentic AI</title>
 <style>
@@ -125,16 +126,16 @@
 <body>
 
 <nav>
-  <a href="concept_3_14.html">â† Chunking Strategies</a>
-  <span>Session 3 Â· Concept 3.15</span>
-  <a href="concept_3_16.html">Vector Databases â†’</a>
+  <a href="concept_3_14.html">← Chunking Strategies</a>
+  <span>Session 3 · Concept 3.15</span>
+  <a href="concept_3_16.html">Vector Databases →</a>
 </nav>
 <nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
-  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
 </nav>
 
 <div class="hero">
-  <div class="tag">Session 3 Â· Concept 3.15</div>
+  <div class="tag">Session 3 · Concept 3.15</div>
   <h1>Embeddings: <span>Meaning as Numbers</span></h1>
   <p>How text is converted into dense vectors, why cosine similarity works, and which embedding model to pick for your RAG system.</p>
 </div>
@@ -150,9 +151,9 @@
     <div class="embed-visual">
       <div class="visual-flow">
         <div class="vf-box"><div class="vf-label">Input text</div><div class="vf-content">"How do I reset my password?"</div></div>
-        <div class="vf-arrow">â†’</div>
+        <div class="vf-arrow">→</div>
         <div class="vf-box" style="border-color:var(--purple)"><div class="vf-label">Embedding Model</div><div class="vf-content" style="color:var(--purple)">text-embedding-3-small</div></div>
-        <div class="vf-arrow">â†’</div>
+        <div class="vf-arrow">→</div>
         <div class="vf-vector"><div class="vf-label">1536-dim vector</div>[0.021, -0.847, 0.334, 0.109, -0.562, 0.781, ...]</div>
       </div>
       <div class="similarity-demo">
@@ -191,16 +192,16 @@
 
   <!-- COSINE SIMILARITY -->
   <div class="section">
-    <div class="section-title">Cosine Similarity â€” The Math</div>
+    <div class="section-title">Cosine Similarity — The Math</div>
     <div class="cosine-demo">
-      <div class="formula">similarity(A, B) = (A Â· B) / (â€–Aâ€– Ã— â€–Bâ€–) â†’ range: [-1, +1]</div>
+      <div class="formula">similarity(A, B) = (A · B) / (‖A‖ × ‖B‖) → range: [-1, +1]</div>
       <p style="color:var(--muted); font-size:0.88rem; margin-bottom:16px;">Click an angle to see how the angle between two vectors maps to a similarity score:</p>
       <div class="angle-selector">
-        <button class="angle-btn active" onclick="setCosine(0)">0Â° â€” Identical</button>
-        <button class="angle-btn" onclick="setCosine(30)">30Â° â€” Very similar</button>
-        <button class="angle-btn" onclick="setCosine(60)">60Â° â€” Related</button>
-        <button class="angle-btn" onclick="setCosine(90)">90Â° â€” Unrelated</button>
-        <button class="angle-btn" onclick="setCosine(135)">135Â° â€” Opposite</button>
+        <button class="angle-btn active" onclick="setCosine(0)">0° — Identical</button>
+        <button class="angle-btn" onclick="setCosine(30)">30° — Very similar</button>
+        <button class="angle-btn" onclick="setCosine(60)">60° — Related</button>
+        <button class="angle-btn" onclick="setCosine(90)">90° — Unrelated</button>
+        <button class="angle-btn" onclick="setCosine(135)">135° — Opposite</button>
       </div>
       <div class="cosine-result">
         <div class="cos-canvas-wrap">
@@ -208,13 +209,13 @@
         </div>
         <div class="cos-readout">
           <div class="cos-metric">
-            <h4>Angle (Î¸)</h4>
-            <div class="cos-val" id="cos-angle">0Â°</div>
+            <h4>Angle (θ)</h4>
+            <div class="cos-val" id="cos-angle">0°</div>
           </div>
           <div class="cos-metric">
             <h4>Cosine Similarity</h4>
             <div class="cos-val" id="cos-score">1.000</div>
-            <div class="cos-interp" id="cos-interp">Identical â€” same meaning</div>
+            <div class="cos-interp" id="cos-interp">Identical — same meaning</div>
           </div>
           <div class="cos-metric">
             <h4>Retrieval Decision</h4>
@@ -294,12 +295,12 @@
           <tr>
             <td><span class="model-name">all-MiniLM-L6-v2</span><span class="model-badge badge-oss">OSS</span></td>
             <td>384</td><td class="tag-bad">56.3</td><td class="tag-good">Free (local)</td><td class="tag-good">Very fast</td>
-            <td>Prototyping only â€” not production grade</td>
+            <td>Prototyping only — not production grade</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div style="margin-top:12px; font-size:0.82rem; color:var(--muted);">MTEB = Massive Text Embedding Benchmark â€” industry-standard evaluation across 56 tasks. Higher is better (max ~68).</div>
+    <div style="margin-top:12px; font-size:0.82rem; color:var(--muted);">MTEB = Massive Text Embedding Benchmark — industry-standard evaluation across 56 tasks. Higher is better (max ~68).</div>
   </div>
 
   <!-- CODE -->
@@ -311,12 +312,12 @@
 client = <span class="cls">OpenAI</span>()
 
 <span class="kw">def</span> <span class="fn">embed</span>(texts: <span class="fn">list</span>[str]) -> <span class="fn">list</span>[<span class="fn">list</span>[<span class="fn">float</span>]]:
-    <span class="cm"># Batch embedding â€” much cheaper than one call per text</span>
+    <span class="cm"># Batch embedding — much cheaper than one call per text</span>
     response = client.embeddings.<span class="fn">create</span>(
         model=<span class="str">"text-embedding-3-small"</span>,
         input=texts,
         <span class="cm"># Matryoshka: truncate to smaller dims for speed</span>
-        dimensions=<span class="num">512</span>  <span class="cm"># optional: reduce from 1536 â†’ 512</span>
+        dimensions=<span class="num">512</span>  <span class="cm"># optional: reduce from 1536 → 512</span>
     )
     <span class="kw">return</span> [d.embedding <span class="kw">for</span> d <span class="kw">in</span> response.data]
 
@@ -333,7 +334,7 @@ results = vector_db.<span class="fn">query</span>(vector=query_vec, top_k=<span 
   <!-- QUIZ -->
   <div class="section">
     <div class="quiz-header">
-      <h3>ðŸ§  Knowledge Check</h3>
+      <h3>🧠 Knowledge Check</h3>
       <div class="score-display" id="scoreDisplay">0 / 5</div>
     </div>
 
@@ -342,11 +343,11 @@ results = vector_db.<span class="fn">query</span>(vector=query_vec, top_k=<span 
       <div class="options">
         <button class="opt" onclick="answer('q1','a','c')">a) The two texts are identical</button>
         <button class="opt" onclick="answer('q1','b','c')">b) The two texts are complete opposites in meaning</button>
-        <button class="opt" onclick="answer('q1','c','c')">c) The two texts are semantically unrelated â€” vectors point at 90Â° to each other</button>
+        <button class="opt" onclick="answer('q1','c','c')">c) The two texts are semantically unrelated — vectors point at 90° to each other</button>
         <button class="opt" onclick="answer('q1','d','c')">d) The embedding model failed to produce a valid vector</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="question" id="q2">
@@ -358,7 +359,7 @@ results = vector_db.<span class="fn">query</span>(vector=query_vec, top_k=<span 
         <button class="opt" onclick="answer('q2','d','b')">d) Different models use different tokenizers that would cause index corruption</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="question" id="q3">
@@ -370,7 +371,7 @@ results = vector_db.<span class="fn">query</span>(vector=query_vec, top_k=<span 
         <button class="opt" onclick="answer('q3','d','c')">d) The maximum document length each model can process</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="question" id="q4">
@@ -382,7 +383,7 @@ results = vector_db.<span class="fn">query</span>(vector=query_vec, top_k=<span 
         <button class="opt" onclick="answer('q4','d','b')">d) all-MiniLM-L6-v2 (highest accuracy)</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="question" id="q5">
@@ -391,10 +392,10 @@ results = vector_db.<span class="fn">query</span>(vector=query_vec, top_k=<span 
         <button class="opt" onclick="answer('q5','a','d')">a) Use the model without an API key for development purposes</button>
         <button class="opt" onclick="answer('q5','b','d')">b) Embed multiple languages using a single model endpoint</button>
         <button class="opt" onclick="answer('q5','c','d')">c) Automatically tune chunk sizes based on document complexity</button>
-        <button class="opt" onclick="answer('q5','d','d')">d) Truncate vectors to smaller dimensions (e.g., 1536 â†’ 512) to trade some accuracy for lower storage and faster search</button>
+        <button class="opt" onclick="answer('q5','d','d')">d) Truncate vectors to smaller dimensions (e.g., 1536 → 512) to trade some accuracy for lower storage and faster search</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
@@ -414,21 +415,21 @@ function setCosine(deg) {
   drawCosine(deg);
   const rad = deg * Math.PI / 180;
   const score = Math.cos(rad);
-  document.getElementById('cos-angle').textContent = deg + 'Â°';
+  document.getElementById('cos-angle').textContent = deg + '°';
   document.getElementById('cos-score').textContent = score.toFixed(3);
   const interps = {
-    0: 'Identical vectors â€” same meaning',
-    30: 'Very high similarity â€” near-duplicate',
-    60: 'Moderate similarity â€” related topic',
-    90: 'Orthogonal â€” semantically unrelated',
-    135: 'Negative â€” opposite meaning'
+    0: 'Identical vectors — same meaning',
+    30: 'Very high similarity — near-duplicate',
+    60: 'Moderate similarity — related topic',
+    90: 'Orthogonal — semantically unrelated',
+    135: 'Negative — opposite meaning'
   };
   const decisions = {
-    0: 'âœ… Always retrieve',
-    30: 'âœ… Retrieve (top-k hit)',
-    60: 'âš  Borderline â€” depends on threshold',
-    90: 'âŒ Skip â€” not relevant',
-    135: 'âŒ Skip â€” contradictory'
+    0: '✅ Always retrieve',
+    30: '✅ Retrieve (top-k hit)',
+    60: '⚠ Borderline — depends on threshold',
+    90: '❌ Skip — not relevant',
+    135: '❌ Skip — contradictory'
   };
   document.getElementById('cos-interp').textContent = interps[deg];
   document.getElementById('cos-decision').textContent = decisions[deg];
@@ -443,7 +444,7 @@ function drawCosine(deg) {
   ctx.beginPath(); ctx.moveTo(cx - r - 10, cy); ctx.lineTo(cx + r + 10, cy); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx, cy - r - 10); ctx.lineTo(cx, cy + r + 10); ctx.stroke();
 
-  // Vector A (fixed â€” pointing right)
+  // Vector A (fixed — pointing right)
   ctx.strokeStyle = 'var(--blue)'; ctx.lineWidth = 2.5;
   ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + r, cy); ctx.stroke();
   ctx.fillStyle = 'var(--blue)'; ctx.font = '12px monospace';
@@ -462,17 +463,17 @@ function drawCosine(deg) {
     ctx.strokeStyle = '#ffd16688'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(cx, cy, 28, -Math.PI * 2 + (Math.PI / 180) * deg * -1, 0); ctx.stroke();
     ctx.fillStyle = 'var(--yellow)'; ctx.font = '11px sans-serif';
-    ctx.fillText(deg + 'Â°', cx + 14, cy - 10);
+    ctx.fillText(deg + '°', cx + 14, cy - 10);
   }
 }
 setCosine(0);
 
 // DIMENSIONS
 const dimData = [
-  { title: '256 dimensions â€” Ultra-compact', body: 'Very small vectors. Fast to search, cheap to store, but significant information loss for complex semantic tasks. Best suited for simple keyword-adjacent retrieval or edge deployments with tight memory constraints. Not recommended for production RAG.' },
-  { title: '768 dimensions â€” Standard BERT-class', body: 'The original BERT embedding size. Many open-source models (sentence-transformers, nomic-embed) use this dimension. Good quality-to-cost ratio. Works well for most English-language RAG systems. This is the default for many open-source embedding models.' },
-  { title: '1536 dimensions â€” Production default', body: 'OpenAI text-embedding-3-small outputs 1536-dim vectors. This is the de-facto standard for production RAG systems in 2024â€“2025. Excellent semantic quality, widely supported by all major vector databases. Start here unless you have a specific reason to deviate.' },
-  { title: '3072 dimensions â€” High fidelity', body: 'OpenAI text-embedding-3-large. Maximum semantic expressiveness â€” captures fine-grained meaning differences. Storage and search costs are 2x compared to 1536. Worthwhile for high-stakes retrieval (legal, medical, financial) where retrieval errors are costly. MTEB improvement: ~2.3 points over small.' }
+  { title: '256 dimensions — Ultra-compact', body: 'Very small vectors. Fast to search, cheap to store, but significant information loss for complex semantic tasks. Best suited for simple keyword-adjacent retrieval or edge deployments with tight memory constraints. Not recommended for production RAG.' },
+  { title: '768 dimensions — Standard BERT-class', body: 'The original BERT embedding size. Many open-source models (sentence-transformers, nomic-embed) use this dimension. Good quality-to-cost ratio. Works well for most English-language RAG systems. This is the default for many open-source embedding models.' },
+  { title: '1536 dimensions — Production default', body: 'OpenAI text-embedding-3-small outputs 1536-dim vectors. This is the de-facto standard for production RAG systems in 2024–2025. Excellent semantic quality, widely supported by all major vector databases. Start here unless you have a specific reason to deviate.' },
+  { title: '3072 dimensions — High fidelity', body: 'OpenAI text-embedding-3-large. Maximum semantic expressiveness — captures fine-grained meaning differences. Storage and search costs are 2x compared to 1536. Worthwhile for high-stakes retrieval (legal, medical, financial) where retrieval errors are costly. MTEB improvement: ~2.3 points over small.' }
 ];
 
 function showDim(idx, el) {
@@ -487,10 +488,10 @@ function showDim(idx, el) {
 let score = 0;
 const answered = {};
 const msgs = {
-  q1: 'Cosine = cos(90Â°) = 0. Orthogonal vectors share no directional component â€” semantically unrelated.',
+  q1: 'Cosine = cos(90°) = 0. Orthogonal vectors share no directional component — semantically unrelated.',
   q2: 'Each model creates its own unique vector space. Cross-model comparison produces meaningless similarity scores.',
   q3: 'MTEB evaluates embedding quality across 56 tasks including classification, clustering, retrieval, and reranking.',
-  q4: 'nomic-embed-text and bge-m3 run locally on your hardware â€” no API calls, no data leaving your infrastructure.',
+  q4: 'nomic-embed-text and bge-m3 run locally on your hardware — no API calls, no data leaving your infrastructure.',
   q5: 'Matryoshka Representation Learning allows the same model to produce shorter vectors that retain most of the accuracy of longer ones, enabling a speed/accuracy trade-off at query time.'
 };
 
@@ -507,11 +508,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 

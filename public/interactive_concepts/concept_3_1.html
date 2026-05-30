@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.1 â€” MCP: Model Context Protocol</title>
+<title>Concept 3.1 — MCP: Model Context Protocol</title>
 <style>
   :root {
     --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
@@ -54,7 +55,7 @@
   .arch-box.server h4 { color: var(--accent); }
   .arch-box.resource h4 { color: var(--accent3); }
   .arch-box ul { list-style: none; font-size: 0.75rem; color: var(--muted); text-align: left; }
-  .arch-box ul li::before { content: 'â€¢ '; color: var(--muted); }
+  .arch-box ul li::before { content: '• '; color: var(--muted); }
   .arch-arrow { font-size: 1.8rem; color: var(--muted); padding: 0 8px; flex-shrink: 0; }
   .arch-label { font-size: 0.7rem; color: var(--accent2); text-align: center; margin-top: 6px; font-weight: 600; }
 
@@ -146,17 +147,17 @@
 
 <nav>
   <div class="nav-links">
-    <a href="concept_2_12.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_2.html">Next â†’</a>
+    <a href="concept_2_12.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_2.html">Next →</a>
   </div>
-  <span class="title">3.1 â€” MCP: Model Context Protocol</span>
+  <span class="title">3.1 — MCP: Model Context Protocol</span>
 </nav>
 
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>MCP: Model Context Protocol</h1>
-  <p>The open standard that lets AI agents securely discover and call external tools â€” a universal plug for capabilities.</p>
+  <p>The open standard that lets AI agents securely discover and call external tools — a universal plug for capabilities.</p>
 </div>
 
 <div class="content">
@@ -166,22 +167,22 @@
     <h2>What Is MCP?</h2>
     <div class="what-grid">
       <div class="what-card">
-        <div class="icon">ðŸ”Œ</div>
+        <div class="icon">🔌</div>
         <h3>Universal Plug</h3>
-        <p>One protocol to connect any AI model to any tool or data source â€” no custom integrations per model.</p>
+        <p>One protocol to connect any AI model to any tool or data source — no custom integrations per model.</p>
       </div>
       <div class="what-card">
-        <div class="icon">ðŸ“œ</div>
+        <div class="icon">📜</div>
         <h3>Open Standard</h3>
         <p>Released by Anthropic in 2024; now adopted by OpenAI, Google DeepMind, and major IDE makers.</p>
       </div>
       <div class="what-card">
-        <div class="icon">ðŸ”’</div>
+        <div class="icon">🔒</div>
         <h3>Security-First</h3>
         <p>Servers declare capabilities explicitly. Clients request only what they need. No implicit access.</p>
       </div>
       <div class="what-card">
-        <div class="icon">âš¡</div>
+        <div class="icon">⚡</div>
         <h3>Stateful Sessions</h3>
         <p>Unlike REST, MCP maintains session state so agents can have multi-turn tool conversations.</p>
       </div>
@@ -190,7 +191,7 @@
 
   <!-- CLIENT-SERVER ARCHITECTURE -->
   <div class="section">
-    <h2>Clientâ€“Server Architecture</h2>
+    <h2>Client–Server Architecture</h2>
     <div class="arch-container">
       <div class="arch-diagram">
         <div class="arch-box client">
@@ -204,7 +205,7 @@
           <div class="arch-label">Initiates requests</div>
         </div>
         <div>
-          <div class="arch-arrow">â‡„</div>
+          <div class="arch-arrow">⇄</div>
           <div style="font-size:0.68rem;color:var(--accent2);text-align:center;margin-top:4px;">JSON-RPC 2.0<br>over stdio / SSE</div>
         </div>
         <div class="arch-box server">
@@ -218,7 +219,7 @@
           <div class="arch-label">Exposes capabilities</div>
         </div>
         <div>
-          <div class="arch-arrow">â†’</div>
+          <div class="arch-arrow">→</div>
           <div style="font-size:0.68rem;color:var(--accent2);text-align:center;margin-top:4px;">Calls backends</div>
         </div>
         <div class="arch-box resource">
@@ -265,14 +266,14 @@
           <div class="step-num">3</div>
           <div class="step-content">
             <h4>Newline-delimited JSON</h4>
-            <p>Each message is a single JSON line terminated by <code>\n</code> â€” no framing headers needed</p>
+            <p>Each message is a single JSON line terminated by <code>\n</code> — no framing headers needed</p>
           </div>
         </div>
         <div class="flow-step highlight">
           <div class="step-num">4</div>
           <div class="step-content">
             <h4>Process lifecycle tied to client</h4>
-            <p>Server process exits when client disconnects â€” no persistent background service required</p>
+            <p>Server process exits when client disconnects — no persistent background service required</p>
           </div>
         </div>
       </div>
@@ -285,7 +286,7 @@
           <div class="step-num">1</div>
           <div class="step-content">
             <h4>Client opens SSE connection</h4>
-            <p>HTTP GET to <code>/sse</code> endpoint â€” server keeps connection open for streaming events</p>
+            <p>HTTP GET to <code>/sse</code> endpoint — server keeps connection open for streaming events</p>
           </div>
         </div>
         <div class="flow-step highlight">
@@ -299,7 +300,7 @@
           <div class="step-num">3</div>
           <div class="step-content">
             <h4>Server streams responses over SSE</h4>
-            <p>Results flow back through the open SSE stream as <code>data:</code> events â€” enables streaming</p>
+            <p>Results flow back through the open SSE stream as <code>data:</code> events — enables streaming</p>
           </div>
         </div>
         <div class="flow-step highlight">
@@ -314,26 +315,26 @@
 
     <div id="tab-msgs" class="tab-panel">
       <div class="flow-container">
-        <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">MCP defines <strong style="color:var(--text)">three JSON-RPC message types</strong> for clientâ€“server communication.</p>
+        <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">MCP defines <strong style="color:var(--text)">three JSON-RPC message types</strong> for client–server communication.</p>
         <div class="flow-step highlight">
           <div class="step-num">R</div>
           <div class="step-content">
             <h4>Request</h4>
-            <p>Client â†’ Server. Has an <code>id</code>, <code>method</code>, and optional <code>params</code>. Expects a response.</p>
+            <p>Client → Server. Has an <code>id</code>, <code>method</code>, and optional <code>params</code>. Expects a response.</p>
           </div>
         </div>
         <div class="flow-step highlight">
           <div class="step-num">P</div>
           <div class="step-content">
             <h4>Response</h4>
-            <p>Server â†’ Client. Matches <code>id</code> of the request. Contains <code>result</code> or <code>error</code>.</p>
+            <p>Server → Client. Matches <code>id</code> of the request. Contains <code>result</code> or <code>error</code>.</p>
           </div>
         </div>
         <div class="flow-step highlight">
           <div class="step-num">N</div>
           <div class="step-content">
             <h4>Notification</h4>
-            <p>Either direction. No <code>id</code> â€” fire-and-forget. Used for progress updates and logs.</p>
+            <p>Either direction. No <code>id</code> — fire-and-forget. Used for progress updates and logs.</p>
           </div>
         </div>
       </div>
@@ -347,31 +348,31 @@
       <div style="margin-bottom:20px;">
         <div class="reg-grid">
           <div class="reg-step">
-            <div class="step-icon">ðŸ¤</div>
+            <div class="step-icon">🤝</div>
             <h4>initialize</h4>
             <p>Client sends protocol version + capabilities</p>
           </div>
-          <div class="reg-arrow">â†’</div>
+          <div class="reg-arrow">→</div>
           <div class="reg-step">
-            <div class="step-icon">ðŸ“‹</div>
+            <div class="step-icon">📋</div>
             <h4>tools/list</h4>
             <p>Client requests all available tools from server</p>
           </div>
-          <div class="reg-arrow">â†’</div>
+          <div class="reg-arrow">→</div>
           <div class="reg-step">
-            <div class="step-icon">ðŸ“</div>
+            <div class="step-icon">📝</div>
             <h4>Tool Schemas</h4>
             <p>Server returns name, description, inputSchema per tool</p>
           </div>
-          <div class="reg-arrow">â†’</div>
+          <div class="reg-arrow">→</div>
           <div class="reg-step">
-            <div class="step-icon">ðŸ’‰</div>
+            <div class="step-icon">💉</div>
             <h4>Inject to LLM</h4>
             <p>Client adds tools to model's system prompt or API call</p>
           </div>
-          <div class="reg-arrow">â†’</div>
+          <div class="reg-arrow">→</div>
           <div class="reg-step">
-            <div class="step-icon">âš¡</div>
+            <div class="step-icon">⚡</div>
             <h4>tools/call</h4>
             <p>Client executes tool call with validated arguments</p>
           </div>
@@ -380,7 +381,7 @@
 
       <div class="json-pair">
         <div class="json-block request">
-          <h4>Tool Definition (Server â†’ Client)</h4>
+          <h4>Tool Definition (Server → Client)</h4>
           <pre><span class="json-key">"tools"</span>: [{
   <span class="json-key">"name"</span>: <span class="json-str">"search_web"</span>,
   <span class="json-key">"description"</span>: <span class="json-str">"Search the web for current info"</span>,
@@ -397,7 +398,7 @@
 }]</pre>
         </div>
         <div class="json-block response">
-          <h4>Tool Call (Client â†’ Server)</h4>
+          <h4>Tool Call (Client → Server)</h4>
           <pre>{
   <span class="json-key">"jsonrpc"</span>: <span class="json-str">"2.0"</span>,
   <span class="json-key">"id"</span>: <span class="json-num">42</span>,
@@ -419,7 +420,7 @@
     <h2>Live MCP Session Simulator</h2>
     <div class="simulator">
       <div class="sim-header">
-        <h3>ðŸ”¬ MCP Message Exchange</h3>
+        <h3>🔬 MCP Message Exchange</h3>
         <div class="sim-controls">
           <button class="sim-btn" onclick="simStep('init')">1. Initialize</button>
           <button class="sim-btn" onclick="simStep('list')">2. List Tools</button>
@@ -451,45 +452,45 @@
         <tbody>
           <tr>
             <td>Cross-model standard</td>
-            <td class="yes">âœ“ Yes</td>
-            <td class="no">âœ— OpenAI only</td>
-            <td class="no">âœ— ChatGPT only</td>
-            <td class="no">âœ— Custom per API</td>
+            <td class="yes">✓ Yes</td>
+            <td class="no">✗ OpenAI only</td>
+            <td class="no">✗ ChatGPT only</td>
+            <td class="no">✗ Custom per API</td>
           </tr>
           <tr>
             <td>Tool discovery</td>
-            <td class="yes">âœ“ Dynamic</td>
+            <td class="yes">✓ Dynamic</td>
             <td class="partial">~ Predefined JSON</td>
             <td class="partial">~ OpenAPI spec</td>
-            <td class="no">âœ— Hardcoded</td>
+            <td class="no">✗ Hardcoded</td>
           </tr>
           <tr>
             <td>Stateful sessions</td>
-            <td class="yes">âœ“ Built-in</td>
-            <td class="no">âœ— Stateless</td>
-            <td class="no">âœ— Stateless</td>
+            <td class="yes">✓ Built-in</td>
+            <td class="no">✗ Stateless</td>
+            <td class="no">✗ Stateless</td>
             <td class="partial">~ Manual</td>
           </tr>
           <tr>
             <td>Streaming support</td>
-            <td class="yes">âœ“ SSE native</td>
+            <td class="yes">✓ SSE native</td>
             <td class="partial">~ Streaming API</td>
-            <td class="no">âœ— No</td>
+            <td class="no">✗ No</td>
             <td class="partial">~ Depends</td>
           </tr>
           <tr>
             <td>Local server support</td>
-            <td class="yes">âœ“ stdio</td>
-            <td class="no">âœ— HTTP only</td>
-            <td class="no">âœ— HTTP only</td>
+            <td class="yes">✓ stdio</td>
+            <td class="no">✗ HTTP only</td>
+            <td class="no">✗ HTTP only</td>
             <td class="partial">~ Depends</td>
           </tr>
           <tr>
             <td>Resources & prompts</td>
-            <td class="yes">âœ“ First-class</td>
-            <td class="no">âœ— Not in spec</td>
-            <td class="no">âœ— Not in spec</td>
-            <td class="no">âœ— No standard</td>
+            <td class="yes">✓ First-class</td>
+            <td class="no">✗ Not in spec</td>
+            <td class="no">✗ Not in spec</td>
+            <td class="no">✗ No standard</td>
           </tr>
         </tbody>
       </table>
@@ -498,7 +499,7 @@
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -568,7 +569,7 @@
 </div><!-- /content -->
 
 <script>
-// â”€â”€ TAB SYSTEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── TAB SYSTEM ──────────────────────────────────────────────────
 function showTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -576,7 +577,7 @@ function showTab(id, btn) {
   btn.classList.add('active');
 }
 
-// â”€â”€ SIMULATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SIMULATOR ───────────────────────────────────────────────────
 const log = document.getElementById('simLog');
 let ts = 0;
 
@@ -598,51 +599,51 @@ function simClear() {
 function simStep(step) {
   switch(step) {
     case 'init':
-      simLog('CLIENT â†’ SERVER: <strong>initialize</strong> request', 'log-client');
+      simLog('CLIENT → SERVER: <strong>initialize</strong> request', 'log-client');
       simLog('&nbsp;&nbsp;{ "jsonrpc": "2.0", "id": 1, "method": "initialize",', 'log-transport');
       simLog('&nbsp;&nbsp;&nbsp;&nbsp;"params": { "protocolVersion": "2024-11-05",', 'log-transport');
       simLog('&nbsp;&nbsp;&nbsp;&nbsp;"capabilities": { "roots": {}, "sampling": {} } } }', 'log-transport');
       setTimeout(() => {
-        simLog('SERVER â†’ CLIENT: <strong>initialize</strong> response', 'log-server');
+        simLog('SERVER → CLIENT: <strong>initialize</strong> response', 'log-server');
         simLog('&nbsp;&nbsp;{ "result": { "protocolVersion": "2024-11-05",', 'log-transport');
         simLog('&nbsp;&nbsp;&nbsp;&nbsp;"serverInfo": { "name": "filesystem-mcp", "version": "1.2.0" },', 'log-transport');
         simLog('&nbsp;&nbsp;&nbsp;&nbsp;"capabilities": { "tools": {}, "resources": {} } } }', 'log-transport');
-        simLog('âœ“ Session established. Protocol version negotiated.', 'log-result');
+        simLog('✓ Session established. Protocol version negotiated.', 'log-result');
       }, 400);
       break;
 
     case 'list':
-      simLog('CLIENT â†’ SERVER: <strong>tools/list</strong> request', 'log-client');
+      simLog('CLIENT → SERVER: <strong>tools/list</strong> request', 'log-client');
       simLog('&nbsp;&nbsp;{ "jsonrpc": "2.0", "id": 2, "method": "tools/list" }', 'log-transport');
       setTimeout(() => {
-        simLog('SERVER â†’ CLIENT: <strong>tools/list</strong> response (3 tools found)', 'log-server');
+        simLog('SERVER → CLIENT: <strong>tools/list</strong> response (3 tools found)', 'log-server');
         simLog('&nbsp;&nbsp;tools: [ "read_file", "write_file", "list_directory" ]', 'log-transport');
         simLog('&nbsp;&nbsp;Each tool includes: name, description, inputSchema (JSON Schema)', 'log-transport');
-        simLog('âœ“ Tools discovered. LLM system prompt updated with tool definitions.', 'log-result');
+        simLog('✓ Tools discovered. LLM system prompt updated with tool definitions.', 'log-result');
       }, 400);
       break;
 
     case 'call':
       simLog('LLM decided to call: <strong>read_file</strong>', 'log-info');
-      simLog('CLIENT â†’ SERVER: <strong>tools/call</strong> request', 'log-client');
+      simLog('CLIENT → SERVER: <strong>tools/call</strong> request', 'log-client');
       simLog('&nbsp;&nbsp;{ "jsonrpc": "2.0", "id": 3, "method": "tools/call",', 'log-transport');
       simLog('&nbsp;&nbsp;&nbsp;&nbsp;"params": { "name": "read_file",', 'log-transport');
       simLog('&nbsp;&nbsp;&nbsp;&nbsp;"arguments": { "path": "/workspace/config.yaml" } } }', 'log-transport');
-      simLog('â³ Server executing tool...', 'log-info');
+      simLog('⏳ Server executing tool...', 'log-info');
       break;
 
     case 'result':
-      simLog('SERVER â†’ CLIENT: <strong>tools/call</strong> response', 'log-server');
+      simLog('SERVER → CLIENT: <strong>tools/call</strong> response', 'log-server');
       simLog('&nbsp;&nbsp;{ "result": { "content": [{ "type": "text",', 'log-transport');
       simLog('&nbsp;&nbsp;&nbsp;&nbsp;"text": "model: gpt-4\\ntemperature: 0.7\\nmax_tokens: 2000" }],', 'log-transport');
       simLog('&nbsp;&nbsp;&nbsp;&nbsp;"isError": false } }', 'log-transport');
-      simLog('âœ“ Result injected into LLM context as tool observation.', 'log-result');
-      simLog('ðŸ”„ LLM continues reasoning with file contents...', 'log-result');
+      simLog('✓ Result injected into LLM context as tool observation.', 'log-result');
+      simLog('🔄 LLM continues reasoning with file contents...', 'log-result');
       break;
   }
 }
 
-// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── QUIZ ─────────────────────────────────────────────────────────
 let score = 0;
 const answered = {};
 
@@ -659,18 +660,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
-      q1: 'stdio (stdin/stdout) is the local transport â€” JSON messages flow through the process\'s standard streams.',
-      q2: 'Notifications have no id field, so no response is expected â€” used for progress updates and logs.',
+      q1: 'stdio (stdin/stdout) is the local transport — JSON messages flow through the process\'s standard streams.',
+      q2: 'Notifications have no id field, so no response is expected — used for progress updates and logs.',
       q3: 'tools/list returns each tool\'s name, description, and inputSchema so the client can populate the LLM\'s tool list.',
       q4: 'MCP is an open standard adopted across model providers; OpenAI function definitions only work within OpenAI\'s ecosystem.',
       q5: 'In SSE transport, the client sends tool calls as HTTP POST to /message; responses stream back over the open SSE connection.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 

@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.4 â€” A2A Protocol</title>
+<title>Concept 3.4 — A2A Protocol</title>
 <style>
   :root {
     --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
@@ -104,16 +105,16 @@
 <body>
 <nav>
   <div class="nav-links">
-    <a href="concept_3_3.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_5.html">Next â†’</a>
+    <a href="concept_3_3.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_5.html">Next →</a>
   </div>
-  <span class="title">3.4 â€” A2A Protocol</span>
+  <span class="title">3.4 — A2A Protocol</span>
 </nav>
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>A2A Protocol</h1>
-  <p>Agent-to-Agent communication standard â€” how autonomous agents delegate tasks to each other across organizational boundaries.</p>
+  <p>Agent-to-Agent communication standard — how autonomous agents delegate tasks to each other across organizational boundaries.</p>
 </div>
 <div class="content">
 
@@ -122,31 +123,31 @@
     <h2>What Is A2A?</h2>
     <div class="overview-grid">
       <div class="ov-card">
-        <div class="icon">ðŸ¤</div>
+        <div class="icon">🤝</div>
         <h3>Agent Collaboration</h3>
-        <p>A2A lets one AI agent delegate tasks to another agent â€” even across different vendors, clouds, or organizations.</p>
+        <p>A2A lets one AI agent delegate tasks to another agent — even across different vendors, clouds, or organizations.</p>
       </div>
       <div class="ov-card">
-        <div class="icon">ðŸ“‹</div>
+        <div class="icon">📋</div>
         <h3>Task-Oriented</h3>
-        <p>Unlike MCP's tool calls, A2A exchanges are full <em>tasks</em> with rich state: submitted â†’ working â†’ completed.</p>
+        <p>Unlike MCP's tool calls, A2A exchanges are full <em>tasks</em> with rich state: submitted → working → completed.</p>
       </div>
       <div class="ov-card">
-        <div class="icon">ðŸŒŠ</div>
+        <div class="icon">🌊</div>
         <h3>Streaming-Native</h3>
         <p>Long-running tasks stream status updates and partial artifacts back to the caller in real time via SSE.</p>
       </div>
       <div class="ov-card">
-        <div class="icon">ðŸ”’</div>
+        <div class="icon">🔒</div>
         <h3>Opaque Execution</h3>
-        <p>The remote agent is a black box â€” caller doesn't know (or care) how it works internally. Just tasks in, results out.</p>
+        <p>The remote agent is a black box — caller doesn't know (or care) how it works internally. Just tasks in, results out.</p>
       </div>
     </div>
   </div>
 
   <!-- MCP vs A2A -->
   <div class="section">
-    <h2>MCP vs A2A â€” When to Use Which</h2>
+    <h2>MCP vs A2A — When to Use Which</h2>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
       <table class="vs-table">
         <thead>
@@ -155,7 +156,7 @@
         <tbody>
           <tr><td>Unit of exchange</td><td>Tool call (function)</td><td class="hi">Task (multi-step work)</td></tr>
           <tr><td>Counterparty</td><td>Deterministic service</td><td class="hi">Autonomous agent</td></tr>
-          <tr><td>Execution model</td><td>Synchronous, fast (&lt;2s)</td><td class="hi">Async, long-running (secsâ€“mins)</td></tr>
+          <tr><td>Execution model</td><td>Synchronous, fast (&lt;2s)</td><td class="hi">Async, long-running (secs–mins)</td></tr>
           <tr><td>State management</td><td>Stateless per call</td><td class="hi">Task has lifecycle (5 states)</td></tr>
           <tr><td>Streaming</td><td>Optional</td><td class="hi">First-class via SSE</td></tr>
           <tr><td>Discovery</td><td>tools/list</td><td class="hi">Agent Card (/.well-known/agent.json)</td></tr>
@@ -164,25 +165,25 @@
         </tbody>
       </table>
     </div>
-    <p style="font-size:.83rem;color:var(--muted);margin-top:12px;">ðŸ’¡ <strong style="color:var(--text)">Rule of thumb:</strong> Use MCP to call tools. Use A2A to delegate to agents. They're complementary â€” an A2A agent often uses MCP internally to call its own tools.</p>
+    <p style="font-size:.83rem;color:var(--muted);margin-top:12px;">💡 <strong style="color:var(--text)">Rule of thumb:</strong> Use MCP to call tools. Use A2A to delegate to agents. They're complementary — an A2A agent often uses MCP internally to call its own tools.</p>
   </div>
 
   <!-- TASK LIFECYCLE -->
   <div class="section">
-    <h2>A2A Task Lifecycle â€” Click a State</h2>
+    <h2>A2A Task Lifecycle — Click a State</h2>
     <div class="lifecycle" id="lifecycle">
       <div class="lc-state submitted" onclick="showState('submitted',this)">
         <h4>submitted</h4><p>Task received</p>
       </div>
-      <div class="lc-arrow">â†’</div>
+      <div class="lc-arrow">→</div>
       <div class="lc-state working" onclick="showState('working',this)">
         <h4>working</h4><p>Agent executing</p>
       </div>
-      <div class="lc-arrow">â‡„</div>
+      <div class="lc-arrow">⇄</div>
       <div class="lc-state input-req" onclick="showState('input_required',this)">
         <h4>input-required</h4><p>Needs more info</p>
       </div>
-      <div class="lc-arrow">â†’</div>
+      <div class="lc-arrow">→</div>
       <div class="lc-state completed" onclick="showState('completed',this)">
         <h4>completed</h4><p>Artifact ready</p>
       </div>
@@ -209,7 +210,7 @@
         <div class="sn">2</div>
         <div class="sc">
           <h4>tasks/sendSubscribe</h4>
-          <p>Like tasks/send but opens an SSE stream â€” server pushes <code>TaskStatusUpdateEvent</code> and <code>TaskArtifactUpdateEvent</code> as work progresses.</p>
+          <p>Like tasks/send but opens an SSE stream — server pushes <code>TaskStatusUpdateEvent</code> and <code>TaskArtifactUpdateEvent</code> as work progresses.</p>
         </div>
       </div>
       <div class="flow-step hl">
@@ -241,7 +242,7 @@
     <h2>Message Structure Example</h2>
     <div class="json-pair">
       <div class="json-block req">
-        <h4>tasks/send (Client â†’ Agent)</h4>
+        <h4>tasks/send (Client → Agent)</h4>
         <pre>{
   <span class="jk">"jsonrpc"</span>: <span class="js">"2.0"</span>,
   <span class="jk">"id"</span>: <span class="jn">1</span>,
@@ -260,7 +261,7 @@
 }</pre>
       </div>
       <div class="json-block res">
-        <h4>Task Response (Agent â†’ Client)</h4>
+        <h4>Task Response (Agent → Client)</h4>
         <pre>{
   <span class="jk">"result"</span>: {
     <span class="jk">"id"</span>: <span class="js">"task-abc123"</span>,
@@ -283,7 +284,7 @@
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -317,7 +318,7 @@
       <h3>Q3. Which A2A method would you use to receive real-time progress updates as a long task executes?</h3>
       <div class="options" id="q3">
         <button class="opt" onclick="answer('q3','a','b')">A) tasks/get with polling every second</button>
-        <button class="opt" onclick="answer('q3','b','b')">B) tasks/sendSubscribe â€” opens an SSE stream for live status and artifact events</button>
+        <button class="opt" onclick="answer('q3','b','b')">B) tasks/sendSubscribe — opens an SSE stream for live status and artifact events</button>
         <button class="opt" onclick="answer('q3','c','b')">C) tasks/send with a callback URL in the request body</button>
         <button class="opt" onclick="answer('q3','d','b')">D) tasks/cancel and resubmit with streaming flag</button>
       </div>
@@ -330,7 +331,7 @@
       <div class="options" id="q4">
         <button class="opt" onclick="answer('q4','a','c')">A) The messages are encrypted so the hub cannot inspect them</button>
         <button class="opt" onclick="answer('q4','b','c')">B) A2A tasks run in a black-box Docker container</button>
-        <button class="opt" onclick="answer('q4','c','c')">C) The caller doesn't know or care how the remote agent works internally â€” it just receives the completed task result</button>
+        <button class="opt" onclick="answer('q4','c','c')">C) The caller doesn't know or care how the remote agent works internally — it just receives the completed task result</button>
         <button class="opt" onclick="answer('q4','d','c')">D) A2A doesn't return intermediate results</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
@@ -341,7 +342,7 @@
       <h3>Q5. How does an A2A client agent discover what a remote agent can do?</h3>
       <div class="options" id="q5">
         <button class="opt" onclick="answer('q5','a','b')">A) By calling tools/list just like MCP</button>
-        <button class="opt" onclick="answer('q5','b','b')">B) By fetching the Agent Card at <code>/.well-known/agent.json</code> â€” a JSON document describing the agent's capabilities</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) By fetching the Agent Card at <code>/.well-known/agent.json</code> — a JSON document describing the agent's capabilities</button>
         <button class="opt" onclick="answer('q5','c','b')">C) By sending a discovery/ping message and parsing the response headers</button>
         <button class="opt" onclick="answer('q5','d','b')">D) A2A agents must be manually registered in a central registry</button>
       </div>
@@ -354,28 +355,28 @@
 <script>
 const stateData = {
   submitted: {
-    title: 'submitted â€” Task Received',
+    title: 'submitted — Task Received',
     desc: 'The remote agent has received the task and acknowledged it. No work has started yet. The task ID is now valid and can be used to poll status or cancel.',
     code: `{ "state": "submitted", "timestamp": "2025-01-15T10:23:00Z" }`
   },
   working: {
-    title: 'working â€” Agent Executing',
+    title: 'working — Agent Executing',
     desc: 'The agent is actively processing the task. If using SSE (sendSubscribe), the client will receive TaskStatusUpdateEvent messages with optional status messages describing progress.',
     code: `{ "state": "working", "message": { "role": "agent", "parts": [{ "type": "text", "text": "Searching web for quantum computing papers..." }] } }`
   },
   input_required: {
-    title: 'input_required â€” Needs More Info',
+    title: 'input_required — Needs More Info',
     desc: 'The agent cannot proceed without additional input from the caller. The client must send a follow-up tasks/send to the same task ID with a new message providing the requested information.',
     code: `{ "state": "input_required", "message": { "role": "agent", "parts": [{ "type": "text", "text": "Which time range should I focus on? Last 1 year or last 5 years?" }] } }`
   },
   completed: {
-    title: 'completed â€” Artifact Ready',
-    desc: 'Task finished successfully. The response includes one or more artifacts â€” structured outputs like text documents, data objects, or files that the calling agent can consume.',
+    title: 'completed — Artifact Ready',
+    desc: 'Task finished successfully. The response includes one or more artifacts — structured outputs like text documents, data objects, or files that the calling agent can consume.',
     code: `{ "state": "completed", "artifacts": [{ "name": "research_summary", "parts": [{ "type": "text", "text": "Summary: ..." }] }] }`
   },
   failed: {
-    title: 'failed â€” Terminal Error',
-    desc: 'The agent encountered an unrecoverable error. The task cannot be resumed â€” a new task must be submitted. The response includes an error message explaining what went wrong.',
+    title: 'failed — Terminal Error',
+    desc: 'The agent encountered an unrecoverable error. The task cannot be resumed — a new task must be submitted. The response includes an error message explaining what went wrong.',
     code: `{ "state": "failed", "message": { "role": "agent", "parts": [{ "type": "text", "text": "External API rate limit exceeded. Please retry in 60 seconds." }] } }`
   }
 };
@@ -407,18 +408,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
-      q1: 'MCP calls deterministic services (search, DB query). A2A delegates full tasks to an autonomous reasoning agent â€” the remote agent decides how to accomplish the work.',
+      q1: 'MCP calls deterministic services (search, DB query). A2A delegates full tasks to an autonomous reasoning agent — the remote agent decides how to accomplish the work.',
       q2: 'input_required means the agent paused and is asking the caller for more information before it can continue. The caller must send a follow-up message to the same task ID.',
       q3: 'tasks/sendSubscribe opens an SSE stream so the server can push TaskStatusUpdateEvent and TaskArtifactUpdateEvent messages to the client in real time.',
-      q4: 'Opaque execution means the calling agent doesn\'t need to know how the remote agent is implemented â€” it just sends a task and receives the result, like a black box.',
-      q5: 'The Agent Card at /.well-known/agent.json is the A2A discovery mechanism â€” it describes the agent\'s name, skills, supported input/output types, and authentication methods.'
+      q4: 'Opaque execution means the calling agent doesn\'t need to know how the remote agent is implemented — it just sends a task and receives the result, like a black box.',
+      q5: 'The Agent Card at /.well-known/agent.json is the A2A discovery mechanism — it describes the agent\'s name, skills, supported input/output types, and authentication methods.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {

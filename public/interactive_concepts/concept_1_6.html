@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.6 Prototype vs. Production Gap â€” Agentic AI</title>
+<title>1.6 Prototype vs. Production Gap — Agentic AI</title>
 <style>
   :root {
     --bg:#0f1117;--surface:#1a1d27;--card:#21263a;
@@ -33,7 +34,7 @@
   .section-title{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
   .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
 
-  /* â”€â”€ COMPARISON COLUMNS â”€â”€ */
+  /* ── COMPARISON COLUMNS ── */
   .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
   .compare-col{padding:0;}
   .compare-head{padding:18px 22px;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
@@ -52,7 +53,7 @@
   /* vertical divider between columns */
   .compare-col:first-child{border-right:1px solid var(--border);}
 
-  /* â”€â”€ GAP VISUALISER â”€â”€ */
+  /* ── GAP VISUALISER ── */
   .gap-slider-wrap{margin-bottom:16px;}
   .gap-slider-label{font-size:13px;color:var(--muted);margin-bottom:8px;}
   .gap-slider{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(to right,var(--red),var(--yellow),var(--green));outline:none;cursor:pointer;}
@@ -61,7 +62,7 @@
   .gap-title{font-size:16px;font-weight:700;margin-bottom:8px;}
   .gap-desc{font-size:13.5px;color:var(--muted);line-height:1.65;}
 
-  /* â”€â”€ PRODUCTION CHECKLIST â”€â”€ */
+  /* ── PRODUCTION CHECKLIST ── */
   .checklist{display:flex;flex-direction:column;gap:8px;}
   .check-item{display:flex;align-items:flex-start;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;cursor:pointer;transition:all .25s;}
   .check-item:hover{border-color:rgba(108,99,255,.4);}
@@ -76,7 +77,7 @@
   .check-bar-fill{height:100%;background:linear-gradient(to right,var(--accent),var(--green));border-radius:4px;transition:width .4s ease;}
   .check-count{font-size:13px;font-weight:700;color:var(--accent);}
 
-  /* â”€â”€ FAILURE SCENARIO CARDS â”€â”€ */
+  /* ── FAILURE SCENARIO CARDS ── */
   .scenario-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
   .scen-tab{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .2s;}
   .scen-tab.active{background:rgba(255,101,132,.12);border-color:var(--red);color:var(--red);}
@@ -92,7 +93,7 @@
   .scen-step-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;min-width:60px;margin-top:2px;}
   .scen-fix{margin-top:16px;background:rgba(6,214,160,.07);border:1px solid rgba(6,214,160,.2);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--green);line-height:1.6;}
 
-  /* â”€â”€ QUIZ â”€â”€ */
+  /* ── QUIZ ── */
   .quiz-set{display:flex;flex-direction:column;gap:24px;}
   .quiz-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;}
   .quiz-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
@@ -121,48 +122,48 @@
 </head>
 <body>
 <nav>
-  <a href="pre-course.html" class="nav-home">â† All Concepts</a>
+  <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">1.6 Prototype vs. Production Gap</span>
   <div class="nav-arrows">
-    <a href="concept_1_5.html" class="nav-btn">â† Memory Types</a>
+    <a href="concept_1_5.html" class="nav-btn">← Memory Types</a>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="concept-badge">Session 1 Â· Pre-Course Â· Concept 1.6</div>
+  <div class="concept-badge">Session 1 · Pre-Course · Concept 1.6</div>
   <h1>Prototype vs.<br>Production Gap</h1>
-  <p class="hero-lead">Most agentic AI projects die in the gap between a working Jupyter demo and a reliable production system. The demo proves the concept works â€” it can't prove it's deployable. Understanding this gap is what separates an AI engineer from an AI architect.</p>
+  <p class="hero-lead">Most agentic AI projects die in the gap between a working Jupyter demo and a reliable production system. The demo proves the concept works — it can't prove it's deployable. Understanding this gap is what separates an AI engineer from an AI architect.</p>
 </div>
 
 <div class="content">
 
   <!-- COMPARISON -->
   <div class="section">
-    <div class="section-title">Prototype vs. Production â€” Side by Side</div>
+    <div class="section-title">Prototype vs. Production — Side by Side</div>
     <div class="compare-grid">
       <div class="compare-col">
-        <div class="compare-head proto">ðŸ§ª Prototype (Jupyter)</div>
+        <div class="compare-head proto">🧪 Prototype (Jupyter)</div>
         <div class="compare-items">
-          <div class="compare-item proto-item"><span class="bullet">âœ—</span><span class="body">Works on the <strong>happy path</strong> only â€” assumes clean, well-formatted inputs every time</span></div>
-          <div class="compare-item proto-item"><span class="bullet">âœ—</span><span class="body"><strong>No retry logic</strong> â€” first transient API error kills the entire task</span></div>
-          <div class="compare-item proto-item"><span class="bullet">âœ—</span><span class="body"><strong>Costs unknown</strong> â€” no token budgeting, no cost cap, no monitoring</span></div>
-          <div class="compare-item proto-item"><span class="bullet">âœ—</span><span class="body"><strong>No logging</strong> â€” when it fails, you have no trace of what happened</span></div>
-          <div class="compare-item proto-item"><span class="bullet">âœ—</span><span class="body"><strong>Single test case</strong> â€” validated on one or two curated examples</span></div>
-          <div class="compare-item proto-item"><span class="bullet">âœ—</span><span class="body"><strong>You restart on failure</strong> â€” manual intervention, no circuit breakers</span></div>
-          <div class="compare-item proto-item"><span class="bullet">âœ—</span><span class="body">System prompt <strong>edited directly</strong> â€” no versioning, no regression tests</span></div>
+          <div class="compare-item proto-item"><span class="bullet">✗</span><span class="body">Works on the <strong>happy path</strong> only — assumes clean, well-formatted inputs every time</span></div>
+          <div class="compare-item proto-item"><span class="bullet">✗</span><span class="body"><strong>No retry logic</strong> — first transient API error kills the entire task</span></div>
+          <div class="compare-item proto-item"><span class="bullet">✗</span><span class="body"><strong>Costs unknown</strong> — no token budgeting, no cost cap, no monitoring</span></div>
+          <div class="compare-item proto-item"><span class="bullet">✗</span><span class="body"><strong>No logging</strong> — when it fails, you have no trace of what happened</span></div>
+          <div class="compare-item proto-item"><span class="bullet">✗</span><span class="body"><strong>Single test case</strong> — validated on one or two curated examples</span></div>
+          <div class="compare-item proto-item"><span class="bullet">✗</span><span class="body"><strong>You restart on failure</strong> — manual intervention, no circuit breakers</span></div>
+          <div class="compare-item proto-item"><span class="bullet">✗</span><span class="body">System prompt <strong>edited directly</strong> — no versioning, no regression tests</span></div>
         </div>
       </div>
       <div class="compare-col">
-        <div class="compare-head prod">ðŸš€ Production System</div>
+        <div class="compare-head prod">🚀 Production System</div>
         <div class="compare-items">
-          <div class="compare-item prod-item"><span class="bullet">âœ“</span><span class="body"><strong>Input validation + sanitisation</strong> â€” handles malformed, ambiguous, and adversarial inputs</span></div>
-          <div class="compare-item prod-item"><span class="bullet">âœ“</span><span class="body"><strong>Exponential backoff + retry</strong> â€” transient failures handled automatically</span></div>
-          <div class="compare-item prod-item"><span class="bullet">âœ“</span><span class="body"><strong>Token budgets + cost caps</strong> â€” hard stop if session exceeds $2.00 or 50 tool calls</span></div>
-          <div class="compare-item prod-item"><span class="bullet">âœ“</span><span class="body"><strong>Distributed tracing</strong> â€” every thought, tool call, and observation recorded (LangSmith/Langfuse)</span></div>
-          <div class="compare-item prod-item"><span class="bullet">âœ“</span><span class="body"><strong>50â€“200 golden test cases</strong> â€” run on every deployment; block if task completion drops 3%</span></div>
-          <div class="compare-item prod-item"><span class="bullet">âœ“</span><span class="body"><strong>Circuit breakers</strong> â€” agent auto-terminates on infinite loops or repeated failures</span></div>
-          <div class="compare-item prod-item"><span class="bullet">âœ“</span><span class="body">System prompt in <strong>Git with semantic versioning</strong> â€” treated as code, not configuration</span></div>
+          <div class="compare-item prod-item"><span class="bullet">✓</span><span class="body"><strong>Input validation + sanitisation</strong> — handles malformed, ambiguous, and adversarial inputs</span></div>
+          <div class="compare-item prod-item"><span class="bullet">✓</span><span class="body"><strong>Exponential backoff + retry</strong> — transient failures handled automatically</span></div>
+          <div class="compare-item prod-item"><span class="bullet">✓</span><span class="body"><strong>Token budgets + cost caps</strong> — hard stop if session exceeds $2.00 or 50 tool calls</span></div>
+          <div class="compare-item prod-item"><span class="bullet">✓</span><span class="body"><strong>Distributed tracing</strong> — every thought, tool call, and observation recorded (LangSmith/Langfuse)</span></div>
+          <div class="compare-item prod-item"><span class="bullet">✓</span><span class="body"><strong>50–200 golden test cases</strong> — run on every deployment; block if task completion drops 3%</span></div>
+          <div class="compare-item prod-item"><span class="bullet">✓</span><span class="body"><strong>Circuit breakers</strong> — agent auto-terminates on infinite loops or repeated failures</span></div>
+          <div class="compare-item prod-item"><span class="bullet">✓</span><span class="body">System prompt in <strong>Git with semantic versioning</strong> — treated as code, not configuration</span></div>
         </div>
       </div>
     </div>
@@ -170,7 +171,7 @@
 
   <!-- PRODUCTION READINESS CHECKLIST -->
   <div class="section">
-    <div class="section-title">Production Readiness Checklist â€” Tick What You Have</div>
+    <div class="section-title">Production Readiness Checklist — Tick What You Have</div>
     <div class="check-progress">
       <div class="check-bar-wrap"><div class="check-bar-fill" id="check-bar" style="width:0%"></div></div>
       <div class="check-count" id="check-count">0 / 8</div>
@@ -179,73 +180,73 @@
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Circuit Breakers</div><div class="check-desc">Hard stops on max iterations, max cost ($), max identical tool calls. Without these, a stuck agent burns your budget overnight.</div></div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Structured Output Validation</div><div class="check-desc">Pydantic/Zod models validate LLM output at runtime. On ValidationError, retry with the error message in the next prompt.</div></div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Golden Test Set (50+ cases)</div><div class="check-desc">Curated (input, expected output) pairs. Run on every system prompt change. Block deployment if task completion drops > 3%.</div></div></div>
-      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Distributed Tracing</div><div class="check-desc">LangSmith, Langfuse, or OpenTelemetry. Every Thought â†’ Tool Call â†’ Observation recorded. Non-negotiable for debugging.</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Distributed Tracing</div><div class="check-desc">LangSmith, Langfuse, or OpenTelemetry. Every Thought → Tool Call → Observation recorded. Non-negotiable for debugging.</div></div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Prompt Version Control</div><div class="check-desc">System prompts stored in Git with semantic versioning (MAJOR.MINOR.PATCH). NEVER edit production prompts directly.</div></div></div>
-      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Cost Monitoring Per Task</div><div class="check-desc">Track cost per task, not just total spend. A sudden 3Ã— increase in cost per task signals changed agent behaviour before complaints arrive.</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Cost Monitoring Per Task</div><div class="check-desc">Track cost per task, not just total spend. A sudden 3× increase in cost per task signals changed agent behaviour before complaints arrive.</div></div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">MAESTRO Threat Model</div><div class="check-desc">At minimum: prompt injection defense, sandboxed code execution, least-privilege tool access. Security designed in, not bolted on.</div></div></div>
-      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Canary Deployment Pipeline</div><div class="check-desc">New agent versions deployed to 5% traffic first. Shadow mode â†’ A/B test â†’ gradual rollout â†’ full production. Automated rollback triggers.</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-body"><div class="check-title">Canary Deployment Pipeline</div><div class="check-desc">New agent versions deployed to 5% traffic first. Shadow mode → A/B test → gradual rollout → full production. Automated rollback triggers.</div></div></div>
     </div>
   </div>
 
   <!-- FAILURE SCENARIO SIMULATOR -->
   <div class="section">
-    <div class="section-title">Failure Scenario Simulator â€” Real Production Failures</div>
+    <div class="section-title">Failure Scenario Simulator — Real Production Failures</div>
     <div class="scenario-tabs">
-      <button class="scen-tab active" onclick="showScen('s1',this)">ðŸ’¸ Cost Explosion</button>
-      <button class="scen-tab" onclick="showScen('s2',this)">ðŸ”„ Infinite Loop</button>
-      <button class="scen-tab" onclick="showScen('s3',this)">ðŸ’¥ Silent Pipeline Break</button>
-      <button class="scen-tab" onclick="showScen('s4',this)">ðŸŽ­ Context Drift</button>
+      <button class="scen-tab active" onclick="showScen('s1',this)">💸 Cost Explosion</button>
+      <button class="scen-tab" onclick="showScen('s2',this)">🔄 Infinite Loop</button>
+      <button class="scen-tab" onclick="showScen('s3',this)">💥 Silent Pipeline Break</button>
+      <button class="scen-tab" onclick="showScen('s4',this)">🎭 Context Drift</button>
     </div>
 
     <div class="scenario-panel active" id="s1">
       <div class="scen-card">
-        <div class="scen-title">ðŸ’¸ The $400 Overnight Agent</div>
-        <div class="scen-setup">A research agent is deployed to production on a Friday. The team feels confident â€” it worked perfectly in demos. Monday morning: a $400 bill and zero completed tasks.</div>
+        <div class="scen-title">💸 The $400 Overnight Agent</div>
+        <div class="scen-setup">A research agent is deployed to production on a Friday. The team feels confident — it worked perfectly in demos. Monday morning: a $400 bill and zero completed tasks.</div>
         <div class="scen-seq">
-          <div class="scen-step fail"><div class="scen-step-label" style="color:var(--yellow)">9pm Fri</div><div>Agent receives a task with slightly malformed input â€” a URL without the https:// prefix. Web search tool returns an error.</div></div>
+          <div class="scen-step fail"><div class="scen-step-label" style="color:var(--yellow)">9pm Fri</div><div>Agent receives a task with slightly malformed input — a URL without the https:// prefix. Web search tool returns an error.</div></div>
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Loop</div><div>Agent retries the same malformed URL call. Fails again. Reasons "I should try harder." Retries again. 50+ times over 8 hours.</div></div>
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Result</div><div>No circuit breaker. No cost cap. No input validation. $400 in LLM API calls. Zero output. Nobody noticed until Monday.</div></div>
         </div>
-        <div class="scen-fix">âœ“ Fix: (1) Input validation normalises URLs before tool calls. (2) Circuit breaker: stop after same tool+args fails 3Ã— in a row. (3) Cost cap: hard stop at $5 per session. (4) Alert: Slack notification if cost exceeds $10/day.</div>
+        <div class="scen-fix">✓ Fix: (1) Input validation normalises URLs before tool calls. (2) Circuit breaker: stop after same tool+args fails 3× in a row. (3) Cost cap: hard stop at $5 per session. (4) Alert: Slack notification if cost exceeds $10/day.</div>
       </div>
     </div>
 
     <div class="scenario-panel" id="s2">
       <div class="scen-card">
-        <div class="scen-title">ðŸ”„ The Stuck Agent Loop</div>
-        <div class="scen-setup">An agent is writing a report. It generates a draft, evaluates it, decides it's not good enough, rewrites, evaluates again â€” endlessly. 60 iterations. $30 in tokens. No output.</div>
+        <div class="scen-title">🔄 The Stuck Agent Loop</div>
+        <div class="scen-setup">An agent is writing a report. It generates a draft, evaluates it, decides it's not good enough, rewrites, evaluates again — endlessly. 60 iterations. $30 in tokens. No output.</div>
         <div class="scen-seq">
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--yellow)">Iteration 1</div><div>Agent writes draft. Self-evaluation: "This could be better." Rewrites.</div></div>
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Iter 10-60</div><div>Same loop. The agent has no stopping condition for "good enough." Every draft triggers another rewrite.</div></div>
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Result</div><div>60 iterations, $30 spent, no final output delivered. Underlying cause: vague success criteria in the system prompt.</div></div>
         </div>
-        <div class="scen-fix">âœ“ Fix: (1) Max iterations circuit breaker (e.g., 10 max). (2) Explicit success criteria in system prompt: "A report is complete when it has an executive summary, 3 data points, and a recommendation â€” not when it is 'perfect'." (3) Output validation to force the final answer after N iterations.</div>
+        <div class="scen-fix">✓ Fix: (1) Max iterations circuit breaker (e.g., 10 max). (2) Explicit success criteria in system prompt: "A report is complete when it has an executive summary, 3 data points, and a recommendation — not when it is 'perfect'." (3) Output validation to force the final answer after N iterations.</div>
       </div>
     </div>
 
     <div class="scenario-panel" id="s3">
       <div class="scen-card">
-        <div class="scen-title">ðŸ’¥ The Silent Pipeline Break</div>
+        <div class="scen-title">💥 The Silent Pipeline Break</div>
         <div class="scen-setup">An agent's output feeds into a downstream database. After a system prompt update, the agent starts returning valid-looking but schema-mismatched JSON. The database silently drops every record for 3 days before anyone notices.</div>
         <div class="scen-seq">
-          <div class="scen-step fail"><div class="scen-step-label" style="color:var(--yellow)">Day 1</div><div>System prompt updated: "be more concise." Agent now omits the 'metadata' field from its JSON output. Returns valid JSON â€” just missing a required key.</div></div>
-          <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Days 1-3</div><div>Database insert silently fails. No error thrown â€” the DB treats missing optional-looking fields as null. 0 records written. No alert.</div></div>
+          <div class="scen-step fail"><div class="scen-step-label" style="color:var(--yellow)">Day 1</div><div>System prompt updated: "be more concise." Agent now omits the 'metadata' field from its JSON output. Returns valid JSON — just missing a required key.</div></div>
+          <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Days 1-3</div><div>Database insert silently fails. No error thrown — the DB treats missing optional-looking fields as null. 0 records written. No alert.</div></div>
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Day 4</div><div>Downstream report shows empty data. Panic. 3 days of agent work: lost.</div></div>
         </div>
-        <div class="scen-fix">âœ“ Fix: (1) Pydantic model validates EVERY agent output before it touches the database. (2) Golden test set run on every prompt change â€” schema compliance is one of the test cases. (3) Explicit JSON schema in system prompt with field definitions.</div>
+        <div class="scen-fix">✓ Fix: (1) Pydantic model validates EVERY agent output before it touches the database. (2) Golden test set run on every prompt change — schema compliance is one of the test cases. (3) Explicit JSON schema in system prompt with field definitions.</div>
       </div>
     </div>
 
     <div class="scenario-panel" id="s4">
       <div class="scen-card">
-        <div class="scen-title">ðŸŽ­ The Context Drift Agent</div>
+        <div class="scen-title">🎭 The Context Drift Agent</div>
         <div class="scen-setup">A multi-turn agent assistant starts brilliant but by turn 50, gives completely off-topic responses, ignoring its defined persona and constraints entirely.</div>
         <div class="scen-seq">
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--yellow)">Turns 1-20</div><div>Agent works as intended: follows its system prompt, uses correct tools, stays on topic.</div></div>
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Turn 30+</div><div>Long tool call results and conversation history have pushed the system prompt towards the back of the context window. The LLM starts attending less to it.</div></div>
           <div class="scen-step fail"><div class="scen-step-label" style="color:var(--red)">Turn 50</div><div>System prompt effectively truncated. Agent loses its persona, ignores constraints, gives generic responses. Users complain.</div></div>
         </div>
-        <div class="scen-fix">âœ“ Fix: (1) Context compression: summarise turns 1-N when context hits 70% capacity. (2) Re-inject system prompt every 20 turns explicitly. (3) MemGPT-style paging: move older context to Episodic/Semantic memory, keep working memory focused on recent turns + system prompt.</div>
+        <div class="scen-fix">✓ Fix: (1) Context compression: summarise turns 1-N when context hits 70% capacity. (2) Re-inject system prompt every 20 turns explicitly. (3) MemGPT-style paging: move older context to Episodic/Semantic memory, keep working memory focused on recent turns + system prompt.</div>
       </div>
     </div>
   </div>
@@ -253,12 +254,12 @@
   <!-- TAKEAWAY -->
   <div class="section">
     <div class="section-title">Key Takeaway</div>
-    <div class="takeaway">The demo-to-production gap isn't an engineering inconvenience â€” it's <strong>the defining challenge of agentic AI deployment</strong>. Every item on the production checklist exists because a real team suffered a real failure. Circuit breakers, golden tests, distributed tracing, and prompt version control are not optional extras â€” they are the production system. <strong>Build them first, not after your first incident.</strong></div>
+    <div class="takeaway">The demo-to-production gap isn't an engineering inconvenience — it's <strong>the defining challenge of agentic AI deployment</strong>. Every item on the production checklist exists because a real team suffered a real failure. Circuit breakers, golden tests, distributed tracing, and prompt version control are not optional extras — they are the production system. <strong>Build them first, not after your first incident.</strong></div>
   </div>
 
   <!-- QUIZ -->
   <div class="section">
-    <div class="section-title">Knowledge Check â€” 5 Questions</div>
+    <div class="section-title">Knowledge Check — 5 Questions</div>
     <div class="quiz-set">
 
       <div class="quiz-box">
@@ -266,7 +267,7 @@
         <div class="quiz-q">A team's agent demo works perfectly on 10 manually curated test cases. Their manager says "ship it." What is the MOST important missing validation before deployment?</div>
         <div class="quiz-options">
           <button class="quiz-option" onclick="qa(this,false,'q1')">A better UI so users can interact with the agent more easily</button>
-          <button class="quiz-option" onclick="qa(this,true,'q1')">A golden test set of 50â€“200 diverse cases including edge cases, malformed inputs, and adversarial prompts â€” run on every deployment</button>
+          <button class="quiz-option" onclick="qa(this,true,'q1')">A golden test set of 50–200 diverse cases including edge cases, malformed inputs, and adversarial prompts — run on every deployment</button>
           <button class="quiz-option" onclick="qa(this,false,'q1')">A more powerful LLM model to handle edge cases better</button>
           <button class="quiz-option" onclick="qa(this,false,'q1')">More logging to understand what the agent is doing</button>
         </div>
@@ -280,7 +281,7 @@
         <div class="quiz-options">
           <button class="quiz-option" onclick="qa(this,false,'q2')">Because Git is the only tool that supports text files</button>
           <button class="quiz-option" onclick="qa(this,false,'q2')">Because system prompts are too long to remember</button>
-          <button class="quiz-option" onclick="qa(this,true,'q2')">A system prompt change is a code change â€” it alters agent behaviour across all tasks. Without version control you can't roll back regressions, audit what changed, or run regression tests before deployment</button>
+          <button class="quiz-option" onclick="qa(this,true,'q2')">A system prompt change is a code change — it alters agent behaviour across all tasks. Without version control you can't roll back regressions, audit what changed, or run regression tests before deployment</button>
           <button class="quiz-option" onclick="qa(this,false,'q2')">Because the LLM API requires versioned prompts</button>
         </div>
         <div class="quiz-feedback" id="fb-q2"></div>
@@ -291,10 +292,10 @@
         <div class="quiz-num">Question 3 of 5</div>
         <div class="quiz-q">An agent processes financial transactions. Every action is irreversible. Which production requirement is most critical specifically for this use case?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="qa(this,false,'q3')">Prompt caching â€” to reduce the cost of each transaction</button>
-          <button class="quiz-option" onclick="qa(this,true,'q3')">Human-in-the-Loop (HITL) â€” high-stakes, irreversible actions must pause for signed human approval before execution</button>
-          <button class="quiz-option" onclick="qa(this,false,'q3')">Distributed tracing â€” so you can see what the agent did after it fails</button>
-          <button class="quiz-option" onclick="qa(this,false,'q3')">A golden test set â€” to validate transaction logic beforehand</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">Prompt caching — to reduce the cost of each transaction</button>
+          <button class="quiz-option" onclick="qa(this,true,'q3')">Human-in-the-Loop (HITL) — high-stakes, irreversible actions must pause for signed human approval before execution</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">Distributed tracing — so you can see what the agent did after it fails</button>
+          <button class="quiz-option" onclick="qa(this,false,'q3')">A golden test set — to validate transaction logic beforehand</button>
         </div>
         <div class="quiz-feedback" id="fb-q3"></div>
         <button class="quiz-reset" id="rst-q3" onclick="resetQ('q3')">Try Again</button>
@@ -304,10 +305,10 @@
         <div class="quiz-num">Question 4 of 5</div>
         <div class="quiz-q">After deploying a system prompt update, the agent's task completion rate drops from 87% to 71%. You have no version control. What is your recovery situation?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="qa(this,false,'q4')">Easy â€” restart the agent and it will recover automatically</button>
-          <button class="quiz-option" onclick="qa(this,false,'q4')">Simple â€” roll back the LLM model to the previous version</button>
-          <button class="quiz-option" onclick="qa(this,true,'q4')">Painful â€” you must manually reconstruct the previous prompt from memory or logs, with no guarantee of accuracy or fast rollback</button>
-          <button class="quiz-option" onclick="qa(this,false,'q4')">No problem â€” the golden test set will auto-repair the prompt</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Easy — restart the agent and it will recover automatically</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">Simple — roll back the LLM model to the previous version</button>
+          <button class="quiz-option" onclick="qa(this,true,'q4')">Painful — you must manually reconstruct the previous prompt from memory or logs, with no guarantee of accuracy or fast rollback</button>
+          <button class="quiz-option" onclick="qa(this,false,'q4')">No problem — the golden test set will auto-repair the prompt</button>
         </div>
         <div class="quiz-feedback" id="fb-q4"></div>
         <button class="quiz-reset" id="rst-q4" onclick="resetQ('q4')">Try Again</button>
@@ -317,10 +318,10 @@
         <div class="quiz-num">Question 5 of 5</div>
         <div class="quiz-q">Which of the following is the CORRECT order for a safe production deployment of an updated agent?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="qa(this,false,'q5')">Deploy to 100% â†’ monitor â†’ roll back if needed</button>
-          <button class="quiz-option" onclick="qa(this,false,'q5')">Test locally â†’ deploy to 100% â†’ run golden test set in production</button>
-          <button class="quiz-option" onclick="qa(this,true,'q5')">Run golden test set â†’ shadow mode (5% traffic, old response served) â†’ A/B test (10%) â†’ gradual rollout â†’ full deployment with rollback ready</button>
-          <button class="quiz-option" onclick="qa(this,false,'q5')">Demo to stakeholders â†’ get approval â†’ deploy to production</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Deploy to 100% → monitor → roll back if needed</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Test locally → deploy to 100% → run golden test set in production</button>
+          <button class="quiz-option" onclick="qa(this,true,'q5')">Run golden test set → shadow mode (5% traffic, old response served) → A/B test (10%) → gradual rollout → full deployment with rollback ready</button>
+          <button class="quiz-option" onclick="qa(this,false,'q5')">Demo to stakeholders → get approval → deploy to production</button>
         </div>
         <div class="quiz-feedback" id="fb-q5"></div>
         <button class="quiz-reset" id="rst-q5" onclick="resetQ('q5')">Try Again</button>
@@ -340,7 +341,7 @@
 function toggleCheck(item) {
   item.classList.toggle('checked');
   const box = item.querySelector('.check-box');
-  box.textContent = item.classList.contains('checked') ? 'âœ“' : '';
+  box.textContent = item.classList.contains('checked') ? '✓' : '';
   updateCheckProgress();
 }
 function updateCheckProgress() {
@@ -361,18 +362,18 @@ function showScen(id, btn) {
 // Quiz
 const answers = {};
 const correctFb = {
-  q1:"âœ“ Correct. 10 curated happy-path examples prove nothing about production behaviour. A golden test set of 50â€“200 cases â€” including edge cases, ambiguous inputs, empty responses, and adversarial prompts â€” is what proves the agent is robust. Anything less is wishful thinking.",
-  q2:"âœ“ Exactly. A system prompt is executable specification. Changing 'be concise' to 'be comprehensive' changes agent behaviour across every task â€” that's a code change. Version control means: (1) instant rollback if metrics drop, (2) PR review before deploying changes, (3) regression test on every change.",
-  q3:"âœ“ Correct. HITL is the critical safety net for irreversible high-stakes actions. Tracing helps you understand what went wrong after the fact â€” useless when the damage is already done. HITL prevents the action until a human reviews and signs off. For financial transactions, this is non-negotiable.",
-  q4:"âœ“ Painful is the right word. Without version control you have no fast rollback path. You're reconstructing the previous prompt from memory, Slack history, or notes â€” error-prone and slow. This is why the rule is: treat every system prompt change exactly like a code change. Tag it, review it, test it before merging.",
-  q5:"âœ“ This is the correct canary deployment pipeline. Shadow mode is the safest first step â€” the new agent runs but users still get the old response, so there's zero risk. Only after shadow mode passes do you route real traffic. Gradual rollout with automated rollback triggers at each stage is how you deploy without incidents."
+  q1:"✓ Correct. 10 curated happy-path examples prove nothing about production behaviour. A golden test set of 50–200 cases — including edge cases, ambiguous inputs, empty responses, and adversarial prompts — is what proves the agent is robust. Anything less is wishful thinking.",
+  q2:"✓ Exactly. A system prompt is executable specification. Changing 'be concise' to 'be comprehensive' changes agent behaviour across every task — that's a code change. Version control means: (1) instant rollback if metrics drop, (2) PR review before deploying changes, (3) regression test on every change.",
+  q3:"✓ Correct. HITL is the critical safety net for irreversible high-stakes actions. Tracing helps you understand what went wrong after the fact — useless when the damage is already done. HITL prevents the action until a human reviews and signs off. For financial transactions, this is non-negotiable.",
+  q4:"✓ Painful is the right word. Without version control you have no fast rollback path. You're reconstructing the previous prompt from memory, Slack history, or notes — error-prone and slow. This is why the rule is: treat every system prompt change exactly like a code change. Tag it, review it, test it before merging.",
+  q5:"✓ This is the correct canary deployment pipeline. Shadow mode is the safest first step — the new agent runs but users still get the old response, so there's zero risk. Only after shadow mode passes do you route real traffic. Gradual rollout with automated rollback triggers at each stage is how you deploy without incidents."
 };
 const wrongFb = {
-  q1:"âœ— The UI and the model aren't the gaps here. The demo used 10 curated examples â€” but production brings thousands of real users with messy, edge-case, and unexpected inputs. The golden test set is specifically designed to stress-test the cases the demo never saw.",
-  q2:"âœ— Git works with any text format, but that's not the reason. The core reason is: system prompts determine agent behaviour just like code does. A prompt edit that ships without review, regression testing, or rollback capability is a deployment risk. Prompt changes have broken production agents â€” version control is the safety net.",
-  q3:"âœ— Tracing tells you what went wrong â€” after the irreversible action already happened. Caching and test sets are valuable, but they don't stop a bad transaction from executing. HITL is the pre-action gate: the agent cannot make a financial transaction without a human reviewing and approving it first.",
-  q4:"âœ— The LLM model didn't change, so rolling back the model won't help. The agent can't self-repair its prompt. Without version control, there is no reliable rollback. The correct answer is: this situation is avoidable entirely by treating prompts as code and storing them in Git with semantic versioning.",
-  q5:"âœ— Deploying to 100% first is the riskiest approach â€” if something breaks, everyone is affected simultaneously. The safe pipeline works from 0% risk (shadow mode, no real responses served) to low risk (10% A/B) to full. Each stage uses automated rollback triggers so a regression never reaches 100% of users."
+  q1:"✗ The UI and the model aren't the gaps here. The demo used 10 curated examples — but production brings thousands of real users with messy, edge-case, and unexpected inputs. The golden test set is specifically designed to stress-test the cases the demo never saw.",
+  q2:"✗ Git works with any text format, but that's not the reason. The core reason is: system prompts determine agent behaviour just like code does. A prompt edit that ships without review, regression testing, or rollback capability is a deployment risk. Prompt changes have broken production agents — version control is the safety net.",
+  q3:"✗ Tracing tells you what went wrong — after the irreversible action already happened. Caching and test sets are valuable, but they don't stop a bad transaction from executing. HITL is the pre-action gate: the agent cannot make a financial transaction without a human reviewing and approving it first.",
+  q4:"✗ The LLM model didn't change, so rolling back the model won't help. The agent can't self-repair its prompt. Without version control, there is no reliable rollback. The correct answer is: this situation is avoidable entirely by treating prompts as code and storing them in Git with semantic versioning.",
+  q5:"✗ Deploying to 100% first is the riskiest approach — if something breaks, everyone is affected simultaneously. The safe pipeline works from 0% risk (shadow mode, no real responses served) to low risk (10% A/B) to full. Each stage uses automated rollback triggers so a regression never reaches 100% of users."
 };
 
 function qa(btn, isCorrect, qid) {

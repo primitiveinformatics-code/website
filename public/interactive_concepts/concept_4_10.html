@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.10 â€” Context Engineering: 4 Strategies</title>
+<title>4.10 — Context Engineering: 4 Strategies</title>
 <style>
   :root {
     --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
@@ -89,15 +90,15 @@
 </head>
 <body>
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.10 â€” Context Engineering: 4 Strategies</span>
+  <span class="nav-cur">4.10 — Context Engineering: 4 Strategies</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
-  <h1>Context Engineering â€” 4 Strategies</h1>
-  <p>The art and science of deciding what goes into the LLM's context window â€” and what gets left out</p>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>Context Engineering — 4 Strategies</h1>
+  <p>The art and science of deciding what goes into the LLM's context window — and what gets left out</p>
 </div>
 
 <div class="main">
@@ -105,7 +106,7 @@
   <!-- TOKEN BUDGET VISUALISER -->
   <div class="sec-title">Token Budget Visualiser</div>
   <div class="budget-viz">
-    <div class="budget-title">128K Context Window â€” Interactive Allocation</div>
+    <div class="budget-title">128K Context Window — Interactive Allocation</div>
     <div class="budget-sub">Drag sliders to see how each section competes for the fixed context budget</div>
 
     <div class="window-bar" id="ctx-bar">
@@ -137,7 +138,7 @@
       <span class="slider-val" id="sv-doc">25%</span>
     </div>
 
-    <div style="margin-top:14px;font-size:13px;color:var(--muted)" id="budget-status">âœ… 37% remaining for model output and reasoning</div>
+    <div style="margin-top:14px;font-size:13px;color:var(--muted)" id="budget-status">✅ 37% remaining for model output and reasoning</div>
 
     <div class="legend" style="margin-top:16px">
       <div class="leg-item"><div class="leg-dot" style="background:#6c63ff"></div>System Prompt</div>
@@ -151,28 +152,28 @@
   <!-- 4 STRATEGY TABS -->
   <div class="sec-title">The 4 Context Engineering Strategies</div>
   <div class="strat-tabs">
-    <div class="stab active" data-s="0" onclick="showStrat(0)">â‘  Selective Inclusion</div>
-    <div class="stab" data-s="1" onclick="showStrat(1)">â‘¡ Progressive Disclosure</div>
-    <div class="stab" data-s="2" onclick="showStrat(2)">â‘¢ Compression & Summarisation</div>
-    <div class="stab" data-s="3" onclick="showStrat(3)">â‘£ Dynamic Context Assembly</div>
+    <div class="stab active" data-s="0" onclick="showStrat(0)">① Selective Inclusion</div>
+    <div class="stab" data-s="1" onclick="showStrat(1)">② Progressive Disclosure</div>
+    <div class="stab" data-s="2" onclick="showStrat(2)">③ Compression & Summarisation</div>
+    <div class="stab" data-s="3" onclick="showStrat(3)">④ Dynamic Context Assembly</div>
   </div>
 
   <div class="strat-panel visible" data-p="0">
     <div class="strat-header">
-      <div class="strat-icon">ðŸŽ¯</div>
+      <div class="strat-icon">🎯</div>
       <div>
         <div class="strat-name" style="color:#6c63ff">Selective Inclusion</div>
-        <div class="strat-tagline">Only include what the current task actually needs â€” nothing else</div>
+        <div class="strat-tagline">Only include what the current task actually needs — nothing else</div>
       </div>
     </div>
     <div class="strat-grid">
       <div class="strat-box">
         <div class="strat-box-label">The Problem</div>
-        <div class="strat-box-val">Naively including all available context (all tools, full history, all docs) wastes tokens and degrades model attention. "Lost in the middle" effect â€” models focus on start/end.</div>
+        <div class="strat-box-val">Naively including all available context (all tools, full history, all docs) wastes tokens and degrades model attention. "Lost in the middle" effect — models focus on start/end.</div>
       </div>
       <div class="strat-box">
         <div class="strat-box-label">The Solution</div>
-        <div class="strat-box-val">Filter at runtime â€” include only tools relevant to current task, only the last N relevant messages, only the most similar retrieved chunks. Relevance > completeness.</div>
+        <div class="strat-box-val">Filter at runtime — include only tools relevant to current task, only the last N relevant messages, only the most similar retrieved chunks. Relevance > completeness.</div>
       </div>
       <div class="strat-box">
         <div class="strat-box-label">When to Use</div>
@@ -197,10 +198,10 @@ context = build_context(
 
   <div class="strat-panel" data-p="1">
     <div class="strat-header">
-      <div class="strat-icon">ðŸ“Š</div>
+      <div class="strat-icon">📊</div>
       <div>
         <div class="strat-name" style="color:#00d2ff">Progressive Disclosure</div>
-        <div class="strat-tagline">Start minimal â€” add context only as the task evolves and more is needed</div>
+        <div class="strat-tagline">Start minimal — add context only as the task evolves and more is needed</div>
       </div>
     </div>
     <div class="strat-grid">
@@ -214,11 +215,11 @@ context = build_context(
       </div>
       <div class="strat-box">
         <div class="strat-box-label">Example Flow</div>
-        <div class="strat-box-val">Turn 1: query only â†’ Turn 2: + tool result â†’ Turn 3: + retrieved doc â†’ Turn 4: answer. Each turn adds only what's needed.</div>
+        <div class="strat-box-val">Turn 1: query only → Turn 2: + tool result → Turn 3: + retrieved doc → Turn 4: answer. Each turn adds only what's needed.</div>
       </div>
       <div class="strat-box">
         <div class="strat-box-label">Trade-off</div>
-        <div class="strat-box-val">âœ… Optimal token use for short tasks | âš ï¸ More complex orchestration logic required</div>
+        <div class="strat-box-val">✅ Optimal token use for short tasks | ⚠️ More complex orchestration logic required</div>
       </div>
     </div>
     <div class="code-snippet">
@@ -237,16 +238,16 @@ context = [system_prompt, user_query]      <span class="cm"># Layer 1: minimal</
 
   <div class="strat-panel" data-p="2">
     <div class="strat-header">
-      <div class="strat-icon">ðŸ—œ</div>
+      <div class="strat-icon">🗜</div>
       <div>
         <div class="strat-name" style="color:#06d6a0">Compression & Summarisation</div>
-        <div class="strat-tagline">Reduce old context to summaries â€” preserve meaning, free up tokens</div>
+        <div class="strat-tagline">Reduce old context to summaries — preserve meaning, free up tokens</div>
       </div>
     </div>
     <div class="strat-grid">
       <div class="strat-box">
         <div class="strat-box-label">The Problem</div>
-        <div class="strat-box-val">Long-running agents accumulate history. After 20+ turns, raw conversation history can consume 40â€“60% of the context window with diminishing returns.</div>
+        <div class="strat-box-val">Long-running agents accumulate history. After 20+ turns, raw conversation history can consume 40–60% of the context window with diminishing returns.</div>
       </div>
       <div class="strat-box">
         <div class="strat-box-label">The Solution</div>
@@ -258,7 +259,7 @@ context = [system_prompt, user_query]      <span class="cm"># Layer 1: minimal</
       </div>
       <div class="strat-box">
         <div class="strat-box-label">Compression Ratio</div>
-        <div class="strat-box-val">Typical: 10:1 to 20:1 â€” a 2000-token conversation summarised to 100â€“200 tokens with 85â€“90% key-fact retention.</div>
+        <div class="strat-box-val">Typical: 10:1 to 20:1 — a 2000-token conversation summarised to 100–200 tokens with 85–90% key-fact retention.</div>
       </div>
     </div>
     <div class="code-snippet">
@@ -273,7 +274,7 @@ context = [system_prompt, user_query]      <span class="cm"># Layer 1: minimal</
 
   <div class="strat-panel" data-p="3">
     <div class="strat-header">
-      <div class="strat-icon">âš¡</div>
+      <div class="strat-icon">⚡</div>
       <div>
         <div class="strat-name" style="color:#ff6584">Dynamic Context Assembly</div>
         <div class="strat-tagline">Build the context window at runtime based on task type, user intent, and available budget</div>
@@ -286,11 +287,11 @@ context = [system_prompt, user_query]      <span class="cm"># Layer 1: minimal</
       </div>
       <div class="strat-box">
         <div class="strat-box-label">Budget Allocation Logic</div>
-        <div class="strat-box-val">Code task â†’ more tool defs, less history. Research task â†’ more RAG docs. Conversational â†’ more history, fewer tools. Each task profile has a different allocation template.</div>
+        <div class="strat-box-val">Code task → more tool defs, less history. Research task → more RAG docs. Conversational → more history, fewer tools. Each task profile has a different allocation template.</div>
       </div>
       <div class="strat-box">
         <div class="strat-box-label">Components</div>
-        <div class="strat-box-val">Task classifier â†’ Component selector â†’ Token budget allocator â†’ Priority sorter â†’ Context builder â†’ Final assembly.</div>
+        <div class="strat-box-val">Task classifier → Component selector → Token budget allocator → Priority sorter → Context builder → Final assembly.</div>
       </div>
       <div class="strat-box">
         <div class="strat-box-label">Production Benefit</div>
@@ -318,27 +319,27 @@ context = ContextAssembler(budget, profile).build(
     <div class="dec-card">
       <div class="dec-q">You have 20+ tools registered</div>
       <div class="dec-a">Most tools are irrelevant for most queries. Including all wastes ~15% of context and degrades attention.</div>
-      <div class="dec-rec" style="background:rgba(108,99,255,0.15);color:#6c63ff">â†’ Use Selective Inclusion</div>
+      <div class="dec-rec" style="background:rgba(108,99,255,0.15);color:#6c63ff">→ Use Selective Inclusion</div>
     </div>
     <div class="dec-card">
       <div class="dec-q">Agent runs 10+ turn conversations</div>
       <div class="dec-a">History grows linearly. After turn 15, raw history dominates the window.</div>
-      <div class="dec-rec" style="background:rgba(6,214,160,0.15);color:#06d6a0">â†’ Use Compression</div>
+      <div class="dec-rec" style="background:rgba(6,214,160,0.15);color:#06d6a0">→ Use Compression</div>
     </div>
     <div class="dec-card">
-      <div class="dec-q">Most queries resolve in 1â€“2 turns</div>
+      <div class="dec-q">Most queries resolve in 1–2 turns</div>
       <div class="dec-a">No need to front-load all context. Start minimal and expand only if needed.</div>
-      <div class="dec-rec" style="background:rgba(0,210,255,0.15);color:#00d2ff">â†’ Use Progressive Disclosure</div>
+      <div class="dec-rec" style="background:rgba(0,210,255,0.15);color:#00d2ff">→ Use Progressive Disclosure</div>
     </div>
     <div class="dec-card">
       <div class="dec-q">Agent serves diverse task types</div>
       <div class="dec-a">Research vs. code vs. chat need very different context profiles. One template won't fit all.</div>
-      <div class="dec-rec" style="background:rgba(255,101,132,0.15);color:#ff6584">â†’ Use Dynamic Assembly</div>
+      <div class="dec-rec" style="background:rgba(255,101,132,0.15);color:#ff6584">→ Use Dynamic Assembly</div>
     </div>
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
@@ -366,13 +367,13 @@ function updateBudget() {
   const status = document.getElementById('budget-status');
   if (free < 10) {
     status.style.color = '#ff6584';
-    status.textContent = 'âš ï¸ Only ' + free + '% remaining â€” model output will be severely constrained!';
+    status.textContent = '⚠️ Only ' + free + '% remaining — model output will be severely constrained!';
   } else if (free < 20) {
     status.style.color = '#ffd166';
-    status.textContent = 'âš ï¸ ' + free + '% remaining â€” tight budget, consider compression.';
+    status.textContent = '⚠️ ' + free + '% remaining — tight budget, consider compression.';
   } else {
     status.style.color = '#06d6a0';
-    status.textContent = 'âœ… ' + free + '% remaining for model output and reasoning';
+    status.textContent = '✅ ' + free + '% remaining for model output and reasoning';
   }
 }
 

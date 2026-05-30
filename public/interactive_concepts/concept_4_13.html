@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.13 â€” Advanced RAG: 4 Power Techniques</title>
+<title>4.13 — Advanced RAG: 4 Power Techniques</title>
 <style>
   :root {
     --bg:#0f1117; --card:#21263a; --accent:#06d6a0;
@@ -84,15 +85,15 @@
 </head>
 <body>
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.13 â€” Advanced RAG: 4 Power Techniques</span>
+  <span class="nav-cur">4.13 — Advanced RAG: 4 Power Techniques</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
-  <h1>Advanced RAG â€” 4 Power Techniques</h1>
-  <p>Query rewriting, re-ranking, HyDE, and RAPTOR â€” techniques that transform retrieval accuracy at production scale</p>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>Advanced RAG — 4 Power Techniques</h1>
+  <p>Query rewriting, re-ranking, HyDE, and RAPTOR — techniques that transform retrieval accuracy at production scale</p>
   <div class="hero-stats">
     <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">Techniques</div></div>
     <div class="hstat"><div class="hstat-n">+35%</div><div class="hstat-l">Precision (Re-rank)</div></div>
@@ -109,7 +110,7 @@
     <div class="tech-card t0" onclick="toggleTech(0)">
       <div class="tech-top">
         <div class="tech-num">01</div>
-        <div class="tech-icon">ðŸ”„</div>
+        <div class="tech-icon">🔄</div>
         <div class="tech-name">Query Rewriting</div>
         <div class="tech-one">Transform the user's raw query into retrieval-optimised forms before hitting the index</div>
         <span class="tech-tag" style="background:rgba(108,99,255,0.15);color:#6c63ff">Pre-Retrieval</span>
@@ -117,7 +118,7 @@
       <div class="tech-detail">
         <div class="detail-row">
           <div class="dbox"><div class="dbox-label">The Problem</div><div class="dbox-val">User queries are conversational and ambiguous. "What about the pricing?" is meaningless to a vector search without conversation context.</div></div>
-          <div class="dbox"><div class="dbox-label">Techniques</div><div class="dbox-val"><strong>Step-back prompting:</strong> abstract to general principle. <strong>Multi-query:</strong> generate 3â€“5 query variations. <strong>HyDE:</strong> generate hypothetical answer (see card 3). <strong>Query decomposition:</strong> split complex queries.</div></div>
+          <div class="dbox"><div class="dbox-label">Techniques</div><div class="dbox-val"><strong>Step-back prompting:</strong> abstract to general principle. <strong>Multi-query:</strong> generate 3–5 query variations. <strong>HyDE:</strong> generate hypothetical answer (see card 3). <strong>Query decomposition:</strong> split complex queries.</div></div>
           <div class="dbox"><div class="dbox-label">Example Rewrite</div><div class="dbox-val"><em>Original:</em> "What about the pricing?"<br><em>Rewritten:</em> "What is the pricing model and cost structure for [product] based on our conversation context?"</div></div>
           <div class="dbox"><div class="dbox-label">When to Apply</div><div class="dbox-val">Multi-turn conversations. Queries with pronouns. Complex multi-hop questions. Vague or ambiguous user intent.</div></div>
         </div>
@@ -125,19 +126,19 @@
           <div class="pv-label">Pipeline</div>
           <div class="pv-steps">
             <span class="pv-step" style="background:rgba(108,99,255,0.2);color:#6c63ff">Raw Query</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(108,99,255,0.3);color:#6c63ff">LLM Rewrite</span>
-            <span class="pv-arr">â†’</span>
-            <span class="pv-step" style="background:rgba(108,99,255,0.2);color:#6c63ff">3â€“5 Queries</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
+            <span class="pv-step" style="background:rgba(108,99,255,0.2);color:#6c63ff">3–5 Queries</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(108,99,255,0.4);color:#6c63ff">Parallel Retrieve</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(6,214,160,0.2);color:#06d6a0">Deduplicate & Merge</span>
           </div>
         </div>
         <div class="boost-meter">
           <div class="bm-label">Recall boost over raw query retrieval</div>
-          <div class="bm-bar"><div class="bm-fill" style="width:45%;background:linear-gradient(90deg,#6c63ff,#00d2ff)">+30â€“45%</div></div>
+          <div class="bm-bar"><div class="bm-fill" style="width:45%;background:linear-gradient(90deg,#6c63ff,#00d2ff)">+30–45%</div></div>
         </div>
       </div>
     </div>
@@ -145,33 +146,33 @@
     <div class="tech-card t1" onclick="toggleTech(1)">
       <div class="tech-top">
         <div class="tech-num">02</div>
-        <div class="tech-icon">ðŸ†</div>
+        <div class="tech-icon">🏆</div>
         <div class="tech-name">Cross-Encoder Re-Ranking</div>
         <div class="tech-one">Re-score the top-K candidates with a more powerful relevance model before sending to LLM</div>
         <span class="tech-tag" style="background:rgba(255,209,102,0.15);color:#ffd166">Post-Retrieval</span>
       </div>
       <div class="tech-detail">
         <div class="detail-row">
-          <div class="dbox"><div class="dbox-label">The Problem</div><div class="dbox-val">Bi-encoder embeddings (dense retrieval) retrieve by semantic similarity but can miss nuanced relevance. A chunk about "ML training" might score highly for "how do I train my dog" â€” same semantic space.</div></div>
+          <div class="dbox"><div class="dbox-label">The Problem</div><div class="dbox-val">Bi-encoder embeddings (dense retrieval) retrieve by semantic similarity but can miss nuanced relevance. A chunk about "ML training" might score highly for "how do I train my dog" — same semantic space.</div></div>
           <div class="dbox"><div class="dbox-label">How It Works</div><div class="dbox-val">Retrieve top-50 candidates cheaply (bi-encoder). Then pass each (query, chunk) pair to a cross-encoder that scores <em>joint</em> relevance. Re-rank by cross-encoder score. Send top-5 to LLM.</div></div>
-          <div class="dbox"><div class="dbox-label">Bi-encoder vs Cross-encoder</div><div class="dbox-val"><strong>Bi-encoder:</strong> embed independently, fast (ANN search). <strong>Cross-encoder:</strong> jointly processes query+doc, 10â€“100Ã— slower but much more accurate. Use both in sequence (coarse-to-fine).</div></div>
+          <div class="dbox"><div class="dbox-label">Bi-encoder vs Cross-encoder</div><div class="dbox-val"><strong>Bi-encoder:</strong> embed independently, fast (ANN search). <strong>Cross-encoder:</strong> jointly processes query+doc, 10–100× slower but much more accurate. Use both in sequence (coarse-to-fine).</div></div>
           <div class="dbox"><div class="dbox-label">Tools</div><div class="dbox-val">Cohere Rerank API, BGE Reranker, ms-marco-MiniLM, FlashRank (local, free). Most cost &lt;$0.001 per 100 docs.</div></div>
         </div>
         <div class="pipeline-vis">
           <div class="pv-label">Coarse-to-Fine Pipeline</div>
           <div class="pv-steps">
             <span class="pv-step" style="background:rgba(255,209,102,0.2);color:#ffd166">Query</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(255,209,102,0.2);color:#ffd166">ANN Search (top-50)</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(255,209,102,0.4);color:#ffd166">Cross-Encoder (top-50)</span>
-            <span class="pv-arr">â†’</span>
-            <span class="pv-step" style="background:rgba(6,214,160,0.2);color:#06d6a0">Re-ranked top-5 â†’ LLM</span>
+            <span class="pv-arr">→</span>
+            <span class="pv-step" style="background:rgba(6,214,160,0.2);color:#06d6a0">Re-ranked top-5 → LLM</span>
           </div>
         </div>
         <div class="boost-meter">
           <div class="bm-label">Precision boost (NDCG@5) vs bi-encoder only</div>
-          <div class="bm-bar"><div class="bm-fill" style="width:35%;background:linear-gradient(90deg,#ffd166,#ff6584)">+25â€“35%</div></div>
+          <div class="bm-bar"><div class="bm-fill" style="width:35%;background:linear-gradient(90deg,#ffd166,#ff6584)">+25–35%</div></div>
         </div>
       </div>
     </div>
@@ -179,9 +180,9 @@
     <div class="tech-card t2" onclick="toggleTech(2)">
       <div class="tech-top">
         <div class="tech-num">03</div>
-        <div class="tech-icon">ðŸŒŒ</div>
-        <div class="tech-name">HyDE â€” Hypothetical Document Embedding</div>
-        <div class="tech-one">Generate a hypothetical answer first â€” then use that answer as the query embedding</div>
+        <div class="tech-icon">🌌</div>
+        <div class="tech-name">HyDE — Hypothetical Document Embedding</div>
+        <div class="tech-one">Generate a hypothetical answer first — then use that answer as the query embedding</div>
         <span class="tech-tag" style="background:rgba(255,101,132,0.15);color:#ff6584">Query Transformation</span>
       </div>
       <div class="tech-detail">
@@ -189,23 +190,23 @@
           <div class="dbox"><div class="dbox-label">The Key Insight</div><div class="dbox-val">The embedding space of a <em>question</em> is different from the embedding space of an <em>answer</em>. Documents in the index look like answers. Embedding a hypothetical answer bridges this gap.</div></div>
           <div class="dbox"><div class="dbox-label">How It Works</div><div class="dbox-val">1. User asks Q. 2. LLM generates a plausible (but possibly hallucinated) answer. 3. Embed the <em>hypothetical answer</em>. 4. Search the index with this answer-shaped embedding. 5. Real docs cluster near hypothetical answer.</div></div>
           <div class="dbox"><div class="dbox-label">When It Shines</div><div class="dbox-val">Questions where the answer vocabulary differs from the query vocabulary. Complex technical questions. Queries that produce short documents but the answer is in a long paragraph.</div></div>
-          <div class="dbox"><div class="dbox-label">Trade-off</div><div class="dbox-val">âœ… +40â€“60% recall on complex questions<br>âš ï¸ Extra LLM call (cost + latency). Hallucinated hypothesis can lead retrieval astray for factual questions.</div></div>
+          <div class="dbox"><div class="dbox-label">Trade-off</div><div class="dbox-val">✅ +40–60% recall on complex questions<br>⚠️ Extra LLM call (cost + latency). Hallucinated hypothesis can lead retrieval astray for factual questions.</div></div>
         </div>
         <div class="pipeline-vis">
           <div class="pv-label">HyDE Flow</div>
           <div class="pv-steps">
             <span class="pv-step" style="background:rgba(255,101,132,0.2);color:#ff6584">Q: "How does X work?"</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(255,101,132,0.4);color:#ff6584">LLM: generate hypothetical answer</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(255,101,132,0.2);color:#ff6584">Embed(hypothetical)</span>
-            <span class="pv-arr">â†’</span>
+            <span class="pv-arr">→</span>
             <span class="pv-step" style="background:rgba(6,214,160,0.2);color:#06d6a0">Retrieve real docs</span>
           </div>
         </div>
         <div class="boost-meter">
           <div class="bm-label">Recall improvement on knowledge-intensive QA</div>
-          <div class="bm-bar"><div class="bm-fill" style="width:50%;background:linear-gradient(90deg,#ff6584,#ffd166)">+40â€“60%</div></div>
+          <div class="bm-bar"><div class="bm-fill" style="width:50%;background:linear-gradient(90deg,#ff6584,#ffd166)">+40–60%</div></div>
         </div>
       </div>
     </div>
@@ -213,33 +214,33 @@
     <div class="tech-card t3" onclick="toggleTech(3)">
       <div class="tech-top">
         <div class="tech-num">04</div>
-        <div class="tech-icon">ðŸŒ³</div>
-        <div class="tech-name">RAPTOR â€” Recursive Abstraction</div>
-        <div class="tech-one">Build a tree of cluster summaries â€” retrieve from any level, matching query abstraction level</div>
+        <div class="tech-icon">🌳</div>
+        <div class="tech-name">RAPTOR — Recursive Abstraction</div>
+        <div class="tech-one">Build a tree of cluster summaries — retrieve from any level, matching query abstraction level</div>
         <span class="tech-tag" style="background:rgba(0,210,255,0.15);color:#00d2ff">Indexing Architecture</span>
       </div>
       <div class="tech-detail">
         <div class="detail-row">
           <div class="dbox"><div class="dbox-label">The Problem It Solves</div><div class="dbox-val">Chunked RAG retrieves isolated fragments. For "summarise the main themes of this 100-page report", no single chunk has the answer. Need document-level and section-level summaries, not just chunk-level.</div></div>
-          <div class="dbox"><div class="dbox-label">How RAPTOR Works</div><div class="dbox-val">1. Chunk documents. 2. Cluster similar chunks (UMAP + GMM). 3. Summarise each cluster â†’ higher-level nodes. 4. Repeat recursively â†’ tree. 5. Index ALL levels. 6. At query time, retrieve from the most appropriate level.</div></div>
-          <div class="dbox"><div class="dbox-label">Multi-Level Retrieval</div><div class="dbox-val"><strong>High abstraction query</strong> (themes, summary) â†’ retrieves from top-level cluster summaries.<br><strong>Specific query</strong> (exact detail) â†’ retrieves from leaf-level chunks.<br>Routing is automatic via embedding similarity.</div></div>
-          <div class="dbox"><div class="dbox-label">Trade-off</div><div class="dbox-val">âœ… Handles multi-granularity queries. Best for large, complex documents.<br>âš ï¸ Expensive to build index (clustering + LLM summarization per level). 3â€“5Ã— indexing cost.</div></div>
+          <div class="dbox"><div class="dbox-label">How RAPTOR Works</div><div class="dbox-val">1. Chunk documents. 2. Cluster similar chunks (UMAP + GMM). 3. Summarise each cluster → higher-level nodes. 4. Repeat recursively → tree. 5. Index ALL levels. 6. At query time, retrieve from the most appropriate level.</div></div>
+          <div class="dbox"><div class="dbox-label">Multi-Level Retrieval</div><div class="dbox-val"><strong>High abstraction query</strong> (themes, summary) → retrieves from top-level cluster summaries.<br><strong>Specific query</strong> (exact detail) → retrieves from leaf-level chunks.<br>Routing is automatic via embedding similarity.</div></div>
+          <div class="dbox"><div class="dbox-label">Trade-off</div><div class="dbox-val">✅ Handles multi-granularity queries. Best for large, complex documents.<br>⚠️ Expensive to build index (clustering + LLM summarization per level). 3–5× indexing cost.</div></div>
         </div>
         <div class="pipeline-vis">
           <div class="pv-label">RAPTOR Tree Structure</div>
           <div class="pv-steps">
             <span class="pv-step" style="background:rgba(0,210,255,0.3);color:#00d2ff">Whole-doc summary (root)</span>
-            <span class="pv-arr">â†“</span>
+            <span class="pv-arr">↓</span>
             <span class="pv-step" style="background:rgba(0,210,255,0.2);color:#00d2ff">Cluster summaries</span>
-            <span class="pv-arr">â†“</span>
+            <span class="pv-arr">↓</span>
             <span class="pv-step" style="background:rgba(0,210,255,0.15);color:#00d2ff">Section summaries</span>
-            <span class="pv-arr">â†“</span>
+            <span class="pv-arr">↓</span>
             <span class="pv-step" style="background:rgba(255,255,255,0.08);color:var(--muted)">Raw chunks (leaves)</span>
           </div>
         </div>
         <div class="boost-meter">
           <div class="bm-label">Improvement on multi-document summarisation tasks</div>
-          <div class="bm-bar"><div class="bm-fill" style="width:55%;background:linear-gradient(90deg,#00d2ff,#06d6a0)">+40â€“55%</div></div>
+          <div class="bm-bar"><div class="bm-fill" style="width:55%;background:linear-gradient(90deg,#00d2ff,#06d6a0)">+40–55%</div></div>
         </div>
       </div>
     </div>
@@ -249,24 +250,24 @@
   <!-- PRODUCTION PIPELINE BUILDER -->
   <div class="sec-title">Production Pipeline Builder</div>
   <div class="pipeline-builder">
-    <div class="pb-title">ðŸ”¨ Build Your RAG Pipeline</div>
-    <div class="pb-sub">Toggle techniques on/off â€” see the expected quality improvement and pipeline complexity</div>
+    <div class="pb-title">🔨 Build Your RAG Pipeline</div>
+    <div class="pb-sub">Toggle techniques on/off — see the expected quality improvement and pipeline complexity</div>
     <div class="toggle-row">
       <div class="toggle-item on" onclick="togglePipe(0, this)">
         <input type="checkbox" id="cb0" checked onchange="">
-        <label for="cb0">ðŸ”„ Query Rewriting</label>
+        <label for="cb0">🔄 Query Rewriting</label>
       </div>
       <div class="toggle-item on" onclick="togglePipe(1, this)">
         <input type="checkbox" id="cb1" checked onchange="">
-        <label for="cb1">ðŸ† Re-Ranking</label>
+        <label for="cb1">🏆 Re-Ranking</label>
       </div>
       <div class="toggle-item" onclick="togglePipe(2, this)">
         <input type="checkbox" id="cb2" onchange="">
-        <label for="cb2">ðŸŒŒ HyDE</label>
+        <label for="cb2">🌌 HyDE</label>
       </div>
       <div class="toggle-item" onclick="togglePipe(3, this)">
         <input type="checkbox" id="cb3" onchange="">
-        <label for="cb3">ðŸŒ³ RAPTOR Index</label>
+        <label for="cb3">🌳 RAPTOR Index</label>
       </div>
     </div>
     <div class="pipeline-output" id="po-output">
@@ -275,7 +276,7 @@
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
@@ -312,20 +313,20 @@ function updatePipelineOutput() {
     <span class="po-box" style="background:rgba(255,255,255,0.08)">User Query</span>`;
 
   // HyDE goes first (pre-retrieval query transform)
-  if (pipeState[2]) chainHtml += `<span class="po-arr">â†’</span><span class="po-box" style="background:rgba(255,101,132,0.2);color:#ff6584">HyDE</span>`;
-  if (pipeState[0]) chainHtml += `<span class="po-arr">â†’</span><span class="po-box" style="background:rgba(108,99,255,0.2);color:#6c63ff">Rewrite</span>`;
-  if (pipeState[3]) chainHtml += `<span class="po-arr">â†’</span><span class="po-box" style="background:rgba(0,210,255,0.2);color:#00d2ff">RAPTOR Retrieve</span>`;
-  else chainHtml += `<span class="po-arr">â†’</span><span class="po-box" style="background:rgba(255,255,255,0.08)">Retrieve</span>`;
-  if (pipeState[1]) chainHtml += `<span class="po-arr">â†’</span><span class="po-box" style="background:rgba(255,209,102,0.2);color:#ffd166">Re-Rank</span>`;
-  chainHtml += `<span class="po-arr">â†’</span><span class="po-box" style="background:rgba(6,214,160,0.2);color:#06d6a0">LLM Answer</span>`;
+  if (pipeState[2]) chainHtml += `<span class="po-arr">→</span><span class="po-box" style="background:rgba(255,101,132,0.2);color:#ff6584">HyDE</span>`;
+  if (pipeState[0]) chainHtml += `<span class="po-arr">→</span><span class="po-box" style="background:rgba(108,99,255,0.2);color:#6c63ff">Rewrite</span>`;
+  if (pipeState[3]) chainHtml += `<span class="po-arr">→</span><span class="po-box" style="background:rgba(0,210,255,0.2);color:#00d2ff">RAPTOR Retrieve</span>`;
+  else chainHtml += `<span class="po-arr">→</span><span class="po-box" style="background:rgba(255,255,255,0.08)">Retrieve</span>`;
+  if (pipeState[1]) chainHtml += `<span class="po-arr">→</span><span class="po-box" style="background:rgba(255,209,102,0.2);color:#ffd166">Re-Rank</span>`;
+  chainHtml += `<span class="po-arr">→</span><span class="po-box" style="background:rgba(6,214,160,0.2);color:#06d6a0">LLM Answer</span>`;
   chainHtml += `</div>`;
 
   const qualityColor = quality >= 85 ? '#06d6a0' : quality >= 70 ? '#ffd166' : '#ff6584';
 
   chainHtml += `<div class="po-score">
     <div class="po-metric"><div class="po-metric-n" style="color:${qualityColor}">${quality}%</div><div class="po-metric-l">Est. Answer Quality</div></div>
-    <div class="po-metric"><div class="po-metric-n" style="color:#ffd166">${latency.toFixed(1)}Ã—</div><div class="po-metric-l">Latency vs Naive</div></div>
-    <div class="po-metric"><div class="po-metric-n" style="color:#ff6584">${cost.toFixed(1)}Ã—</div><div class="po-metric-l">Cost vs Naive</div></div>
+    <div class="po-metric"><div class="po-metric-n" style="color:#ffd166">${latency.toFixed(1)}×</div><div class="po-metric-l">Latency vs Naive</div></div>
+    <div class="po-metric"><div class="po-metric-n" style="color:#ff6584">${cost.toFixed(1)}×</div><div class="po-metric-l">Cost vs Naive</div></div>
     <div class="po-metric"><div class="po-metric-n" style="color:#6c63ff">${active.length + 1}</div><div class="po-metric-l">Pipeline Steps</div></div>
   </div>`;
 

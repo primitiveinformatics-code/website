@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.4 The ReAct Loop â€” Agentic AI</title>
+<title>1.4 The ReAct Loop — Agentic AI</title>
 <style>
   :root {
     --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
@@ -34,7 +35,7 @@
   .section-title { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* â”€â”€ ANIMATED LOOP â”€â”€ */
+  /* ── ANIMATED LOOP ── */
   .loop-container {
     display: flex; flex-direction: column; align-items: center; gap: 0;
     position: relative; padding: 20px 0;
@@ -66,7 +67,7 @@
   .loop-cycle-btn { background: var(--accent); color: white; border: none; padding: 10px 26px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 16px; transition: all .2s; letter-spacing: .5px; }
   .loop-cycle-btn:hover { background: #5a52e0; transform: scale(1.03); }
 
-  /* â”€â”€ WORKED EXAMPLE â”€â”€ */
+  /* ── WORKED EXAMPLE ── */
   .example-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
   .example-nav { display: flex; border-bottom: 1px solid var(--border); overflow-x: auto; }
   .ex-tab { padding: 12px 20px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-right: 1px solid var(--border); color: var(--muted); transition: all .2s; white-space: nowrap; background: none; border-top: none; border-left: none; border-bottom: none; }
@@ -79,14 +80,14 @@
   .ex-content .tool-call { background: rgba(255,209,102,.07); border: 1px solid rgba(255,209,102,.2); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-family: monospace; font-size: 13px; color: var(--yellow); }
   .ex-content .obs-block { background: rgba(0,210,255,.06); border: 1px solid rgba(0,210,255,.2); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-size: 13px; color: var(--obs); }
 
-  /* â”€â”€ STRENGTHS & WEAKNESSES â”€â”€ */
+  /* ── STRENGTHS & WEAKNESSES ── */
   .sw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .sw-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
   .sw-head { font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
   .sw-list { display: flex; flex-direction: column; gap: 10px; }
   .sw-item { font-size: 13px; color: var(--muted); line-height: 1.55; display: flex; gap: 8px; }
 
-  /* â”€â”€ QUIZ â”€â”€ */
+  /* ── QUIZ ── */
   .quiz-set { display: flex; flex-direction: column; gap: 24px; }
   .quiz-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px; }
   .quiz-num { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
@@ -116,26 +117,26 @@
 <body>
 
 <nav>
-  <a href="pre-course.html" class="nav-home">â† All Concepts</a>
+  <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">1.4 The ReAct Loop</span>
   <div class="nav-arrows">
-    <a href="concept_1_3.html" class="nav-btn">â† Agent Anatomy</a>
-    <a href="concept_1_5.html" class="nav-btn">Memory Types â†’</a>
+    <a href="concept_1_3.html" class="nav-btn">← Agent Anatomy</a>
+    <a href="concept_1_5.html" class="nav-btn">Memory Types →</a>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="concept-badge">Session 1 Â· Pre-Course Â· Concept 1.4</div>
+  <div class="concept-badge">Session 1 · Pre-Course · Concept 1.4</div>
   <h1>The ReAct Loop</h1>
-  <p class="hero-lead">ReAct (Reason + Act) is the heartbeat of every agent. It's a continuous cycle â€” not a one-shot call â€” that loops until the goal is reached. Every major agent framework (LangChain, AutoGen, LlamaIndex) implements this pattern at its core.</p>
+  <p class="hero-lead">ReAct (Reason + Act) is the heartbeat of every agent. It's a continuous cycle — not a one-shot call — that loops until the goal is reached. Every major agent framework (LangChain, AutoGen, LlamaIndex) implements this pattern at its core.</p>
 </div>
 
 <div class="content">
 
   <!-- INTERACTIVE LOOP -->
   <div class="section">
-    <div class="section-title">The Loop â€” Click Each Step to Explore</div>
+    <div class="section-title">The Loop — Click Each Step to Explore</div>
     <div class="loop-container">
 
       <div class="loop-step obs active" id="ls-obs" onclick="activateStep('obs')">
@@ -147,12 +148,12 @@
           </div>
         </div>
         <div class="step-body">
-          <div class="step-desc">The agent's first act each loop iteration is to read everything available: the original goal, its reasoning history, and â€” most critically â€” the result returned by the last tool call. Observation grounds the agent in reality before it reasons.</div>
+          <div class="step-desc">The agent's first act each loop iteration is to read everything available: the original goal, its reasoning history, and — most critically — the result returned by the last tool call. Observation grounds the agent in reality before it reasons.</div>
           <div class="step-example">Example: "The web search returned: Apple's current stock price is $189.43, P/E ratio data not in snippet."</div>
         </div>
       </div>
 
-      <div class="loop-arrow">â†“</div>
+      <div class="loop-arrow">↓</div>
 
       <div class="loop-step think" id="ls-think" onclick="activateStep('think')">
         <div class="step-head">
@@ -163,12 +164,12 @@
           </div>
         </div>
         <div class="step-body">
-          <div class="step-desc">This is the LLM's reasoning step â€” also called the "Thought" in many frameworks. The agent explicitly articulates why it's doing what it's about to do. This chain-of-thought reasoning is what allows complex multi-step tasks to stay on track and is essential for debugging.</div>
+          <div class="step-desc">This is the LLM's reasoning step — also called the "Thought" in many frameworks. The agent explicitly articulates why it's doing what it's about to do. This chain-of-thought reasoning is what allows complex multi-step tasks to stay on track and is essential for debugging.</div>
           <div class="step-example">Thought: "I have the price ($189.43) but need EPS to compute P/E. I should search for Apple's trailing twelve-month EPS separately."</div>
         </div>
       </div>
 
-      <div class="loop-arrow">â†“</div>
+      <div class="loop-arrow">↓</div>
 
       <div class="loop-step act" id="ls-act" onclick="activateStep('act')">
         <div class="step-head">
@@ -179,12 +180,12 @@
           </div>
         </div>
         <div class="step-body">
-          <div class="step-desc">The agent emits an action â€” either a structured tool call or, if the goal is achieved, the final answer. Every tool call is a bridge from the agent's reasoning world into the real world. The action must match the tool's expected schema exactly.</div>
+          <div class="step-desc">The agent emits an action — either a structured tool call or, if the goal is achieved, the final answer. Every tool call is a bridge from the agent's reasoning world into the real world. The action must match the tool's expected schema exactly.</div>
           <div class="step-example">Action: <code>search_web("Apple AAPL trailing twelve months EPS 2024")</code></div>
         </div>
       </div>
 
-      <div class="loop-arrow">â†“</div>
+      <div class="loop-arrow">↓</div>
 
       <div class="loop-step eval" id="ls-eval" onclick="activateStep('eval')">
         <div class="step-head">
@@ -200,15 +201,15 @@
         </div>
       </div>
 
-      <div class="loop-arrow">â†“</div>
-      <div class="loop-back-label">ðŸ” Repeat if goal not reached Â· âœ… Return answer if done</div>
-      <button class="loop-cycle-btn" onclick="cycleStep()">â–¶ Auto-Cycle Through Steps</button>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-back-label">🔁 Repeat if goal not reached · ✅ Return answer if done</div>
+      <button class="loop-cycle-btn" onclick="cycleStep()">▶ Auto-Cycle Through Steps</button>
     </div>
   </div>
 
   <!-- WORKED EXAMPLE -->
   <div class="section">
-    <div class="section-title">Worked Example â€” Calculating Apple's P/E Ratio Step by Step</div>
+    <div class="section-title">Worked Example — Calculating Apple's P/E Ratio Step by Step</div>
     <div class="example-box">
       <div class="example-nav">
         <button class="ex-tab active" onclick="showTab('t0',this)">Loop 1</button>
@@ -218,46 +219,46 @@
       </div>
 
       <div class="ex-panel active" id="t0">
-        <div class="ex-step-label" style="color:var(--obs)">ðŸ“¡ Observe</div>
+        <div class="ex-step-label" style="color:var(--obs)">📡 Observe</div>
         <div class="ex-content">Goal: "What is Apple's current P/E ratio?"<br>Initial state: no data yet. Start the first tool call.</div>
-        <div class="ex-step-label" style="color:var(--think);margin-top:16px">ðŸ’­ Think</div>
+        <div class="ex-step-label" style="color:var(--think);margin-top:16px">💭 Think</div>
         <div class="ex-content">To compute P/E ratio I need: (1) current stock price, (2) earnings per share (EPS). I'll get the stock price first.</div>
-        <div class="ex-step-label" style="color:var(--act);margin-top:16px">âš¡ Act</div>
+        <div class="ex-step-label" style="color:var(--act);margin-top:16px">⚡ Act</div>
         <div class="ex-content"><div class="tool-call">get_stock_price(ticker="AAPL")</div></div>
-        <div class="ex-step-label" style="color:var(--eval);margin-top:16px">âœ… Evaluate</div>
+        <div class="ex-step-label" style="color:var(--eval);margin-top:16px">✅ Evaluate</div>
         <div class="ex-content"><div class="obs-block">Result: { "price": 189.43, "currency": "USD" }</div>Got the price. Still need EPS. Continue looping.</div>
       </div>
 
       <div class="ex-panel" id="t1">
-        <div class="ex-step-label" style="color:var(--obs)">ðŸ“¡ Observe</div>
+        <div class="ex-step-label" style="color:var(--obs)">📡 Observe</div>
         <div class="ex-content">I have price = $189.43. Now I need EPS (trailing twelve months).</div>
-        <div class="ex-step-label" style="color:var(--think);margin-top:16px">ðŸ’­ Think</div>
-        <div class="ex-content">EPS is best retrieved from a financial data API, not a web search â€” more reliable and structured. I'll use the fundamentals tool.</div>
-        <div class="ex-step-label" style="color:var(--act);margin-top:16px">âš¡ Act</div>
+        <div class="ex-step-label" style="color:var(--think);margin-top:16px">💭 Think</div>
+        <div class="ex-content">EPS is best retrieved from a financial data API, not a web search — more reliable and structured. I'll use the fundamentals tool.</div>
+        <div class="ex-step-label" style="color:var(--act);margin-top:16px">⚡ Act</div>
         <div class="ex-content"><div class="tool-call">get_stock_fundamentals(ticker="AAPL", metric="eps_ttm")</div></div>
-        <div class="ex-step-label" style="color:var(--eval);margin-top:16px">âœ… Evaluate</div>
+        <div class="ex-step-label" style="color:var(--eval);margin-top:16px">✅ Evaluate</div>
         <div class="ex-content"><div class="obs-block">Result: { "eps_ttm": 6.43, "period": "TTM Q3 2024" }</div>Got EPS. I now have both values needed to compute P/E.</div>
       </div>
 
       <div class="ex-panel" id="t2">
-        <div class="ex-step-label" style="color:var(--obs)">ðŸ“¡ Observe</div>
+        <div class="ex-step-label" style="color:var(--obs)">📡 Observe</div>
         <div class="ex-content">Price = $189.43, EPS = $6.43. I have everything I need.</div>
-        <div class="ex-step-label" style="color:var(--think);margin-top:16px">ðŸ’­ Think</div>
-        <div class="ex-content">P/E = Price / EPS. I should use the calculator tool to be precise rather than computing in the prompt â€” deterministic tools beat LLM arithmetic.</div>
-        <div class="ex-step-label" style="color:var(--act);margin-top:16px">âš¡ Act</div>
+        <div class="ex-step-label" style="color:var(--think);margin-top:16px">💭 Think</div>
+        <div class="ex-content">P/E = Price / EPS. I should use the calculator tool to be precise rather than computing in the prompt — deterministic tools beat LLM arithmetic.</div>
+        <div class="ex-step-label" style="color:var(--act);margin-top:16px">⚡ Act</div>
         <div class="ex-content"><div class="tool-call">calculate(expression="189.43 / 6.43")</div></div>
-        <div class="ex-step-label" style="color:var(--eval);margin-top:16px">âœ… Evaluate</div>
+        <div class="ex-step-label" style="color:var(--eval);margin-top:16px">✅ Evaluate</div>
         <div class="ex-content"><div class="obs-block">Result: 29.46</div>P/E ratio computed. Goal is achieved. Return the final answer.</div>
       </div>
 
       <div class="ex-panel" id="t3">
-        <div class="ex-step-label" style="color:var(--green);font-size:14px">ðŸŽ¯ Final Answer</div>
+        <div class="ex-step-label" style="color:var(--green);font-size:14px">🎯 Final Answer</div>
         <div class="ex-content" style="margin-top:12px;font-size:15px;line-height:1.8;">
           Apple's (AAPL) current P/E ratio is <strong style="color:var(--accent2)">29.46</strong>.<br><br>
-          <span style="color:var(--muted);font-size:13px">Based on: Stock price $189.43 Ã· Trailing twelve-month EPS $6.43 = 29.46 (as of Q3 2024).</span>
+          <span style="color:var(--muted);font-size:13px">Based on: Stock price $189.43 ÷ Trailing twelve-month EPS $6.43 = 29.46 (as of Q3 2024).</span>
         </div>
         <div style="margin-top:20px;background:rgba(6,214,160,.07);border:1px solid rgba(6,214,160,.2);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--green);">
-          âœ“ 3 loop iterations Â· 3 tool calls Â· Goal achieved Â· Final answer grounded in real data
+          ✓ 3 loop iterations · 3 tool calls · Goal achieved · Final answer grounded in real data
         </div>
       </div>
     </div>
@@ -268,21 +269,21 @@
     <div class="section-title">Strengths &amp; Weaknesses of ReAct</div>
     <div class="sw-grid">
       <div class="sw-card">
-        <div class="sw-head" style="color:var(--green)">âœ… Strengths</div>
+        <div class="sw-head" style="color:var(--green)">✅ Strengths</div>
         <div class="sw-list">
-          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">â–¸</span>Highly flexible â€” handles open-ended, unpredictable tasks where the exact steps aren't known upfront</div>
-          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">â–¸</span>Self-correcting â€” each Observation lets the agent recover from wrong tool calls or unexpected results</div>
-          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">â–¸</span>Transparent â€” the Thought trace is a human-readable audit log of agent reasoning</div>
-          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">â–¸</span>Universal â€” used in LangChain, AutoGen, LlamaIndex, and all major frameworks</div>
+          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">▸</span>Highly flexible — handles open-ended, unpredictable tasks where the exact steps aren't known upfront</div>
+          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">▸</span>Self-correcting — each Observation lets the agent recover from wrong tool calls or unexpected results</div>
+          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">▸</span>Transparent — the Thought trace is a human-readable audit log of agent reasoning</div>
+          <div class="sw-item"><span style="color:var(--green);flex-shrink:0">▸</span>Universal — used in LangChain, AutoGen, LlamaIndex, and all major frameworks</div>
         </div>
       </div>
       <div class="sw-card">
-        <div class="sw-head" style="color:var(--red)">âš  Weaknesses</div>
+        <div class="sw-head" style="color:var(--red)">⚠ Weaknesses</div>
         <div class="sw-list">
-          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">â–¸</span>Token-expensive â€” each loop adds tokens; a 20-step task with large contexts can cost 5â€“10Ã— a single call</div>
-          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">â–¸</span>Serial by nature â€” Thinkâ†’Actâ†’Observe is sequential; ReWOO solves this with parallel execution</div>
-          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">â–¸</span>Prone to loops â€” without circuit breakers, an agent can retry forever on a failing tool</div>
-          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">â–¸</span>Can over-plan â€” for simple tasks, multiple ReAct iterations are wasteful; single-shot is better</div>
+          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">▸</span>Token-expensive — each loop adds tokens; a 20-step task with large contexts can cost 5–10× a single call</div>
+          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">▸</span>Serial by nature — Think→Act→Observe is sequential; ReWOO solves this with parallel execution</div>
+          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">▸</span>Prone to loops — without circuit breakers, an agent can retry forever on a failing tool</div>
+          <div class="sw-item"><span style="color:var(--red);flex-shrink:0">▸</span>Can over-plan — for simple tasks, multiple ReAct iterations are wasteful; single-shot is better</div>
         </div>
       </div>
     </div>
@@ -291,22 +292,22 @@
   <!-- TAKEAWAY -->
   <div class="section">
     <div class="section-title">Key Takeaway</div>
-    <div class="takeaway">The ReAct loop is the <strong>fundamental unit of agent execution</strong>. Every framework wraps it differently, but underneath they all run: Observe â†’ Think â†’ Act â†’ Evaluate â†’ Repeat. <strong>When an agent behaves unexpectedly in production, trace back to which step in the ReAct loop broke down</strong> â€” wrong observation, faulty reasoning, bad tool call, or misguided evaluation.</div>
+    <div class="takeaway">The ReAct loop is the <strong>fundamental unit of agent execution</strong>. Every framework wraps it differently, but underneath they all run: Observe → Think → Act → Evaluate → Repeat. <strong>When an agent behaves unexpectedly in production, trace back to which step in the ReAct loop broke down</strong> — wrong observation, faulty reasoning, bad tool call, or misguided evaluation.</div>
   </div>
 
   <!-- QUIZ -->
   <div class="section">
-    <div class="section-title">Knowledge Check â€” 4 Questions</div>
+    <div class="section-title">Knowledge Check — 4 Questions</div>
     <div class="quiz-set">
 
       <div class="quiz-box">
         <div class="quiz-num">Question 1 of 4</div>
         <div class="quiz-q">In the ReAct acronym, what do "Re" and "Act" stand for, and why does that pairing matter?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="qa(this,false,'q1')">Response and Action â€” the model responds to queries and takes actions</button>
-          <button class="quiz-option" onclick="qa(this,true,'q1')">Reasoning and Acting â€” the model explicitly reasons before every action, grounding decisions in current state</button>
-          <button class="quiz-option" onclick="qa(this,false,'q1')">Retrieve and Act â€” the model retrieves context then acts on it</button>
-          <button class="quiz-option" onclick="qa(this,false,'q1')">React and Act â€” the model reacts to inputs with actions</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Response and Action — the model responds to queries and takes actions</button>
+          <button class="quiz-option" onclick="qa(this,true,'q1')">Reasoning and Acting — the model explicitly reasons before every action, grounding decisions in current state</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">Retrieve and Act — the model retrieves context then acts on it</button>
+          <button class="quiz-option" onclick="qa(this,false,'q1')">React and Act — the model reacts to inputs with actions</button>
         </div>
         <div class="quiz-feedback" id="fb-q1"></div>
         <button class="quiz-reset" id="rst-q1" onclick="resetQ('q1')">Try Again</button>
@@ -316,10 +317,10 @@
         <div class="quiz-num">Question 2 of 4</div>
         <div class="quiz-q">An agent is computing a financial report. At step 5, an API returns unexpected data. Which ReAct step is specifically designed to catch this and change course?</div>
         <div class="quiz-options">
-          <button class="quiz-option" onclick="qa(this,false,'q2')">Think â€” the model reasons about what to do next</button>
-          <button class="quiz-option" onclick="qa(this,false,'q2')">Act â€” the model calls the correct tool this time</button>
-          <button class="quiz-option" onclick="qa(this,true,'q2')">Evaluate â€” the model checks whether the action achieved its sub-goal, then adapts if not</button>
-          <button class="quiz-option" onclick="qa(this,false,'q2')">Observe â€” the model reads the raw data back</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Think — the model reasons about what to do next</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Act — the model calls the correct tool this time</button>
+          <button class="quiz-option" onclick="qa(this,true,'q2')">Evaluate — the model checks whether the action achieved its sub-goal, then adapts if not</button>
+          <button class="quiz-option" onclick="qa(this,false,'q2')">Observe — the model reads the raw data back</button>
         </div>
         <div class="quiz-feedback" id="fb-q2"></div>
         <button class="quiz-reset" id="rst-q2" onclick="resetQ('q2')">Try Again</button>
@@ -344,7 +345,7 @@
         <div class="quiz-options">
           <button class="quiz-option" onclick="qa(this,false,'q4')">When the task requires more than 3 tool calls</button>
           <button class="quiz-option" onclick="qa(this,false,'q4')">When the user is asking a factual question</button>
-          <button class="quiz-option" onclick="qa(this,true,'q4')">When the full plan can be articulated upfront â€” ReWOO is better because it runs tool calls in parallel, reducing latency</button>
+          <button class="quiz-option" onclick="qa(this,true,'q4')">When the full plan can be articulated upfront — ReWOO is better because it runs tool calls in parallel, reducing latency</button>
           <button class="quiz-option" onclick="qa(this,false,'q4')">When the task involves multiple agents</button>
         </div>
         <div class="quiz-feedback" id="fb-q4"></div>
@@ -391,16 +392,16 @@ function showTab(id, btn) {
 
 // Quiz
 const answers = {}; const correctFeedback = {
-  q1: "âœ“ Correct! 'Reasoning' is the key insight. The explicit Thought step before every Action is what makes ReAct reliable â€” the model must articulate WHY it's taking an action, not just take it. This reasoning chain is also your primary debugging tool.",
-  q2: "âœ“ Exactly right. Evaluate is the quality gate. It's where the agent asks: 'Did I get what I needed?' If the answer is no, it re-enters the Think step with the new (failed) observation and changes its approach.",
-  q3: "âœ“ Correct. This is a critical production principle: LLMs predict statistically likely text, which means they can confidently produce wrong numbers. The rule is: use the LLM where ambiguity is high; use deterministic tools where correctness is non-negotiable. Arithmetic is always deterministic.",
-  q4: "âœ“ Spot on. ReAct is sequential â€” it waits for each tool result before deciding the next step. When you can plan the full sequence upfront, ReWOO (Reasoning Without Observation) runs all tool calls in parallel and is much faster. Use ReAct when steps are highly interdependent."
+  q1: "✓ Correct! 'Reasoning' is the key insight. The explicit Thought step before every Action is what makes ReAct reliable — the model must articulate WHY it's taking an action, not just take it. This reasoning chain is also your primary debugging tool.",
+  q2: "✓ Exactly right. Evaluate is the quality gate. It's where the agent asks: 'Did I get what I needed?' If the answer is no, it re-enters the Think step with the new (failed) observation and changes its approach.",
+  q3: "✓ Correct. This is a critical production principle: LLMs predict statistically likely text, which means they can confidently produce wrong numbers. The rule is: use the LLM where ambiguity is high; use deterministic tools where correctness is non-negotiable. Arithmetic is always deterministic.",
+  q4: "✓ Spot on. ReAct is sequential — it waits for each tool result before deciding the next step. When you can plan the full sequence upfront, ReWOO (Reasoning Without Observation) runs all tool calls in parallel and is much faster. Use ReAct when steps are highly interdependent."
 };
 const wrongFeedback = {
-  q1: "âœ— Not quite. 'React' as a general word isn't it â€” the specific insight is 'Reasoning + Acting'. The model explicitly reasons (writes a Thought) before every Action. That explicit Thought is what keeps complex agents on track.",
-  q2: "âœ— Close, but Observe just reads the raw result â€” it doesn't assess quality. Evaluate is the step that explicitly checks: 'Did this action achieve what I needed?' That assessment then feeds back into the Think step.",
-  q3: "âœ— Speed isn't the reason. The core issue is reliability: LLMs hallucinate numbers. They're pattern-matching systems â€” 189.43 Ã· 6.43 might come out as 29.27 or 30.1 in the Thought step because those numbers 'look right' contextually. The calculator tool always returns 29.46.",
-  q4: "âœ— The task complexity or user type aren't the deciding factors. The right switch is whether the plan is predictable upfront. If you can write out all the tool calls before executing any of them, ReWOO's parallel execution wins. ReAct shines when each step's result determines the next step."
+  q1: "✗ Not quite. 'React' as a general word isn't it — the specific insight is 'Reasoning + Acting'. The model explicitly reasons (writes a Thought) before every Action. That explicit Thought is what keeps complex agents on track.",
+  q2: "✗ Close, but Observe just reads the raw result — it doesn't assess quality. Evaluate is the step that explicitly checks: 'Did this action achieve what I needed?' That assessment then feeds back into the Think step.",
+  q3: "✗ Speed isn't the reason. The core issue is reliability: LLMs hallucinate numbers. They're pattern-matching systems — 189.43 ÷ 6.43 might come out as 29.27 or 30.1 in the Thought step because those numbers 'look right' contextually. The calculator tool always returns 29.46.",
+  q4: "✗ The task complexity or user type aren't the deciding factors. The right switch is whether the plan is predictable upfront. If you can write out all the tool calls before executing any of them, ReWOO's parallel execution wins. ReAct shines when each step's result determines the next step."
 };
 
 function qa(btn, isCorrect, qid) {

@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5.13 â€” The 6 Governance Dimensions</title>
+<title>5.13 — The 6 Governance Dimensions</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -116,21 +117,21 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-current">5.13 â€” The 6 Governance Dimensions</span>
+  <span class="nav-current">5.13 — The 6 Governance Dimensions</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 5 Â· Day 2 Afternoon</div>
+  <div class="hero-badge">Session 5 · Day 2 Afternoon</div>
   <h1>The 6 Governance Dimensions</h1>
-  <p>A complete governance framework for production AI agents â€” covering who is accountable, how decisions are traced, and what controls ensure responsible deployment</p>
+  <p>A complete governance framework for production AI agents — covering who is accountable, how decisions are traced, and what controls ensure responsible deployment</p>
 </div>
 
 <div class="container">
 
   <!-- HEX OVERVIEW -->
-  <div class="section-title">6 Dimensions â€” Click to Explore</div>
+  <div class="section-title">6 Dimensions — Click to Explore</div>
   <div class="hex-overview" id="hexOverview"></div>
 
   <!-- DIMENSION DETAIL -->
@@ -140,7 +141,7 @@
   <!-- GOVERNANCE MATURITY RADAR -->
   <div class="section-title">Governance Maturity Self-Assessment</div>
   <div class="radar-section">
-    <div class="radar-title">ðŸ“Š Rate Your Organization's Governance Maturity</div>
+    <div class="radar-title">📊 Rate Your Organization's Governance Maturity</div>
     <div class="radar-sub">Drag each slider to score your current maturity (0 = not started, 10 = fully implemented)</div>
     <div class="radar-sliders" id="radarSliders"></div>
     <div class="radar-score">
@@ -163,24 +164,24 @@
     <tbody id="rolesBody"></tbody>
   </table>
 
-  <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+  <a href="index.html" class="back-btn">← Back to All Concepts</a>
 </div>
 
 <script>
 const dimensions = [
   {
-    num: '01', icon: 'ðŸ‘¤', title: 'Accountability & Ownership', color: '#06d6a0',
+    num: '01', icon: '👤', title: 'Accountability & Ownership', color: '#06d6a0',
     tagline: 'Every AI agent in production must have a named human or team accountable for its behavior, outcomes, and ongoing governance.',
     what: [
-      { title: 'Accountable Owner', text: 'One named individual or team responsible for each deployed agent â€” cannot be shared ambiguously' },
+      { title: 'Accountable Owner', text: 'One named individual or team responsible for each deployed agent — cannot be shared ambiguously' },
       { title: 'RACI Matrix', text: 'Define Responsible, Accountable, Consulted, and Informed parties for each agent deployment' },
       { title: 'Board-Level Visibility', text: 'For high-risk agents, accountability chains must reach executive or board level' },
-      { title: 'Succession Planning', text: 'If the owner changes role, governance responsibility must transfer explicitly â€” never left vacant' }
+      { title: 'Succession Planning', text: 'If the owner changes role, governance responsibility must transfer explicitly — never left vacant' }
     ],
     how: [
       { step: 1, title: 'Agent Registry', text: 'Maintain a central registry of all deployed agents with owner, purpose, risk level, and last review date' },
       { step: 2, title: 'Ownership Declaration', text: 'Require explicit sign-off from a named owner before any agent goes to production' },
-      { step: 3, title: 'Incident Chain', text: 'Define escalation chain: incident â†’ owner â†’ CISO/legal â†’ executive â€” tested with drills' },
+      { step: 3, title: 'Incident Chain', text: 'Define escalation chain: incident → owner → CISO/legal → executive — tested with drills' },
       { step: 4, title: 'Annual Review', text: 'Mandatory governance review every 12 months or after any major capability change' }
     ],
     checklist: [
@@ -192,19 +193,19 @@ const dimensions = [
     ]
   },
   {
-    num: '02', icon: 'ðŸ”', title: 'Transparency & Explainability', color: '#00b4d8',
+    num: '02', icon: '🔍', title: 'Transparency & Explainability', color: '#00b4d8',
     tagline: 'Stakeholders, users, and regulators must be able to understand what agents do, why they make decisions, and what data they use.',
     what: [
       { title: 'Decision Explanation', text: 'For consequential decisions, agent must produce human-readable explanation, not just output' },
-      { title: 'AI Disclosure', text: 'Users must always know they are interacting with an AI â€” no deceptive human personas' },
+      { title: 'AI Disclosure', text: 'Users must always know they are interacting with an AI — no deceptive human personas' },
       { title: 'Data Provenance', text: 'Document what training data, retrieval sources, and tools were used to produce each output' },
       { title: 'Model Cards', text: 'Publish capability statements, known limitations, and intended use for all deployed agents' }
     ],
     how: [
-      { step: 1, title: 'Explanation Layer', text: 'Implement structured explanation output for high-stakes decisions â€” stored in audit trail' },
-      { step: 2, title: 'Disclosure Design', text: 'Design UI to clearly signal AI agent interaction at conversation start â€” not buried in terms' },
+      { step: 1, title: 'Explanation Layer', text: 'Implement structured explanation output for high-stakes decisions — stored in audit trail' },
+      { step: 2, title: 'Disclosure Design', text: 'Design UI to clearly signal AI agent interaction at conversation start — not buried in terms' },
       { step: 3, title: 'Source Logging', text: 'Log RAG sources, tool calls, and external data used for each response' },
-      { step: 4, title: 'Model Cards', text: 'Create and maintain model/agent cards â€” publish internally and externally as required' }
+      { step: 4, title: 'Model Cards', text: 'Create and maintain model/agent cards — publish internally and externally as required' }
     ],
     checklist: [
       'AI identity disclosed at start of every user interaction',
@@ -215,17 +216,17 @@ const dimensions = [
     ]
   },
   {
-    num: '03', icon: 'âš–ï¸', title: 'Fairness & Non-Discrimination', color: '#6c63ff',
-    tagline: 'AI agents must produce equitable outcomes across demographic groups and protected characteristics â€” continuously monitored.',
+    num: '03', icon: '⚖️', title: 'Fairness & Non-Discrimination', color: '#6c63ff',
+    tagline: 'AI agents must produce equitable outcomes across demographic groups and protected characteristics — continuously monitored.',
     what: [
       { title: 'Bias Auditing', text: 'Regular statistical tests comparing agent outcomes across race, gender, age, disability, and other protected attributes' },
-      { title: 'Fairness Metrics', text: 'Define and track: demographic parity, equal opportunity, equalized odds â€” not just overall accuracy' },
+      { title: 'Fairness Metrics', text: 'Define and track: demographic parity, equal opportunity, equalized odds — not just overall accuracy' },
       { title: 'Training Data Review', text: 'Audit training and fine-tuning data for representation gaps before model deployment' },
-      { title: 'Outcome Monitoring', text: 'Continuous production monitoring for disparate impact â€” alert when gap exceeds threshold' }
+      { title: 'Outcome Monitoring', text: 'Continuous production monitoring for disparate impact — alert when gap exceeds threshold' }
     ],
     how: [
       { step: 1, title: 'Baseline Audit', text: 'Before deployment, run full fairness audit using fairness testing libraries (Fairlearn, AI Fairness 360)' },
-      { step: 2, title: 'Metric Dashboard', text: 'Build fairness metric dashboard â€” track parity scores by cohort in production, not just test set' },
+      { step: 2, title: 'Metric Dashboard', text: 'Build fairness metric dashboard — track parity scores by cohort in production, not just test set' },
       { step: 3, title: 'Threshold Alerts', text: 'Set automated alerts if parity score drops below defined threshold (e.g., 80% rule for disparate impact)' },
       { step: 4, title: 'Remediation Plan', text: 'Define pre-approved remediation actions: data collection, re-training, human override, deployment pause' }
     ],
@@ -238,19 +239,19 @@ const dimensions = [
     ]
   },
   {
-    num: '04', icon: 'ðŸ”’', title: 'Privacy & Data Governance', color: '#ffd166',
+    num: '04', icon: '🔒', title: 'Privacy & Data Governance', color: '#ffd166',
     tagline: 'AI agents must handle personal and sensitive data with minimum collection, clear purpose, and full user rights.',
     what: [
-      { title: 'Data Minimization', text: 'Agents collect and retain only data strictly necessary â€” no speculative data collection' },
+      { title: 'Data Minimization', text: 'Agents collect and retain only data strictly necessary — no speculative data collection' },
       { title: 'Purpose Limitation', text: 'Data used for one task may not be repurposed for another without explicit consent' },
-      { title: 'Retention & Deletion', text: 'Define TTL for all agent memory, logs, and outputs â€” honor user deletion requests' },
-      { title: 'Cross-User Isolation', text: 'Memory and context must never bleed between users â€” strict isolation enforced architecturally' }
+      { title: 'Retention & Deletion', text: 'Define TTL for all agent memory, logs, and outputs — honor user deletion requests' },
+      { title: 'Cross-User Isolation', text: 'Memory and context must never bleed between users — strict isolation enforced architecturally' }
     ],
     how: [
-      { step: 1, title: 'Data Inventory', text: 'Catalog all personal data flowing through agent pipelines â€” classify by sensitivity and regulation' },
-      { step: 2, title: 'Privacy by Design', text: 'Implement PII detection, masking in logs, and ephemeral memory as default â€” opt-in for persistence' },
-      { step: 3, title: 'Consent Flows', text: 'Design explicit consent for data retention, memory, and cross-session tracking â€” granular controls' },
-      { step: 4, title: 'DSAR Automation', text: 'Automate Data Subject Access Request handling â€” identify all agent data for a user within 30 days' }
+      { step: 1, title: 'Data Inventory', text: 'Catalog all personal data flowing through agent pipelines — classify by sensitivity and regulation' },
+      { step: 2, title: 'Privacy by Design', text: 'Implement PII detection, masking in logs, and ephemeral memory as default — opt-in for persistence' },
+      { step: 3, title: 'Consent Flows', text: 'Design explicit consent for data retention, memory, and cross-session tracking — granular controls' },
+      { step: 4, title: 'DSAR Automation', text: 'Automate Data Subject Access Request handling — identify all agent data for a user within 30 days' }
     ],
     checklist: [
       'Data inventory completed for all agent pipelines',
@@ -261,17 +262,17 @@ const dimensions = [
     ]
   },
   {
-    num: '05', icon: 'ðŸ›¡ï¸', title: 'Safety & Risk Management', color: '#ff6584',
-    tagline: 'Systematic identification, assessment, and mitigation of risks before deployment â€” and continuous monitoring in production.',
+    num: '05', icon: '🛡️', title: 'Safety & Risk Management', color: '#ff6584',
+    tagline: 'Systematic identification, assessment, and mitigation of risks before deployment — and continuous monitoring in production.',
     what: [
       { title: 'Risk Classification', text: 'Classify agent by risk level (critical/high/medium/low) based on domain, autonomy, and consequence severity' },
       { title: 'Red-Teaming', text: 'Adversarial testing to find failure modes, jailbreaks, and harmful outputs before production' },
-      { title: 'Human-in-the-Loop', text: 'High-risk agents require human approval gates â€” autonomy scaled to risk level' },
-      { title: 'Incident Response', text: 'Documented runbooks for agent safety incidents â€” detection to containment to remediation' }
+      { title: 'Human-in-the-Loop', text: 'High-risk agents require human approval gates — autonomy scaled to risk level' },
+      { title: 'Incident Response', text: 'Documented runbooks for agent safety incidents — detection to containment to remediation' }
     ],
     how: [
       { step: 1, title: 'Risk Register', text: 'Create agent risk register: hazard, likelihood, impact, controls, residual risk, owner' },
-      { step: 2, title: 'Red-Team Protocol', text: 'Run structured red-team exercises before each major release â€” document findings and mitigations' },
+      { step: 2, title: 'Red-Team Protocol', text: 'Run structured red-team exercises before each major release — document findings and mitigations' },
       { step: 3, title: 'HITL Thresholds', text: 'Define autonomy thresholds by risk: low risk = full auto, high risk = human approve, critical = human execute' },
       { step: 4, title: 'Safety Monitoring', text: 'Deploy safety monitors: loop detection, anomaly alerts, circuit breakers, kill switches' }
     ],
@@ -284,19 +285,19 @@ const dimensions = [
     ]
   },
   {
-    num: '06', icon: 'ðŸ“‹', title: 'Compliance & Auditability', color: '#f4a261',
-    tagline: 'Agents must comply with applicable laws and regulations â€” with immutable audit trails that enable regulatory examination.',
+    num: '06', icon: '📋', title: 'Compliance & Auditability', color: '#f4a261',
+    tagline: 'Agents must comply with applicable laws and regulations — with immutable audit trails that enable regulatory examination.',
     what: [
       { title: 'Regulatory Mapping', text: 'Map each deployment to applicable regulations: EU AI Act, GDPR, HIPAA, SEC rules, industry standards' },
       { title: 'Immutable Audit Trail', text: 'All agent decisions, tool calls, and data access logged in tamper-proof, append-only storage' },
-      { title: 'Compliance Testing', text: 'Automated compliance checks in CI/CD pipeline â€” regulatory requirements as code' },
-      { title: 'Third-Party Audit', text: 'Independent audits for high-risk systems â€” internal audit is insufficient for critical deployments' }
+      { title: 'Compliance Testing', text: 'Automated compliance checks in CI/CD pipeline — regulatory requirements as code' },
+      { title: 'Third-Party Audit', text: 'Independent audits for high-risk systems — internal audit is insufficient for critical deployments' }
     ],
     how: [
-      { step: 1, title: 'Regulation Mapping', text: 'Identify all applicable regulations for each agent â€” document obligations and implementation status' },
+      { step: 1, title: 'Regulation Mapping', text: 'Identify all applicable regulations for each agent — document obligations and implementation status' },
       { step: 2, title: 'Audit Log Design', text: 'Implement append-only, encrypted, structured audit logs covering every agent action and decision' },
-      { step: 3, title: 'Compliance as Code', text: 'Encode regulatory requirements as automated tests â€” run in CI/CD to block non-compliant deployments' },
-      { step: 4, title: 'External Audit', text: 'Schedule third-party audit for high-risk agents annually â€” share results with board and regulators' }
+      { step: 3, title: 'Compliance as Code', text: 'Encode regulatory requirements as automated tests — run in CI/CD to block non-compliant deployments' },
+      { step: 4, title: 'External Audit', text: 'Schedule third-party audit for high-risk agents annually — share results with board and regulators' }
     ],
     checklist: [
       'Regulatory requirements mapped for each deployment',
@@ -353,14 +354,14 @@ function renderDetail() {
     <div class="dim-header" style="background:${d.color}08">
       <div class="dim-icon-large" style="background:${d.color}18">${d.icon}</div>
       <div class="dim-meta">
-        <h2>${d.num} â€” ${d.title}</h2>
+        <h2>${d.num} — ${d.title}</h2>
         <p>${d.tagline}</p>
       </div>
     </div>
     <div class="dim-tabs-bar">
       <div class="dim-tab active" data-tab="what">What It Covers</div>
       <div class="dim-tab" data-tab="how">How to Implement</div>
-      <div class="dim-tab" data-tab="checklist">âœ“ Checklist</div>
+      <div class="dim-tab" data-tab="checklist">✓ Checklist</div>
     </div>
     <div class="dim-panel active" id="dp-what">
       <div class="what-items">
@@ -397,7 +398,7 @@ function renderDetail() {
       const ci = parseInt(item.dataset.ci);
       if (checked.has(ci)) checked.delete(ci); else checked.add(ci);
       item.classList.toggle('checked', checked.has(ci));
-      item.querySelector('.check-box').textContent = checked.has(ci) ? 'âœ“' : '';
+      item.querySelector('.check-box').textContent = checked.has(ci) ? '✓' : '';
       const pct = (checked.size / d.checklist.length) * 100;
       document.getElementById('clBar').style.width = pct + '%';
       document.getElementById('clBar').style.background = pct === 100 ? '#06d6a0' : d.color;
@@ -415,10 +416,10 @@ function updateTotal() {
   document.getElementById('radarTotal').textContent = total;
   const pct = total / 60;
   let verdict = '';
-  if (pct < 0.3) verdict = 'ðŸ”´ Early Stage â€” Significant governance gaps exist. Prioritize accountability and compliance first.';
-  else if (pct < 0.5) verdict = 'ðŸŸ¡ Developing â€” Core dimensions covered but inconsistently. Focus on automation and monitoring.';
-  else if (pct < 0.75) verdict = 'ðŸŸ¢ Maturing â€” Good foundation. Invest in continuous monitoring and third-party audit.';
-  else verdict = 'âœ… Advanced â€” Strong governance posture. Consider AI governance certification (ISO 42001).';
+  if (pct < 0.3) verdict = '🔴 Early Stage — Significant governance gaps exist. Prioritize accountability and compliance first.';
+  else if (pct < 0.5) verdict = '🟡 Developing — Core dimensions covered but inconsistently. Focus on automation and monitoring.';
+  else if (pct < 0.75) verdict = '🟢 Maturing — Good foundation. Invest in continuous monitoring and third-party audit.';
+  else verdict = '✅ Advanced — Strong governance posture. Consider AI governance certification (ISO 42001).';
   document.getElementById('radarVerdict').textContent = verdict;
   document.getElementById('radarTotal').style.color = pct < 0.3 ? '#ff6584' : pct < 0.5 ? '#ffd166' : '#06d6a0';
 }

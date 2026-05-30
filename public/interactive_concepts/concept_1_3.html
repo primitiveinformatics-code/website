@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.3 The 5-Component Agent Anatomy â€” Agentic AI</title>
+<title>1.3 The 5-Component Agent Anatomy — Agentic AI</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -295,46 +296,46 @@
 <body>
 
 <nav>
-  <a href="pre-course.html" class="nav-home">â† All Concepts</a>
+  <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">1.3 Agent Anatomy</span>
   <div class="nav-arrows">
-    <a href="concept_1_2.html" class="nav-btn">â† Myths vs Reality</a>
+    <a href="concept_1_2.html" class="nav-btn">← Myths vs Reality</a>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="concept-badge">Session 1 Â· Pre-Course Â· Concept 1.3</div>
+  <div class="concept-badge">Session 1 · Pre-Course · Concept 1.3</div>
   <h1>The 5-Component<br>Anatomy of an AI Agent</h1>
-  <p class="hero-lead">Every production-grade agent â€” regardless of framework, LLM, or use case â€” is built from exactly five components. Understanding each one, and how they interact, is the foundation of agentic architecture.</p>
+  <p class="hero-lead">Every production-grade agent — regardless of framework, LLM, or use case — is built from exactly five components. Understanding each one, and how they interact, is the foundation of agentic architecture.</p>
 </div>
 
 <div class="content">
 
   <!-- INTERACTIVE ANATOMY -->
   <div class="section">
-    <div class="section-title">Interactive Agent Diagram â€” Click Each Component</div>
+    <div class="section-title">Interactive Agent Diagram — Click Each Component</div>
     <div class="anatomy-wrapper">
       <div class="anatomy-diagram">
         <div class="agent-circle">
           <div class="agent-center" onclick="selectComp('brain')" id="btn-brain">
-            ðŸ§ 
+            🧠
             <span class="agent-center-label">Agent</span>
           </div>
           <div class="orbit-btn ob-brain" onclick="selectComp('brain')" id="ob-brain">
-            ðŸ§ <span>Brain</span>
+            🧠<span>Brain</span>
           </div>
           <div class="orbit-btn ob-tools" onclick="selectComp('tools')" id="ob-tools">
-            ðŸ”§<span>Tools</span>
+            🔧<span>Tools</span>
           </div>
           <div class="orbit-btn ob-memory" onclick="selectComp('memory')" id="ob-memory">
-            ðŸ’¾<span>Memory</span>
+            💾<span>Memory</span>
           </div>
           <div class="orbit-btn ob-loop" onclick="selectComp('loop')" id="ob-loop">
-            ðŸ”„<span>Loop</span>
+            🔄<span>Loop</span>
           </div>
           <div class="orbit-btn ob-guard" onclick="selectComp('guard')" id="ob-guard">
-            ðŸ›¡ï¸<span>Guard</span>
+            🛡️<span>Guard</span>
           </div>
         </div>
       </div>
@@ -343,39 +344,39 @@
 
         <div class="comp-card active" id="comp-brain">
           <div class="comp-header">
-            <div class="comp-icon-big">ðŸ§ </div>
+            <div class="comp-icon-big">🧠</div>
             <div>
               <div class="comp-name" style="color: var(--c-brain)">The Brain (LLM)</div>
               <div class="comp-subtitle" style="color: var(--c-brain)">Cognitive Core</div>
             </div>
           </div>
-          <div class="comp-body">The LLM is not a text generator in this context â€” it's a <strong>decision maker</strong>. Every step of the loop, the brain reads all available context and decides: What is the current state? What is the right next action? Which tool should I call? Have I reached the goal?</div>
+          <div class="comp-body">The LLM is not a text generator in this context — it's a <strong>decision maker</strong>. Every step of the loop, the brain reads all available context and decides: What is the current state? What is the right next action? Which tool should I call? Have I reached the goal?</div>
           <div class="comp-points">
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Reads the full context: system prompt, task, history, tool results</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Selects the next action from available tools or returns a final answer</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Paradigm shift: its function is making CHOICES, not generating text</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">â–¸</span>Examples: GPT-4o, Claude 3 Opus, Gemini 1.5 Pro</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">▸</span>Reads the full context: system prompt, task, history, tool results</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">▸</span>Selects the next action from available tools or returns a final answer</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">▸</span>Paradigm shift: its function is making CHOICES, not generating text</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-brain)">▸</span>Examples: GPT-4o, Claude 3 Opus, Gemini 1.5 Pro</div>
           </div>
           <div class="comp-analogy">
-            <strong>Analogy:</strong> The brain is the CEO of a company. It doesn't do the work directly â€” it reads reports (observations), makes decisions, and assigns tasks (tool calls) to the team. The quality of every other component depends on the quality of its reasoning.
+            <strong>Analogy:</strong> The brain is the CEO of a company. It doesn't do the work directly — it reads reports (observations), makes decisions, and assigns tasks (tool calls) to the team. The quality of every other component depends on the quality of its reasoning.
           </div>
         </div>
 
         <div class="comp-card" id="comp-tools">
           <div class="comp-header">
-            <div class="comp-icon-big">ðŸ”§</div>
+            <div class="comp-icon-big">🔧</div>
             <div>
               <div class="comp-name" style="color: var(--c-tools)">Tools (The Hands)</div>
               <div class="comp-subtitle" style="color: var(--c-tools)">Action Interface</div>
             </div>
           </div>
-          <div class="comp-body">Tools are how the agent acts on the world. Without tools, an agent can only generate text â€” it can't retrieve real information, execute code, or trigger any real-world effect. Tools are the bridge from language to action.</div>
+          <div class="comp-body">Tools are how the agent acts on the world. Without tools, an agent can only generate text — it can't retrieve real information, execute code, or trigger any real-world effect. Tools are the bridge from language to action.</div>
           <div class="comp-points">
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>APIs: weather, stock prices, CRM data, external services</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>Code runners: execute Python/JS in a sandbox, return results</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>File systems: read, write, search documents</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>Browsers: navigate websites, fill forms, extract content</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">â–¸</span>Standard interface: MCP (Model Context Protocol)</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">▸</span>APIs: weather, stock prices, CRM data, external services</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">▸</span>Code runners: execute Python/JS in a sandbox, return results</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">▸</span>File systems: read, write, search documents</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">▸</span>Browsers: navigate websites, fill forms, extract content</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-tools)">▸</span>Standard interface: MCP (Model Context Protocol)</div>
           </div>
           <div class="comp-analogy">
             <strong>Analogy:</strong> Tools are the hands of the agent. The brain can plan perfectly, but if it has no hands, it can only narrate what it would do. Every real-world capability an agent has comes from a tool.
@@ -384,7 +385,7 @@
 
         <div class="comp-card" id="comp-memory">
           <div class="comp-header">
-            <div class="comp-icon-big">ðŸ’¾</div>
+            <div class="comp-icon-big">💾</div>
             <div>
               <div class="comp-name" style="color: var(--c-memory)">Memory (State)</div>
               <div class="comp-subtitle" style="color: var(--c-memory)">State Management</div>
@@ -393,17 +394,17 @@
           <div class="comp-body">Without memory, every loop iteration starts from zero. The agent would re-derive the same conclusions, repeat failed tool calls, and forget what it already knows. Memory is what makes agents feel coherent and capable over long tasks.</div>
           <table class="comp-table">
             <tr><th>Type</th><th>What It Is</th></tr>
-            <tr><td>Short-term</td><td>Context window â€” everything visible to the LLM right now. Finite (8Kâ€“200K tokens), volatile.</td></tr>
-            <tr><td>Long-term</td><td>Vector database â€” semantic search over persistent documents, past interactions, knowledge bases.</td></tr>
+            <tr><td>Short-term</td><td>Context window — everything visible to the LLM right now. Finite (8K–200K tokens), volatile.</td></tr>
+            <tr><td>Long-term</td><td>Vector database — semantic search over persistent documents, past interactions, knowledge bases.</td></tr>
           </table>
           <div class="comp-analogy" style="margin-top:14px">
-            <strong>Analogy:</strong> Short-term memory is your working memory â€” what you're holding in mind right now. Long-term memory is your hard drive â€” knowledge you can look up when you need it but don't keep front-of-mind constantly.
+            <strong>Analogy:</strong> Short-term memory is your working memory — what you're holding in mind right now. Long-term memory is your hard drive — knowledge you can look up when you need it but don't keep front-of-mind constantly.
           </div>
         </div>
 
         <div class="comp-card" id="comp-loop">
           <div class="comp-header">
-            <div class="comp-icon-big">ðŸ”„</div>
+            <div class="comp-icon-big">🔄</div>
             <div>
               <div class="comp-name" style="color: var(--c-loop)">The Loop (ReAct)</div>
               <div class="comp-subtitle" style="color: var(--c-loop)">Execution Cycle</div>
@@ -411,32 +412,32 @@
           </div>
           <div class="comp-body">The loop is what makes an agent an agent. A standard LLM call runs once. An agent runs in a continuous cycle until it reaches its goal or a termination condition triggers. The standard implementation of this loop is called <strong>ReAct</strong>.</div>
           <div class="comp-points">
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Observe</strong>: Read current state and latest tool results</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Think</strong>: Reason about what to do next</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Act</strong>: Call a tool or produce output</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Evaluate</strong>: Did the action achieve the sub-goal?</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">â–¸</span><strong>Repeat or Finish</strong>: Loop back if not done; return answer if done</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">▸</span><strong>Observe</strong>: Read current state and latest tool results</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">▸</span><strong>Think</strong>: Reason about what to do next</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">▸</span><strong>Act</strong>: Call a tool or produce output</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">▸</span><strong>Evaluate</strong>: Did the action achieve the sub-goal?</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-loop)">▸</span><strong>Repeat or Finish</strong>: Loop back if not done; return answer if done</div>
           </div>
           <div class="comp-analogy">
-            <strong>Analogy:</strong> A standard program is a function â€” it runs once and returns. An agent is a while loop â€” it keeps running until a condition is met. This single structural difference is what makes agents capable of open-ended, multi-step tasks.
+            <strong>Analogy:</strong> A standard program is a function — it runs once and returns. An agent is a while loop — it keeps running until a condition is met. This single structural difference is what makes agents capable of open-ended, multi-step tasks.
           </div>
         </div>
 
         <div class="comp-card" id="comp-guard">
           <div class="comp-header">
-            <div class="comp-icon-big">ðŸ›¡ï¸</div>
+            <div class="comp-icon-big">🛡️</div>
             <div>
               <div class="comp-name" style="color: var(--c-guard)">Guardrails (Safety)</div>
               <div class="comp-subtitle" style="color: var(--c-guard)">Control Layer</div>
             </div>
           </div>
-          <div class="comp-body">Guardrails are designed in from day one â€” never bolted on after deployment. Because agents act autonomously, a flaw in an unguarded agent doesn't produce a bad answer: it can delete data, make financial transactions, or run up thousands of dollars in API costs before anyone notices.</div>
+          <div class="comp-body">Guardrails are designed in from day one — never bolted on after deployment. Because agents act autonomously, a flaw in an unguarded agent doesn't produce a bad answer: it can delete data, make financial transactions, or run up thousands of dollars in API costs before anyone notices.</div>
           <div class="comp-points">
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Sandboxing</strong>: Code-executing agents run in isolated MicroVMs, destroyed after use</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>HITL (Human-in-the-Loop)</strong>: High-stakes actions pause for signed human approval</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Circuit Breakers</strong>: Hard stops â€” "stop if session exceeds $2 or 50 tool calls"</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Output Validation</strong>: Structured output parsing catches hallucinated schemas before downstream systems receive them</div>
-            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">â–¸</span><strong>Scope Restrictions</strong>: Minimum permissions â€” never "Admin" by default</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">▸</span><strong>Sandboxing</strong>: Code-executing agents run in isolated MicroVMs, destroyed after use</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">▸</span><strong>HITL (Human-in-the-Loop)</strong>: High-stakes actions pause for signed human approval</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">▸</span><strong>Circuit Breakers</strong>: Hard stops — "stop if session exceeds $2 or 50 tool calls"</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">▸</span><strong>Output Validation</strong>: Structured output parsing catches hallucinated schemas before downstream systems receive them</div>
+            <div class="comp-point"><span class="comp-bullet" style="color:var(--c-guard)">▸</span><strong>Scope Restrictions</strong>: Minimum permissions — never "Admin" by default</div>
           </div>
           <div class="comp-analogy">
             <strong>Principle:</strong> The more autonomy you give an agent, the more rigorous the guardrails must be. Autonomy and safety must scale together.
@@ -460,11 +461,11 @@
     <span class="code-var">state</span> = {<span class="code-str">"goal"</span>: goal, <span class="code-str">"history"</span>: [], <span class="code-str">"cost"</span>: <span class="code-var">0.0</span>}
 
     <span class="code-keyword">while</span> <span class="code-keyword">not</span> state[<span class="code-str">"done"</span>] <span class="code-keyword">and</span> iterations < max_iterations:
-        thought = llm.think(state)            <span class="code-comment"># ðŸ§  Brain reasons</span>
-        action  = llm.decide_action(thought)  <span class="code-comment"># ðŸ§  Brain decides</span>
-        result  = tools.execute(action)       <span class="code-comment"># ðŸ”§ Tools act</span>
-        memory.update(state, result)          <span class="code-comment"># ðŸ’¾ Memory persists</span>
-        guardrails.check(state)               <span class="code-comment"># ðŸ›¡ï¸ Guardrails verify</span>
+        thought = llm.think(state)            <span class="code-comment"># 🧠 Brain reasons</span>
+        action  = llm.decide_action(thought)  <span class="code-comment"># 🧠 Brain decides</span>
+        result  = tools.execute(action)       <span class="code-comment"># 🔧 Tools act</span>
+        memory.update(state, result)          <span class="code-comment"># 💾 Memory persists</span>
+        guardrails.check(state)               <span class="code-comment"># 🛡️ Guardrails verify</span>
         iterations += <span class="code-var">1</span>
 
     <span class="code-keyword">return</span> state[<span class="code-str">"final_answer"</span>]</div>
@@ -475,43 +476,43 @@
     <div class="section-title">All 5 Components at a Glance</div>
     <div class="assembly">
       <div class="asm-row">
-        <div class="asm-num">ðŸ§ </div>
+        <div class="asm-num">🧠</div>
         <div class="asm-body">
-          <div class="asm-tag" style="background:rgba(108,99,255,0.12);color:var(--c-brain)">Brain Â· LLM</div>
-          <div class="asm-title">Cognitive Core â€” reads context, reasons, decides next action</div>
+          <div class="asm-tag" style="background:rgba(108,99,255,0.12);color:var(--c-brain)">Brain · LLM</div>
+          <div class="asm-title">Cognitive Core — reads context, reasons, decides next action</div>
           <div class="asm-desc">GPT-4o, Claude Opus, Gemini 1.5. Paradigm shift: its function is making CHOICES, not generating text.</div>
         </div>
       </div>
       <div class="asm-row">
-        <div class="asm-num">ðŸ”§</div>
+        <div class="asm-num">🔧</div>
         <div class="asm-body">
-          <div class="asm-tag" style="background:rgba(0,210,255,0.1);color:var(--c-tools)">Tools Â· The Hands</div>
-          <div class="asm-title">Action Interface â€” APIs, code runners, file systems, browsers</div>
-          <div class="asm-desc">Connected via MCP. Without tools an agent can only describe actions â€” tools let it perform them.</div>
+          <div class="asm-tag" style="background:rgba(0,210,255,0.1);color:var(--c-tools)">Tools · The Hands</div>
+          <div class="asm-title">Action Interface — APIs, code runners, file systems, browsers</div>
+          <div class="asm-desc">Connected via MCP. Without tools an agent can only describe actions — tools let it perform them.</div>
         </div>
       </div>
       <div class="asm-row">
-        <div class="asm-num">ðŸ’¾</div>
+        <div class="asm-num">💾</div>
         <div class="asm-body">
-          <div class="asm-tag" style="background:rgba(255,209,102,0.1);color:var(--c-memory)">Memory Â· State</div>
-          <div class="asm-title">Prevents starting from zero â€” context window + vector store</div>
-          <div class="asm-desc">Short-term: context window (volatile, 8Kâ€“200K tokens). Long-term: vector database (persistent, semantic search).</div>
+          <div class="asm-tag" style="background:rgba(255,209,102,0.1);color:var(--c-memory)">Memory · State</div>
+          <div class="asm-title">Prevents starting from zero — context window + vector store</div>
+          <div class="asm-desc">Short-term: context window (volatile, 8K–200K tokens). Long-term: vector database (persistent, semantic search).</div>
         </div>
       </div>
       <div class="asm-row">
-        <div class="asm-num">ðŸ”„</div>
+        <div class="asm-num">🔄</div>
         <div class="asm-body">
-          <div class="asm-tag" style="background:rgba(6,214,160,0.1);color:var(--c-loop)">Loop Â· ReAct</div>
-          <div class="asm-title">Observe â†’ Think â†’ Act â†’ Evaluate â†’ Repeat or Finish</div>
+          <div class="asm-tag" style="background:rgba(6,214,160,0.1);color:var(--c-loop)">Loop · ReAct</div>
+          <div class="asm-title">Observe → Think → Act → Evaluate → Repeat or Finish</div>
           <div class="asm-desc">The agent runs in a continuous cycle until the goal is achieved or a termination condition fires. This is what makes it "agentic".</div>
         </div>
       </div>
       <div class="asm-row">
-        <div class="asm-num">ðŸ›¡ï¸</div>
+        <div class="asm-num">🛡️</div>
         <div class="asm-body">
-          <div class="asm-tag" style="background:rgba(255,101,132,0.1);color:var(--c-guard)">Guardrails Â· Safety</div>
+          <div class="asm-tag" style="background:rgba(255,101,132,0.1);color:var(--c-guard)">Guardrails · Safety</div>
           <div class="asm-title">Sandboxing, HITL, circuit breakers, output validation, scope limits</div>
-          <div class="asm-desc">Designed in from day one. Autonomy and safety must scale together â€” never bolt on guardrails after deployment.</div>
+          <div class="asm-desc">Designed in from day one. Autonomy and safety must scale together — never bolt on guardrails after deployment.</div>
         </div>
       </div>
     </div>
@@ -521,7 +522,7 @@
   <div class="section">
     <div class="section-title">Key Takeaway</div>
     <div class="takeaway">
-      Every agent, in every framework (LangChain, AutoGen, CrewAI, LangGraph), has these five components. The frameworks differ in how they wire them together â€” but the anatomy is universal. <strong>When an agent fails in production, the failure always traces back to a weakness in one of these five components.</strong> This is your diagnostic framework.
+      Every agent, in every framework (LangChain, AutoGen, CrewAI, LangGraph), has these five components. The frameworks differ in how they wire them together — but the anatomy is universal. <strong>When an agent fails in production, the failure always traces back to a weakness in one of these five components.</strong> This is your diagnostic framework.
     </div>
   </div>
 
@@ -531,10 +532,10 @@
     <div class="quiz-box">
       <div class="quiz-q">An agent is running a 20-step research task. At step 12, the API it's calling starts returning 503 errors. The agent retries the same failing call 8 more times, spending $15 in LLM tokens before anyone notices. Which component was missing or misconfigured?</div>
       <div class="quiz-options">
-        <button class="quiz-option" onclick="checkAnswer(this, false)">The Brain (LLM) â€” a better model would have noticed the error</button>
-        <button class="quiz-option" onclick="checkAnswer(this, false)">The Tools â€” the API tool should have had better error messages</button>
-        <button class="quiz-option" onclick="checkAnswer(this, false)">Memory â€” the agent forgot it had already tried this call</button>
-        <button class="quiz-option" onclick="checkAnswer(this, true)">Guardrails â€” specifically a circuit breaker on repeated identical tool calls</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">The Brain (LLM) — a better model would have noticed the error</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">The Tools — the API tool should have had better error messages</button>
+        <button class="quiz-option" onclick="checkAnswer(this, false)">Memory — the agent forgot it had already tried this call</button>
+        <button class="quiz-option" onclick="checkAnswer(this, true)">Guardrails — specifically a circuit breaker on repeated identical tool calls</button>
       </div>
       <div class="quiz-feedback" id="quiz-feedback"></div>
       <button class="quiz-reset" id="quiz-reset" onclick="resetQuiz()">Try Again</button>
@@ -578,8 +579,8 @@ function checkAnswer(btn, isCorrect) {
   }
   feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
   feedback.textContent = isCorrect
-    ? 'âœ“ Correct. This is the "Tool-Call Thrashing" failure mode. A circuit breaker configured to stop after 3 identical failing tool calls would have terminated the loop at step 14, saving $13 in unnecessary LLM spend. Guardrails are what separate a production agent from an expensive experiment.'
-    : 'âœ— Not quite. The root cause here is uncontrolled repetition â€” retrying the same failing call with no stopping condition. That\'s a guardrail problem (circuit breaker). Better error messages or a smarter LLM might help slightly, but without a hard stop on repeated failures, the agent keeps burning tokens.';
+    ? '✓ Correct. This is the "Tool-Call Thrashing" failure mode. A circuit breaker configured to stop after 3 identical failing tool calls would have terminated the loop at step 14, saving $13 in unnecessary LLM spend. Guardrails are what separate a production agent from an expensive experiment.'
+    : '✗ Not quite. The root cause here is uncontrolled repetition — retrying the same failing call with no stopping condition. That\'s a guardrail problem (circuit breaker). Better error messages or a smarter LLM might help slightly, but without a hard stop on repeated failures, the agent keeps burning tokens.';
   reset.className = 'quiz-reset show';
 }
 

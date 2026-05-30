@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.2 Common Myths vs. Production Reality â€” Agentic AI</title>
+<title>1.2 Common Myths vs. Production Reality — Agentic AI</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -218,7 +219,7 @@
     line-height: 1.55;
   }
   .danger-item::before {
-    content: 'âš ';
+    content: '⚠';
     color: var(--yellow);
     flex-shrink: 0;
     margin-top: 1px;
@@ -280,17 +281,17 @@
 <body>
 
 <nav>
-  <a href="pre-course.html" class="nav-home">â† All Concepts</a>
+  <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">1.2 Myths vs. Production Reality</span>
   <div class="nav-arrows">
-    <a href="concept_1_1.html" class="nav-btn">â† Platform Shift</a>
-    <a href="concept_1_3.html" class="nav-btn">Agent Anatomy â†’</a>
+    <a href="concept_1_1.html" class="nav-btn">← Platform Shift</a>
+    <a href="concept_1_3.html" class="nav-btn">Agent Anatomy →</a>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="concept-badge">Session 1 Â· Pre-Course Â· Concept 1.2</div>
+  <div class="concept-badge">Session 1 · Pre-Course · Concept 1.2</div>
   <h1>Common Myths vs.<br>Production Reality</h1>
   <p class="hero-lead">Five deeply held beliefs about agentic AI that are killing production deployments. Each one sounds reasonable. Each one is dangerously wrong in the real world.</p>
 </div>
@@ -299,7 +300,7 @@
 
   <!-- MYTHS -->
   <div class="section">
-    <div class="section-title">The 5 Myths â€” Click to Reveal the Reality</div>
+    <div class="section-title">The 5 Myths — Click to Reveal the Reality</div>
     <div class="myths-list">
 
       <div class="myth-row" id="m1">
@@ -309,11 +310,11 @@
             <div class="myth-tag">Myth</div>
             <div class="myth-text">"Agents are just chatbots with search"</div>
           </div>
-          <span class="myth-chevron">â–¾</span>
+          <span class="myth-chevron">▾</span>
         </button>
         <div class="myth-body">
-          <div class="reality-label">âœ“ Reality</div>
-          <div class="reality-text">Agents are autonomous decision loops that act on the world â€” fundamentally different from chatbots</div>
+          <div class="reality-label">✓ Reality</div>
+          <div class="reality-text">Agents are autonomous decision loops that act on the world — fundamentally different from chatbots</div>
           <div class="why-text">A chatbot answers one question and stops. An agent has a <strong>goal</strong>, takes actions to achieve it, observes results, adapts its plan, and continues looping until done. It can write and run code, make API calls, manage files, and orchestrate other agents. "Chatbot with search" is like calling a car a "horse with wheels."</div>
         </div>
       </div>
@@ -325,11 +326,11 @@
             <div class="myth-tag">Myth</div>
             <div class="myth-text">"Agents are just prompt chaining"</div>
           </div>
-          <span class="myth-chevron">â–¾</span>
+          <span class="myth-chevron">▾</span>
         </button>
         <div class="myth-body">
-          <div class="reality-label">âœ“ Reality</div>
-          <div class="reality-text">Agents are stateful systems that plan, execute, and recover from errors â€” not a fixed sequence of prompts</div>
+          <div class="reality-label">✓ Reality</div>
+          <div class="reality-text">Agents are stateful systems that plan, execute, and recover from errors — not a fixed sequence of prompts</div>
           <div class="why-text">Prompt chaining is deterministic: you pre-define every step. Agents are <strong>adaptive</strong>: they decide their next action based on what just happened. When step 3 fails, an agent tries an alternative. A prompt chain crashes and propagates the error. This distinction is everything when you're running 50-step research workflows in production.</div>
         </div>
       </div>
@@ -341,10 +342,10 @@
             <div class="myth-tag">Myth</div>
             <div class="myth-text">"You only need Python to build agents"</div>
           </div>
-          <span class="myth-chevron">â–¾</span>
+          <span class="myth-chevron">▾</span>
         </button>
         <div class="myth-body">
-          <div class="reality-label">âœ“ Reality</div>
+          <div class="reality-label">✓ Reality</div>
           <div class="reality-text">Production agents require architectural knowledge: protocols, memory design, security, and evaluations</div>
           <div class="why-text">Python is the implementation language. But the hard problems are architectural: <strong>how does the agent communicate with tools</strong> (MCP/A2A)? How does it manage long-term memory? How do you detect when it's stuck in a loop? How do you secure it against prompt injection? How do you evaluate whether it's getting better or worse after a system prompt change? These aren't Python problems.</div>
         </div>
@@ -357,11 +358,11 @@
             <div class="myth-tag">Myth</div>
             <div class="myth-text">"Demo-ready = production-ready"</div>
           </div>
-          <span class="myth-chevron">â–¾</span>
+          <span class="myth-chevron">▾</span>
         </button>
         <div class="myth-body">
-          <div class="reality-label">âœ“ Reality</div>
-          <div class="reality-text">The demo-to-prod gap is where most agentic AI teams fail â€” demos hide every hard problem</div>
+          <div class="reality-label">✓ Reality</div>
+          <div class="reality-text">The demo-to-prod gap is where most agentic AI teams fail — demos hide every hard problem</div>
           <div class="why-text">A demo works when: the input is perfectly clean, you take the happy path, there's no cost budget, the LLM doesn't hallucinate on this particular example, and you restart on failure. Production requires: <strong>circuit breakers</strong> to prevent infinite loops, <strong>retry logic</strong> for transient tool failures, <strong>token/cost budgets</strong>, <strong>structured output validation</strong>, <strong>distributed tracing</strong>, and <strong>golden test sets</strong> to detect regressions. The demo didn't need any of that.</div>
         </div>
       </div>
@@ -373,11 +374,11 @@
             <div class="myth-tag">Myth</div>
             <div class="myth-text">"The LLM does all the thinking"</div>
           </div>
-          <span class="myth-chevron">â–¾</span>
+          <span class="myth-chevron">▾</span>
         </button>
         <div class="myth-body">
-          <div class="reality-label">âœ“ Reality</div>
-          <div class="reality-text">The LLM is the brain â€” tools, memory, and orchestration do the actual work</div>
+          <div class="reality-label">✓ Reality</div>
+          <div class="reality-text">The LLM is the brain — tools, memory, and orchestration do the actual work</div>
           <div class="why-text">The LLM decides <strong>what</strong> to do. Tools actually <strong>do</strong> it. Memory ensures the LLM doesn't start from zero every loop. Orchestration coordinates multiple agents working in parallel. If you treat the LLM as the whole system, you'll try to stuff everything into the context window, run up massive token costs, hallucinate on tasks that need deterministic computation, and have no way to debug what went wrong.</div>
         </div>
       </div>
@@ -390,32 +391,32 @@
     <div class="section-title">What Production Actually Requires</div>
     <div class="req-grid">
       <div class="req-card">
-        <div class="req-icon">ðŸ”</div>
+        <div class="req-icon">🔁</div>
         <div class="req-title">Circuit Breakers</div>
         <div class="req-body">Hard stops on runaway agents: max iterations, max cost, max identical tool calls. Without these, a stuck agent burns your entire LLM budget overnight.</div>
       </div>
       <div class="req-card">
-        <div class="req-icon">âœ…</div>
+        <div class="req-icon">✅</div>
         <div class="req-title">Golden Test Sets</div>
-        <div class="req-body">50â€“200 curated (input, expected output) pairs. Run on every system prompt change. Block deployment if task completion rate drops by 3%.</div>
+        <div class="req-body">50–200 curated (input, expected output) pairs. Run on every system prompt change. Block deployment if task completion rate drops by 3%.</div>
       </div>
       <div class="req-card">
-        <div class="req-icon">ðŸ’¾</div>
+        <div class="req-icon">💾</div>
         <div class="req-title">Prompt Caching</div>
-        <div class="req-body">Static system prompts cached at the model layer save 60â€“80% of token costs in real deployments. Non-negotiable at scale.</div>
+        <div class="req-body">Static system prompts cached at the model layer save 60–80% of token costs in real deployments. Non-negotiable at scale.</div>
       </div>
       <div class="req-card">
-        <div class="req-icon">ðŸ”’</div>
+        <div class="req-icon">🔒</div>
         <div class="req-title">Tool Schema Design</div>
         <div class="req-body">Typed parameters, rich docstrings, and structured return values prevent the LLM from hallucinating tool call arguments in production.</div>
       </div>
       <div class="req-card">
-        <div class="req-icon">ðŸ”</div>
+        <div class="req-icon">🔍</div>
         <div class="req-title">Distributed Tracing</div>
         <div class="req-body">You cannot debug an agent without a full trace of every thought, tool call, and observation. LangSmith/Langfuse are not optional in production.</div>
       </div>
       <div class="req-card">
-        <div class="req-icon">ðŸ›¡ï¸</div>
+        <div class="req-icon">🛡️</div>
         <div class="req-title">MAESTRO Threat Model</div>
         <div class="req-body">Agents face unique security threats (prompt injection, confused deputy attacks, poisoned Agent Cards). Design the threat model before you deploy.</div>
       </div>
@@ -426,14 +427,14 @@
   <div class="section">
     <div class="section-title">Patterns That Work in Demos, Break in Production</div>
     <div class="danger-box">
-      <div class="danger-title">âš¡ Demo-to-Production Failure Patterns</div>
+      <div class="danger-title">⚡ Demo-to-Production Failure Patterns</div>
       <div class="danger-list">
-        <div class="danger-item">Assuming clean, well-formatted inputs â€” production data is messy, ambiguous, and sometimes adversarial</div>
-        <div class="danger-item">No retry logic â€” the first transient API failure kills the entire task</div>
-        <div class="danger-item">No cost monitoring â€” agents can run 10Ã— over budget before anyone notices</div>
-        <div class="danger-item">Unstructured outputs â€” "usually returns JSON" is not the same as "always returns valid JSON" at scale</div>
-        <div class="danger-item">Single happy-path testing â€” edge cases, ambiguous inputs, and adversarial prompts only appear in production</div>
-        <div class="danger-item">No context window management â€” long conversations degrade silently until the agent forgets its core directive</div>
+        <div class="danger-item">Assuming clean, well-formatted inputs — production data is messy, ambiguous, and sometimes adversarial</div>
+        <div class="danger-item">No retry logic — the first transient API failure kills the entire task</div>
+        <div class="danger-item">No cost monitoring — agents can run 10× over budget before anyone notices</div>
+        <div class="danger-item">Unstructured outputs — "usually returns JSON" is not the same as "always returns valid JSON" at scale</div>
+        <div class="danger-item">Single happy-path testing — edge cases, ambiguous inputs, and adversarial prompts only appear in production</div>
+        <div class="danger-item">No context window management — long conversations degrade silently until the agent forgets its core directive</div>
       </div>
     </div>
   </div>
@@ -483,8 +484,8 @@ function checkAnswer(btn, isCorrect) {
   }
   feedback.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
   feedback.textContent = isCorrect
-    ? 'âœ“ Correct. The demo worked because it only showed the happy path with clean inputs and no failure modes. Production is where all the "unlikely" edge cases happen continuously. The entire production stack â€” circuit breakers, test sets, tracing, cost monitoring â€” is the gap between "works in a notebook" and "runs reliably at scale."'
-    : 'âœ— Not quite. The model and UI are rarely the problem. The Jupyter demo already proved the model is capable enough. The gap is all the operational infrastructure the demo never needed: error handling, cost control, regression testing, and observability.';
+    ? '✓ Correct. The demo worked because it only showed the happy path with clean inputs and no failure modes. Production is where all the "unlikely" edge cases happen continuously. The entire production stack — circuit breakers, test sets, tracing, cost monitoring — is the gap between "works in a notebook" and "runs reliably at scale."'
+    : '✗ Not quite. The model and UI are rarely the problem. The Jupyter demo already proved the model is capable enough. The gap is all the operational infrastructure the demo never needed: error handling, cost control, regression testing, and observability.';
   reset.className = 'quiz-reset show';
 }
 

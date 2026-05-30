@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.14 â€” Self-Query Retriever & Multi-Hop RAG</title>
+<title>4.14 — Self-Query Retriever & Multi-Hop RAG</title>
 <style>
   :root {
     --bg:#0f1117; --surface:#1a1d27; --card:#21263a; --accent:#ffd166;
@@ -131,19 +132,19 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.14 â€” Self-Query Retriever & Multi-Hop RAG</span>
+  <span class="nav-cur">4.14 — Self-Query Retriever & Multi-Hop RAG</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
   <h1>Self-Query Retriever & Multi-Hop RAG</h1>
-  <p>Turn natural language into structured metadata filters â€” then chain retrievals to answer complex multi-step questions</p>
+  <p>Turn natural language into structured metadata filters — then chain retrievals to answer complex multi-step questions</p>
   <div class="hero-stats">
     <div class="hstat"><div class="hstat-n">2</div><div class="hstat-l">Concepts</div></div>
     <div class="hstat"><div class="hstat-n">+60%</div><div class="hstat-l">Filter Precision</div></div>
-    <div class="hstat"><div class="hstat-n">3â†’1</div><div class="hstat-l">Hops â†’ Answer</div></div>
+    <div class="hstat"><div class="hstat-n">3→1</div><div class="hstat-l">Hops → Answer</div></div>
   </div>
 </div>
 
@@ -162,7 +163,7 @@
     <div class="sq-layout">
 
       <div class="query-demo">
-        <h3>ðŸ” Live Query Parser</h3>
+        <h3>🔍 Live Query Parser</h3>
         <div class="query-input-area">
           <label>Select a natural language query:</label>
           <div class="query-chips">
@@ -187,7 +188,7 @@
       </div>
 
       <div class="filter-flow">
-        <h3>âš™ï¸ How Self-Query Works</h3>
+        <h3>⚙️ How Self-Query Works</h3>
         <div class="flow-step">
           <div class="hop-left">
             <div class="step-dot" style="background:rgba(255,209,102,0.15);border:2px solid var(--accent);color:var(--accent);">1</div>
@@ -205,7 +206,7 @@
             <div class="hop-line"></div>
           </div>
           <div class="step-body">
-            <div class="step-name">LLM Parses Query â†’ Structured Filter</div>
+            <div class="step-name">LLM Parses Query → Structured Filter</div>
             <div class="step-desc">Extracts semantic query + metadata constraints (year, category, rating)</div>
             <span class="step-tag" style="background:rgba(0,210,255,0.15);color:#00d2ff;">LLM Parsing</span>
           </div>
@@ -227,7 +228,7 @@
           </div>
           <div class="step-body">
             <div class="step-name">Semantic Search within Filtered Set</div>
-            <div class="step-desc">Retrieves top-k chunks â€” highly precise, zero noise from irrelevant categories</div>
+            <div class="step-desc">Retrieves top-k chunks — highly precise, zero noise from irrelevant categories</div>
             <span class="step-tag" style="background:rgba(255,101,132,0.15);color:#ff6584;">Result</span>
           </div>
         </div>
@@ -247,14 +248,14 @@
       <tbody>
         <tr>
           <td><strong>Filter capability</strong></td>
-          <td>None â€” semantic only</td>
+          <td>None — semantic only</td>
           <td>Metadata + semantic</td>
           <td><span class="badge badge-g">Self-Query</span></td>
         </tr>
         <tr>
           <td><strong>Precision for structured questions</strong></td>
-          <td>Low â€” retrieves all years/categories</td>
-          <td>High â€” narrows by constraints first</td>
+          <td>Low — retrieves all years/categories</td>
+          <td>High — narrows by constraints first</td>
           <td><span class="badge badge-g">Self-Query</span></td>
         </tr>
         <tr>
@@ -277,7 +278,7 @@
         </tr>
         <tr>
           <td><strong>Filter operators</strong></td>
-          <td>â€”</td>
+          <td>—</td>
           <td>$eq, $gt, $lt, $gte, $lte, $in, $and, $or</td>
           <td><span class="badge badge-g">Self-Query</span></td>
         </tr>
@@ -290,7 +291,7 @@
 <span style="color:#06d6a0;">metadata_field_info</span> = [
   AttributeInfo(<span style="color:#ffd166;">name</span>=<span style="color:#00d2ff;">"year"</span>,        <span style="color:#ffd166;">type</span>=<span style="color:#00d2ff;">"integer"</span>,  <span style="color:#ffd166;">description</span>=<span style="color:#00d2ff;">"Publication year"</span>),
   AttributeInfo(<span style="color:#ffd166;">name</span>=<span style="color:#00d2ff;">"category"</span>,    <span style="color:#ffd166;">type</span>=<span style="color:#00d2ff;">"string"</span>,   <span style="color:#ffd166;">description</span>=<span style="color:#00d2ff;">"Topic category"</span>),
-  AttributeInfo(<span style="color:#ffd166;">name</span>=<span style="color:#00d2ff;">"rating"</span>,      <span style="color:#ffd166;">type</span>=<span style="color:#00d2ff;">"float"</span>,    <span style="color:#ffd166;">description</span>=<span style="color:#00d2ff;">"Peer review rating 1â€“5"</span>),
+  AttributeInfo(<span style="color:#ffd166;">name</span>=<span style="color:#00d2ff;">"rating"</span>,      <span style="color:#ffd166;">type</span>=<span style="color:#00d2ff;">"float"</span>,    <span style="color:#ffd166;">description</span>=<span style="color:#00d2ff;">"Peer review rating 1–5"</span>),
   AttributeInfo(<span style="color:#ffd166;">name</span>=<span style="color:#00d2ff;">"page_count"</span>,  <span style="color:#ffd166;">type</span>=<span style="color:#00d2ff;">"integer"</span>,  <span style="color:#ffd166;">description</span>=<span style="color:#00d2ff;">"Number of pages"</span>),
 ]
 <span style="color:#06d6a0;">retriever</span> = SelfQueryRetriever.from_llm(llm, vectorstore, doc_description, metadata_field_info)
@@ -301,14 +302,14 @@
   <!-- ===== MULTI-HOP TAB ===== -->
   <div class="tab-content" id="tab-mh">
 
-    <div class="sec-title">Multi-Hop RAG â€” Chaining Retrievals</div>
+    <div class="sec-title">Multi-Hop RAG — Chaining Retrievals</div>
     <div class="hop-visualizer">
-      <h3>ðŸ”— Live Multi-Hop Trace</h3>
+      <h3>🔗 Live Multi-Hop Trace</h3>
       <p>Select a scenario to see how multiple retrieval hops build toward the final answer</p>
       <div class="scenario-tabs">
-        <div class="stab active" onclick="selectScenario(0)">ðŸ¢ Company Research</div>
-        <div class="stab" onclick="selectScenario(1)">ðŸ“„ Technical Comparison</div>
-        <div class="stab" onclick="selectScenario(2)">ðŸ§ª Medical Multi-Step</div>
+        <div class="stab active" onclick="selectScenario(0)">🏢 Company Research</div>
+        <div class="stab" onclick="selectScenario(1)">📄 Technical Comparison</div>
+        <div class="stab" onclick="selectScenario(2)">🧪 Medical Multi-Step</div>
       </div>
       <div class="hop-chain" id="hop-chain"></div>
     </div>
@@ -316,50 +317,50 @@
     <div class="sec-title">Multi-Hop Strategies</div>
     <div class="strategy-grid" id="strategy-grid">
       <div class="strategy-card active" onclick="toggleStrategy(this)">
-        <div class="sc-icon">ðŸ”„</div>
+        <div class="sc-icon">🔄</div>
         <div class="sc-name">Iterative Retrieval</div>
-        <div class="sc-desc">Agent retrieves, inspects result, decides next query â€” adaptive and LLM-driven</div>
+        <div class="sc-desc">Agent retrieves, inspects result, decides next query — adaptive and LLM-driven</div>
         <div class="sc-detail">
           <p>Best for: Open-ended questions where next hop depends on what you find</p>
-          <p>Downside: Sequential â€” slower than parallel approaches</p>
+          <p>Downside: Sequential — slower than parallel approaches</p>
           <div class="code">retrieve("CEO of OpenAI")
-â†’ "Sam Altman"
-â†’ retrieve("Sam Altman background")
-â†’ Answer synthesized</div>
+→ "Sam Altman"
+→ retrieve("Sam Altman background")
+→ Answer synthesized</div>
         </div>
       </div>
       <div class="strategy-card" onclick="toggleStrategy(this)">
-        <div class="sc-icon">ðŸŒ³</div>
+        <div class="sc-icon">🌳</div>
         <div class="sc-name">Sub-Question Decomposition</div>
         <div class="sc-desc">Break complex query into sub-questions, retrieve each in parallel, combine results</div>
         <div class="sc-detail">
           <p>Best for: Multi-part questions with independent sub-questions</p>
           <p>Advantage: Can run sub-queries in parallel for speed</p>
           <div class="code">Q: "Compare GPT-4 vs Claude 3"
-â†’ Q1: "GPT-4 capabilities"
-â†’ Q2: "Claude 3 capabilities"
-â†’ Q3: "Benchmark results"
-â†’ Combine â†’ Answer</div>
+→ Q1: "GPT-4 capabilities"
+→ Q2: "Claude 3 capabilities"
+→ Q3: "Benchmark results"
+→ Combine → Answer</div>
         </div>
       </div>
       <div class="strategy-card" onclick="toggleStrategy(this)">
-        <div class="sc-icon">ðŸ•¸ï¸</div>
+        <div class="sc-icon">🕸️</div>
         <div class="sc-name">Graph-Based Traversal</div>
-        <div class="sc-desc">Nodes = documents, edges = relationships â€” traverse the knowledge graph hop by hop</div>
+        <div class="sc-desc">Nodes = documents, edges = relationships — traverse the knowledge graph hop by hop</div>
         <div class="sc-detail">
           <p>Best for: Entity-relationship questions over structured knowledge</p>
           <p>Requires: Knowledge graph or entity linking layer</p>
           <div class="code">Entity: "Anthropic"
-â†’ Edge: "founded_by"
-â†’ Entity: "Dario Amodei"
-â†’ Edge: "previously_at"
-â†’ "OpenAI" â†’ Answer</div>
+→ Edge: "founded_by"
+→ Entity: "Dario Amodei"
+→ Edge: "previously_at"
+→ "OpenAI" → Answer</div>
         </div>
       </div>
       <div class="strategy-card" onclick="toggleStrategy(this)">
-        <div class="sc-icon">âš¡</div>
+        <div class="sc-icon">⚡</div>
         <div class="sc-name">Beam Search RAG</div>
-        <div class="sc-desc">Maintain top-K hypotheses at each hop â€” prune weak paths, keep promising chains</div>
+        <div class="sc-desc">Maintain top-K hypotheses at each hop — prune weak paths, keep promising chains</div>
         <div class="sc-detail">
           <p>Best for: Long reasoning chains where wrong hops compound errors</p>
           <p>Trade-off: More retrievals but higher answer quality</p>
@@ -367,7 +368,7 @@
 Prune to top-2: [A, B]
 Hop 2 from A: [A1, A2]
 Hop 2 from B: [B1, B2]
-Best path: A â†’ A2 â†’ Answer</div>
+Best path: A → A2 → Answer</div>
         </div>
       </div>
     </div>
@@ -385,7 +386,7 @@ Best path: A â†’ A2 â†’ Answer</div>
         <tr>
           <td>"Papers about RAG from 2024 rated &gt;4.5"</td>
           <td><span class="badge badge-y">Self-Query</span></td>
-          <td>Has metadata constraints â€” pre-filter wins</td>
+          <td>Has metadata constraints — pre-filter wins</td>
         </tr>
         <tr>
           <td>"What did the CEO of Company X say about AI?"</td>
@@ -415,22 +416,22 @@ Best path: A â†’ A2 â†’ Answer</div>
   <div class="tab-content" id="tab-challenge">
     <div class="sec-title">Test Your Understanding</div>
     <div class="challenge-box" id="challenge-box">
-      <h3>ðŸŽ¯ Which retrieval approach should you use?</h3>
+      <h3>🎯 Which retrieval approach should you use?</h3>
       <p>Read the query, select the best approach</p>
       <div class="query-big" id="chal-query">Loading question...</div>
       <div class="choice-grid" id="chal-choices"></div>
       <div class="feedback" id="chal-feedback"></div>
-      <button onclick="nextChallenge()" style="margin-top:16px;padding:10px 24px;border-radius:8px;border:1px solid var(--accent);background:rgba(255,209,102,0.1);color:var(--accent);font-weight:700;cursor:pointer;font-size:13px;">Next Question â†’</button>
+      <button onclick="nextChallenge()" style="margin-top:16px;padding:10px 24px;border-radius:8px;border:1px solid var(--accent);background:rgba(255,209,102,0.1);color:var(--accent);font-weight:700;cursor:pointer;font-size:13px;">Next Question →</button>
     </div>
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
 <script>
-// â”€â”€â”€ TAB SWITCH â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── TAB SWITCH ───────────────────────────────────────
 function switchTab(id) {
   document.querySelectorAll('.tab').forEach((t,i) => {
     const ids = ['sq','mh','challenge'];
@@ -440,7 +441,7 @@ function switchTab(id) {
   document.getElementById('tab-'+id).classList.add('active');
 }
 
-// â”€â”€â”€ SELF-QUERY PARSER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── SELF-QUERY PARSER ───────────────────────────────
 const queries = [
   {
     label: "Papers about RAG published after 2023",
@@ -465,31 +466,31 @@ function selectQuery(i) {
   document.getElementById('parse-output').innerHTML = queries[i].json;
 }
 
-// â”€â”€â”€ MULTI-HOP SCENARIOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── MULTI-HOP SCENARIOS ─────────────────────────────
 const scenarios = [
   {
     hops: [
-      { color:'#6c63ff', num:'HOP 1', type:'Initial Query', text:'Who is the CEO of Anthropic?', result:'â†’ Retrieved: "Dario Amodei is the CEO of Anthropic"' },
-      { color:'#00d2ff', num:'HOP 2', type:'Entity Follow-up', text:'What did Dario Amodei say about AI safety in 2024?', result:'â†’ Retrieved: "In 2024 interview, Amodei emphasized Constitutional AI..."' },
-      { color:'#06d6a0', num:'HOP 3', type:'Context Enrichment', text:'What is Constitutional AI and how does Anthropic implement it?', result:'â†’ Retrieved: "Constitutional AI uses a set of principles to guide..."' },
+      { color:'#6c63ff', num:'HOP 1', type:'Initial Query', text:'Who is the CEO of Anthropic?', result:'→ Retrieved: "Dario Amodei is the CEO of Anthropic"' },
+      { color:'#00d2ff', num:'HOP 2', type:'Entity Follow-up', text:'What did Dario Amodei say about AI safety in 2024?', result:'→ Retrieved: "In 2024 interview, Amodei emphasized Constitutional AI..."' },
+      { color:'#06d6a0', num:'HOP 3', type:'Context Enrichment', text:'What is Constitutional AI and how does Anthropic implement it?', result:'→ Retrieved: "Constitutional AI uses a set of principles to guide..."' },
     ],
     final: '"Dario Amodei, CEO of Anthropic, described Constitutional AI in 2024 as a technique where the model critiques its own outputs against a set of human-designed principles..."'
   },
   {
     hops: [
-      { color:'#ffd166', num:'HOP 1', type:'Sub-Q #1', text:'What are GPT-4 benchmark scores on MMLU?', result:'â†’ Retrieved: "GPT-4 scored 86.4% on MMLU (5-shot)"' },
-      { color:'#ff6584', num:'HOP 2', type:'Sub-Q #2', text:'What are Claude 3 Opus benchmark scores on MMLU?', result:'â†’ Retrieved: "Claude 3 Opus scored 86.8% on MMLU"' },
-      { color:'#06d6a0', num:'HOP 3', type:'Synthesis Query', text:'Which model is preferred for coding tasks?', result:'â†’ Retrieved: "HumanEval: GPT-4 67.0%, Claude 3 Opus 84.9%"' },
+      { color:'#ffd166', num:'HOP 1', type:'Sub-Q #1', text:'What are GPT-4 benchmark scores on MMLU?', result:'→ Retrieved: "GPT-4 scored 86.4% on MMLU (5-shot)"' },
+      { color:'#ff6584', num:'HOP 2', type:'Sub-Q #2', text:'What are Claude 3 Opus benchmark scores on MMLU?', result:'→ Retrieved: "Claude 3 Opus scored 86.8% on MMLU"' },
+      { color:'#06d6a0', num:'HOP 3', type:'Synthesis Query', text:'Which model is preferred for coding tasks?', result:'→ Retrieved: "HumanEval: GPT-4 67.0%, Claude 3 Opus 84.9%"' },
     ],
     final: '"GPT-4 and Claude 3 Opus are comparable on MMLU (86.4% vs 86.8%), but Claude 3 Opus significantly outperforms on coding tasks (84.9% vs 67.0% on HumanEval)"'
   },
   {
     hops: [
-      { color:'#ff6584', num:'HOP 1', type:'Symptom Query', text:'What conditions cause elevated C-reactive protein?', result:'â†’ Retrieved: "CRP elevation occurs in: bacterial infection, autoimmune disorders, cardiovascular disease..."' },
-      { color:'#ffd166', num:'HOP 2', type:'Narrowing Query', text:'How does rheumatoid arthritis affect CRP levels?', result:'â†’ Retrieved: "RA causes persistent CRP elevation typically 10â€“100 mg/L..."' },
-      { color:'#6c63ff', num:'HOP 3', type:'Treatment Query', text:'What are first-line treatments for RA with elevated CRP?', result:'â†’ Retrieved: "MTX is first-line; biologics (TNF inhibitors) for persistent elevation..."' },
+      { color:'#ff6584', num:'HOP 1', type:'Symptom Query', text:'What conditions cause elevated C-reactive protein?', result:'→ Retrieved: "CRP elevation occurs in: bacterial infection, autoimmune disorders, cardiovascular disease..."' },
+      { color:'#ffd166', num:'HOP 2', type:'Narrowing Query', text:'How does rheumatoid arthritis affect CRP levels?', result:'→ Retrieved: "RA causes persistent CRP elevation typically 10–100 mg/L..."' },
+      { color:'#6c63ff', num:'HOP 3', type:'Treatment Query', text:'What are first-line treatments for RA with elevated CRP?', result:'→ Retrieved: "MTX is first-line; biologics (TNF inhibitors) for persistent elevation..."' },
     ],
-    final: '"Patient with elevated CRP likely has RA. CRP 10â€“100 mg/L typical. First-line: Methotrexate; escalate to TNF inhibitors if CRP remains elevated after 3 months."'
+    final: '"Patient with elevated CRP likely has RA. CRP 10–100 mg/L typical. First-line: Methotrexate; escalate to TNF inhibitors if CRP remains elevated after 3 months."'
   }
 ];
 
@@ -510,14 +511,14 @@ function renderHopChain() {
         ${i < s.hops.length-1 ? '<div class="hop-line"></div>' : ''}
       </div>
       <div class="hop-content">
-        <div class="hop-type" style="color:${h.color};">${h.num} â€” ${h.type}</div>
+        <div class="hop-type" style="color:${h.color};">${h.num} — ${h.type}</div>
         <div class="hop-text">"${h.text}"</div>
         <div class="hop-result">${h.result}</div>
       </div>
     </div>
   `).join('') + `
     <div class="hop-final">
-      <div class="hop-final-label">âœ… Final Synthesized Answer</div>
+      <div class="hop-final-label">✅ Final Synthesized Answer</div>
       <div class="hop-final-text">${s.final}</div>
     </div>
   `;
@@ -528,37 +529,37 @@ function toggleStrategy(el) {
   el.classList.add('active');
 }
 
-// â”€â”€â”€ CHALLENGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CHALLENGE ────────────────────────────────────────
 const challenges = [
   {
     q: '"Show me machine learning papers from 2023 with more than 100 citations"',
     opts: ['Self-Query Retriever', 'Multi-Hop (Iterative)', 'Multi-Hop (Sub-Question)', 'Standard Semantic RAG'],
     correct: 0,
-    explain: 'âœ… Correct! Year=2023 and citations>100 are metadata constraints â€” Self-Query pre-filters on these before semantic search.'
+    explain: '✅ Correct! Year=2023 and citations>100 are metadata constraints — Self-Query pre-filters on these before semantic search.'
   },
   {
     q: '"Who invented the transformer architecture, and what are they working on now?"',
     opts: ['Self-Query Retriever', 'Multi-Hop (Iterative)', 'Standard Semantic RAG', 'No RAG needed'],
     correct: 1,
-    explain: 'âœ… Correct! Hop 1: find inventor â†’ Hop 2: find current work. Each hop depends on the previous result.'
+    explain: '✅ Correct! Hop 1: find inventor → Hop 2: find current work. Each hop depends on the previous result.'
   },
   {
     q: '"Compare the pricing and features of AWS S3, Google Cloud Storage, and Azure Blob"',
     opts: ['Self-Query Retriever', 'Multi-Hop (Iterative)', 'Multi-Hop (Sub-Question)', 'Graph-Based Traversal'],
     correct: 2,
-    explain: 'âœ… Correct! Three independent sub-questions (one per service) can be retrieved in parallel, then merged.'
+    explain: '✅ Correct! Three independent sub-questions (one per service) can be retrieved in parallel, then merged.'
   },
   {
     q: '"What is gradient descent?"',
     opts: ['Self-Query Retriever', 'Multi-Hop RAG', 'Standard Semantic RAG', 'Graph Traversal'],
     correct: 2,
-    explain: 'âœ… Correct! Simple factual query with no metadata constraints and no chaining needed â€” standard RAG is optimal.'
+    explain: '✅ Correct! Simple factual query with no metadata constraints and no chaining needed — standard RAG is optimal.'
   },
   {
     q: '"Python tutorials for beginners in the NLP category with high ratings"',
     opts: ['Multi-Hop (Iterative)', 'Self-Query Retriever', 'Multi-Hop (Sub-Question)', 'Graph-Based Traversal'],
     correct: 1,
-    explain: 'âœ… Correct! Category="NLP", level="beginner", rating>X are all metadata constraints â€” Self-Query handles this cleanly.'
+    explain: '✅ Correct! Category="NLP", level="beginner", rating>X are all metadata constraints — Self-Query handles this cleanly.'
   }
 ];
 
@@ -581,12 +582,12 @@ function answerChallenge(i) {
   btns[i].classList.add(i===c.correct ? 'correct' : 'wrong');
   btns[c.correct].classList.add('correct');
   const fb = document.getElementById('chal-feedback');
-  fb.textContent = i===c.correct ? c.explain : 'âŒ Not quite. ' + c.explain;
+  fb.textContent = i===c.correct ? c.explain : '❌ Not quite. ' + c.explain;
   fb.className = 'feedback show ' + (i===c.correct ? 'ok' : 'bad');
 }
 function nextChallenge() { chalIdx++; loadChallenge(); }
 
-// â”€â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── INIT ─────────────────────────────────────────────
 renderHopChain();
 loadChallenge();
 </script>

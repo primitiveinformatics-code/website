@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Concept 3.2 â€” The MCP Hub Pattern</title>
+<title>Concept 3.2 — The MCP Hub Pattern</title>
 <style>
   :root {
     --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
@@ -119,17 +120,17 @@
 
 <nav>
   <div class="nav-links">
-    <a href="concept_3_1.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_3_3.html">Next â†’</a>
+    <a href="concept_3_1.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_3_3.html">Next →</a>
   </div>
-  <span class="title">3.2 â€” The MCP Hub Pattern</span>
+  <span class="title">3.2 — The MCP Hub Pattern</span>
 </nav>
 
 <div class="hero">
-  <div class="session-tag">Session 3 Â· Tool Ecosystems</div>
+  <div class="session-tag">Session 3 · Tool Ecosystems</div>
   <h1>The MCP Hub Pattern</h1>
-  <p>One hub, many servers â€” how agents route tool calls across namespaced capability clusters without coupling to individual servers.</p>
+  <p>One hub, many servers — how agents route tool calls across namespaced capability clusters without coupling to individual servers.</p>
 </div>
 
 <div class="content">
@@ -139,63 +140,63 @@
     <h2>What Is the Hub Pattern?</h2>
     <div class="benefit-grid">
       <div class="benefit-card">
-        <div class="b-icon">ðŸŒ</div>
+        <div class="b-icon">🌐</div>
         <h4>Single Entry Point</h4>
-        <p>The agent connects to ONE hub instead of managing N separate MCP server connections â€” dramatically reduces agent complexity.</p>
+        <p>The agent connects to ONE hub instead of managing N separate MCP server connections — dramatically reduces agent complexity.</p>
       </div>
       <div class="benefit-card">
-        <div class="b-icon">ðŸ—‚ï¸</div>
+        <div class="b-icon">🗂️</div>
         <h4>Tool Namespacing</h4>
-        <p>Each server's tools are prefixed (e.g., <code>fs.read_file</code>, <code>db.query</code>) â€” no naming collisions across servers.</p>
+        <p>Each server's tools are prefixed (e.g., <code>fs.read_file</code>, <code>db.query</code>) — no naming collisions across servers.</p>
       </div>
       <div class="benefit-card">
-        <div class="b-icon">ðŸ”€</div>
+        <div class="b-icon">🔀</div>
         <h4>Smart Routing</h4>
         <p>Hub parses the tool namespace and routes <code>tools/call</code> requests to the correct downstream MCP server automatically.</p>
       </div>
       <div class="benefit-card">
-        <div class="b-icon">ðŸ”§</div>
+        <div class="b-icon">🔧</div>
         <h4>Hot-Swap Servers</h4>
-        <p>Add, remove, or update downstream servers without changing agent code â€” the hub re-advertises new tool lists on reconnect.</p>
+        <p>Add, remove, or update downstream servers without changing agent code — the hub re-advertises new tool lists on reconnect.</p>
       </div>
     </div>
   </div>
 
   <!-- HUB DIAGRAM -->
   <div class="section">
-    <h2>Hub Architecture â€” Click a Server to Explore</h2>
+    <h2>Hub Architecture — Click a Server to Explore</h2>
     <div class="hub-diagram">
       <div class="hub-center">
-        <h3>ðŸ”— MCP Hub</h3>
+        <h3>🔗 MCP Hub</h3>
         <p>Aggregates & routes</p>
       </div>
       <div class="hub-spokes">
         <div class="spoke-server" id="srv-fs" onclick="toggleSpoke('fs')">
-          <div class="s-icon">ðŸ“</div>
+          <div class="s-icon">📁</div>
           <h4>Filesystem Server</h4>
           <div class="s-ns">namespace: fs.*</div>
           <div class="s-tools">4 tools</div>
         </div>
         <div class="spoke-server" id="srv-db" onclick="toggleSpoke('db')">
-          <div class="s-icon">ðŸ—„ï¸</div>
+          <div class="s-icon">🗄️</div>
           <h4>Database Server</h4>
           <div class="s-ns">namespace: db.*</div>
           <div class="s-tools">3 tools</div>
         </div>
         <div class="spoke-server" id="srv-web" onclick="toggleSpoke('web')">
-          <div class="s-icon">ðŸŒ</div>
+          <div class="s-icon">🌍</div>
           <h4>Web Search Server</h4>
           <div class="s-ns">namespace: web.*</div>
           <div class="s-tools">3 tools</div>
         </div>
         <div class="spoke-server" id="srv-code" onclick="toggleSpoke('code')">
-          <div class="s-icon">ðŸ’»</div>
+          <div class="s-icon">💻</div>
           <h4>Code Exec Server</h4>
           <div class="s-ns">namespace: code.*</div>
           <div class="s-tools">3 tools</div>
         </div>
         <div class="spoke-server" id="srv-email" onclick="toggleSpoke('email')">
-          <div class="s-icon">ðŸ“§</div>
+          <div class="s-icon">📧</div>
           <h4>Email Server</h4>
           <div class="s-ns">namespace: email.*</div>
           <div class="s-tools">3 tools</div>
@@ -237,7 +238,7 @@
   <div class="section">
     <h2>Tool Routing Simulator</h2>
     <div class="router-sim">
-      <h3>ðŸ¤– Choose an agent request to trace how the hub routes it:</h3>
+      <h3>🤖 Choose an agent request to trace how the hub routes it:</h3>
       <div class="query-input-area" id="queryBtns">
         <button class="query-btn" onclick="simulateRoute(0, this)">"Summarize the README.md file"</button>
         <button class="query-btn" onclick="simulateRoute(1, this)">"Search the web for MCP v2 spec"</button>
@@ -261,9 +262,9 @@
         </div>
       </div>
       <div class="mas-row">
-        <span class="mas-arrow">â†™</span>
+        <span class="mas-arrow">↙</span>
         <span style="color:var(--muted);font-size:0.8rem">delegates sub-tasks</span>
-        <span class="mas-arrow">â†˜</span>
+        <span class="mas-arrow">↘</span>
       </div>
       <div class="mas-row">
         <div class="mas-box agent">
@@ -280,23 +281,23 @@
         </div>
       </div>
       <div class="mas-row">
-        <span class="mas-arrow">â†“</span>
+        <span class="mas-arrow">↓</span>
         <span style="width:80px;"></span>
-        <span class="mas-arrow">â†“</span>
+        <span class="mas-arrow">↓</span>
         <span style="width:80px;"></span>
-        <span class="mas-arrow">â†“</span>
+        <span class="mas-arrow">↓</span>
       </div>
       <div class="mas-row">
         <div class="mas-box hub">
-          <h5>ðŸ”— Hub A</h5>
+          <h5>🔗 Hub A</h5>
           <p>web.*, fs.*</p>
         </div>
         <div class="mas-box hub">
-          <h5>ðŸ”— Hub B</h5>
+          <h5>🔗 Hub B</h5>
           <p>code.*, fs.*</p>
         </div>
         <div class="mas-box hub">
-          <h5>ðŸ”— Hub C</h5>
+          <h5>🔗 Hub C</h5>
           <p>email.*, cal.*</p>
         </div>
       </div>
@@ -307,13 +308,13 @@
         <div class="mas-box srv"><h5>Gmail</h5><p>Gmail API</p></div>
         <div class="mas-box srv"><h5>Calendar</h5><p>GCal API</p></div>
       </div>
-      <p style="text-align:center;margin-top:16px;font-size:0.82rem;color:var(--muted);">Each agent has a specialized hub â€” tool sets are scoped to the agent's responsibilities</p>
+      <p style="text-align:center;margin-top:16px;font-size:0.82rem;color:var(--muted);">Each agent has a specialized hub — tool sets are scoped to the agent's responsibilities</p>
     </div>
   </div>
 
   <!-- QUIZ -->
   <div class="section">
-    <h2>Quiz â€” Test Your Understanding</h2>
+    <h2>Quiz — Test Your Understanding</h2>
     <div class="score-bar">
       <span class="score-display" id="scoreDisplay">0 / 5</span>
       <span class="score-label">questions answered correctly</span>
@@ -360,7 +361,7 @@
       <div class="options" id="q4">
         <button class="opt" onclick="answer('q4','a','c')">A) Tool calls execute in under 1ms due to in-memory caching</button>
         <button class="opt" onclick="answer('q4','b','c')">B) The hub automatically upgrades servers to the latest MCP version</button>
-        <button class="opt" onclick="answer('q4','c','c')">C) Downstream servers can be added or replaced without changing agent code â€” the hub re-exposes updated tool lists</button>
+        <button class="opt" onclick="answer('q4','c','c')">C) Downstream servers can be added or replaced without changing agent code — the hub re-exposes updated tool lists</button>
         <button class="opt" onclick="answer('q4','d','c')">D) Each agent gets a hot standby replica for failover</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
@@ -371,7 +372,7 @@
       <h3>Q5. In a multi-agent system using the hub pattern, why might each specialized agent have its OWN hub rather than sharing one?</h3>
       <div class="options" id="q5">
         <button class="opt" onclick="answer('q5','a','b')">A) MCP hubs can only serve one client connection at a time</button>
-        <button class="opt" onclick="answer('q5','b','b')">B) Specialized hubs scope tool access to each agent's responsibilities â€” a coding agent doesn't need email tools</button>
+        <button class="opt" onclick="answer('q5','b','b')">B) Specialized hubs scope tool access to each agent's responsibilities — a coding agent doesn't need email tools</button>
         <button class="opt" onclick="answer('q5','c','b')">C) Shared hubs are not allowed by the MCP specification</button>
         <button class="opt" onclick="answer('q5','d','b')">D) Each hub must run on a separate physical machine</button>
       </div>
@@ -383,7 +384,7 @@
 </div>
 
 <script>
-// â”€â”€ SPOKE DETAIL DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SPOKE DETAIL DATA ──────────────────────────────────────────
 const spokeData = {
   fs: {
     name: 'Filesystem Server (fs.*)',
@@ -440,62 +441,62 @@ function toggleSpoke(id) {
   detail.classList.add('show');
 }
 
-// â”€â”€ ROUTING SIMULATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── ROUTING SIMULATOR ─────────────────────────────────────────
 const routes = [
   {
     label: '"Summarize the README.md file"',
     lines: [
       ['rt-agent', 'AGENT: I need to read a file. Will call <strong>fs.read_file</strong>'],
-      ['rt-hub',   'HUB: Received tools/call â†’ name: "fs.read_file"'],
-      ['rt-hub',   'HUB: Parsing namespace... prefix = "fs" â†’ resolves to filesystem-mcp server'],
+      ['rt-hub',   'HUB: Received tools/call → name: "fs.read_file"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "fs" → resolves to filesystem-mcp server'],
       ['rt-hub',   'HUB: Forwarding request to filesystem-mcp via stdio transport'],
       ['rt-server','FILESYSTEM-MCP: Reading /workspace/README.md...'],
       ['rt-server','FILESYSTEM-MCP: Returning 1,240 characters of text content'],
       ['rt-hub',   'HUB: Received response from filesystem-mcp, relaying to agent'],
-      ['rt-result','AGENT: âœ“ Got file content. Now summarizing with LLM...'],
+      ['rt-result','AGENT: ✓ Got file content. Now summarizing with LLM...'],
     ]
   },
   {
     label: '"Search the web for MCP v2 spec"',
     lines: [
       ['rt-agent', 'AGENT: Need current web info. Will call <strong>web.search</strong>'],
-      ['rt-hub',   'HUB: Received tools/call â†’ name: "web.search"'],
-      ['rt-hub',   'HUB: Parsing namespace... prefix = "web" â†’ resolves to brave-search-mcp server'],
+      ['rt-hub',   'HUB: Received tools/call → name: "web.search"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "web" → resolves to brave-search-mcp server'],
       ['rt-hub',   'HUB: Checking rate limit... 12/60 requests used. OK.'],
       ['rt-hub',   'HUB: Forwarding request to brave-search-mcp via SSE transport'],
       ['rt-server','BRAVE-SEARCH-MCP: Calling Brave Search API with query: "MCP v2 spec"'],
       ['rt-server','BRAVE-SEARCH-MCP: Got 8 results. Returning top 5 with titles and snippets.'],
       ['rt-hub',   'HUB: Relaying results to agent'],
-      ['rt-result','AGENT: âœ“ Got search results. Extracting relevant specification links...'],
+      ['rt-result','AGENT: ✓ Got search results. Extracting relevant specification links...'],
     ]
   },
   {
     label: '"Run this Python snippet and show output"',
     lines: [
       ['rt-agent', 'AGENT: Need code execution. Will call <strong>code.run_python</strong>'],
-      ['rt-hub',   'HUB: Received tools/call â†’ name: "code.run_python"'],
-      ['rt-hub',   'HUB: Parsing namespace... prefix = "code" â†’ resolves to sandbox-exec-mcp server'],
+      ['rt-hub',   'HUB: Received tools/call → name: "code.run_python"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "code" → resolves to sandbox-exec-mcp server'],
       ['rt-hub',   'HUB: Security check: code execution server active? Yes. Forwarding.'],
       ['rt-server','SANDBOX-MCP: Spawning ephemeral Docker container (python:3.11-slim)'],
       ['rt-server','SANDBOX-MCP: Network disabled. Memory limit: 256MB. Timeout: 30s'],
       ['rt-server','SANDBOX-MCP: Code executed in 0.43s. stdout captured.'],
       ['rt-server','SANDBOX-MCP: Container destroyed. Returning stdout output.'],
       ['rt-hub',   'HUB: Relaying code output to agent'],
-      ['rt-result','AGENT: âœ“ Execution complete. Output: [42, 17, 99]'],
+      ['rt-result','AGENT: ✓ Execution complete. Output: [42, 17, 99]'],
     ]
   },
   {
     label: '"Query users table for signups today"',
     lines: [
       ['rt-agent', 'AGENT: Need DB data. Will call <strong>db.query</strong>'],
-      ['rt-hub',   'HUB: Received tools/call â†’ name: "db.query"'],
-      ['rt-hub',   'HUB: Parsing namespace... prefix = "db" â†’ resolves to postgres-mcp server'],
+      ['rt-hub',   'HUB: Received tools/call → name: "db.query"'],
+      ['rt-hub',   'HUB: Parsing namespace... prefix = "db" → resolves to postgres-mcp server'],
       ['rt-hub',   'HUB: Agent has db.* read permission. Forwarding.'],
       ['rt-server','POSTGRES-MCP: Validating SQL... SELECT query only. OK.'],
       ['rt-server','POSTGRES-MCP: Executing: SELECT COUNT(*) FROM users WHERE created_at >= NOW()-\'1 day\''],
       ['rt-server','POSTGRES-MCP: Query completed in 18ms. Rows: 1'],
       ['rt-hub',   'HUB: Relaying query result to agent'],
-      ['rt-result','AGENT: âœ“ Query result: 247 new signups today'],
+      ['rt-result','AGENT: ✓ Query result: 247 new signups today'],
     ]
   }
 ];
@@ -522,7 +523,7 @@ function simulateRoute(idx, btn) {
   addLine();
 }
 
-// â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── QUIZ ─────────────────────────────────────────────────────────
 let score = 0;
 const answered = {};
 function answer(qid, chosen, correct) {
@@ -538,18 +539,18 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
     const msgs = {
       q1: 'The hub gives the agent a single connection point while aggregating N downstream servers behind it.',
       q2: 'The hub parses the namespace prefix "db." and routes the call to the registered database MCP server.',
-      q3: 'Multiple servers can have tools with identical names â€” namespacing (fs.search vs web.search) prevents collisions.',
-      q4: 'Hot-swap means you can update/replace a downstream server without changing the agent â€” the hub re-exposes the updated tool list.',
-      q5: 'Specialized hubs scope tools to each agent\'s role â€” the coding agent has no need for email tools, keeping its tool context lean.'
+      q3: 'Multiple servers can have tools with identical names — namespacing (fs.search vs web.search) prevents collisions.',
+      q4: 'Hot-swap means you can update/replace a downstream server without changing the agent — the hub re-exposes the updated tool list.',
+      q5: 'Specialized hubs scope tools to each agent\'s role — the coding agent has no need for email tools, keeping its tool context lean.'
     };
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 function resetQ(qid) {

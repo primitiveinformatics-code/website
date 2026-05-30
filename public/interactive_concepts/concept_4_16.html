@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.16 â€” LLM Selection: Two-Tier Architecture</title>
+<title>4.16 — LLM Selection: Two-Tier Architecture</title>
 <style>
   :root {
     --bg:#0f1117; --surface:#1a1d27; --card:#21263a; --accent:#ffd166;
@@ -105,15 +106,15 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.16 â€” LLM Selection: Two-Tier Architecture</span>
+  <span class="nav-cur">4.16 — LLM Selection: Two-Tier Architecture</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
-  <h1>LLM Selection â€” Two-Tier Architecture</h1>
-  <p>Route tasks intelligently between powerful frontier models and fast, cheap models â€” maximize quality while minimizing cost</p>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>LLM Selection — Two-Tier Architecture</h1>
+  <p>Route tasks intelligently between powerful frontier models and fast, cheap models — maximize quality while minimizing cost</p>
   <div class="hero-stats">
     <div class="hstat"><div class="hstat-n">2</div><div class="hstat-l">Tiers</div></div>
     <div class="hstat"><div class="hstat-n">80%</div><div class="hstat-l">Cost Reduction</div></div>
@@ -127,80 +128,80 @@
   <div class="tier-diagram">
 
     <div class="tier-box" style="background:rgba(108,99,255,0.08);border:2px solid rgba(108,99,255,0.3);">
-      <div class="tier-label" style="color:#6c63ff;">Tier 1 â€” Orchestrator</div>
-      <div class="tier-name" style="color:#6c63ff;">ðŸ§  Frontier Model</div>
-      <div class="tier-desc">The "brain" â€” expensive, powerful, used sparingly for high-stakes decisions</div>
+      <div class="tier-label" style="color:#6c63ff;">Tier 1 — Orchestrator</div>
+      <div class="tier-name" style="color:#6c63ff;">🧠 Frontier Model</div>
+      <div class="tier-desc">The "brain" — expensive, powerful, used sparingly for high-stakes decisions</div>
       <div class="tier-props">
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Multi-step planning</strong> â€” decompose complex goals</div></div>
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Ambiguous queries</strong> â€” understand nuance and context</div></div>
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Synthesis & reasoning</strong> â€” combine information across hops</div></div>
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Error correction</strong> â€” validate and fix worker outputs</div></div>
-        <div class="tier-prop"><div class="prop-icon">ðŸ’°</div><div class="prop-text">Cost: $10â€“$30 / 1M tokens</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Multi-step planning</strong> — decompose complex goals</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Ambiguous queries</strong> — understand nuance and context</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Synthesis & reasoning</strong> — combine information across hops</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Error correction</strong> — validate and fix worker outputs</div></div>
+        <div class="tier-prop"><div class="prop-icon">💰</div><div class="prop-text">Cost: $10–$30 / 1M tokens</div></div>
       </div>
     </div>
 
     <div class="tier-arrow">
-      <div>â‡†</div>
+      <div>⇆</div>
       <div class="tier-arrow-label">Task<br>Routing</div>
     </div>
 
     <div class="tier-box" style="background:rgba(6,214,160,0.08);border:2px solid rgba(6,214,160,0.3);">
-      <div class="tier-label" style="color:#06d6a0;">Tier 2 â€” Worker</div>
-      <div class="tier-name" style="color:#06d6a0;">âš¡ Fast Model</div>
-      <div class="tier-desc">The "hands" â€” cheap, fast, deployed at scale for well-defined sub-tasks</div>
+      <div class="tier-label" style="color:#06d6a0;">Tier 2 — Worker</div>
+      <div class="tier-name" style="color:#06d6a0;">⚡ Fast Model</div>
+      <div class="tier-desc">The "hands" — cheap, fast, deployed at scale for well-defined sub-tasks</div>
       <div class="tier-props">
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Structured extraction</strong> â€” pull fields from documents</div></div>
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Classification</strong> â€” route, label, categorize</div></div>
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Summarization</strong> â€” condense large chunks quickly</div></div>
-        <div class="tier-prop"><div class="prop-icon">âœ…</div><div class="prop-text"><strong>Simple Q&A</strong> â€” factual, single-turn responses</div></div>
-        <div class="tier-prop"><div class="prop-icon">ðŸ’°</div><div class="prop-text">Cost: $0.10â€“$1.00 / 1M tokens</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Structured extraction</strong> — pull fields from documents</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Classification</strong> — route, label, categorize</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Summarization</strong> — condense large chunks quickly</div></div>
+        <div class="tier-prop"><div class="prop-icon">✅</div><div class="prop-text"><strong>Simple Q&A</strong> — factual, single-turn responses</div></div>
+        <div class="tier-prop"><div class="prop-icon">💰</div><div class="prop-text">Cost: $0.10–$1.00 / 1M tokens</div></div>
       </div>
     </div>
   </div>
 
-  <div class="sec-title">Task Router â€” Which Tier?</div>
+  <div class="sec-title">Task Router — Which Tier?</div>
   <div class="router-box">
-    <h3>ðŸŽ® Interactive Task Router</h3>
+    <h3>🎮 Interactive Task Router</h3>
     <p>Click "Route Tasks" to see which tier each task should go to and why</p>
     <div class="task-list" id="task-list">
-      <div class="task-item" data-route="fast" data-label="Tier 2 â€” Fast Model" data-why="Simple extraction, single-field, structured input â€” no reasoning required">
-        <div class="task-icon">ðŸ“‹</div><div class="task-name">Extract invoice amount from PDF</div>
-        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">â†’ Fast Model</div>
+      <div class="task-item" data-route="fast" data-label="Tier 2 — Fast Model" data-why="Simple extraction, single-field, structured input — no reasoning required">
+        <div class="task-icon">📋</div><div class="task-name">Extract invoice amount from PDF</div>
+        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">→ Fast Model</div>
       </div>
-      <div class="task-item" data-route="smart" data-label="Tier 1 â€” Frontier Model" data-why="Requires multi-step reasoning, strategic judgment, and synthesis across multiple data sources">
-        <div class="task-icon">ðŸ“Š</div><div class="task-name">Analyze Q3 earnings report and identify growth risks</div>
-        <div class="task-route" style="background:rgba(108,99,255,0.15);color:#6c63ff;">â†’ Frontier Model</div>
+      <div class="task-item" data-route="smart" data-label="Tier 1 — Frontier Model" data-why="Requires multi-step reasoning, strategic judgment, and synthesis across multiple data sources">
+        <div class="task-icon">📊</div><div class="task-name">Analyze Q3 earnings report and identify growth risks</div>
+        <div class="task-route" style="background:rgba(108,99,255,0.15);color:#6c63ff;">→ Frontier Model</div>
       </div>
-      <div class="task-item" data-route="fast" data-label="Tier 2 â€” Fast Model" data-why="Binary classification with clear categories â€” straightforward for small models">
-        <div class="task-icon">ðŸ·ï¸</div><div class="task-name">Classify customer support ticket as Bug/Feature/Question</div>
-        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">â†’ Fast Model</div>
+      <div class="task-item" data-route="fast" data-label="Tier 2 — Fast Model" data-why="Binary classification with clear categories — straightforward for small models">
+        <div class="task-icon">🏷️</div><div class="task-name">Classify customer support ticket as Bug/Feature/Question</div>
+        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">→ Fast Model</div>
       </div>
-      <div class="task-item" data-route="smart" data-label="Tier 1 â€” Frontier Model" data-why="Requires understanding ambiguous intent, multi-hop reasoning, and domain knowledge synthesis">
-        <div class="task-icon">ðŸ”</div><div class="task-name">Research competing products and draft strategic recommendations</div>
-        <div class="task-route" style="background:rgba(108,99,255,0.15);color:#6c63ff;">â†’ Frontier Model</div>
+      <div class="task-item" data-route="smart" data-label="Tier 1 — Frontier Model" data-why="Requires understanding ambiguous intent, multi-hop reasoning, and domain knowledge synthesis">
+        <div class="task-icon">🔍</div><div class="task-name">Research competing products and draft strategic recommendations</div>
+        <div class="task-route" style="background:rgba(108,99,255,0.15);color:#6c63ff;">→ Frontier Model</div>
       </div>
-      <div class="task-item" data-route="fast" data-label="Tier 2 â€” Fast Model" data-why="Mechanical transformation with clear schema â€” ideal for fast, cheap execution at scale">
-        <div class="task-icon">ðŸ“</div><div class="task-name">Summarize this 500-word document in 2 sentences</div>
-        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">â†’ Fast Model</div>
+      <div class="task-item" data-route="fast" data-label="Tier 2 — Fast Model" data-why="Mechanical transformation with clear schema — ideal for fast, cheap execution at scale">
+        <div class="task-icon">📝</div><div class="task-name">Summarize this 500-word document in 2 sentences</div>
+        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">→ Fast Model</div>
       </div>
-      <div class="task-item" data-route="smart" data-label="Tier 1 â€” Frontier Model" data-why="Complex code generation with architectural decisions, edge cases, and correctness requirements">
-        <div class="task-icon">ðŸ’»</div><div class="task-name">Write a distributed rate limiter with Redis â€” handle edge cases</div>
-        <div class="task-route" style="background:rgba(108,99,255,0.15);color:#6c63ff;">â†’ Frontier Model</div>
+      <div class="task-item" data-route="smart" data-label="Tier 1 — Frontier Model" data-why="Complex code generation with architectural decisions, edge cases, and correctness requirements">
+        <div class="task-icon">💻</div><div class="task-name">Write a distributed rate limiter with Redis — handle edge cases</div>
+        <div class="task-route" style="background:rgba(108,99,255,0.15);color:#6c63ff;">→ Frontier Model</div>
       </div>
-      <div class="task-item" data-route="fast" data-label="Tier 2 â€” Fast Model" data-why="Deterministic format conversion â€” highly structured, no judgment needed">
-        <div class="task-icon">ðŸ”„</div><div class="task-name">Convert JSON response to CSV format</div>
-        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">â†’ Fast Model</div>
+      <div class="task-item" data-route="fast" data-label="Tier 2 — Fast Model" data-why="Deterministic format conversion — highly structured, no judgment needed">
+        <div class="task-icon">🔄</div><div class="task-name">Convert JSON response to CSV format</div>
+        <div class="task-route" style="background:rgba(6,214,160,0.15);color:#06d6a0;">→ Fast Model</div>
       </div>
     </div>
-    <button class="route-btn" onclick="routeAll()">âš¡ Route All Tasks</button>
+    <button class="route-btn" onclick="routeAll()">⚡ Route All Tasks</button>
     <div id="routing-summary" style="display:none;margin-top:16px;padding:14px;background:rgba(255,255,255,0.04);border-radius:10px;font-size:13px;"></div>
   </div>
 
-  <div class="sec-title">Model Landscape â€” Click to Compare</div>
+  <div class="sec-title">Model Landscape — Click to Compare</div>
   <div class="model-grid">
     <div class="model-card active" style="--mc:#6c63ff;" onclick="toggleModel(this)">
       <div class="model-header">
-        <div class="model-tier-badge" style="background:rgba(108,99,255,0.15);color:#6c63ff;">Tier 1 Â· Frontier</div>
+        <div class="model-tier-badge" style="background:rgba(108,99,255,0.15);color:#6c63ff;">Tier 1 · Frontier</div>
         <div class="model-name">Claude Opus / GPT-4o</div>
         <div class="model-by">Anthropic / OpenAI</div>
       </div>
@@ -214,13 +215,13 @@
       <div class="model-detail">
         <div class="md-row"><div class="md-key">Context Window</div><div class="md-val">200K tokens</div></div>
         <div class="md-row"><div class="md-key">Best For</div><div class="md-val">Planning, synthesis, code</div></div>
-        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">$15â€“$30 / 1M tokens</div></div>
-        <div class="md-row"><div class="md-key">Latency</div><div class="md-val">2â€“8 seconds/response</div></div>
+        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">$15–$30 / 1M tokens</div></div>
+        <div class="md-row"><div class="md-key">Latency</div><div class="md-val">2–8 seconds/response</div></div>
       </div>
     </div>
     <div class="model-card" style="--mc:#00d2ff;" onclick="toggleModel(this)">
       <div class="model-header">
-        <div class="model-tier-badge" style="background:rgba(0,210,255,0.15);color:#00d2ff;">Tier 1 Â· Frontier</div>
+        <div class="model-tier-badge" style="background:rgba(0,210,255,0.15);color:#00d2ff;">Tier 1 · Frontier</div>
         <div class="model-name">Gemini 1.5 Pro</div>
         <div class="model-by">Google DeepMind</div>
       </div>
@@ -234,13 +235,13 @@
       <div class="model-detail">
         <div class="md-row"><div class="md-key">Context Window</div><div class="md-val">1M tokens</div></div>
         <div class="md-row"><div class="md-key">Best For</div><div class="md-val">Long-doc analysis, multimodal</div></div>
-        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">$7â€“$21 / 1M tokens</div></div>
-        <div class="md-row"><div class="md-key">Latency</div><div class="md-val">1â€“5 seconds/response</div></div>
+        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">$7–$21 / 1M tokens</div></div>
+        <div class="md-row"><div class="md-key">Latency</div><div class="md-val">1–5 seconds/response</div></div>
       </div>
     </div>
     <div class="model-card" style="--mc:#06d6a0;" onclick="toggleModel(this)">
       <div class="model-header">
-        <div class="model-tier-badge" style="background:rgba(6,214,160,0.15);color:#06d6a0;">Tier 2 Â· Fast</div>
+        <div class="model-tier-badge" style="background:rgba(6,214,160,0.15);color:#06d6a0;">Tier 2 · Fast</div>
         <div class="model-name">Claude Haiku / GPT-4o mini</div>
         <div class="model-by">Anthropic / OpenAI</div>
       </div>
@@ -254,13 +255,13 @@
       <div class="model-detail">
         <div class="md-row"><div class="md-key">Context Window</div><div class="md-val">200K tokens</div></div>
         <div class="md-row"><div class="md-key">Best For</div><div class="md-val">Extraction, classification, routing</div></div>
-        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">$0.25â€“$1.25 / 1M tokens</div></div>
+        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">$0.25–$1.25 / 1M tokens</div></div>
         <div class="md-row"><div class="md-key">Latency</div><div class="md-val">&lt;0.5 seconds/response</div></div>
       </div>
     </div>
     <div class="model-card" style="--mc:#ffd166;" onclick="toggleModel(this)">
       <div class="model-header">
-        <div class="model-tier-badge" style="background:rgba(255,209,102,0.15);color:#ffd166;">Tier 2 Â· Fast</div>
+        <div class="model-tier-badge" style="background:rgba(255,209,102,0.15);color:#ffd166;">Tier 2 · Fast</div>
         <div class="model-name">Llama 3 8B / Mistral 7B</div>
         <div class="model-by">Meta / Mistral AI</div>
       </div>
@@ -272,22 +273,22 @@
         </div>
       </div>
       <div class="model-detail">
-        <div class="md-row"><div class="md-key">Context Window</div><div class="md-val">8Kâ€“32K tokens</div></div>
+        <div class="md-row"><div class="md-key">Context Window</div><div class="md-val">8K–32K tokens</div></div>
         <div class="md-row"><div class="md-key">Best For</div><div class="md-val">On-premise, high-volume simple tasks</div></div>
-        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">Self-hosted: ~$0.01â€“$0.10 / 1M</div></div>
+        <div class="md-row"><div class="md-key">Approx Cost</div><div class="md-val">Self-hosted: ~$0.01–$0.10 / 1M</div></div>
         <div class="md-row"><div class="md-key">Latency</div><div class="md-val">&lt;0.2 seconds/response</div></div>
       </div>
     </div>
   </div>
 
-  <div class="sec-title">Decision Tree â€” Pick the Right Model</div>
+  <div class="sec-title">Decision Tree — Pick the Right Model</div>
   <div class="dtree">
-    <h3>ðŸŒ³ Interactive Model Selector</h3>
+    <h3>🌳 Interactive Model Selector</h3>
     <div id="dt-step0">
       <div class="dt-q">Q1: Does the task require multi-step reasoning or synthesis across multiple sources?</div>
       <div class="dt-opts">
-        <div class="dt-opt" onclick="dtStep(1,'yes')">Yes â€” complex reasoning needed</div>
-        <div class="dt-opt" onclick="dtStep(1,'no')">No â€” single-step or structured</div>
+        <div class="dt-opt" onclick="dtStep(1,'yes')">Yes — complex reasoning needed</div>
+        <div class="dt-opt" onclick="dtStep(1,'no')">No — single-step or structured</div>
       </div>
     </div>
     <div id="dt-step1" style="display:none;">
@@ -298,17 +299,17 @@
       <div class="dt-result-tier" id="dr-tier"></div>
       <div class="dt-result-model" id="dr-model"></div>
       <div class="dt-result-why" id="dr-why"></div>
-      <button class="dt-reset" onclick="dtReset()">â†º Start Over</button>
+      <button class="dt-reset" onclick="dtReset()">↺ Start Over</button>
     </div>
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
 <script>
-// â”€â”€â”€ TASK ROUTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── TASK ROUTER ─────────────────────────────────────
 let routed = false;
 function routeAll() {
   if (routed) {
@@ -317,7 +318,7 @@ function routeAll() {
     });
     document.getElementById('routing-summary').style.display = 'none';
     routed = false;
-    document.querySelector('.route-btn').textContent = 'âš¡ Route All Tasks';
+    document.querySelector('.route-btn').textContent = '⚡ Route All Tasks';
     return;
   }
   document.querySelectorAll('.task-item').forEach((t,i) => {
@@ -330,34 +331,34 @@ function routeAll() {
     const fast = document.querySelectorAll('.task-item[data-route="fast"]').length;
     const smart = document.querySelectorAll('.task-item[data-route="smart"]').length;
     const summary = document.getElementById('routing-summary');
-    summary.innerHTML = `<strong style="color:var(--accent);">Routing result:</strong> ${fast} tasks â†’ âš¡ Fast Model (${Math.round(fast/(fast+smart)*100)}% of volume at ~10% of cost) &nbsp;|&nbsp; ${smart} tasks â†’ ðŸ§  Frontier Model`;
+    summary.innerHTML = `<strong style="color:var(--accent);">Routing result:</strong> ${fast} tasks → ⚡ Fast Model (${Math.round(fast/(fast+smart)*100)}% of volume at ~10% of cost) &nbsp;|&nbsp; ${smart} tasks → 🧠 Frontier Model`;
     summary.style.display = 'block';
-    document.querySelector('.route-btn').textContent = 'â†º Reset';
+    document.querySelector('.route-btn').textContent = '↺ Reset';
   }, 1200);
   routed = true;
 }
 
-// â”€â”€â”€ MODEL CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── MODEL CARDS ──────────────────────────────────────
 function toggleModel(el) {
   const wasActive = el.classList.contains('active');
   document.querySelectorAll('.model-card').forEach(c => c.classList.remove('active'));
   if(!wasActive) el.classList.add('active');
 }
 
-// â”€â”€â”€ DECISION TREE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── DECISION TREE ────────────────────────────────────
 const dtFlow = {
   yes: {
     q: "Q2: Does it require creative judgment, strategic thinking, or handling ambiguity?",
     opts: [
-      { label:"Yes â€” strategic/creative", result:{ tier:"Tier 1 â€” Frontier Model", model:"Claude Opus / GPT-4o", why:"Strategic planning, ambiguous goals, and creative synthesis all require frontier-level reasoning. Use Tier 1 as orchestrator." } },
-      { label:"No â€” deterministic but complex", result:{ tier:"Tier 1 â€” Frontier Model", model:"Claude Sonnet / Gemini 1.5 Pro", why:"Complex but deterministic tasks (multi-step code, structured analysis) fit the mid-tier frontier models balancing cost and capability." } }
+      { label:"Yes — strategic/creative", result:{ tier:"Tier 1 — Frontier Model", model:"Claude Opus / GPT-4o", why:"Strategic planning, ambiguous goals, and creative synthesis all require frontier-level reasoning. Use Tier 1 as orchestrator." } },
+      { label:"No — deterministic but complex", result:{ tier:"Tier 1 — Frontier Model", model:"Claude Sonnet / Gemini 1.5 Pro", why:"Complex but deterministic tasks (multi-step code, structured analysis) fit the mid-tier frontier models balancing cost and capability." } }
     ]
   },
   no: {
     q: "Q2: Is the task high-volume (>1000 calls/hour) or latency-sensitive (<500ms)?",
     opts: [
-      { label:"Yes â€” high-volume or real-time", result:{ tier:"Tier 2 â€” Fast Model", model:"Claude Haiku / GPT-4o mini / Llama 3 8B", why:"High-volume, low-complexity tasks are the primary use case for Tier 2. Cost savings of 10â€“100x with nearly identical quality for structured tasks." } },
-      { label:"No â€” moderate volume", result:{ tier:"Tier 2 â€” Fast Model", model:"Claude Haiku / GPT-4o mini", why:"Even at moderate volumes, fast models handle extraction, classification and summarization tasks well â€” no need to burn Tier 1 budget." } }
+      { label:"Yes — high-volume or real-time", result:{ tier:"Tier 2 — Fast Model", model:"Claude Haiku / GPT-4o mini / Llama 3 8B", why:"High-volume, low-complexity tasks are the primary use case for Tier 2. Cost savings of 10–100x with nearly identical quality for structured tasks." } },
+      { label:"No — moderate volume", result:{ tier:"Tier 2 — Fast Model", model:"Claude Haiku / GPT-4o mini", why:"Even at moderate volumes, fast models handle extraction, classification and summarization tasks well — no need to burn Tier 1 budget." } }
     ]
   }
 };
@@ -379,7 +380,7 @@ function dtResult(i) {
   const r = dtFlow[dtPath].opts[i].result;
   document.querySelectorAll('#dt-opts1 .dt-opt').forEach((o,idx) => o.classList.toggle('selected', idx===i));
   document.getElementById('dr-tier').textContent = r.tier;
-  document.getElementById('dr-model').textContent = 'â†’ ' + r.model;
+  document.getElementById('dr-model').textContent = '→ ' + r.model;
   document.getElementById('dr-why').textContent = r.why;
   document.getElementById('dt-result').classList.add('show');
 }

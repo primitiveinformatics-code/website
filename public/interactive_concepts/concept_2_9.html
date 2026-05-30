@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Single-Agent vs. Multi-Agent Systems | Agentic AI Course</title>
 <style>
@@ -53,8 +54,8 @@
   .compare-card.multi h3 { color: var(--multi); }
   .compare-card .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
   .pro-list, .con-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-  .pro-list li::before { content: 'âœ“ '; color: var(--correct); font-weight: 700; }
-  .con-list li::before { content: 'âœ— '; color: var(--wrong); font-weight: 700; }
+  .pro-list li::before { content: '✓ '; color: var(--correct); font-weight: 700; }
+  .con-list li::before { content: '✗ '; color: var(--wrong); font-weight: 700; }
   .pro-list li, .con-list li { font-size: 0.9rem; color: var(--muted); }
   .list-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin: 16px 0 8px; }
 
@@ -147,18 +148,18 @@
 <body>
 
 <nav>
-  <div class="brand">Agentic AI Course Â· <span>Session 2</span></div>
+  <div class="brand">Agentic AI Course · <span>Session 2</span></div>
   <div class="nav-links">
-    <a href="concept_2_6.html">â† Prev</a>
-    <a href="main-course.html">All Concepts</a>
-    <a href="concept_2_12.html">Next â†’</a>
+    <a href="concept_2_6.html">← Prev</a>
+    <a href="index.html">All Concepts</a>
+    <a href="concept_2_12.html">Next →</a>
   </div>
 </nav>
 
 <div class="hero">
-  <div class="session-tag">Session 2 Â· Concept 2.9</div>
+  <div class="session-tag">Session 2 · Concept 2.9</div>
   <h1>Single-Agent vs. <span>Multi-Agent</span> Systems</h1>
-  <p>When one intelligent agent is enough â€” and when you need a team of specialized agents working in concert.</p>
+  <p>When one intelligent agent is enough — and when you need a team of specialized agents working in concert.</p>
 </div>
 
 <!-- SPLIT COMPARE -->
@@ -166,12 +167,12 @@
   <div class="section-title">Core Comparison</div>
   <div class="split-compare">
     <div class="compare-card single">
-      <h3>ðŸ¤– Single-Agent</h3>
+      <h3>🤖 Single-Agent</h3>
       <div class="subtitle">One model, one context, one decision loop</div>
       <div class="list-label">Strengths</div>
       <ul class="pro-list">
         <li>Simpler to deploy, debug, and trace</li>
-        <li>Lower latency â€” no inter-agent communication</li>
+        <li>Lower latency — no inter-agent communication</li>
         <li>High consistency for well-defined tasks</li>
         <li>Easier cost estimation and control</li>
         <li>Full context available at every decision</li>
@@ -179,14 +180,14 @@
       <div class="list-label">Limitations</div>
       <ul class="con-list">
         <li>Cognitive overload on complex tasks</li>
-        <li>Context fills up â†’ hallucination risk</li>
+        <li>Context fills up → hallucination risk</li>
         <li>Can't hold multiple personas simultaneously</li>
-        <li>Sequential only â€” no parallel execution</li>
+        <li>Sequential only — no parallel execution</li>
         <li>Single point of failure</li>
       </ul>
     </div>
     <div class="compare-card multi">
-      <h3>ðŸ¤ Multi-Agent System</h3>
+      <h3>🤝 Multi-Agent System</h3>
       <div class="subtitle">Planner + Executor + Critic working together</div>
       <div class="list-label">Strengths</div>
       <ul class="pro-list">
@@ -224,11 +225,11 @@
         <div class="lbl">Multi-Agent on<br>HumanEval Complex</div>
       </div>
       <div class="stat-item s1">
-        <div class="num">1Ã—</div>
+        <div class="num">1×</div>
         <div class="lbl">Single Agent<br>latency baseline</div>
       </div>
       <div class="stat-item s2">
-        <div class="num">2-4Ã—</div>
+        <div class="num">2-4×</div>
         <div class="lbl">MAS latency<br>overhead</div>
       </div>
     </div>
@@ -237,31 +238,31 @@
 
 <!-- MAS PATTERN -->
 <section>
-  <div class="section-title">The Planner â†’ Executor â†’ Critic Pattern</div>
+  <div class="section-title">The Planner → Executor → Critic Pattern</div>
   <div class="mas-pattern">
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">Click each agent role to learn what it does and how it contributes to the system.</p>
     <div class="pattern-flow">
       <div class="pattern-node planner" onclick="showNodeDetail('planner')">
-        <div class="node-icon">ðŸ§ </div>
+        <div class="node-icon">🧠</div>
         <div class="node-title">Planner</div>
         <div class="node-subtitle">Breaks down goals</div>
       </div>
-      <div class="pattern-arrow">â†’</div>
+      <div class="pattern-arrow">→</div>
       <div class="pattern-node executor" onclick="showNodeDetail('executor')">
-        <div class="node-icon">âš™ï¸</div>
+        <div class="node-icon">⚙️</div>
         <div class="node-title">Executor</div>
         <div class="node-subtitle">Carries out subtasks</div>
       </div>
-      <div class="pattern-arrow">â†’</div>
+      <div class="pattern-arrow">→</div>
       <div class="pattern-node critic" onclick="showNodeDetail('critic')">
-        <div class="node-icon">ðŸ”</div>
+        <div class="node-icon">🔍</div>
         <div class="node-title">Critic</div>
         <div class="node-subtitle">Validates output quality</div>
       </div>
     </div>
     <div class="node-detail" id="nodeDetail">
       <h4>Click an agent role above to explore it</h4>
-      <p>The Planner â†’ Executor â†’ Critic pattern is the most common multi-agent architecture in production systems.</p>
+      <p>The Planner → Executor → Critic pattern is the most common multi-agent architecture in production systems.</p>
     </div>
   </div>
 </section>
@@ -334,38 +335,38 @@
   <div class="matcher-grid">
 
     <div class="matcher-card" onclick="revealMatch(this)">
-      <div class="scenario">ðŸ“§ Summarize a customer support email and draft a reply</div>
-      <div class="answer">âœ“ Single-Agent</div>
+      <div class="scenario">📧 Summarize a customer support email and draft a reply</div>
+      <div class="answer">✓ Single-Agent</div>
       <div class="reason">Short, well-scoped task with clear input/output. One model handles it cleanly within context limits.</div>
     </div>
 
     <div class="matcher-card multi-ans" onclick="revealMatch(this)">
-      <div class="scenario">ðŸ”¬ Research a topic across 20+ sources, synthesize findings, fact-check claims, and produce a report</div>
-      <div class="answer">âœ“ Multi-Agent</div>
-      <div class="reason">Research â†’ Synthesis â†’ Critique pattern maps perfectly to Planner + Executor + Critic. Single agent would overflow context.</div>
+      <div class="scenario">🔬 Research a topic across 20+ sources, synthesize findings, fact-check claims, and produce a report</div>
+      <div class="answer">✓ Multi-Agent</div>
+      <div class="reason">Research → Synthesis → Critique pattern maps perfectly to Planner + Executor + Critic. Single agent would overflow context.</div>
     </div>
 
     <div class="matcher-card single-ans" onclick="revealMatch(this)">
-      <div class="scenario">ðŸ§® Classify customer feedback into sentiment categories</div>
-      <div class="answer">âœ“ Single-Agent</div>
+      <div class="scenario">🧮 Classify customer feedback into sentiment categories</div>
+      <div class="answer">✓ Single-Agent</div>
       <div class="reason">Repetitive classification is a focused task. Adding orchestration overhead would add cost and latency with no benefit.</div>
     </div>
 
     <div class="matcher-card multi-ans" onclick="revealMatch(this)">
-      <div class="scenario">ðŸ—ï¸ Build a full-stack app: design DB schema, write backend, generate frontend, write tests, create documentation</div>
-      <div class="answer">âœ“ Multi-Agent</div>
+      <div class="scenario">🏗️ Build a full-stack app: design DB schema, write backend, generate frontend, write tests, create documentation</div>
+      <div class="answer">✓ Multi-Agent</div>
       <div class="reason">Five distinct domains requiring specialized expertise. Parallel execution of backend + frontend agents drastically reduces time.</div>
     </div>
 
     <div class="matcher-card single-ans" onclick="revealMatch(this)">
-      <div class="scenario">ðŸ“… Extract meeting times from an email and add to calendar</div>
-      <div class="answer">âœ“ Single-Agent</div>
-      <div class="reason">Short, deterministic task. Multi-agent overhead would be pure waste here â€” this completes in a single ReAct loop.</div>
+      <div class="scenario">📅 Extract meeting times from an email and add to calendar</div>
+      <div class="answer">✓ Single-Agent</div>
+      <div class="reason">Short, deterministic task. Multi-agent overhead would be pure waste here — this completes in a single ReAct loop.</div>
     </div>
 
     <div class="matcher-card multi-ans" onclick="revealMatch(this)">
-      <div class="scenario">ðŸ›’ E-commerce order agent: validate inventory, process payment, update shipping system, notify customer, handle exceptions</div>
-      <div class="answer">âœ“ Multi-Agent</div>
+      <div class="scenario">🛒 E-commerce order agent: validate inventory, process payment, update shipping system, notify customer, handle exceptions</div>
+      <div class="answer">✓ Multi-Agent</div>
       <div class="reason">Multiple external systems with distinct failure modes. Dedicated agents per system (inventory, payments, notifications) isolate failures.</div>
     </div>
 
@@ -386,29 +387,29 @@
       <div class="q-num">Question 1 of 5</div>
       <div class="q-text">What is the PRIMARY risk of using a single agent for very complex, long-horizon tasks?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">âœ—</span>a) It can only use one tool at a time</div>
-        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">âœ“</span>b) Context window fills up, increasing hallucination risk</div>
-        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">âœ—</span>c) It cannot be connected to APIs</div>
-        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">âœ—</span>d) It runs too fast and skips important steps</div>
+        <div class="opt" onclick="answer('q1','a','b')"><span class="opt-icon">✗</span>a) It can only use one tool at a time</div>
+        <div class="opt" onclick="answer('q1','b','b')"><span class="opt-icon">✓</span>b) Context window fills up, increasing hallucination risk</div>
+        <div class="opt" onclick="answer('q1','c','b')"><span class="opt-icon">✗</span>c) It cannot be connected to APIs</div>
+        <div class="opt" onclick="answer('q1','d','b')"><span class="opt-icon">✗</span>d) It runs too fast and skips important steps</div>
       </div>
-      <div class="feedback correct-fb" id="q1-correct">âœ“ Exactly right. A single agent's context window is finite. As task complexity grows, older context gets truncated â€” causing the model to "forget" earlier steps and hallucinate. This is the core failure mode that multi-agent architectures solve by giving each agent a focused, bounded context.</div>
-      <div class="feedback wrong-fb" id="q1-wrong">âœ— The real issue is context overflow. Single agents can use many tools, can connect to APIs, and don't skip steps by design â€” but as task complexity grows, their fixed context window fills up, truncating earlier reasoning and causing hallucinations. This is why MAS uses specialized agents with scoped contexts.</div>
-      <button class="q-reset" onclick="resetQ('q1')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q1-correct">✓ Exactly right. A single agent's context window is finite. As task complexity grows, older context gets truncated — causing the model to "forget" earlier steps and hallucinate. This is the core failure mode that multi-agent architectures solve by giving each agent a focused, bounded context.</div>
+      <div class="feedback wrong-fb" id="q1-wrong">✗ The real issue is context overflow. Single agents can use many tools, can connect to APIs, and don't skip steps by design — but as task complexity grows, their fixed context window fills up, truncating earlier reasoning and causing hallucinations. This is why MAS uses specialized agents with scoped contexts.</div>
+      <button class="q-reset" onclick="resetQ('q1')">↺ Try again</button>
     </div>
 
     <!-- Q2 -->
     <div class="q-block" id="q2">
       <div class="q-num">Question 2 of 5</div>
-      <div class="q-text">In the Planner â†’ Executor â†’ Critic pattern, what is the Critic agent's primary role?</div>
+      <div class="q-text">In the Planner → Executor → Critic pattern, what is the Critic agent's primary role?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">âœ—</span>a) Breaking the user's goal into subtasks</div>
-        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">âœ—</span>b) Calling external APIs and tools</div>
-        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">âœ“</span>c) Validating output quality before it reaches the user</div>
-        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">âœ—</span>d) Storing long-term memory for the system</div>
+        <div class="opt" onclick="answer('q2','a','c')"><span class="opt-icon">✗</span>a) Breaking the user's goal into subtasks</div>
+        <div class="opt" onclick="answer('q2','b','c')"><span class="opt-icon">✗</span>b) Calling external APIs and tools</div>
+        <div class="opt" onclick="answer('q2','c','c')"><span class="opt-icon">✓</span>c) Validating output quality before it reaches the user</div>
+        <div class="opt" onclick="answer('q2','d','c')"><span class="opt-icon">✗</span>d) Storing long-term memory for the system</div>
       </div>
-      <div class="feedback correct-fb" id="q2-correct">âœ“ Correct! The Critic agent is the quality gate. It reviews the Executor's output against the original plan and criteria â€” catching errors, inconsistencies, or incomplete work before they propagate downstream or reach users. This is what gives MAS systems their self-correction capability.</div>
-      <div class="feedback wrong-fb" id="q2-wrong">âœ— Breaking goals into subtasks = Planner. Calling APIs = Executor. Memory storage is typically a separate component. The Critic's job is validation â€” it reviews the Executor's output and checks it against the original goal, acting as a quality gate before results reach the user.</div>
-      <button class="q-reset" onclick="resetQ('q2')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q2-correct">✓ Correct! The Critic agent is the quality gate. It reviews the Executor's output against the original plan and criteria — catching errors, inconsistencies, or incomplete work before they propagate downstream or reach users. This is what gives MAS systems their self-correction capability.</div>
+      <div class="feedback wrong-fb" id="q2-wrong">✗ Breaking goals into subtasks = Planner. Calling APIs = Executor. Memory storage is typically a separate component. The Critic's job is validation — it reviews the Executor's output and checks it against the original goal, acting as a quality gate before results reach the user.</div>
+      <button class="q-reset" onclick="resetQ('q2')">↺ Try again</button>
     </div>
 
     <!-- Q3 -->
@@ -416,14 +417,14 @@
       <div class="q-num">Question 3 of 5</div>
       <div class="q-text">Which scenario is BEST suited for a single-agent architecture?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q3','a','b')"><span class="opt-icon">âœ—</span>a) Research 30 competitors, analyze pricing, create a strategic report</div>
-        <div class="opt" onclick="answer('q3','b','b')"><span class="opt-icon">âœ“</span>b) Classify customer support tickets by urgency level</div>
-        <div class="opt" onclick="answer('q3','c','b')"><span class="opt-icon">âœ—</span>c) Build and deploy a microservices application</div>
-        <div class="opt" onclick="answer('q3','d','b')"><span class="opt-icon">âœ—</span>d) Coordinate legal review, technical audit, and financial analysis simultaneously</div>
+        <div class="opt" onclick="answer('q3','a','b')"><span class="opt-icon">✗</span>a) Research 30 competitors, analyze pricing, create a strategic report</div>
+        <div class="opt" onclick="answer('q3','b','b')"><span class="opt-icon">✓</span>b) Classify customer support tickets by urgency level</div>
+        <div class="opt" onclick="answer('q3','c','b')"><span class="opt-icon">✗</span>c) Build and deploy a microservices application</div>
+        <div class="opt" onclick="answer('q3','d','b')"><span class="opt-icon">✗</span>d) Coordinate legal review, technical audit, and financial analysis simultaneously</div>
       </div>
-      <div class="feedback correct-fb" id="q3-correct">âœ“ Right. Ticket classification is a focused, repetitive task with clear input (ticket text) and output (urgency label). It's well within a single model's context limit. Adding multi-agent overhead would increase cost and latency with zero quality benefit.</div>
-      <div class="feedback wrong-fb" id="q3-wrong">âœ— Think about scope and context. Options (a), (c), and (d) all require multiple domains, long contexts, or parallel execution â€” all MAS strengths. Ticket classification is a focused, single-context task: one input, one output, minimal reasoning chains. That's the single-agent sweet spot.</div>
-      <button class="q-reset" onclick="resetQ('q3')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q3-correct">✓ Right. Ticket classification is a focused, repetitive task with clear input (ticket text) and output (urgency label). It's well within a single model's context limit. Adding multi-agent overhead would increase cost and latency with zero quality benefit.</div>
+      <div class="feedback wrong-fb" id="q3-wrong">✗ Think about scope and context. Options (a), (c), and (d) all require multiple domains, long contexts, or parallel execution — all MAS strengths. Ticket classification is a focused, single-context task: one input, one output, minimal reasoning chains. That's the single-agent sweet spot.</div>
+      <button class="q-reset" onclick="resetQ('q3')">↺ Try again</button>
     </div>
 
     <!-- Q4 -->
@@ -431,14 +432,14 @@
       <div class="q-num">Question 4 of 5</div>
       <div class="q-text">Multi-agent systems outperform single agents on complex tasks by approximately how much, according to benchmarks?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">âœ—</span>a) ~10%</div>
-        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">âœ—</span>b) ~30%</div>
-        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">âœ“</span>c) ~90%</div>
-        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">âœ—</span>d) 2-3Ã—</div>
+        <div class="opt" onclick="answer('q4','a','c')"><span class="opt-icon">✗</span>a) ~10%</div>
+        <div class="opt" onclick="answer('q4','b','c')"><span class="opt-icon">✗</span>b) ~30%</div>
+        <div class="opt" onclick="answer('q4','c','c')"><span class="opt-icon">✓</span>c) ~90%</div>
+        <div class="opt" onclick="answer('q4','d','c')"><span class="opt-icon">✗</span>d) 2-3×</div>
       </div>
-      <div class="feedback correct-fb" id="q4-correct">âœ“ Correct â€” approximately 90% improvement on complex, multi-step benchmarks. This dramatic gap comes from specialized agents handling focused subtasks with bounded contexts, plus the Critic layer catching errors that single agents miss entirely. The gap narrows significantly on simple tasks where single agents remain competitive.</div>
-      <div class="feedback wrong-fb" id="q4-wrong">âœ— The benchmark improvement is approximately 90%. This sounds extreme, but it reflects that complex tasks specifically exploit everything MAS does well â€” parallel specialization, focused contexts, and error correction. Simple tasks show much smaller differences, which is why architecture choice must match task complexity.</div>
-      <button class="q-reset" onclick="resetQ('q4')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q4-correct">✓ Correct — approximately 90% improvement on complex, multi-step benchmarks. This dramatic gap comes from specialized agents handling focused subtasks with bounded contexts, plus the Critic layer catching errors that single agents miss entirely. The gap narrows significantly on simple tasks where single agents remain competitive.</div>
+      <div class="feedback wrong-fb" id="q4-wrong">✗ The benchmark improvement is approximately 90%. This sounds extreme, but it reflects that complex tasks specifically exploit everything MAS does well — parallel specialization, focused contexts, and error correction. Simple tasks show much smaller differences, which is why architecture choice must match task complexity.</div>
+      <button class="q-reset" onclick="resetQ('q4')">↺ Try again</button>
     </div>
 
     <!-- Q5 -->
@@ -446,14 +447,14 @@
       <div class="q-num">Question 5 of 5</div>
       <div class="q-text">What is the BIGGEST hidden cost of multi-agent systems that often surprises teams in production?</div>
       <div class="options">
-        <div class="opt" onclick="answer('q5','a','b')"><span class="opt-icon">âœ—</span>a) The models themselves are more expensive per token</div>
-        <div class="opt" onclick="answer('q5','b','b')"><span class="opt-icon">âœ“</span>b) Token cost multiplies from orchestration overhead and inter-agent communication</div>
-        <div class="opt" onclick="answer('q5','c','b')"><span class="opt-icon">âœ—</span>c) You need custom hardware to run multiple agents</div>
-        <div class="opt" onclick="answer('q5','d','b')"><span class="opt-icon">âœ—</span>d) Regulatory approval is required for multi-agent systems</div>
+        <div class="opt" onclick="answer('q5','a','b')"><span class="opt-icon">✗</span>a) The models themselves are more expensive per token</div>
+        <div class="opt" onclick="answer('q5','b','b')"><span class="opt-icon">✓</span>b) Token cost multiplies from orchestration overhead and inter-agent communication</div>
+        <div class="opt" onclick="answer('q5','c','b')"><span class="opt-icon">✗</span>c) You need custom hardware to run multiple agents</div>
+        <div class="opt" onclick="answer('q5','d','b')"><span class="opt-icon">✗</span>d) Regulatory approval is required for multi-agent systems</div>
       </div>
-      <div class="feedback correct-fb" id="q5-correct">âœ“ Exactly. In a MAS, every agent-to-agent message, every context handoff, every Plannerâ†’Executorâ†’Critic loop burns tokens. A task that costs $0.01 with a single agent might cost $0.30 with a 5-agent system due to orchestration messages, repeated context injection, and Critic re-evaluation cycles. This catches teams off guard at scale.</div>
-      <div class="feedback wrong-fb" id="q5-wrong">âœ— The models use the same per-token pricing regardless of architecture. The real cost multiplier is orchestration: every inter-agent message, context handoff, and Critic review cycle burns tokens. A single agent call becomes 5-10 LLM calls in a MAS. At scale, what cost $100/day becomes $1,000/day â€” this is the production surprise that kills MAS budgets.</div>
-      <button class="q-reset" onclick="resetQ('q5')">â†º Try again</button>
+      <div class="feedback correct-fb" id="q5-correct">✓ Exactly. In a MAS, every agent-to-agent message, every context handoff, every Planner→Executor→Critic loop burns tokens. A task that costs $0.01 with a single agent might cost $0.30 with a 5-agent system due to orchestration messages, repeated context injection, and Critic re-evaluation cycles. This catches teams off guard at scale.</div>
+      <div class="feedback wrong-fb" id="q5-wrong">✗ The models use the same per-token pricing regardless of architecture. The real cost multiplier is orchestration: every inter-agent message, context handoff, and Critic review cycle burns tokens. A single agent call becomes 5-10 LLM calls in a MAS. At scale, what cost $100/day becomes $1,000/day — this is the production surprise that kills MAS budgets.</div>
+      <button class="q-reset" onclick="resetQ('q5')">↺ Try again</button>
     </div>
 
   </div>
@@ -466,20 +467,20 @@
   const nodeDetails = {
     planner: {
       color: 'var(--accent)',
-      title: 'ðŸ§  Planner Agent',
-      desc: 'Receives the high-level user goal and decomposes it into ordered, executable subtasks. The Planner understands dependencies between tasks and creates a directed execution graph â€” deciding which subtasks can run in parallel vs. sequentially.',
+      title: '🧠 Planner Agent',
+      desc: 'Receives the high-level user goal and decomposes it into ordered, executable subtasks. The Planner understands dependencies between tasks and creates a directed execution graph — deciding which subtasks can run in parallel vs. sequentially.',
       examples: ['Goal decomposition', 'Dependency mapping', 'Priority ordering', 'Parallel task identification']
     },
     executor: {
       color: 'var(--single)',
-      title: 'âš™ï¸ Executor Agent(s)',
-      desc: 'Carries out individual subtasks from the Planner\'s roadmap. In sophisticated systems, multiple specialized Executor agents run in parallel â€” one for web search, one for code generation, one for data analysis. Each Executor has a focused, bounded context.',
+      title: '⚙️ Executor Agent(s)',
+      desc: 'Carries out individual subtasks from the Planner\'s roadmap. In sophisticated systems, multiple specialized Executor agents run in parallel — one for web search, one for code generation, one for data analysis. Each Executor has a focused, bounded context.',
       examples: ['Web search & retrieval', 'Code generation', 'API calls', 'Data transformation', 'File I/O']
     },
     critic: {
       color: 'var(--multi)',
-      title: 'ðŸ” Critic Agent',
-      desc: 'Reviews completed subtask outputs against the original goal and quality criteria. The Critic is the system\'s self-correction mechanism â€” it can flag failures, request re-execution, or escalate to the Planner for replanning. Without a Critic, errors cascade silently.',
+      title: '🔍 Critic Agent',
+      desc: 'Reviews completed subtask outputs against the original goal and quality criteria. The Critic is the system\'s self-correction mechanism — it can flag failures, request re-execution, or escalate to the Planner for replanning. Without a Critic, errors cascade silently.',
       examples: ['Output validation', 'Factual consistency check', 'Goal alignment verification', 'Error detection', 'Replanning trigger']
     }
   };

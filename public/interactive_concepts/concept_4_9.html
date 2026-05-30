@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.9 â€” Memory Hierarchy: 5 Types</title>
+<title>4.9 — Memory Hierarchy: 5 Types</title>
 <style>
   :root {
     --bg: #0f1117; --surface: #1a1d27; --card: #21263a;
@@ -83,15 +84,15 @@
 <body>
 
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.9 â€” Memory Hierarchy: 5 Types</span>
+  <span class="nav-cur">4.9 — Memory Hierarchy: 5 Types</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
-  <h1>Memory Hierarchy â€” 5 Types</h1>
-  <p>From transient scratchpad to persistent external stores â€” every layer an agent needs to remember, retrieve, and reason</p>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
+  <h1>Memory Hierarchy — 5 Types</h1>
+  <p>From transient scratchpad to persistent external stores — every layer an agent needs to remember, retrieve, and reason</p>
 </div>
 
 <div class="main">
@@ -100,29 +101,29 @@
   <div class="sec-title">Click a Layer to Explore</div>
   <div class="pyramid-wrap" id="pyramid">
     <div class="pyr-row" id="pyr0" style="width:100%;background:linear-gradient(90deg,#ff6584cc,#ff6584aa)" onclick="selectMem(0)">
-      <div class="pyr-inner"><div class="pyr-name">ðŸ“ External Memory</div><div class="pyr-sub">Vector DBs, Document Stores, SQL</div></div>
-      <div class="pyr-badge">Persistent Â· Unlimited</div>
+      <div class="pyr-inner"><div class="pyr-name">📁 External Memory</div><div class="pyr-sub">Vector DBs, Document Stores, SQL</div></div>
+      <div class="pyr-badge">Persistent · Unlimited</div>
     </div>
     <div class="pyr-row" id="pyr1" style="width:87%;background:linear-gradient(90deg,#ffd166cc,#ffd166aa)" onclick="selectMem(1)">
-      <div class="pyr-inner"><div class="pyr-name">ðŸ—„ Episodic Memory</div><div class="pyr-sub">Session history, past conversations</div></div>
+      <div class="pyr-inner"><div class="pyr-name">🗄 Episodic Memory</div><div class="pyr-sub">Session history, past conversations</div></div>
       <div class="pyr-badge">Session-scoped</div>
     </div>
     <div class="pyr-row" id="pyr2" style="width:74%;background:linear-gradient(90deg,#06d6a0cc,#06d6a0aa)" onclick="selectMem(2)">
-      <div class="pyr-inner"><div class="pyr-name">ðŸ“š Semantic Memory</div><div class="pyr-sub">World knowledge, facts, concepts</div></div>
-      <div class="pyr-badge">Factual Â· Long-lived</div>
+      <div class="pyr-inner"><div class="pyr-name">📚 Semantic Memory</div><div class="pyr-sub">World knowledge, facts, concepts</div></div>
+      <div class="pyr-badge">Factual · Long-lived</div>
     </div>
     <div class="pyr-row" id="pyr3" style="width:60%;background:linear-gradient(90deg,#00d2ffcc,#00d2ffaa)" onclick="selectMem(3)">
-      <div class="pyr-inner"><div class="pyr-name">âš™ï¸ Procedural Memory</div><div class="pyr-sub">How-to skills, workflows, tool use</div></div>
+      <div class="pyr-inner"><div class="pyr-name">⚙️ Procedural Memory</div><div class="pyr-sub">How-to skills, workflows, tool use</div></div>
       <div class="pyr-badge">Skills-based</div>
     </div>
     <div class="pyr-row" id="pyr4" style="width:46%;background:linear-gradient(90deg,#6c63ffcc,#6c63ffaa)" onclick="selectMem(4)">
-      <div class="pyr-inner"><div class="pyr-name">ðŸ§  Working Memory</div><div class="pyr-sub">Active context window, current task</div></div>
+      <div class="pyr-inner"><div class="pyr-name">🧠 Working Memory</div><div class="pyr-sub">Active context window, current task</div></div>
       <div class="pyr-badge">~128K tokens</div>
     </div>
   </div>
 
   <div class="detail-panel" id="detail-panel">
-    <div style="text-align:center;color:var(--muted);padding:40px 0">ðŸ‘† Click any layer above to see details</div>
+    <div style="text-align:center;color:var(--muted);padding:40px 0">👆 Click any layer above to see details</div>
   </div>
 
   <!-- COMPARISON TABLE -->
@@ -136,7 +137,7 @@
         <td><strong style="color:#6c63ff">Working</strong></td>
         <td>Current task</td>
         <td>Context window (RAM)</td>
-        <td>Implicit â€” already in prompt</td>
+        <td>Implicit — already in prompt</td>
         <td>Active reasoning, tool calls, scratchpad</td>
       </tr>
       <tr>
@@ -173,109 +174,109 @@
   <!-- CLASSIFY GAME -->
   <div class="sec-title">Classify the Memory Type</div>
   <div class="classify-box">
-    <div class="classify-title">ðŸŽ¯ Memory Classifier Challenge</div>
+    <div class="classify-title">🎯 Memory Classifier Challenge</div>
     <div class="classify-sub">For each scenario, choose the correct memory type</div>
 
     <div class="scenario-card" id="sc0">
-      <div class="scenario-text">ðŸ’¬ An agent recalls that the user prefers concise responses from 3 sessions ago</div>
+      <div class="scenario-text">💬 An agent recalls that the user prefers concise responses from 3 sessions ago</div>
       <div class="answer-btns">
         <button class="abtn" onclick="answer(0,'working',this)">Working</button>
         <button class="abtn" onclick="answer(0,'procedural',this)">Procedural</button>
-        <button class="abtn" onclick="answer(0,'episodic',this)">Episodic âœ“</button>
+        <button class="abtn" onclick="answer(0,'episodic',this)">Episodic ✓</button>
         <button class="abtn" onclick="answer(0,'semantic',this)">Semantic</button>
         <button class="abtn" onclick="answer(0,'external',this)">External</button>
       </div>
-      <div id="fb0" class="feedback">âœ… <strong>Episodic!</strong> User preferences from past sessions = episodic memory stored in conversation history</div>
+      <div id="fb0" class="feedback">✅ <strong>Episodic!</strong> User preferences from past sessions = episodic memory stored in conversation history</div>
     </div>
 
     <div class="scenario-card" id="sc1">
-      <div class="scenario-text">ðŸ“„ An agent searches a vector database of 10,000 product docs to answer a customer question</div>
+      <div class="scenario-text">📄 An agent searches a vector database of 10,000 product docs to answer a customer question</div>
       <div class="answer-btns">
         <button class="abtn" onclick="answer(1,'working',this)">Working</button>
         <button class="abtn" onclick="answer(1,'procedural',this)">Procedural</button>
         <button class="abtn" onclick="answer(1,'episodic',this)">Episodic</button>
         <button class="abtn" onclick="answer(1,'semantic',this)">Semantic</button>
-        <button class="abtn" onclick="answer(1,'external',this)">External âœ“</button>
+        <button class="abtn" onclick="answer(1,'external',this)">External ✓</button>
       </div>
-      <div id="fb1" class="feedback">âœ… <strong>External!</strong> A vector DB of documents accessed via tool call = external memory</div>
+      <div id="fb1" class="feedback">✅ <strong>External!</strong> A vector DB of documents accessed via tool call = external memory</div>
     </div>
 
     <div class="scenario-card" id="sc2">
-      <div class="scenario-text">âš™ï¸ An agent's system prompt defines: "Always respond in JSON. Use tool X before tool Y."</div>
+      <div class="scenario-text">⚙️ An agent's system prompt defines: "Always respond in JSON. Use tool X before tool Y."</div>
       <div class="answer-btns">
         <button class="abtn" onclick="answer(2,'working',this)">Working</button>
-        <button class="abtn" onclick="answer(2,'procedural',this)">Procedural âœ“</button>
+        <button class="abtn" onclick="answer(2,'procedural',this)">Procedural ✓</button>
         <button class="abtn" onclick="answer(2,'episodic',this)">Episodic</button>
         <button class="abtn" onclick="answer(2,'semantic',this)">Semantic</button>
         <button class="abtn" onclick="answer(2,'external',this)">External</button>
       </div>
-      <div id="fb2" class="feedback">âœ… <strong>Procedural!</strong> Rules about how to behave / use tools = procedural memory baked into the system prompt</div>
+      <div id="fb2" class="feedback">✅ <strong>Procedural!</strong> Rules about how to behave / use tools = procedural memory baked into the system prompt</div>
     </div>
 
     <div class="scenario-card" id="sc3">
-      <div class="scenario-text">ðŸ§  The LLM knows that Paris is the capital of France (no retrieval needed)</div>
+      <div class="scenario-text">🧠 The LLM knows that Paris is the capital of France (no retrieval needed)</div>
       <div class="answer-btns">
         <button class="abtn" onclick="answer(3,'working',this)">Working</button>
         <button class="abtn" onclick="answer(3,'procedural',this)">Procedural</button>
         <button class="abtn" onclick="answer(3,'episodic',this)">Episodic</button>
-        <button class="abtn" onclick="answer(3,'semantic',this)">Semantic âœ“</button>
+        <button class="abtn" onclick="answer(3,'semantic',this)">Semantic ✓</button>
         <button class="abtn" onclick="answer(3,'external',this)">External</button>
       </div>
-      <div id="fb3" class="feedback">âœ… <strong>Semantic!</strong> World facts baked into model weights = semantic memory</div>
+      <div id="fb3" class="feedback">✅ <strong>Semantic!</strong> World facts baked into model weights = semantic memory</div>
     </div>
   </div>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
 <script>
 const memData = [
   {
-    color:'#ff6584', icon:'ðŸ“', name:'External Memory',
+    color:'#ff6584', icon:'📁', name:'External Memory',
     scope:'Unlimited, persistent across all sessions',
     storage:'Vector databases (Pinecone, Weaviate, pgvector), SQL/NoSQL, file systems, knowledge graphs',
-    retrieval:'Explicit tool calls â€” search(), query(), fetch() â€” agent must actively retrieve',
+    retrieval:'Explicit tool calls — search(), query(), fetch() — agent must actively retrieve',
     update:'Written via tool calls; updated asynchronously',
     examples:['Product knowledge base','Customer history DB','10K document corpora','Real-time data feeds'],
-    tradeoff:'âš¡ Near-unlimited capacity | âš ï¸ Requires retrieval latency + tool calls'
+    tradeoff:'⚡ Near-unlimited capacity | ⚠️ Requires retrieval latency + tool calls'
   },
   {
-    color:'#ffd166', icon:'ðŸ—„', name:'Episodic Memory',
+    color:'#ffd166', icon:'🗄', name:'Episodic Memory',
     scope:'Past sessions, conversations, and events',
     storage:'Conversation DB, session logs, structured event store',
     retrieval:'Temporal lookup ("last 5 sessions") or similarity search on past events',
     update:'Automatically logged at session boundaries or key events',
     examples:['User told me they prefer Python','We discussed Project X last week','Previous bug fix decisions'],
-    tradeoff:'âœ… Personalisation, continuity | âš ï¸ Can become stale; requires summarisation'
+    tradeoff:'✅ Personalisation, continuity | ⚠️ Can become stale; requires summarisation'
   },
   {
-    color:'#06d6a0', icon:'ðŸ“š', name:'Semantic Memory',
+    color:'#06d6a0', icon:'📚', name:'Semantic Memory',
     scope:'General world knowledge and domain facts',
     storage:'Model weights (pre-training) or external vector DB (for domain-specific facts)',
     retrieval:'Either implicit (from weights) or RAG-based retrieval for specialised facts',
     update:'Model weights via fine-tuning; RAG store via document ingestion',
     examples:['Capital cities, historical facts','Domain: medical terminology','API documentation','Code patterns'],
-    tradeoff:'âœ… No retrieval needed for common facts | âš ï¸ Weights can be outdated; fine-tuning is expensive'
+    tradeoff:'✅ No retrieval needed for common facts | ⚠️ Weights can be outdated; fine-tuning is expensive'
   },
   {
-    color:'#00d2ff', icon:'âš™ï¸', name:'Procedural Memory',
+    color:'#00d2ff', icon:'⚙️', name:'Procedural Memory',
     scope:'How-to knowledge: skills, workflows, tool usage patterns',
     storage:'System prompt, fine-tuned weights, few-shot examples in prompt',
-    retrieval:'Always available â€” baked into the prompt or model behaviour',
+    retrieval:'Always available — baked into the prompt or model behaviour',
     update:'System prompt edits or fine-tuning',
     examples:['Always call search before answer','Use JSON output format','Escalate to human if confidence < 0.7','Coding style guide'],
-    tradeoff:'âœ… Zero retrieval cost â€” always active | âš ï¸ Consumes context window; rigid'
+    tradeoff:'✅ Zero retrieval cost — always active | ⚠️ Consumes context window; rigid'
   },
   {
-    color:'#6c63ff', icon:'ðŸ§ ', name:'Working Memory',
-    scope:'Current task only â€” lost when context window clears',
-    storage:'LLM context window (~4Kâ€“128K tokens depending on model)',
-    retrieval:'Already present â€” no retrieval needed',
+    color:'#6c63ff', icon:'🧠', name:'Working Memory',
+    scope:'Current task only — lost when context window clears',
+    storage:'LLM context window (~4K–128K tokens depending on model)',
+    retrieval:'Already present — no retrieval needed',
     update:'Every token generated/received updates it automatically',
     examples:['Current user query','Tool call results in progress','Intermediate reasoning steps','Current conversation turn'],
-    tradeoff:'âœ… Instant access, no latency | âš ï¸ Fixed size; oldest tokens lost (sliding window)'
+    tradeoff:'✅ Instant access, no latency | ⚠️ Fixed size; oldest tokens lost (sliding window)'
   }
 ];
 
@@ -319,11 +320,11 @@ function answer(qIdx, choice, btn) {
   if (choice === correct) {
     btn.classList.add('correct');
     fb.classList.add('show','ok');
-    fb.textContent = 'âœ… Correct! ' + btn.textContent.replace(' âœ“','') + ' is right.';
+    fb.textContent = '✅ Correct! ' + btn.textContent.replace(' ✓','') + ' is right.';
   } else {
     btn.classList.add('wrong');
     fb.classList.add('show','no');
-    fb.innerHTML = 'âŒ Not quite â€” look for the option marked âœ“. Hint: ' + getHint(qIdx);
+    fb.innerHTML = '❌ Not quite — look for the option marked ✓. Hint: ' + getHint(qIdx);
   }
 }
 
@@ -331,7 +332,7 @@ function getHint(q) {
   const hints = {
     0:'This involves past conversations from previous sessions.',
     1:'The agent is calling a tool to search an external database.',
-    2:'These are rules about *how* to behave â€” a type of skill.',
+    2:'These are rules about *how* to behave — a type of skill.',
     3:'This knowledge lives in the model\'s pre-trained weights.'
   };
   return hints[q];

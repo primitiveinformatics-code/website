@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4.11 â€” Memory Failure Modes</title>
+<title>4.11 — Memory Failure Modes</title>
 <style>
   :root {
     --bg:#0f1117; --card:#21263a; --accent:#ff6584; --accent2:#ffd166;
@@ -86,15 +87,15 @@
 </head>
 <body>
 <div class="nav">
-  <a href="main-course.html">â† All Concepts</a>
+  <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
-  <span class="nav-cur">4.11 â€” Memory Failure Modes</span>
+  <span class="nav-cur">4.11 — Memory Failure Modes</span>
 </div>
 
 <div class="hero">
-  <div class="hero-badge">Session 4 Â· Day 2 Forenoon</div>
+  <div class="hero-badge">Session 4 · Day 2 Forenoon</div>
   <h1>Memory Failure Modes</h1>
-  <p>How agent memory breaks in production â€” symptoms, root causes, and hardened fixes</p>
+  <p>How agent memory breaks in production — symptoms, root causes, and hardened fixes</p>
 </div>
 
 <div class="main">
@@ -106,51 +107,51 @@
   <!-- DIAGNOSIS GAME -->
   <div class="sec-title">Diagnosis Challenge</div>
   <div class="diag-box">
-    <div class="diag-title">ðŸ” Spot the Failure Mode</div>
-    <div class="diag-sub">Read each symptom â€” identify which memory failure mode is occurring</div>
+    <div class="diag-title">🔍 Spot the Failure Mode</div>
+    <div class="diag-sub">Read each symptom — identify which memory failure mode is occurring</div>
 
     <div class="diag-q" id="dq0">
       <div class="diag-qtext">"The agent correctly answers Q1 and Q2, but in Q3 it references a fact from Q1 that the user already corrected in Q2."</div>
       <div class="diag-opts">
         <button class="dopt" onclick="diag(0,'ghost',this)">Context Ghosting</button>
-        <button class="dopt" onclick="diag(0,'stale',this)">Stale Memory âœ“</button>
+        <button class="dopt" onclick="diag(0,'stale',this)">Stale Memory ✓</button>
         <button class="dopt" onclick="diag(0,'leak',this)">Memory Leak</button>
         <button class="dopt" onclick="diag(0,'cross',this)">Cross-User Contamination</button>
       </div>
-      <div id="dfb0" class="diag-fb">âœ… <strong>Stale Memory!</strong> The agent retained the old (corrected) fact. The update in Q2 didn't propagate â€” a classic staleness failure.</div>
+      <div id="dfb0" class="diag-fb">✅ <strong>Stale Memory!</strong> The agent retained the old (corrected) fact. The update in Q2 didn't propagate — a classic staleness failure.</div>
     </div>
 
     <div class="diag-q" id="dq1">
-      <div class="diag-qtext">"After 30 turns, the agent forgets the user's name, preferences, and early decisions â€” despite all being in the original context."</div>
+      <div class="diag-qtext">"After 30 turns, the agent forgets the user's name, preferences, and early decisions — despite all being in the original context."</div>
       <div class="diag-opts">
-        <button class="dopt" onclick="diag(1,'trunc',this)">Context Truncation âœ“</button>
+        <button class="dopt" onclick="diag(1,'trunc',this)">Context Truncation ✓</button>
         <button class="dopt" onclick="diag(1,'stale',this)">Stale Memory</button>
         <button class="dopt" onclick="diag(1,'over',this)">Memory Overload</button>
         <button class="dopt" onclick="diag(1,'cross',this)">Cross-User Contamination</button>
       </div>
-      <div id="dfb1" class="diag-fb">âœ… <strong>Context Truncation!</strong> Early context fell off the sliding window. The LLM literally cannot see those tokens anymore.</div>
+      <div id="dfb1" class="diag-fb">✅ <strong>Context Truncation!</strong> Early context fell off the sliding window. The LLM literally cannot see those tokens anymore.</div>
     </div>
 
     <div class="diag-q" id="dq2">
-      <div class="diag-qtext">"User B receives information about User A's account preferences â€” the agent served User A's memory to a different session."</div>
+      <div class="diag-qtext">"User B receives information about User A's account preferences — the agent served User A's memory to a different session."</div>
       <div class="diag-opts">
         <button class="dopt" onclick="diag(2,'ghost',this)">Context Ghosting</button>
         <button class="dopt" onclick="diag(2,'leak',this)">Memory Leak</button>
-        <button class="dopt" onclick="diag(2,'cross',this)">Cross-User Contamination âœ“</button>
+        <button class="dopt" onclick="diag(2,'cross',this)">Cross-User Contamination ✓</button>
         <button class="dopt" onclick="diag(2,'trunc',this)">Context Truncation</button>
       </div>
-      <div id="dfb2" class="diag-fb">âœ… <strong>Cross-User Contamination!</strong> A critical security failure â€” session isolation was broken. Memory retrieved for wrong user_id.</div>
+      <div id="dfb2" class="diag-fb">✅ <strong>Cross-User Contamination!</strong> A critical security failure — session isolation was broken. Memory retrieved for wrong user_id.</div>
     </div>
 
     <div class="diag-q" id="dq3">
       <div class="diag-qtext">"After 50 tool calls, the agent's responses become slow and incoherent. Logs show the context window at 127K/128K tokens."</div>
       <div class="diag-opts">
-        <button class="dopt" onclick="diag(3,'over',this)">Memory Overload âœ“</button>
+        <button class="dopt" onclick="diag(3,'over',this)">Memory Overload ✓</button>
         <button class="dopt" onclick="diag(3,'stale',this)">Stale Memory</button>
         <button class="dopt" onclick="diag(3,'ghost',this)">Context Ghosting</button>
         <button class="dopt" onclick="diag(3,'trunc',this)">Context Truncation</button>
       </div>
-      <div id="dfb3" class="diag-fb">âœ… <strong>Memory Overload!</strong> The context window is nearly full. Tool results, history, and docs are competing for the same fixed token budget.</div>
+      <div id="dfb3" class="diag-fb">✅ <strong>Memory Overload!</strong> The context window is nearly full. Tool results, history, and docs are competing for the same fixed token budget.</div>
     </div>
   </div>
 
@@ -171,15 +172,15 @@
   </table>
 
   <div class="back-row">
-    <a href="main-course.html" class="back-btn">â† Back to All Concepts</a>
+    <a href="index.html" class="back-btn">← Back to All Concepts</a>
   </div>
 </div>
 
 <script>
 const failureModes = [
   {
-    icon:'âœ‚ï¸', name:'Context Truncation', sev:'critical',
-    one:'Early context silently falls off the sliding window â€” agent "forgets" critical decisions',
+    icon:'✂️', name:'Context Truncation', sev:'critical',
+    one:'Early context silently falls off the sliding window — agent "forgets" critical decisions',
     cause:'LLM context window is fixed. New tokens push out old tokens. Most models use a FIFO sliding window.',
     symptom:'Agent contradicts itself after 20+ turns. Forgets user name, preferences, or early instructions.',
     impact:'Incorrect decisions, user frustration, loss of personalization for long-running tasks.',
@@ -187,17 +188,17 @@ const failureModes = [
     symptoms:['Forgets user name after 20 turns','Contradicts early instructions','Repeats questions already answered']
   },
   {
-    icon:'ðŸ•¸ï¸', name:'Stale Memory', sev:'high',
-    one:'Outdated facts persist in memory long after they\'re corrected â€” agent uses wrong information',
+    icon:'🕸️', name:'Stale Memory', sev:'high',
+    one:'Outdated facts persist in memory long after they\'re corrected — agent uses wrong information',
     cause:'Memory stores lack TTL (time-to-live) or update mechanisms. Old facts not invalidated when new information arrives.',
     symptom:'User corrects the agent, but on the next query the agent uses the original (wrong) data again.',
     impact:'Incorrect answers, eroded user trust, potential real-world errors in data-sensitive domains.',
-    fix:'Add TTL to episodic memory entries. Implement contradiction detection â€” when user corrects, flag and update the record. Use versioned facts with timestamps.',
+    fix:'Add TTL to episodic memory entries. Implement contradiction detection — when user corrects, flag and update the record. Use versioned facts with timestamps.',
     symptoms:['Uses corrected-but-not-updated facts','Date-sensitive info is wrong','User corrections don\'t stick']
   },
   {
-    icon:'ðŸ’¥', name:'Memory Overload', sev:'critical',
-    one:'Context window fills with unfiltered history, tool outputs, and docs â€” model performance degrades',
+    icon:'💥', name:'Memory Overload', sev:'critical',
+    one:'Context window fills with unfiltered history, tool outputs, and docs — model performance degrades',
     cause:'No token budget enforcement. Every tool result, full conversation history, and all retrieved docs are appended without filtering.',
     symptom:'Latency spikes dramatically. Agent becomes incoherent. Context gauge shows 90%+ utilization.',
     impact:'Degraded response quality, higher latency, higher cost, potential context overflow errors.',
@@ -205,17 +206,17 @@ const failureModes = [
     symptoms:['Slow responses after many tool calls','Incoherent answers near window limit','High API costs']
   },
   {
-    icon:'ðŸ‘»', name:'False Recall (Hallucinated Memory)', sev:'high',
-    one:'Agent confidently reports a memory that was never stored â€” fabricated from training data',
+    icon:'👻', name:'False Recall (Hallucinated Memory)', sev:'high',
+    one:'Agent confidently reports a memory that was never stored — fabricated from training data',
     cause:'LLM can confuse training knowledge with retrieved memory. Low-confidence retrievals can trigger hallucinated completions.',
-    symptom:'Agent says "You previously told me X" â€” but the user never mentioned X in this session.',
+    symptom:'Agent says "You previously told me X" — but the user never mentioned X in this session.',
     impact:'Severely damages trust. Agent appears to fabricate user history or preferences.',
-    fix:'Apply confidence threshold to all memory retrieval. Add "no memory found" fallback path. Cite the source chunk. Never assume â€” verify before asserting.',
+    fix:'Apply confidence threshold to all memory retrieval. Add "no memory found" fallback path. Cite the source chunk. Never assume — verify before asserting.',
     symptoms:['References non-existent past conversations','Invents user preferences','High confidence wrong answers']
   },
   {
-    icon:'ðŸ”€', name:'Cross-User Contamination', sev:'critical',
-    one:'One user\'s memory bleeds into another user\'s session â€” a critical security failure',
+    icon:'🔀', name:'Cross-User Contamination', sev:'critical',
+    one:'One user\'s memory bleeds into another user\'s session — a critical security failure',
     cause:'Missing or incorrect session_id / user_id filtering on vector DB queries. Shared memory namespace without tenant isolation.',
     symptom:'User B sees facts about User A. Agent uses User A\'s preferences when serving User B.',
     impact:'Severe privacy breach, GDPR violations, complete trust destruction. May constitute a data breach.',
@@ -223,9 +224,9 @@ const failureModes = [
     symptoms:['User sees others\' data','Agent references wrong user\'s history','Privacy incident reports']
   },
   {
-    icon:'ðŸ‘ï¸', name:'Context Ghosting', sev:'medium',
+    icon:'👁️', name:'Context Ghosting', sev:'medium',
     one:'Agent behaves as if certain context doesn\'t exist even though it\'s within the window',
-    cause:'"Lost in the middle" effect â€” LLM attention focuses on start and end of context; middle sections receive less attention.',
+    cause:'"Lost in the middle" effect — LLM attention focuses on start and end of context; middle sections receive less attention.',
     symptom:'Critical instructions in the middle of a long system prompt are ignored. Agent skips important constraints.',
     impact:'Inconsistent behavior, safety guardrails bypassed, task quality degradation.',
     fix:'Move critical instructions to the very beginning or end of the context. Use explicit markers/headers. Repeat critical constraints in the final user message. Test attention distribution.',
@@ -234,7 +235,7 @@ const failureModes = [
 ];
 
 const sevClass = { critical:'sev-critical', high:'sev-high', medium:'sev-medium' };
-const sevLabel = { critical:'ðŸ”´ Critical', high:'ðŸŸ¡ High', medium:'ðŸ”µ Medium' };
+const sevLabel = { critical:'🔴 Critical', high:'🟡 High', medium:'🔵 Medium' };
 
 const grid = document.getElementById('fail-grid');
 failureModes.forEach((f, i) => {
@@ -248,7 +249,7 @@ failureModes.forEach((f, i) => {
         <div class="fail-one">${f.one}</div>
         <span class="fail-sev ${sevClass[f.sev]}">${sevLabel[f.sev]}</span>
       </div>
-      <div class="fail-chevron">â–¼</div>
+      <div class="fail-chevron">▼</div>
     </div>
     <div class="fail-detail">
       <div class="symptom-badges">${f.symptoms.map(s => `<span class="sym-badge">${s}</span>`).join('')}</div>
@@ -257,7 +258,7 @@ failureModes.forEach((f, i) => {
         <div class="detail-box"><div class="detail-label">Symptom in Production</div><div class="detail-val">${f.symptom}</div></div>
         <div class="detail-box"><div class="detail-label">Impact</div><div class="detail-val">${f.impact}</div></div>
       </div>
-      <div class="fix-box"><div class="fix-label">âœ… Fix / Prevention</div><div class="fix-val">${f.fix}</div></div>
+      <div class="fix-box"><div class="fix-label">✅ Fix / Prevention</div><div class="fix-val">${f.fix}</div></div>
     </div>
   `;
   grid.appendChild(card);
@@ -282,7 +283,7 @@ function diag(q, choice, btn) {
     const correctBtn = [...btns].find(b => b.onclick.toString().includes(`'${correct}'`));
     if(correctBtn) correctBtn.classList.add('correct');
     fb.classList.add('show','no');
-    fb.textContent = 'âŒ Not quite. Look for the option marked âœ“ â€” read the hint in the description above.';
+    fb.textContent = '❌ Not quite. Look for the option marked ✓ — read the hint in the description above.';
   }
 }
 </script>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3.14 Chunking Strategies | Agentic AI</title>
 <style>
@@ -55,8 +56,8 @@
   .pc-box.pros h4 { color: var(--green); } .pc-box.cons h4 { color: var(--accent); }
   .pc-box ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
   .pc-box ul li { font-size: 0.83rem; color: var(--muted); padding-left: 14px; position: relative; }
-  .pc-box.pros ul li::before { content: 'âœ“'; color: var(--green); position: absolute; left: 0; }
-  .pc-box.cons ul li::before { content: 'âœ—'; color: var(--accent); position: absolute; left: 0; }
+  .pc-box.pros ul li::before { content: '✓'; color: var(--green); position: absolute; left: 0; }
+  .pc-box.cons ul li::before { content: '✗'; color: var(--accent); position: absolute; left: 0; }
   .use-when { margin-top: 16px; background: rgba(255,209,102,0.06); border: 1px solid rgba(255,209,102,0.2);
               border-radius: 8px; padding: 12px 16px; font-size: 0.85rem; color: var(--yellow); }
 
@@ -131,16 +132,16 @@
 <body>
 
 <nav>
-  <a href="concept_3_13.html">â† RAG Architecture</a>
-  <span>Session 3 Â· Concept 3.14</span>
-  <a href="concept_3_15.html">Embeddings â†’</a>
+  <a href="concept_3_13.html">← RAG Architecture</a>
+  <span>Session 3 · Concept 3.14</span>
+  <a href="concept_3_15.html">Embeddings →</a>
 </nav>
 <nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
-  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
 </nav>
 
 <div class="hero">
-  <div class="tag">Session 3 Â· Concept 3.14</div>
+  <div class="tag">Session 3 · Concept 3.14</div>
   <h1>Chunking <span>Strategies</span></h1>
   <p>How you split documents determines what your RAG system can find. The wrong chunking strategy silently destroys retrieval quality.</p>
 </div>
@@ -151,7 +152,7 @@
   <div class="section">
     <div class="section-title">Why Chunking Is the Most Underestimated Step</div>
     <div class="info-box">
-      <strong>The core tension:</strong> Small chunks â†’ high retrieval precision (you find the exact passage), but low context per chunk (the LLM doesn't have enough to answer). Large chunks â†’ rich context per chunk, but retrieval imprecision (you retrieve a whole section when you needed one sentence). <strong>Chunking strategy is about resolving this tension for your specific document type.</strong>
+      <strong>The core tension:</strong> Small chunks → high retrieval precision (you find the exact passage), but low context per chunk (the LLM doesn't have enough to answer). Large chunks → rich context per chunk, but retrieval imprecision (you retrieve a whole section when you needed one sentence). <strong>Chunking strategy is about resolving this tension for your specific document type.</strong>
     </div>
     <div style="overflow-x:auto;">
       <table class="comp-table">
@@ -159,8 +160,8 @@
           <tr><th>Strategy</th><th>Chunk Size</th><th>Best For</th><th>Retrieval Precision</th><th>Context Quality</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong style="color:var(--yellow);">Fixed-Size</strong></td><td>256â€“512 tokens</td><td>General prose, articles</td><td class="tag-med">Medium</td><td class="tag-med">Medium</td></tr>
-          <tr><td><strong style="color:var(--blue);">Sentence</strong></td><td>1â€“3 sentences</td><td>Q&amp;A, FAQ docs</td><td class="tag-good">High</td><td class="tag-bad">Low</td></tr>
+          <tr><td><strong style="color:var(--yellow);">Fixed-Size</strong></td><td>256–512 tokens</td><td>General prose, articles</td><td class="tag-med">Medium</td><td class="tag-med">Medium</td></tr>
+          <tr><td><strong style="color:var(--blue);">Sentence</strong></td><td>1–3 sentences</td><td>Q&amp;A, FAQ docs</td><td class="tag-good">High</td><td class="tag-bad">Low</td></tr>
           <tr><td><strong style="color:var(--green);">Semantic</strong></td><td>Variable</td><td>Dense technical docs</td><td class="tag-good">High</td><td class="tag-good">High</td></tr>
           <tr><td><strong style="color:var(--purple);">Parent-Child</strong></td><td>Child: 128 / Parent: 1024</td><td>Long-form docs, books</td><td class="tag-good">High</td><td class="tag-good">High</td></tr>
           <tr><td><strong style="color:var(--accent);">Document-Aware</strong></td><td>Per-section</td><td>Markdown, code, PDFs with structure</td><td class="tag-good">High</td><td class="tag-good">High</td></tr>
@@ -182,7 +183,7 @@
 
     <div id="strat-fixed" class="spanel active">
       <h3>Fixed-Size (Recursive Character) Chunking</h3>
-      <div class="s-desc">Split text at a target token count, trying natural separators first: paragraph breaks â†’ sentence breaks â†’ word breaks â†’ characters. The <code>chunk_overlap</code> slides a window so that boundary context is preserved in both adjacent chunks.</div>
+      <div class="s-desc">Split text at a target token count, trying natural separators first: paragraph breaks → sentence breaks → word breaks → characters. The <code>chunk_overlap</code> slides a window so that boundary context is preserved in both adjacent chunks.</div>
       <div class="two-col">
         <div>
           <div class="code-label">Implementation</div>
@@ -211,14 +212,14 @@ chunks = splitter.<span class="fn">split_documents</span>(docs)</pre>
               <li>Splits mid-sentence sometimes</li><li>Ignores document structure</li><li>Overlap tuning is manual</li>
             </ul></div>
           </div>
-          <div class="use-when">ðŸ“Œ Use when: You need a quick, reliable baseline and don't have time to tune. Works well for general prose.</div>
+          <div class="use-when">📌 Use when: You need a quick, reliable baseline and don't have time to tune. Works well for general prose.</div>
         </div>
       </div>
     </div>
 
     <div id="strat-sentence" class="spanel">
       <h3>Sentence-Level Chunking</h3>
-      <div class="s-desc">Split on sentence boundaries using an NLP sentence tokenizer (spaCy, NLTK). Each chunk is 1â€“3 sentences. Maximizes retrieval precision for Q&A â€” you retrieve the exact sentence that answers the question, not a surrounding paragraph.</div>
+      <div class="s-desc">Split on sentence boundaries using an NLP sentence tokenizer (spaCy, NLTK). Each chunk is 1–3 sentences. Maximizes retrieval precision for Q&A — you retrieve the exact sentence that answers the question, not a surrounding paragraph.</div>
       <div class="two-col">
         <div>
           <div class="code-label">Implementation (spaCy)</div>
@@ -245,7 +246,7 @@ nlp = spacy.<span class="fn">load</span>(<span class="str">"en_core_web_sm"</spa
               <li>Very small chunks = low LLM context</li><li>Needs NLP library</li><li>Cross-sentence context lost</li>
             </ul></div>
           </div>
-          <div class="use-when">ðŸ“Œ Use when: Your documents are FAQ-style, highly dense, and questions map to individual sentences. Pair with parent-child for better context.</div>
+          <div class="use-when">📌 Use when: Your documents are FAQ-style, highly dense, and questions map to individual sentences. Pair with parent-child for better context.</div>
         </div>
       </div>
     </div>
@@ -276,10 +277,10 @@ nodes = splitter.<span class="fn">get_nodes_from_documents</span>(docs)</pre>
               <li>Thematically coherent chunks</li><li>Best for dense technical docs</li><li>No fixed size limits</li>
             </ul></div>
             <div class="pc-box cons"><h4>Cons</h4><ul>
-              <li>Slowest â€” embeds every sentence</li><li>Needs embedding model at index time</li><li>Threshold requires tuning</li>
+              <li>Slowest — embeds every sentence</li><li>Needs embedding model at index time</li><li>Threshold requires tuning</li>
             </ul></div>
           </div>
-          <div class="use-when">ðŸ“Œ Use when: Documents have dense multi-topic sections (e.g., medical papers, legal contracts). Worth the extra cost for complex corpora.</div>
+          <div class="use-when">📌 Use when: Documents have dense multi-topic sections (e.g., medical papers, legal contracts). Worth the extra cost for complex corpora.</div>
         </div>
       </div>
     </div>
@@ -295,11 +296,11 @@ nodes = splitter.<span class="fn">get_nodes_from_documents</span>(docs)</pre>
 <span class="kw">from</span> langchain.text_splitter <span class="kw">import</span> \
     RecursiveCharacterTextSplitter
 
-<span class="cm"># Small chunks â†’ used for retrieval</span>
+<span class="cm"># Small chunks → used for retrieval</span>
 child_splitter = <span class="cls">RecursiveCharacterTextSplitter</span>(
     chunk_size=<span class="num">200</span>
 )
-<span class="cm"># Large chunks â†’ returned to LLM</span>
+<span class="cm"># Large chunks → returned to LLM</span>
 parent_splitter = <span class="cls">RecursiveCharacterTextSplitter</span>(
     chunk_size=<span class="num">2000</span>
 )
@@ -320,14 +321,14 @@ retriever = <span class="cls">ParentDocumentRetriever</span>(
               <li>More complex setup</li><li>Needs separate docstore</li><li>2x storage overhead</li>
             </ul></div>
           </div>
-          <div class="use-when">ðŸ“Œ Use when: Long documents (books, reports, manuals) where you need precise retrieval but the LLM needs surrounding context. The go-to production pattern.</div>
+          <div class="use-when">📌 Use when: Long documents (books, reports, manuals) where you need precise retrieval but the LLM needs surrounding context. The go-to production pattern.</div>
         </div>
       </div>
     </div>
 
     <div id="strat-docaware" class="spanel">
       <h3>Document-Aware (Structure-Based) Chunking</h3>
-      <div class="s-desc">Split on semantic document structure: Markdown headers, HTML tags, code block boundaries, PDF section headings. Each chunk maps to a meaningful unit of the document â€” a section, a function, a table â€” preserving its natural context.</div>
+      <div class="s-desc">Split on semantic document structure: Markdown headers, HTML tags, code block boundaries, PDF section headings. Each chunk maps to a meaningful unit of the document — a section, a function, a table — preserving its natural context.</div>
       <div class="two-col">
         <div>
           <div class="code-label">Markdown-Aware Splitting</div>
@@ -355,7 +356,7 @@ chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
               <li>Requires consistent doc structure</li><li>Very long sections need secondary split</li><li>Format-specific parsers needed</li>
             </ul></div>
           </div>
-          <div class="use-when">ðŸ“Œ Use when: Your corpus is well-structured (Confluence, GitHub wikis, API docs). Metadata from headers dramatically improves filter-based retrieval.</div>
+          <div class="use-when">📌 Use when: Your corpus is well-structured (Confluence, GitHub wikis, API docs). Metadata from headers dramatically improves filter-based retrieval.</div>
         </div>
       </div>
     </div>
@@ -408,7 +409,7 @@ chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
   <!-- QUIZ -->
   <div class="section">
     <div class="quiz-header">
-      <h3>ðŸ§  Knowledge Check</h3>
+      <h3>🧠 Knowledge Check</h3>
       <div class="score-display" id="scoreDisplay">0 / 5</div>
     </div>
 
@@ -421,7 +422,7 @@ chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
         <button class="opt" onclick="answer('q1','d','b')">d) To allow different embedding models to be used for adjacent chunks</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="question" id="q2">
@@ -433,7 +434,7 @@ chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
         <button class="opt" onclick="answer('q2','d','c')">d) Document format compatibility vs chunk size limits</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="question" id="q3">
@@ -445,7 +446,7 @@ chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
         <button class="opt" onclick="answer('q3','d','d')">d) It embeds every single sentence to detect meaning-change boundaries before splitting</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="question" id="q4">
@@ -457,7 +458,7 @@ chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
         <button class="opt" onclick="answer('q4','d','d')">d) Document-aware (MarkdownHeaderTextSplitter) to preserve section structure and add header metadata</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="question" id="q5">
@@ -469,7 +470,7 @@ chunks = splitter.<span class="fn">split_text</span>(markdown_text)</pre>
         <button class="opt" onclick="answer('q5','d','b')">d) They cause cosine similarity scores to be artificially inflated</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
@@ -501,7 +502,7 @@ function updateImpact() {
   const storage = Math.max(5, 95 - (v / max) * 80);
   // Embedding cost: same as storage (more chunks = more embeds)
   const cost = Math.max(5, 95 - (v / max) * 80);
-  // Overall: best around 400â€“600
+  // Overall: best around 400–600
   const dist = Math.abs(v - 480);
   const overall = Math.max(20, 95 - (dist / 800) * 75);
 
@@ -513,12 +514,12 @@ function updateImpact() {
     document.getElementById('bar-' + id).style.width = val + '%';
   });
 
-  const pLabel = precision > 70 ? 'High âœ“' : precision > 40 ? 'Medium' : 'Low âœ—';
-  const cLabel = context > 70 ? 'Rich âœ“' : context > 40 ? 'Moderate' : 'Sparse âœ—';
+  const pLabel = precision > 70 ? 'High ✓' : precision > 40 ? 'Medium' : 'Low ✗';
+  const cLabel = context > 70 ? 'Rich ✓' : context > 40 ? 'Moderate' : 'Sparse ✗';
   const tLabel = tokens > 70 ? 'High (expensive)' : tokens > 40 ? 'Moderate' : 'Low (cheap)';
   const sLabel = storage > 70 ? 'High (many vectors)' : storage > 40 ? 'Moderate' : 'Low (few vectors)';
-  const costLabel = cost > 70 ? 'High' : cost > 40 ? 'Moderate' : 'Low âœ“';
-  const oLabel = overall > 75 ? 'âœ“ Good range' : overall > 50 ? 'âš  Suboptimal' : 'âœ— Avoid';
+  const costLabel = cost > 70 ? 'High' : cost > 40 ? 'Moderate' : 'Low ✓';
+  const oLabel = overall > 75 ? '✓ Good range' : overall > 50 ? '⚠ Suboptimal' : '✗ Avoid';
 
   document.getElementById('lbl-precision').textContent = pLabel;
   document.getElementById('lbl-context').textContent = cLabel;
@@ -528,11 +529,11 @@ function updateImpact() {
   document.getElementById('lbl-overall').textContent = oLabel;
 
   let tip = '';
-  if (v < 128) tip = 'âš  Too small: chunks lack context. LLM will struggle to generate complete answers. Use sentence-level only with parent-child retrieval.';
-  else if (v < 256) tip = 'ðŸ“Œ Good for Q&A and FAQ docs. High precision retrieval. Consider pairing with parent-child to give the LLM more context at generation time.';
-  else if (v <= 512) tip = 'âœ“ The sweet spot for most use cases. Balanced precision and context. This is the recommended starting point for any new RAG system.';
-  else if (v <= 1024) tip = 'ðŸ“Œ Better context per chunk but retrieval becomes less precise. Use when documents have long interconnected paragraphs that need to stay together.';
-  else tip = 'âš  Very large chunks hurt retrieval precision significantly. Consider switching to parent-child: use small children for retrieval, large parents for generation.';
+  if (v < 128) tip = '⚠ Too small: chunks lack context. LLM will struggle to generate complete answers. Use sentence-level only with parent-child retrieval.';
+  else if (v < 256) tip = '📌 Good for Q&A and FAQ docs. High precision retrieval. Consider pairing with parent-child to give the LLM more context at generation time.';
+  else if (v <= 512) tip = '✓ The sweet spot for most use cases. Balanced precision and context. This is the recommended starting point for any new RAG system.';
+  else if (v <= 1024) tip = '📌 Better context per chunk but retrieval becomes less precise. Use when documents have long interconnected paragraphs that need to stay together.';
+  else tip = '⚠ Very large chunks hurt retrieval precision significantly. Consider switching to parent-child: use small children for retrieval, large parents for generation.';
   document.getElementById('size-tip').textContent = tip;
 }
 updateImpact();
@@ -542,10 +543,10 @@ let score = 0;
 const answered = {};
 const msgs = {
   q1: 'Overlap slides a window across chunk boundaries so sentences split between two chunks appear in both, preserving their context.',
-  q2: 'Parent-child uses small child chunks for high-precision retrieval, then returns the large parent chunk to the LLM â€” high precision AND high context.',
+  q2: 'Parent-child uses small child chunks for high-precision retrieval, then returns the large parent chunk to the LLM — high precision AND high context.',
   q3: 'Semantic chunking embeds every sentence in the document to measure similarity between adjacent sentences, detecting meaning-change points.',
-  q4: 'MarkdownHeaderTextSplitter is purpose-built for structured docs â€” it preserves section hierarchy and adds header metadata for filtered retrieval.',
-  q5: 'Very small chunks don\'t give the LLM enough surrounding context to generate a coherent answer â€” it gets isolated fragments instead of complete ideas.'
+  q4: 'MarkdownHeaderTextSplitter is purpose-built for structured docs — it preserves section hierarchy and adds header metadata for filtered retrieval.',
+  q5: 'Very small chunks don\'t give the LLM enough surrounding context to generate a coherent answer — it gets isolated fragments instead of complete ideas.'
 };
 
 function answer(qid, chosen, correct) {
@@ -561,11 +562,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 

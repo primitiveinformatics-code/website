@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3.16 Vector Databases | Agentic AI</title>
 <style>
@@ -70,8 +71,8 @@
   .db-col h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 10px; }
   .db-col ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
   .db-col ul li { font-size: 0.85rem; color: var(--text); padding-left: 16px; position: relative; }
-  .str-li::before { content: 'âœ“'; color: var(--green); position: absolute; left: 0; }
-  .lim-li::before { content: 'âœ—'; color: var(--accent); position: absolute; left: 0; }
+  .str-li::before { content: '✓'; color: var(--green); position: absolute; left: 0; }
+  .lim-li::before { content: '✗'; color: var(--accent); position: absolute; left: 0; }
   .db-code { padding: 16px 20px; border-top: 1px solid var(--border); background: #0d1117; font-family: monospace; font-size: 0.8rem; overflow-x: auto; }
 
   /* FEATURE MATRIX */
@@ -131,16 +132,16 @@
 <body>
 
 <nav>
-  <a href="concept_3_15.html">â† Embeddings</a>
-  <span>Session 3 Â· Concept 3.16</span>
-  <a href="concept_4_1.html">Why Orchestration? â†’</a>
+  <a href="concept_3_15.html">← Embeddings</a>
+  <span>Session 3 · Concept 3.16</span>
+  <a href="concept_4_1.html">Why Orchestration? →</a>
 </nav>
 <nav style="border-top:1px solid var(--border); justify-content:center; padding:8px 24px;">
-  <a href="main-course.html" style="border-color:transparent; color:var(--muted);">â˜° All Concepts</a>
+  <a href="index.html" style="border-color:transparent; color:var(--muted);">☰ All Concepts</a>
 </nav>
 
 <div class="hero">
-  <div class="tag">Session 3 Â· Concept 3.16</div>
+  <div class="tag">Session 3 · Concept 3.16</div>
   <h1>Vector <span>Databases</span></h1>
   <p>The storage and search layer behind every RAG system. How ANN indexing works, which DB to pick, and when pgvector is enough.</p>
 </div>
@@ -151,13 +152,13 @@
   <div class="section">
     <div class="section-title">Why Regular Databases Can't Do This</div>
     <div class="info-box">
-      <strong>The problem:</strong> A regular SQL query like <code>WHERE text LIKE '%password reset%'</code> is keyword matching â€” it misses "how do I recover my account" entirely. A vector DB finds documents whose <em>meaning</em> is close to the query, regardless of exact word overlap. This requires a fundamentally different data structure: an <strong>Approximate Nearest Neighbor (ANN) index</strong>.
+      <strong>The problem:</strong> A regular SQL query like <code>WHERE text LIKE '%password reset%'</code> is keyword matching — it misses "how do I recover my account" entirely. A vector DB finds documents whose <em>meaning</em> is close to the query, regardless of exact word overlap. This requires a fundamentally different data structure: an <strong>Approximate Nearest Neighbor (ANN) index</strong>.
     </div>
-    <pre><span class="cm"># SQL: keyword match â€” misses semantic variants</span>
+    <pre><span class="cm"># SQL: keyword match — misses semantic variants</span>
 SELECT * FROM docs WHERE text LIKE <span class="str">'%password reset%'</span>
 <span class="cm"># MISSES: "recover account", "forgot credentials", "change login"</span>
 
-<span class="cm"># Vector DB: semantic similarity â€” finds all related passages</span>
+<span class="cm"># Vector DB: semantic similarity — finds all related passages</span>
 results = vector_db.<span class="fn">query</span>(
     vector=<span class="fn">embed</span>(<span class="str">"how do I reset my password"</span>),
     top_k=<span class="num">5</span>
@@ -174,7 +175,7 @@ results = vector_db.<span class="fn">query</span>(
         <h4>HNSW</h4>
         <div class="alg-name">Hierarchical Navigable Small World</div>
         <div class="alg-stats">
-          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--green);">âš¡ Fast</div></div>
+          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--green);">⚡ Fast</div></div>
           <div class="alg-stat"><div class="s-label">Accuracy</div><div class="s-val" style="color:var(--green);">High</div></div>
           <div class="alg-stat"><div class="s-label">Memory</div><div class="s-val" style="color:var(--yellow);">High</div></div>
         </div>
@@ -183,7 +184,7 @@ results = vector_db.<span class="fn">query</span>(
         <h4>IVF</h4>
         <div class="alg-name">Inverted File Index</div>
         <div class="alg-stats">
-          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--green);">âš¡ Fast</div></div>
+          <div class="alg-stat"><div class="s-label">Speed</div><div class="s-val" style="color:var(--green);">⚡ Fast</div></div>
           <div class="alg-stat"><div class="s-label">Accuracy</div><div class="s-val" style="color:var(--yellow);">Good</div></div>
           <div class="alg-stat"><div class="s-label">Memory</div><div class="s-val" style="color:var(--green);">Low</div></div>
         </div>
@@ -267,7 +268,7 @@ results = client.query_points(collection_name=<span style="color:#a5d6ff;">"docs
       <div class="db-header"><h3>Weaviate</h3><div class="db-badges"><span class="db-badge badge-self">Self-Hosted</span><span class="db-badge badge-managed">Cloud Available</span></div></div>
       <div class="db-body">
         <div class="db-col"><h4>Strengths</h4><ul>
-          <li class="str-li">GraphQL + REST API â€” powerful querying</li><li class="str-li">Built-in hybrid BM25+dense</li>
+          <li class="str-li">GraphQL + REST API — powerful querying</li><li class="str-li">Built-in hybrid BM25+dense</li>
           <li class="str-li">Schema with relationships between objects</li><li class="str-li">Native multimodal (text + image)</li>
         </ul></div>
         <div class="db-col"><h4>Limitations</h4><ul>
@@ -331,13 +332,13 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
           <tr><th>Feature</th><th>Pinecone</th><th>Qdrant</th><th>Weaviate</th><th>pgvector</th><th>Chroma</th></tr>
         </thead>
         <tbody>
-          <tr><td>Hybrid Search (dense+sparse)</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="no">âœ—</td><td class="no">âœ—</td></tr>
-          <tr><td>Metadata Filtering</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="partial">Limited</td></tr>
-          <tr><td>Multi-tenant Namespaces</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="partial">Via schema</td><td class="no">âœ—</td></tr>
-          <tr><td>Fully Managed / Serverless</td><td class="yes">âœ“</td><td class="partial">Cloud tier</td><td class="partial">Cloud tier</td><td class="no">âœ—</td><td class="no">âœ—</td></tr>
-          <tr><td>SQL + Transactions</td><td class="no">âœ—</td><td class="no">âœ—</td><td class="no">âœ—</td><td class="yes">âœ“</td><td class="no">âœ—</td></tr>
-          <tr><td>Production Scale (&gt;10M)</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="partial">With tuning</td><td class="no">âœ—</td></tr>
-          <tr><td>Good for prototyping</td><td class="partial">Paid</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="yes">âœ“</td><td class="yes">âœ“</td></tr>
+          <tr><td>Hybrid Search (dense+sparse)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
+          <tr><td>Metadata Filtering</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">Limited</td></tr>
+          <tr><td>Multi-tenant Namespaces</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">Via schema</td><td class="no">✗</td></tr>
+          <tr><td>Fully Managed / Serverless</td><td class="yes">✓</td><td class="partial">Cloud tier</td><td class="partial">Cloud tier</td><td class="no">✗</td><td class="no">✗</td></tr>
+          <tr><td>SQL + Transactions</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="no">✗</td></tr>
+          <tr><td>Production Scale (&gt;10M)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="partial">With tuning</td><td class="no">✗</td></tr>
+          <tr><td>Good for prototyping</td><td class="partial">Paid</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
         </tbody>
       </table>
     </div>
@@ -350,8 +351,8 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
       <div class="dq" id="dq1">
         <p>Q1: Are you prototyping / still in development?</p>
         <div class="choices">
-          <div class="choice" onclick="dtree(1, 'yes')">Yes â€” still exploring</div>
-          <div class="choice" onclick="dtree(1, 'no')">No â€” building production</div>
+          <div class="choice" onclick="dtree(1, 'yes')">Yes — still exploring</div>
+          <div class="choice" onclick="dtree(1, 'no')">No — building production</div>
         </div>
       </div>
       <div class="dq" id="dq2" style="display:none;">
@@ -368,7 +369,7 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
   <!-- QUIZ -->
   <div class="section">
     <div class="quiz-header">
-      <h3>ðŸ§  Knowledge Check</h3>
+      <h3>🧠 Knowledge Check</h3>
       <div class="score-display" id="scoreDisplay">0 / 5</div>
     </div>
 
@@ -381,7 +382,7 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
         <button class="opt" onclick="answer('q1','d','b')">d) Vector databases are faster for all types of queries</button>
       </div>
       <div class="feedback" id="q1-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q1')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q1')">↺ Reset</button>
     </div>
 
     <div class="question" id="q2">
@@ -393,19 +394,19 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
         <button class="opt" onclick="answer('q2','d','c')">d) HNSW is an exact search algorithm while IVF is approximate</button>
       </div>
       <div class="feedback" id="q2-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q2')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q2')">↺ Reset</button>
     </div>
 
     <div class="question" id="q3">
       <p>3. Your startup already uses PostgreSQL and has a corpus of ~200,000 documents. Which vector store is the most pragmatic starting point?</p>
       <div class="options">
-        <button class="opt" onclick="answer('q3','a','b')">a) Pinecone â€” it's fully managed</button>
-        <button class="opt" onclick="answer('q3','b','b')">b) pgvector â€” add the extension to your existing Postgres, no new infra needed</button>
-        <button class="opt" onclick="answer('q3','c','b')">c) Chroma â€” simplest Python API</button>
-        <button class="opt" onclick="answer('q3','d','b')">d) Weaviate â€” best hybrid search</button>
+        <button class="opt" onclick="answer('q3','a','b')">a) Pinecone — it's fully managed</button>
+        <button class="opt" onclick="answer('q3','b','b')">b) pgvector — add the extension to your existing Postgres, no new infra needed</button>
+        <button class="opt" onclick="answer('q3','c','b')">c) Chroma — simplest Python API</button>
+        <button class="opt" onclick="answer('q3','d','b')">d) Weaviate — best hybrid search</button>
       </div>
       <div class="feedback" id="q3-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q3')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q3')">↺ Reset</button>
     </div>
 
     <div class="question" id="q4">
@@ -417,7 +418,7 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
         <button class="opt" onclick="answer('q4','d','d')">d) Specific keywords, product names, error codes, or proper nouns that must match exactly</button>
       </div>
       <div class="feedback" id="q4-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q4')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q4')">↺ Reset</button>
     </div>
 
     <div class="question" id="q5">
@@ -425,11 +426,11 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
       <div class="options">
         <button class="opt" onclick="answer('q5','a','c')">a) You need the highest possible retrieval accuracy</button>
         <button class="opt" onclick="answer('q5','b','c')">b) You want to add SQL join capabilities to your vector search</button>
-        <button class="opt" onclick="answer('q5','c','c')">c) You have billions of vectors and memory is the primary constraint â€” you're willing to trade some accuracy for it</button>
+        <button class="opt" onclick="answer('q5','c','c')">c) You have billions of vectors and memory is the primary constraint — you're willing to trade some accuracy for it</button>
         <button class="opt" onclick="answer('q5','d','c')">d) You're building a real-time chat application that needs sub-10ms latency</button>
       </div>
       <div class="feedback" id="q5-fb"></div>
-      <button class="reset-btn" onclick="resetQ('q5')">â†º Reset</button>
+      <button class="reset-btn" onclick="resetQ('q5')">↺ Reset</button>
     </div>
   </div>
 
@@ -438,10 +439,10 @@ results = col.query(query_texts=[<span style="color:#a5d6ff;">"my question"</spa
 <script>
 // ANN ALGORITHMS
 const algData = [
-  { title: 'HNSW â€” Hierarchical Navigable Small World', body: 'Builds a multi-layer graph where each layer is a subgraph of the one below. The top layer has few long-range connections; lower layers have dense short-range connections. Search starts at the top and greedily navigates down â€” like zooming in on a map. Result: O(log n) search time with very high recall (typically >95%). Supported natively by Qdrant, Weaviate, Milvus, and as an add-on in pgvector. Default choice for most production systems.' },
-  { title: 'IVF â€” Inverted File Index', body: 'K-means clusters the vector space into Voronoi cells. At index time, each vector is assigned to its nearest cluster centroid. At query time, only the nearest nlist clusters are searched, not the full index. Dramatically reduces search space. Requires training a quantizer on your data first. Uses far less memory than HNSW. Accuracy depends on nprobe (how many clusters to scan). Default algorithm in FAISS.' },
-  { title: 'PQ â€” Product Quantization', body: 'Compresses each vector by splitting it into M subvectors and replacing each with a codebook code. A 1536-dim float32 vector (6KB) becomes a sequence of M bytes â€” 100-300x compression. Enables billion-vector search on a single server. The accuracy tradeoff is significant â€” suitable only when memory is the hard constraint. Usually combined with IVF (IVF+PQ) for both speed and compression.' },
-  { title: 'Flat / Exact Brute-Force Search', body: 'No index structure â€” every query scans every vector and computes exact cosine similarity. Guarantees 100% recall (perfect results) because nothing is approximated. Completely impractical above ~100K vectors. Useful only for: (1) validation benchmarks to measure ANN recall against ground truth, (2) very small corpora where the overhead of building an index exceeds the search time savings.' }
+  { title: 'HNSW — Hierarchical Navigable Small World', body: 'Builds a multi-layer graph where each layer is a subgraph of the one below. The top layer has few long-range connections; lower layers have dense short-range connections. Search starts at the top and greedily navigates down — like zooming in on a map. Result: O(log n) search time with very high recall (typically >95%). Supported natively by Qdrant, Weaviate, Milvus, and as an add-on in pgvector. Default choice for most production systems.' },
+  { title: 'IVF — Inverted File Index', body: 'K-means clusters the vector space into Voronoi cells. At index time, each vector is assigned to its nearest cluster centroid. At query time, only the nearest nlist clusters are searched, not the full index. Dramatically reduces search space. Requires training a quantizer on your data first. Uses far less memory than HNSW. Accuracy depends on nprobe (how many clusters to scan). Default algorithm in FAISS.' },
+  { title: 'PQ — Product Quantization', body: 'Compresses each vector by splitting it into M subvectors and replacing each with a codebook code. A 1536-dim float32 vector (6KB) becomes a sequence of M bytes — 100-300x compression. Enables billion-vector search on a single server. The accuracy tradeoff is significant — suitable only when memory is the hard constraint. Usually combined with IVF (IVF+PQ) for both speed and compression.' },
+  { title: 'Flat / Exact Brute-Force Search', body: 'No index structure — every query scans every vector and computes exact cosine similarity. Guarantees 100% recall (perfect results) because nothing is approximated. Completely impractical above ~100K vectors. Useful only for: (1) validation benchmarks to measure ANN recall against ground truth, (2) very small corpora where the overhead of building an index exceeds the search time savings.' }
 ];
 
 function showAlg(idx, el) {
@@ -463,9 +464,9 @@ function switchDB(id) {
 
 // DECISION TREE
 const results = {
-  'proto': { title: 'Use Chroma (local) or pgvector (if you have Postgres)', body: 'For prototyping, simplicity wins. Chroma gives you a working vector store in 5 lines of Python with no server setup. If you already have PostgreSQL, pgvector is even better â€” zero new infrastructure, full SQL available. Both handle hundreds of thousands of documents comfortably for development and demos.' },
+  'proto': { title: 'Use Chroma (local) or pgvector (if you have Postgres)', body: 'For prototyping, simplicity wins. Chroma gives you a working vector store in 5 lines of Python with no server setup. If you already have PostgreSQL, pgvector is even better — zero new infrastructure, full SQL available. Both handle hundreds of thousands of documents comfortably for development and demos.' },
   'prod-managed': { title: 'Use Pinecone', body: 'If you want zero ops overhead in production, Pinecone is the gold standard. Fully managed, auto-scaling, excellent SDKs, and supports hybrid search on serverless. Higher cost than self-hosted at scale, but for most teams the engineering time saved pays for itself.' },
-  'prod-self-hybrid': { title: 'Use Qdrant', body: 'For self-hosted production with hybrid search requirements, Qdrant is the best choice. Best-in-class hybrid dense+sparse search with RRF fusion, rich payload filtering, open-source with a cloud option if you later want managed. Written in Rust â€” excellent performance.' },
+  'prod-self-hybrid': { title: 'Use Qdrant', body: 'For self-hosted production with hybrid search requirements, Qdrant is the best choice. Best-in-class hybrid dense+sparse search with RRF fusion, rich payload filtering, open-source with a cloud option if you later want managed. Written in Rust — excellent performance.' },
   'prod-self-simple': { title: 'Use pgvector (if &lt;10M docs) or Qdrant', body: 'If your corpus is under ~10M documents and you already run Postgres, pgvector with the HNSW index is a pragmatic choice that avoids adding a new service. Beyond that scale, migrate to Qdrant for better performance. Weaviate is excellent if you need relational object modeling alongside vectors.' }
 };
 
@@ -477,8 +478,8 @@ function dtree(q, choice) {
       document.getElementById('dq2').style.display = 'block';
       document.getElementById('dq2-text').textContent = 'Q2: Do you want fully managed (no server to run)?';
       document.getElementById('dq2-choices').innerHTML = `
-        <div class="choice" onclick="dtree(2,'managed')">Yes â€” managed, no ops</div>
-        <div class="choice" onclick="dtree(2,'self')">No â€” self-hosted / on-premises</div>
+        <div class="choice" onclick="dtree(2,'managed')">Yes — managed, no ops</div>
+        <div class="choice" onclick="dtree(2,'self')">No — self-hosted / on-premises</div>
       `;
     }
   } else if (q === 2) {
@@ -487,8 +488,8 @@ function dtree(q, choice) {
     } else {
       document.getElementById('dq2-text').textContent = 'Q3: Do you need hybrid search (dense + keyword/BM25)?';
       document.getElementById('dq2-choices').innerHTML = `
-        <div class="choice" onclick="dtree(3,'yes')">Yes â€” need exact keyword + semantic</div>
-        <div class="choice" onclick="dtree(3,'no')">No â€” semantic search is enough</div>
+        <div class="choice" onclick="dtree(3,'yes')">Yes — need exact keyword + semantic</div>
+        <div class="choice" onclick="dtree(3,'no')">No — semantic search is enough</div>
       `;
     }
   } else if (q === 3) {
@@ -507,11 +508,11 @@ function showResult(key) {
 let score = 0;
 const answered = {};
 const msgs = {
-  q1: 'SQL LIKE is keyword matching â€” it only finds exact word overlap. Semantic search via vectors finds meaning-equivalent passages regardless of wording.',
-  q2: 'HNSW builds a navigable graph structure that enables fast, high-recall approximate search â€” at the cost of more RAM to store the graph.',
-  q3: 'pgvector is the pragmatic choice for existing Postgres users under ~10M vectors â€” no new service, full SQL support, and HNSW is now available.',
+  q1: 'SQL LIKE is keyword matching — it only finds exact word overlap. Semantic search via vectors finds meaning-equivalent passages regardless of wording.',
+  q2: 'HNSW builds a navigable graph structure that enables fast, high-recall approximate search — at the cost of more RAM to store the graph.',
+  q3: 'pgvector is the pragmatic choice for existing Postgres users under ~10M vectors — no new service, full SQL support, and HNSW is now available.',
   q4: 'Sparse/BM25 excels at exact keyword matching. Hybrid combines it with dense vectors to handle both specific terms and semantic similarity.',
-  q5: 'PQ compresses vectors 100-300x for memory-constrained environments â€” the tradeoff is reduced recall accuracy.'
+  q5: 'PQ compresses vectors 100-300x for memory-constrained environments — the tradeoff is reduced recall accuracy.'
 };
 
 function answer(qid, chosen, correct) {
@@ -527,11 +528,11 @@ function answer(qid, chosen, correct) {
   if (chosen === correct) {
     score++;
     fb.classList.add('correct');
-    fb.textContent = 'âœ“ Correct!';
+    fb.textContent = '✓ Correct!';
     document.getElementById('scoreDisplay').textContent = score + ' / 5';
   } else {
     fb.classList.add('wrong');
-    fb.textContent = 'âœ— Incorrect. ' + msgs[qid];
+    fb.textContent = '✗ Incorrect. ' + msgs[qid];
   }
 }
 
