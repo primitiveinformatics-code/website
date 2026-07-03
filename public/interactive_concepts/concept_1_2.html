@@ -276,6 +276,15 @@
     .hero, .content { padding-left: 20px; padding-right: 20px; }
     .myth-body { padding-left: 24px; }
   }
+
+  /* AUDIO PLAYER */
+  .nav-audio { display: flex; align-items: center; }
+  .nav-audio audio {
+    height: 32px;
+    border-radius: 8px;
+    accent-color: var(--accent);
+    max-width: 220px;
+  }
 </style>
 </head>
 <body>
@@ -284,6 +293,9 @@
   <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">1.2 Myths vs. Production Reality</span>
+    <div class="nav-audio">
+    <audio controls src="../audio/concept_1_2.mp3"></audio>
+  </div>
   <div class="nav-arrows">
     <a href="concept_1_1.html" class="nav-btn">← Platform Shift</a>
     <a href="concept_1_3.html" class="nav-btn">Agent Anatomy →</a>

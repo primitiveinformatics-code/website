@@ -118,6 +118,15 @@
   .takeaway strong{color:var(--accent2);}
 
   @media(max-width:700px){.hero,.content{padding-left:20px;padding-right:20px;}.compare-grid{grid-template-columns:1fr;}.compare-col:first-child{border-right:none;border-bottom:1px solid var(--border);}}
+
+  /* AUDIO PLAYER */
+  .nav-audio { display: flex; align-items: center; }
+  .nav-audio audio {
+    height: 32px;
+    border-radius: 8px;
+    accent-color: var(--accent);
+    max-width: 220px;
+  }
 </style>
 </head>
 <body>
@@ -125,6 +134,9 @@
   <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">1.6 Prototype vs. Production Gap</span>
+    <div class="nav-audio">
+    <audio controls src="../audio/concept_1_6.mp3"></audio>
+  </div>
   <div class="nav-arrows">
     <a href="concept_1_5.html" class="nav-btn">← Memory Types</a>
   </div>

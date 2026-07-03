@@ -119,6 +119,15 @@
   .takeaway{background:linear-gradient(135deg,rgba(0,210,255,.1),rgba(108,99,255,.06));border:1px solid rgba(0,210,255,.3);border-left:4px solid var(--accent);border-radius:12px;padding:22px 26px;font-size:15px;color:var(--text);line-height:1.7;}
   .takeaway strong{color:var(--accent);}
   @media(max-width:700px){.hero,.content{padding-left:20px;padding-right:20px;}.bdi-big{grid-template-columns:1fr;}}
+
+  /* AUDIO PLAYER */
+  .nav-audio { display: flex; align-items: center; }
+  .nav-audio audio {
+    height: 32px;
+    border-radius: 8px;
+    accent-color: var(--accent);
+    max-width: 220px;
+  }
 </style>
 </head>
 <body>
@@ -126,6 +135,9 @@
   <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">2.3 The BDI Model</span>
+    <div class="nav-audio">
+    <audio controls src="../audio/concept_2_3.mp3"></audio>
+  </div>
   <div class="nav-arrows">
     <a href="concept_2_1.html" class="nav-btn">← Paradigm Shift</a>
     <a href="concept_2_6.html" class="nav-btn">Planning Strategies →</a>
