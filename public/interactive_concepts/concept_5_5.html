@@ -101,6 +101,7 @@
   .insight-bar { background:rgba(255,101,132,0.07); border-left:4px solid var(--accent4); border-radius:0 10px 10px 0; padding:14px 18px; margin-bottom:14px; font-size:13px; color:var(--text); line-height:1.6; }
   .insight-bar strong { color:var(--accent4); }
 
+
   /* AUDIO PLAYER */
   .nav-audio { display: flex; align-items: center; }
   .nav-audio audio {
@@ -109,9 +110,33 @@
     accent-color: var(--accent);
     max-width: 220px;
   }
+  .fixed-audio-player {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    background: rgba(15,17,23,.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .fixed-audio-player audio {
+    height: 32px;
+    border-radius: 8px;
+    accent-color: var(--accent);
+    max-width: 220px;
+  }
 </style>
 </head>
 <body>
+<div class="fixed-audio-player">
+  <audio controls src="../audio/concept_5_5.mp3"></audio>
+</div>
+
 
 <nav>
   <a href="index.html">← All Concepts</a>

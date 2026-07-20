@@ -15,8 +15,8 @@ export default function Home() {
       <Hero />
       <AboutSection />
       <ValueProps />
-      <AgenticAIShowcase />
       <InteractiveLearningShowcase />
+      <AgenticAIShowcase />
       <MockInterviewShowcase />
       <YouTubeShowcase />
       <StatsCounter />

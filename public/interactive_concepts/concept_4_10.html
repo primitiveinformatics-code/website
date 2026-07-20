@@ -87,6 +87,7 @@
   .back-btn { display:inline-flex; align-items:center; gap:8px; background:rgba(255,209,102,0.1); border:1px solid rgba(255,209,102,0.3); color:var(--accent); padding:10px 24px; border-radius:30px; text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s; }
   .back-btn:hover { background:rgba(255,209,102,0.2); }
 
+
   /* AUDIO PLAYER */
   .nav-audio { display: flex; align-items: center; }
   .nav-audio audio {
@@ -95,9 +96,33 @@
     accent-color: var(--accent);
     max-width: 220px;
   }
+  .fixed-audio-player {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    background: rgba(15,17,23,.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .fixed-audio-player audio {
+    height: 32px;
+    border-radius: 8px;
+    accent-color: var(--accent);
+    max-width: 220px;
+  }
 </style>
 </head>
 <body>
+<div class="fixed-audio-player">
+  <audio controls src="../audio/concept_4_10.mp3"></audio>
+</div>
+
 <div class="nav">
   <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>

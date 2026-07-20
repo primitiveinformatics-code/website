@@ -128,6 +128,7 @@
                padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
   .reset-btn:hover { border-color: var(--orange); color: var(--orange); }
 
+
   /* AUDIO PLAYER */
   .nav-audio { display: flex; align-items: center; }
   .nav-audio audio {
@@ -136,9 +137,33 @@
     accent-color: var(--accent);
     max-width: 220px;
   }
+  .fixed-audio-player {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    background: rgba(15,17,23,.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .fixed-audio-player audio {
+    height: 32px;
+    border-radius: 8px;
+    accent-color: var(--accent);
+    max-width: 220px;
+  }
 </style>
 </head>
 <body>
+<div class="fixed-audio-player">
+  <audio controls src="../audio/concept_3_16.mp3"></audio>
+</div>
+
 
 <nav>
   <a href="concept_3_15.html">← Embeddings</a>

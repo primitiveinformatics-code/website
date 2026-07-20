@@ -4,9 +4,10 @@ import { jwtVerify } from "jose";
 const JWT_SECRET = process.env.INTERACTIVE_CONTENT_JWT_SECRET || "change-this-secret-in-production";
 const COOKIE_NAME = "ic_session";
 
-// Protect all main-course concept pages (modules 2–5: concept_2_*, concept_3_*, concept_4_*, concept_5_*)
-// Pre-course pages (concept_1_*), pre-course.html, and main-course.html itself remain public.
-const PROTECTED_PATTERN = /^\/interactive_concepts\/concept_[2-5]_/;
+// Protect the main-course landing page and all its concept pages (modules 2–5:
+// concept_2_*, concept_3_*, concept_4_*, concept_5_*).
+// Pre-course pages (concept_1_*) and pre-course.html remain public.
+const PROTECTED_PATTERN = /^\/interactive_concepts\/(main-course\.html|concept_[2-5]_)/;
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

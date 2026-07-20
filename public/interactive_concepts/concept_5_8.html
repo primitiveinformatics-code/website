@@ -96,6 +96,7 @@
   .cl-check { width:18px; height:18px; border-radius:5px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:10px; margin-top:1px; cursor:pointer; transition:background 0.2s; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); }
   .cl-check.checked { background:#06d6a0; border-color:#06d6a0; color:#000; }
 
+
   /* AUDIO PLAYER */
   .nav-audio { display: flex; align-items: center; }
   .nav-audio audio {
@@ -104,9 +105,33 @@
     accent-color: var(--accent);
     max-width: 220px;
   }
+  .fixed-audio-player {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    background: rgba(15,17,23,.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .fixed-audio-player audio {
+    height: 32px;
+    border-radius: 8px;
+    accent-color: var(--accent);
+    max-width: 220px;
+  }
 </style>
 </head>
 <body>
+<div class="fixed-audio-player">
+  <audio controls src="../audio/concept_5_8.mp3"></audio>
+</div>
+
 
 <nav>
   <a href="index.html">← All Concepts</a>
