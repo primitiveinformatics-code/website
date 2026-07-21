@@ -87,40 +87,23 @@
 
 
   /* AUDIO PLAYER */
-  .nav-audio { display: flex; align-items: center; }
-  .nav-audio audio {
-    height: 32px;
-    border-radius: 8px;
-    accent-color: var(--accent);
-    max-width: 220px;
-  }
-  .fixed-audio-player {
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-    z-index: 2147483647;
+  .page-audio-player {
     display: flex;
     align-items: center;
-    background: rgba(15,17,23,.95);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 8px 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    gap: 10px;
+    padding: 10px 32px;
+    background: rgba(15,17,23,.6);
+    border-bottom: 1px solid var(--border);
   }
-  .fixed-audio-player audio {
+  .page-audio-player audio {
     height: 32px;
     border-radius: 8px;
     accent-color: var(--accent);
-    max-width: 220px;
+    max-width: 260px;
   }
 </style>
 </head>
 <body>
-<div class="fixed-audio-player">
-  <audio controls src="../audio/concept_2_10.mp3"></audio>
-</div>
-
 <nav>
   <div class="brand">Agentic AI Course · <span>Session 2</span></div>
   <div class="nav-links">
@@ -129,6 +112,9 @@
     <a href="concept_2_11.html">Next →</a>
   </div>
 </nav>
+<div class="page-audio-player">
+  <audio controls src="../audio/concept_2_10.mp3"></audio>
+</div>
 <div class="hero">
   <div class="session-tag">Session 2 · Concept 2.10</div>
   <h1>Design Pattern <span>Decision Tree</span></h1>

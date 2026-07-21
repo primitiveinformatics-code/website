@@ -48,6 +48,12 @@ Both are optional — the site gracefully falls back to placeholder content when
 - Real URLs needed in `lib/constants.ts`: `YOUTUBE_CHANNEL_URL`, `SAAS_APP_URL`, LinkedIn, Twitter/X
 - Replace placeholder phone number in contact info
 
+## Gotchas
+
+- **`public/interactive_concepts/*.html` nav markup is not uniform.** Most templates use a real `<nav>` element, but the module-4 (`concept_4_8`–`concept_4_17`) and part of module-5 (`concept_5_11`–`concept_5_13`) templates use a plain `<div class="nav">` instead. Any script that inserts/repositions per-page widgets (audio player, etc.) by matching `</nav>` must fall back to `<div class="nav">...</div>` for those files or the insertion silently no-ops.
+- **Root `interactive_concepts/` vs `public/interactive_concepts/` are out of sync.** The root copy is missing the `<audio>` player entirely; only the `public/` copy (the one actually served) has been patched. Don't assume the two directories are mirrors — always check/edit `public/interactive_concepts/` for anything user-facing.
+- The per-concept audio player (added by `scripts/add-audio-players.js`) was fixed via `scripts/fix-audio-player-position.js` to render as an in-flow `.page-audio-player` bar directly under the nav (left-aligned) instead of a `position: fixed` box — 55 pages had it bottom-right, 9 had it awkwardly inline in the nav-arrows slot. Any future audio-player tooling should preserve the `.page-audio-player` shape rather than reintroducing a fixed-position variant.
+- The Main Course login gate (`middleware.ts` + `interactive_content_users` table + Admin Dashboard "Course Users" tab) was verified working end-to-end (2026-07-21): unauthenticated requests to `main-course.html` and `concept_2-5_*` correctly 307-redirect to `/interactive-content/login`; pre-course pages stay public. No code changes were needed for this.
 
 
 

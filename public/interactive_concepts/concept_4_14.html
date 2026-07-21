@@ -130,45 +130,30 @@
 
 
   /* AUDIO PLAYER */
-  .nav-audio { display: flex; align-items: center; }
-  .nav-audio audio {
-    height: 32px;
-    border-radius: 8px;
-    accent-color: var(--accent);
-    max-width: 220px;
-  }
-  .fixed-audio-player {
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-    z-index: 2147483647;
+  .page-audio-player {
     display: flex;
     align-items: center;
-    background: rgba(15,17,23,.95);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 8px 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    gap: 10px;
+    padding: 10px 32px;
+    background: rgba(15,17,23,.6);
+    border-bottom: 1px solid var(--border);
   }
-  .fixed-audio-player audio {
+  .page-audio-player audio {
     height: 32px;
     border-radius: 8px;
     accent-color: var(--accent);
-    max-width: 220px;
+    max-width: 260px;
   }
 </style>
 </head>
 <body>
-<div class="fixed-audio-player">
-  <audio controls src="../audio/concept_4_14.mp3"></audio>
-</div>
-
-
 <div class="nav">
   <a href="index.html">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-cur">4.14 — Self-Query Retriever & Multi-Hop RAG</span>
+</div>
+<div class="page-audio-player">
+  <audio controls src="../audio/concept_4_14.mp3"></audio>
 </div>
 
 <div class="hero">

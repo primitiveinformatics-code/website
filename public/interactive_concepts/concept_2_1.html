@@ -114,12 +114,19 @@
   @media(max-width:700px){.hero,.content{padding-left:20px;padding-right:20px;}.distinction-wrap,.while-split,.pillars{grid-template-columns:1fr;}.evo-era{width:90px;}}
 
   /* AUDIO PLAYER */
-  .nav-audio { display: flex; align-items: center; }
-  .nav-audio audio {
+  .page-audio-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 32px;
+    background: rgba(15,17,23,.6);
+    border-bottom: 1px solid var(--border);
+  }
+  .page-audio-player audio {
     height: 32px;
     border-radius: 8px;
     accent-color: var(--accent);
-    max-width: 220px;
+    max-width: 260px;
   }
 </style>
 </head>
@@ -128,14 +135,14 @@
   <a href="index.html" class="nav-home">← All Concepts</a>
   <span class="nav-sep">/</span>
   <span class="nav-current">2.1 The Paradigm Shift</span>
-    <div class="nav-audio">
-    <audio controls src="../audio/concept_2_1.mp3"></audio>
-  </div>
   <div class="nav-arrows">
     <a href="concept_1_6.html" class="nav-btn">← Prototype Gap</a>
     <a href="concept_2_3.html" class="nav-btn">BDI Model →</a>
   </div>
 </nav>
+<div class="page-audio-player">
+  <audio controls src="../audio/concept_2_1.mp3"></audio>
+</div>
 
 <div class="hero">
   <div class="concept-badge">Session 2 · Day 1 Forenoon · Concept 2.1</div>
