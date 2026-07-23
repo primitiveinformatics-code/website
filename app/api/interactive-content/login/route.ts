@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { SignJWT } from "jose";
 import pool from "@/lib/db";
-
-const JWT_SECRET = process.env.INTERACTIVE_CONTENT_JWT_SECRET || "change-this-secret-in-production";
-const COOKIE_NAME = "ic_session";
-const MAX_AGE = 60 * 60 * 8; // 8 hours
+import { COOKIE_NAME, MAX_AGE, signSession } from "@/lib/interactiveContentAuth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,11 +31,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
-    const secret = new TextEncoder().encode(JWT_SECRET);
-    const token = await new SignJWT({ userId: user.id, email: user.email, name: user.full_name })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime(`${MAX_AGE}s`)
-      .sign(secret);
+    const token = await signSession({ userId: user.id, email: user.email, name: user.full_name });
 
     const response = NextResponse.json({ success: true, name: user.full_name });
     response.cookies.set(COOKIE_NAME, token, {
